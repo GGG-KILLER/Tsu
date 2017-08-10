@@ -4,10 +4,10 @@ using System.Windows.Forms;
 
 namespace GUtils.Forms
 {
-	// Credit goes to http://www.lyquidity.com/devblog/?p=136
+    // Credit goes to http://www.lyquidity.com/devblog/?p=136
     /// <summary>
-    /// Wraps System.Windows.Forms.OpenFileDialog to make it present
-    /// a vista-style dialog.
+    /// Wraps System.Windows.Forms.OpenFileDialog to make it
+    /// present a vista-style dialog.
     /// </summary>
     public class FolderSelectDialog
     {
@@ -32,7 +32,8 @@ namespace GUtils.Forms
         #region Properties
 
         /// <summary>
-        /// Gets/Sets the initial folder to be selected. A null value selects the current directory.
+        /// Gets/Sets the initial folder to be selected. A null
+        /// value selects the current directory.
         /// </summary>
         public string InitialDirectory
         {
@@ -46,7 +47,7 @@ namespace GUtils.Forms
         public string Title
         {
             get { return ofd.Title; }
-            set { ofd.Title = value == null ? "Select a folder" : value; }
+            set { ofd.Title = value ?? "Select a folder"; }
         }
 
         /// <summary>
@@ -73,7 +74,9 @@ namespace GUtils.Forms
         /// <summary>
         /// Shows the dialog
         /// </summary>
-        /// <param name="hWndOwner">Handle of the control to be parent</param>
+        /// <param name="hWndOwner">
+        /// Handle of the control to be parent
+        /// </param>
         /// <returns>True if the user presses OK else false</returns>
         public bool ShowDialog ( IntPtr hWndOwner )
         {
@@ -155,12 +158,12 @@ namespace GUtils.Forms
     }
 
     /// <summary>
-    /// This class is from the Front-End for Dosbox and is used to present a 'vista' dialog box to select folders.
-    /// Being able to use a vista style dialog box to select folders is much better then using the shell folder browser.
-    /// http://code.google.com/p/fed/
+    /// This class is from the Front-End for Dosbox and is used to
+    /// present a 'vista' dialog box to select folders. Being able
+    /// to use a vista style dialog box to select folders is much
+    /// better then using the shell folder browser. http://code.google.com/p/fed/
     ///
-    /// Example:
-    /// var r = new Reflector("System.Windows.Forms");
+    /// Example: var r = new Reflector("System.Windows.Forms");
     /// </summary>
     public class Reflector
     {
@@ -176,7 +179,9 @@ namespace GUtils.Forms
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="ns">The namespace containing types to be used</param>
+        /// <param name="ns">
+        /// The namespace containing types to be used
+        /// </param>
         public Reflector ( string ns )
             : this ( ns, ns )
         { }
@@ -184,8 +189,13 @@ namespace GUtils.Forms
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="an">A specific assembly name (used if the assembly name does not tie exactly with the namespace)</param>
-        /// <param name="ns">The namespace containing types to be used</param>
+        /// <param name="an">
+        /// A specific assembly name (used if the assembly name
+        /// does not tie exactly with the namespace)
+        /// </param>
+        /// <param name="ns">
+        /// The namespace containing types to be used
+        /// </param>
         public Reflector ( String an, String ns )
         {
             m_ns = ns;
@@ -253,9 +263,13 @@ namespace GUtils.Forms
         /// <summary>
         /// Calls method 'func' on object 'obj' passing parameters 'parameters'
         /// </summary>
-        /// <param name="obj">The object on which to excute function 'func'</param>
+        /// <param name="obj">
+        /// The object on which to excute function 'func'
+        /// </param>
         /// <param name="func">The function to execute</param>
-        /// <param name="parameters">The parameters to pass to function 'func'</param>
+        /// <param name="parameters">
+        /// The parameters to pass to function 'func'
+        /// </param>
         /// <returns>The result of the function invocation</returns>
         public static Object Call ( Object obj, String func, params Object[] parameters )
         {
@@ -265,9 +279,13 @@ namespace GUtils.Forms
         /// <summary>
         /// Calls method 'func' on object 'obj' passing parameters 'parameters'
         /// </summary>
-        /// <param name="obj">The object on which to excute function 'func'</param>
+        /// <param name="obj">
+        /// The object on which to excute function 'func'
+        /// </param>
         /// <param name="func">The function to execute</param>
-        /// <param name="parameters">The parameters to pass to function 'func'</param>
+        /// <param name="parameters">
+        /// The parameters to pass to function 'func'
+        /// </param>
         /// <returns>The result of the function invocation</returns>
         public static Object Call2 ( Object obj, String func, Object[] parameters )
         {
@@ -275,12 +293,17 @@ namespace GUtils.Forms
         }
 
         /// <summary>
-        /// Calls method 'func' on object 'obj' which is of type 'type' passing parameters 'parameters'
+        /// Calls method 'func' on object 'obj' which is of type
+        /// 'type' passing parameters 'parameters'
         /// </summary>
         /// <param name="type">The type of 'obj'</param>
-        /// <param name="obj">The object on which to excute function 'func'</param>
+        /// <param name="obj">
+        /// The object on which to excute function 'func'
+        /// </param>
         /// <param name="func">The function to execute</param>
-        /// <param name="parameters">The parameters to pass to function 'func'</param>
+        /// <param name="parameters">
+        /// The parameters to pass to function 'func'
+        /// </param>
         /// <returns>The result of the function invocation</returns>
         public static Object CallAs ( Type type, Object obj, String func, params Object[] parameters )
         {
@@ -288,12 +311,17 @@ namespace GUtils.Forms
         }
 
         /// <summary>
-        /// Calls method 'func' on object 'obj' which is of type 'type' passing parameters 'parameters'
+        /// Calls method 'func' on object 'obj' which is of type
+        /// 'type' passing parameters 'parameters'
         /// </summary>
         /// <param name="type">The type of 'obj'</param>
-        /// <param name="obj">The object on which to excute function 'func'</param>
+        /// <param name="obj">
+        /// The object on which to excute function 'func'
+        /// </param>
         /// <param name="func">The function to execute</param>
-        /// <param name="parameters">The parameters to pass to function 'func'</param>
+        /// <param name="parameters">
+        /// The parameters to pass to function 'func'
+        /// </param>
         /// <returns>The result of the function invocation</returns>
         public static Object CallAs2 ( Type type, Object obj, String func, Object[] parameters )
         {
@@ -313,7 +341,8 @@ namespace GUtils.Forms
         }
 
         /// <summary>
-        /// Returns the value of property 'prop' of object 'obj' which has type 'type'
+        /// Returns the value of property 'prop' of object 'obj'
+        /// which has type 'type'
         /// </summary>
         /// <param name="type">The type of 'obj'</param>
         /// <param name="obj">The object containing 'prop'</param>
