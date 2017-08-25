@@ -7,7 +7,7 @@ namespace GUtils.IO
 {
     internal class PathUtils
     {
-        [DllImport ( "shlwapi.dll", CharSet = CharSet.Auto )]
+        [DllImport ( "shlwapi.dll" )]
         private static extern bool PathRelativePathTo (
              [Out] StringBuilder pszPath,
              [In] string pszFrom,
