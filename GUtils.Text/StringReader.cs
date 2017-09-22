@@ -5,12 +5,13 @@ namespace GUtils.Text
     public class StringReader
     {
         private readonly String Value;
-        private Int32 Position;
+
+        public Int32 Position { get; set; }
 
         public StringReader ( String Value )
         {
             this.Value = Value;
-            this.Position = -1;
+            this.Position = 0;
         }
 
         #region Basic Checking
@@ -37,7 +38,7 @@ namespace GUtils.Text
         /// <returns></returns>
         public Boolean IsNext ( Char ch, Int32 dist = 1 )
         {
-            return Next ( dist ) == ch;
+            return Peek ( dist ) == ch;
         }
 
         /// <summary>
@@ -48,9 +49,9 @@ namespace GUtils.Text
         /// <returns></returns>
         public Boolean AIsBeforeB ( Char a, Char b )
         {
-            var ia = IndexOf ( a );
-            var ib = IndexOf ( b );
-            return ( ia == -1 && ib == -1 ) || ia == -1 ? false : true;
+            var idxa = this.IndexOf ( a );
+            var idxb = this.IndexOf ( b );
+            return idxa != -1 && idxb != -1 && idxa < idxb;
         }
 
         #endregion Basic Checking
@@ -66,7 +67,8 @@ namespace GUtils.Text
         {
             if ( !CanMove ( dist ) )
                 return '\0';
-            return this.Value[this.Position += dist];
+            this.Position += dist;
+            return this.Value[this.Position];
         }
 
         /// <summary>
@@ -74,7 +76,7 @@ namespace GUtils.Text
         /// </summary>
         /// <param name="dist"></param>
         /// <returns></returns>
-        public Char Next ( Int32 dist = 1 )
+        public Char Peek ( Int32 dist = 1 )
         {
             if ( !CanMove ( dist ) )
                 return '\0';
@@ -82,63 +84,67 @@ namespace GUtils.Text
         }
 
         /// <summary>
-        /// Unconsume the last <paramref name="dist" /> characters
-        /// </summary>
-        /// <param name="dist"></param>
-        /// <returns></returns>
-        public Char Unread ( Int32 dist = 1 ) => Read ( -dist );
-
-        /// <summary>
-        /// Returns the <paramref name="dist" /> th last caracter
-        /// </summary>
-        /// <param name="dist"></param>
-        /// <returns></returns>
-        public Char Last ( Int32 dist = 1 ) => Next ( -dist );
-
-        /// <summary>
         /// Returns the distance from <see cref="Position" /> +
-        /// <paramref name="start" /> to <paramref name="ch" />
+        /// <paramref name="offset" /> to <paramref name="ch" />
         /// </summary>
         /// <param name="ch">Character to search for</param>
-        /// <param name="start">
+        /// <param name="offset">
         /// Distance from current position where to start
         /// searching for
         /// </param>
         /// <returns></returns>
-        public Int32 IndexOf ( Char ch, Int32 start = 0 )
+        public Int32 IndexOf ( Char ch, Int32 offset = 0 )
         {
-            var idx = this.Value.IndexOf ( ch, this.Position + start );
-            return idx == -1 ? -1 : idx - this.Position;
+            var idx = this.Value.IndexOf ( ch, this.Position + offset );
+            return idx == -1 ? -1 : idx - ( this.Position + offset );
         }
 
         /// <summary>
-        /// Returns the distance from <see cref="Position" /> +
-        /// <paramref name="start" /> to <paramref name="str" />
+        /// Returns the to <paramref name="needle" />(NOT AN
+        /// ABSOLUTE POSITION, IT IS RELATIVE TO
+        /// <see cref="Position" /> + <paramref name="offset" />)
         /// </summary>
-        /// <param name="str">String to search for</param>
-        /// <param name="start">
+        /// <param name="needle">String to search for</param>
+        /// <param name="offset">
         /// Distance from current position where to start
         /// searching for
         /// </param>
         /// <returns></returns>
-        public Int32 IndexOf ( String str, Int32 start = 0 ) => this.Value.IndexOf ( str, this.Position + start );
+        public Int32 IndexOf ( String needle, Int32 offset = 0 )
+        {
+            if ( needle == null )
+                throw new ArgumentNullException ( nameof ( needle ) );
+            var idx = this.Value.IndexOf ( needle, this.Position + offset );
+            return idx == -1 ? -1 : idx - ( this.Position + offset );
+        }
 
         /// <summary>
-        /// Returns the index of a character that passes the <paramref name="Filter" />
+        /// Returns the index of a character that passes the
+        /// <paramref name="Filter" /> (NOT AN ABSOLUTE POSITION,
+        /// IT IS RELATIVE TO <see cref="Position" />
+        /// + <paramref name="offset" />)
         /// </summary>
         /// <param name="Filter">The filter function</param>
+        /// <param name="offset">
+        /// Offset from current opsition where to start searching from
+        /// </param>
         /// <returns></returns>
-        public Int32 IndexOf ( Func<Char, Boolean> Filter )
+        public Int32 IndexOf ( Func<Char, Boolean> Filter, Int32 offset = 0 )
         {
-            for ( Int32 i = this.Position ; i < this.Value.Length ; i++ )
-                if ( Filter?.Invoke ( this.Value[i] ) ?? default ( Boolean ) )
-                    return i - this.Position;
+            if ( Filter == null )
+                throw new ArgumentNullException ( nameof ( Filter ) );
+
+            for ( Int32 i = this.Position + offset ; i < this.Value.Length ; i++ )
+                if ( Filter ( this.Value[i] ) )
+                    return i - ( this.Position + offset );
             return -1;
         }
 
         #endregion Basic Movement
 
         #region Advanced Movement
+
+        #region Char Based
 
         /// <summary>
         /// Reads until <paramref name="ch" /> is found
@@ -147,8 +153,8 @@ namespace GUtils.Text
         /// <returns></returns>
         public String ReadUntil ( Char ch )
         {
-            var idx = this.Value.IndexOf ( ch, this.Position );
-            return idx == -1 ? "" : this.ReadString ( idx - this.Position );
+            var idx = this.IndexOf ( ch );
+            return idx == -1 ? "" : this.ReadString ( idx );
         }
 
         /// <summary>
@@ -158,10 +164,8 @@ namespace GUtils.Text
         /// <returns></returns>
         public String ReadUntil ( Func<Char, Boolean> Filter )
         {
-            var len = 0;
-            while ( !Filter?.Invoke ( Next ( 1 ) ) ?? default ( Boolean ) )
-                len++;
-            return this.ReadString ( len );
+            var idx = this.IndexOf ( Filter );
+            return idx == -1 ? "" : this.ReadString ( idx );
         }
 
         /// <summary>
@@ -172,20 +176,9 @@ namespace GUtils.Text
         public String ReadUntil ( Func<Char, Char, Boolean> Filter )
         {
             var len = 0;
-            while ( !Filter?.Invoke ( Next ( len + 1 ), Next ( len + 2 ) ) ?? default ( Boolean ) )
+            while ( !Filter?.Invoke ( Peek ( len + 1 ), Peek ( len + 2 ) ) ?? default ( Boolean ) )
                 len++;
             return ReadString ( len );
-        }
-
-        /// <summary>
-        /// Reads up to <paramref name="str" />
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public String ReadUntil ( String str )
-        {
-            var i = IndexOf ( str, this.Position );
-            return i == -1 ? "" : ReadString ( i - this.Position );
         }
 
         /// <summary>
@@ -196,7 +189,7 @@ namespace GUtils.Text
         public String ReadUntilNot ( Func<Char, Boolean> Filter )
         {
             var len = 0;
-            while ( Filter?.Invoke ( Next ( 1 ) ) ?? default ( Boolean ) )
+            while ( Filter?.Invoke ( Peek ( 1 ) ) ?? default ( Boolean ) )
                 len++;
             return this.ReadString ( len );
         }
@@ -209,10 +202,27 @@ namespace GUtils.Text
         public String ReadUntilNot ( Func<Char, Char, Boolean> Filter )
         {
             var len = 0;
-            while ( Filter?.Invoke ( Next ( 1 ), Next ( 2 ) ) ?? default ( Boolean ) )
+            while ( Filter?.Invoke ( Peek ( 1 ), Peek ( 2 ) ) ?? default ( Boolean ) )
                 len++;
             return this.ReadString ( len );
         }
+
+        #endregion Char Based
+
+        #region String-based
+
+        /// <summary>
+        /// Reads up to <paramref name="str" />
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public String ReadUntil ( String str )
+        {
+            var i = IndexOf ( str, this.Position );
+            return i == -1 ? "" : ReadString ( i - this.Position );
+        }
+
+        #endregion String-based
 
         /// <summary>
         /// Reads and returns a <see cref="String" /> of <paramref name="length" />
