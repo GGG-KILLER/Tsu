@@ -2,19 +2,27 @@
 {
     using System;
     using System.ComponentModel;
-	
-	// Credit goes to http://stackoverflow.com/a/711419/2671392
+
+    // Credit goes to http://stackoverflow.com/a/711419/2671392
     public static class ISynchronizeInvokeExtensions
     {
         public static void InvokeEx<T> ( this T @this, Action<T> action ) where T : ISynchronizeInvoke
         {
-            if ( @this.InvokeRequired )
+            try
             {
-                @this.Invoke ( action, new object[] { @this } );
+                if ( @this.InvokeRequired )
+                {
+                    @this.Invoke ( action, new object[] { @this } );
+                }
+                else
+                {
+                    action?.Invoke ( @this );
+                }
             }
-            else
+            // When form is disposed.
+            catch ( Exception )
             {
-                action?.Invoke ( @this );
+                return;
             }
         }
     }
