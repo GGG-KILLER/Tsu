@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FolderSelectDialog.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ISynchronizeInvokeExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToolTipManager.cs" />

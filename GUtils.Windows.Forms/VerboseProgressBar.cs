@@ -33,7 +33,7 @@
                 if ( value != ProgressBarMode.Percentage && value != ProgressBarMode.CustomText )
                     throw new Exception ( "Invalud value provided, these are not flags!" );
 
-                mode = value;
+                this.mode = value;
                 this.Invalidate ( );
             }
         }
@@ -47,7 +47,7 @@
             get => text;
             set
             {
-                text = value;
+                this.text = value;
                 this.Invalidate ( );
             }
         }
@@ -62,7 +62,7 @@
             get => font;
             set
             {
-                font = value;
+                this.font = value;
                 this.Invalidate ( );
             }
         }
@@ -75,7 +75,7 @@
             get => textColor;
             set
             {
-                textColor = value;
+                this.textColor = value;
                 this.Invalidate ( );
             }
         }
@@ -105,16 +105,16 @@
         {
             base.WndProc ( ref m );
             if ( m.Msg == 0x000F ) // WM_PAINT
-                using ( var g = Graphics.FromHwnd ( Handle ) )
-                using ( var textBrush = new SolidBrush ( ForeColor ) )
+                using ( var g = Graphics.FromHwnd ( this.Handle ) )
+                using ( var textBrush = new SolidBrush ( this.ForeColor ) )
                     TextRenderer.DrawText (
                         g,
-                        Mode == ProgressBarMode.CustomText
-                            ? Text
-                            : $"{( Int32 ) Math.Round ( ( ( Double ) Value / Maximum ) * 100D )}%",
-                        Font,
+                        this.Mode == ProgressBarMode.CustomText
+                            ? this.Text
+                            : $"{( Int32 ) Math.Round ( ( ( Double ) this.Value / this.Maximum ) * 100D )}%",
+                        this.Font,
                         new Rectangle ( 0, 0, this.Width, this.Height ),
-                        TextColor,
+                        this.TextColor,
                         formatFlags );
         }
     }

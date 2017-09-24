@@ -19,7 +19,7 @@ namespace GUtils.Forms
         /// </summary>
         public FolderSelectDialog ( )
         {
-            ofd = new OpenFileDialog
+            this.ofd = new OpenFileDialog
             {
                 Filter = "Folders|\n",
                 AddExtension = false,
@@ -37,8 +37,8 @@ namespace GUtils.Forms
         /// </summary>
         public string InitialDirectory
         {
-            get { return ofd.InitialDirectory; }
-            set { ofd.InitialDirectory = value == null || value.Length == 0 ? Environment.CurrentDirectory : value; }
+            get { return this.ofd.InitialDirectory; }
+            set { this.ofd.InitialDirectory = value == null || value.Length == 0 ? Environment.CurrentDirectory : value; }
         }
 
         /// <summary>
@@ -46,8 +46,8 @@ namespace GUtils.Forms
         /// </summary>
         public string Title
         {
-            get { return ofd.Title; }
-            set { ofd.Title = value ?? "Select a folder"; }
+            get { return this.ofd.Title; }
+            set { this.ofd.Title = value ?? "Select a folder"; }
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace GUtils.Forms
         /// </summary>
         public string FileName
         {
-            get { return ofd.FileName; }
+            get { return this.ofd.FileName; }
         }
 
         #endregion Properties
@@ -87,16 +87,16 @@ namespace GUtils.Forms
                 var r = new Reflector ( "System.Windows.Forms" );
 
                 var num = 0U;
-                var typeIFileDialog = r.GetType ( "FileDialogNative.IFileDialog" );
-                var dialog = Reflector.Call ( ofd, "CreateVistaDialog" );
-                Reflector.Call ( ofd, "OnBeforeVistaDialog", dialog );
+                Type typeIFileDialog = r.GetType ( "FileDialogNative.IFileDialog" );
+                var dialog = Reflector.Call ( this.ofd, "CreateVistaDialog" );
+                Reflector.Call ( this.ofd, "OnBeforeVistaDialog", dialog );
 
-                var options = ( uint ) Reflector.CallAs ( typeof ( FileDialog ), ofd, "GetOptions" );
+                var options = ( uint ) Reflector.CallAs ( typeof ( FileDialog ), this.ofd, "GetOptions" );
                 options |= ( uint ) r.GetEnum ( "FileDialogNative.FOS", "FOS_PICKFOLDERS" );
                 Reflector.CallAs ( typeIFileDialog, dialog, "SetOptions", options );
 
-                var pfde = r.New ( "FileDialog.VistaDialogEvents", ofd );
-                var parameters = new object[] { pfde, num };
+                var pfde = r.New ( "FileDialog.VistaDialogEvents", this.ofd );
+                Object[] parameters = new object[] { pfde, num };
                 Reflector.CallAs2 ( typeIFileDialog, dialog, "Advise", parameters );
                 num = ( uint ) parameters[1];
                 try
@@ -114,14 +114,14 @@ namespace GUtils.Forms
             {
                 using ( var fbd = new FolderBrowserDialog
                 {
-                    Description = Title,
-                    SelectedPath = InitialDirectory,
+                    Description = this.Title,
+                    SelectedPath = this.InitialDirectory,
                     ShowNewFolderButton = false
                 } )
                 {
                     if ( fbd.ShowDialog ( new WindowWrapper ( hWndOwner ) ) != DialogResult.OK )
                         return false;
-                    ofd.FileName = fbd.SelectedPath;
+                    this.ofd.FileName = fbd.SelectedPath;
                     flag = true;
                 }
             }
@@ -143,7 +143,7 @@ namespace GUtils.Forms
         /// <param name="handle">Handle to wrap</param>
         public WindowWrapper ( IntPtr handle )
         {
-            _hwnd = handle;
+            this._hwnd = handle;
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace GUtils.Forms
         /// </summary>
         public IntPtr Handle
         {
-            get { return _hwnd; }
+            get { return this._hwnd; }
         }
 
         private readonly IntPtr _hwnd;
@@ -198,13 +198,13 @@ namespace GUtils.Forms
         /// </param>
         public Reflector ( String an, String ns )
         {
-            m_ns = ns;
-            m_asmb = null;
+            this.m_ns = ns;
+            this.m_asmb = null;
             foreach ( AssemblyName aN in Assembly.GetExecutingAssembly ( ).GetReferencedAssemblies ( ) )
             {
                 if ( aN.FullName.StartsWith ( an ) )
                 {
-                    m_asmb = Assembly.Load ( aN );
+                    this.m_asmb = Assembly.Load ( aN );
                     break;
                 }
             }
@@ -222,12 +222,12 @@ namespace GUtils.Forms
         public Type GetType ( String typeName )
         {
             Type type = null;
-            var names = typeName.Split ( '.' );
+            String[] names = typeName.Split ( '.' );
 
             if ( names.Length > 0 )
-                type = m_asmb.GetType ( m_ns + "." + names[0] );
+                type = this.m_asmb.GetType ( this.m_ns + "." + names[0] );
 
-            for ( int i = 1 ; i < names.Length ; ++i )
+            for ( var i = 1 ; i < names.Length ; ++i )
             {
                 type = type.GetNestedType ( names[i], BindingFlags.NonPublic );
             }
@@ -242,9 +242,9 @@ namespace GUtils.Forms
         /// <returns>An instantiated type</returns>
         public Object New ( String name, params Object[] parameters )
         {
-            var type = GetType ( name );
+            Type type = GetType ( name );
 
-            var ctorInfos = type.GetConstructors ( );
+            ConstructorInfo[] ctorInfos = type.GetConstructors ( );
             foreach ( ConstructorInfo ci in ctorInfos )
             {
                 try
@@ -325,7 +325,7 @@ namespace GUtils.Forms
         /// <returns>The result of the function invocation</returns>
         public static Object CallAs2 ( Type type, Object obj, String func, Object[] parameters )
         {
-            var methInfo = type.GetMethod ( func, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
+            MethodInfo methInfo = type.GetMethod ( func, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
             return methInfo.Invoke ( obj, parameters );
         }
 
@@ -350,7 +350,7 @@ namespace GUtils.Forms
         /// <returns>The property value</returns>
         public static Object GetAs ( Type type, Object obj, String prop )
         {
-            var propInfo = type.GetProperty ( prop, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
+            PropertyInfo propInfo = type.GetProperty ( prop, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
             return propInfo.GetValue ( obj, null );
         }
 
@@ -362,8 +362,8 @@ namespace GUtils.Forms
         /// <returns>The enum value</returns>
         public Object GetEnum ( String typeName, String name )
         {
-            var type = GetType ( typeName );
-            var fieldInfo = type.GetField ( name );
+            Type type = GetType ( typeName );
+            FieldInfo fieldInfo = type.GetField ( name );
             return fieldInfo.GetValue ( null );
         }
 

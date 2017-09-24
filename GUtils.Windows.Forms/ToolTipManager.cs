@@ -38,44 +38,44 @@ namespace GUtils.Forms
 
         public void Add ( Control Control, ToolTipIcon Icon, String Title, String Message )
         {
-            Controls[Control] = new ToolTipInfo ( Icon, Title, Message );
-            Control.MouseEnter += Control_ShowToolTip;
-            Control.GotFocus += Control_ShowToolTip;
-            Control.MouseLeave += Control_HideToolTip;
-            Control.LostFocus += Control_HideToolTip;
+            this.Controls[Control] = new ToolTipInfo ( Icon, Title, Message );
+            Control.MouseEnter += this.Control_ShowToolTip;
+            Control.GotFocus += this.Control_ShowToolTip;
+            Control.MouseLeave += this.Control_HideToolTip;
+            Control.LostFocus += this.Control_HideToolTip;
         }
 
         private void Control_ShowToolTip ( Object sender, EventArgs e )
         {
             var control = ( Control ) sender;
-            var info = Controls[control];
-            var point = Window.PointToClient ( control.Parent.PointToScreen ( control.Location ) );
+            ToolTipInfo info = this.Controls[control];
+            Point point = this.Window.PointToClient ( control.Parent.PointToScreen ( control.Location ) );
             point.Offset ( new Point ( control.Size ) );
 
             this.ToolTip.ToolTipTitle = info.Title;
             this.ToolTip.ToolTipIcon = info.Icon;
-            this.ToolTip.Show ( info.Message, Window, point );
+            this.ToolTip.Show ( info.Message, this.Window, point );
         }
 
         private void Control_HideToolTip ( Object sender, EventArgs e )
         {
-            this.ToolTip.Hide ( Window );
+            this.ToolTip.Hide ( this.Window );
         }
 
         public void Remove ( Control Control )
         {
-            if ( Control != null && !Control.IsDisposed && Controls.ContainsKey ( Control ) )
+            if ( Control != null && !Control.IsDisposed && this.Controls.ContainsKey ( Control ) )
             {
-                Control.MouseEnter -= Control_ShowToolTip;
-                Control.GotFocus -= Control_ShowToolTip;
-                Control.MouseLeave -= Control_HideToolTip;
-                Control.LostFocus -= Control_HideToolTip;
+                Control.MouseEnter -= this.Control_ShowToolTip;
+                Control.GotFocus -= this.Control_ShowToolTip;
+                Control.MouseLeave -= this.Control_HideToolTip;
+                Control.LostFocus -= this.Control_HideToolTip;
             }
         }
 
         public void Dispose ( )
         {
-            ToolTip.Dispose ( );
+            this.ToolTip.Dispose ( );
             GC.SuppressFinalize ( this );
         }
 
