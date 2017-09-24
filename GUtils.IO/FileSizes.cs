@@ -15,7 +15,7 @@ namespace GUtils.IO
 
         public static String Format ( UInt64 Size )
         {
-            var i = ( Int32 ) Math.Round ( Math.Log ( Size, 1024 ) );
+            var i = ( Int32 ) Math.Floor ( Math.Log ( Size, 1024 ) );
             return $"{Size / ( Math.Pow ( B, i ) )} {_suffixes[i]}";
         }
     }
