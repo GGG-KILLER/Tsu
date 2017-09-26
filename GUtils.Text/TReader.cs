@@ -1,25 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GUtils.Text
 {
-	public class StringReader
+	public class TReader<T> where T : class
 	{
-		private readonly String Value;
+		private readonly T[] Value;
 
-		public Int32 Position { get; set; }
+		public Int32 Position { get; protected set; }
 
-		public StringReader ( String Value )
+		public Int32 Length => this.Value.Length - this.Position;
+
+		public TReader ( IEnumerable<T> Value )
 		{
-			this.Value = Value;
+			this.Value = Value.ToArray ( );
 			this.Position = -1;
 		}
 
 		#region Basic Checking
 
 		/// <summary>
-		/// Checks wether we can move <paramref name="Delta" /> characters
+		/// Checks wether we can move <paramref name="Delta" /> Tacters
 		/// </summary>
-		/// <param name="Delta">Amount of characters to move</param>
+		/// <param name="Delta">Amount of Tacters to move</param>
 		/// <returns></returns>
 		public Boolean CanMove ( Int32 Delta )
 		{
@@ -28,15 +32,15 @@ namespace GUtils.Text
 		}
 
 		/// <summary>
-		/// Checks whether the next character after the
-		/// <paramref name="dist" /> th character is <paramref name="ch" />
+		/// Checks whether the next Tacter after the
+		/// <paramref name="dist" /> th Tacter is <paramref name="ch" />
 		/// </summary>
-		/// <param name="ch">The character to find</param>
+		/// <param name="ch">The Tacter to find</param>
 		/// <param name="dist">
 		/// The distance at when to start looking for
 		/// </param>
 		/// <returns></returns>
-		public Boolean IsNext ( Char ch, Int32 dist = 1 )
+		public Boolean IsNext ( T ch, Int32 dist = 1 )
 		{
 			return Peek ( dist ) == ch;
 		}
@@ -47,7 +51,7 @@ namespace GUtils.Text
 		/// <param name="a"></param>
 		/// <param name="b"></param>
 		/// <returns></returns>
-		public Boolean AIsBeforeB ( Char a, Char b )
+		public Boolean AIsBeforeB ( T a, T b )
 		{
 			var idxa = this.IndexOf ( a );
 			var idxb = this.IndexOf ( b );
@@ -59,27 +63,27 @@ namespace GUtils.Text
 		#region Basic Movement
 
 		/// <summary>
-		/// Consumes the <paramref name="dist" /> th next character
+		/// Consumes the <paramref name="dist" /> th next Tacter
 		/// </summary>
 		/// <param name="dist"></param>
 		/// <returns></returns>
-		public Char Read ( Int32 dist = 1 )
+		public T Read ( Int32 dist = 1 )
 		{
 			if ( !CanMove ( dist ) )
-				return '\0';
+				return null;
 			this.Position += dist;
 			return this.Value[this.Position];
 		}
 
 		/// <summary>
-		/// Returns the next <paramref name="dist" /> th character
+		/// Returns the next <paramref name="dist" /> th Tacter
 		/// </summary>
 		/// <param name="dist"></param>
 		/// <returns></returns>
-		public Char Peek ( Int32 dist = 1 )
+		public T Peek ( Int32 dist = 1 )
 		{
 			if ( !CanMove ( dist ) )
-				return '\0';
+				return null;
 			return this.Value[this.Position + dist];
 		}
 
@@ -87,39 +91,20 @@ namespace GUtils.Text
 		/// Returns the distance from <see cref="Position" /> +
 		/// <paramref name="offset" /> to <paramref name="ch" />
 		/// </summary>
-		/// <param name="ch">Character to search for</param>
+		/// <param name="ch">Tacter to search for</param>
 		/// <param name="offset">
 		/// Distance from current position where to start
 		/// searching for
 		/// </param>
 		/// <returns></returns>
-		public Int32 IndexOf ( Char ch, Int32 offset = 0 )
+		public Int32 IndexOf ( T ch, Int32 offset = 0 )
 		{
-			var idx = this.Value.IndexOf ( ch, this.Position + offset );
+			var idx = Array.IndexOf ( this.Value, ch, this.Position + offset );
 			return idx == -1 ? -1 : idx - ( this.Position + offset );
 		}
 
 		/// <summary>
-		/// Returns the to <paramref name="needle" />(NOT AN
-		/// ABSOLUTE POSITION, IT IS RELATIVE TO
-		/// <see cref="Position" /> + <paramref name="offset" />)
-		/// </summary>
-		/// <param name="needle">String to search for</param>
-		/// <param name="offset">
-		/// Distance from current position where to start
-		/// searching for
-		/// </param>
-		/// <returns></returns>
-		public Int32 IndexOf ( String needle, Int32 offset = 0 )
-		{
-			if ( needle == null )
-				throw new ArgumentNullException ( nameof ( needle ) );
-			var idx = this.Value.IndexOf ( needle, this.Position + offset );
-			return idx == -1 ? -1 : idx - ( this.Position + offset );
-		}
-
-		/// <summary>
-		/// Returns the index of a character that passes the
+		/// Returns the index of a Tacter that passes the
 		/// <paramref name="Filter" /> (NOT AN ABSOLUTE POSITION,
 		/// IT IS RELATIVE TO <see cref="Position" />
 		/// + <paramref name="offset" />)
@@ -129,7 +114,7 @@ namespace GUtils.Text
 		/// Offset from current opsition where to start searching from
 		/// </param>
 		/// <returns></returns>
-		public Int32 IndexOf ( Func<Char, Boolean> Filter, Int32 offset = 0 )
+		public Int32 IndexOf ( Func<T, Boolean> Filter, Int32 offset = 0 )
 		{
 			if ( Filter == null )
 				throw new ArgumentNullException ( nameof ( Filter ) );
@@ -144,17 +129,17 @@ namespace GUtils.Text
 
 		#region Advanced Movement
 
-		#region Char Based
+		#region T Based
 
 		/// <summary>
 		/// Reads until <paramref name="ch" /> is found
 		/// </summary>
 		/// <param name="ch"></param>
 		/// <returns></returns>
-		public String ReadUntil ( Char ch )
+		public T[] ReadUntil ( T ch )
 		{
 			var idx = this.IndexOf ( ch );
-			return idx == -1 ? "" : this.ReadString ( idx );
+			return idx == -1 ? null : this.ReadSeq ( idx );
 		}
 
 		/// <summary>
@@ -162,10 +147,10 @@ namespace GUtils.Text
 		/// </summary>
 		/// <param name="Filter"></param>
 		/// <returns></returns>
-		public String ReadUntil ( Func<Char, Boolean> Filter )
+		public T[] ReadUntil ( Func<T, Boolean> Filter )
 		{
 			var idx = this.IndexOf ( Filter );
-			return idx == -1 ? "" : this.ReadString ( idx );
+			return idx == -1 ? null : this.ReadSeq ( idx );
 		}
 
 		/// <summary>
@@ -173,13 +158,13 @@ namespace GUtils.Text
 		/// </summary>
 		/// <param name="Filter"></param>
 		/// <returns></returns>
-		public String ReadUntil ( Func<Char, Char, Boolean> Filter )
+		public T[] ReadUntil ( Func<T, T, Boolean> Filter )
 		{
 			if ( Filter == null ) throw new ArgumentNullException ( nameof ( Filter ) );
 			var len = 0;
 			while ( !Filter ( Peek ( len + 1 ), Peek ( len + 2 ) ) )
 				len++;
-			return ReadString ( len );
+			return ReadSeq ( len );
 		}
 
 		/// <summary>
@@ -187,13 +172,13 @@ namespace GUtils.Text
 		/// </summary>
 		/// <param name="Filter"></param>
 		/// <returns></returns>
-		public String ReadWhile ( Func<Char, Boolean> Filter )
+		public T[] ReadWhile ( Func<T, Boolean> Filter )
 		{
 			if ( Filter == null ) throw new ArgumentNullException ( nameof ( Filter ) );
 			var len = 0;
 			while ( Filter ( Peek ( 1 + len ) ) )
 				len++;
-			return this.ReadString ( len );
+			return this.ReadSeq ( len );
 		}
 
 		/// <summary>
@@ -201,44 +186,31 @@ namespace GUtils.Text
 		/// </summary>
 		/// <param name="Filter"></param>
 		/// <returns></returns>
-		public String ReadWhile ( Func<Char, Char, Boolean> Filter )
+		public T[] ReadWhile ( Func<T, T, Boolean> Filter )
 		{
 			if ( Filter == null ) throw new ArgumentNullException ( nameof ( Filter ) );
 			var len = 0;
 			while ( Filter ( Peek ( 1 + len ), Peek ( 2 + len ) ) )
 				len++;
-			return this.ReadString ( len );
+			return this.ReadSeq ( len );
 		}
 
-		#endregion Char Based
-
-		#region String-based
+		#endregion T Based
 
 		/// <summary>
-		/// Reads up to <paramref name="str" />
+		/// Reads and returns a <see cref="T[]" /> of <paramref name="length" />
 		/// </summary>
-		/// <param name="str"></param>
+		/// <param name="length">Length of the T[] to read</param>
 		/// <returns></returns>
-		public String ReadUntil ( String str )
-		{
-			var i = IndexOf ( str, this.Position );
-			return i == -1 ? "" : ReadString ( i - this.Position );
-		}
-
-		#endregion String-based
-
-		/// <summary>
-		/// Reads and returns a <see cref="String" /> of <paramref name="length" />
-		/// </summary>
-		/// <param name="length">Length of the string to read</param>
-		/// <returns></returns>
-		public String ReadString ( Int32 length )
+		public T[] ReadSeq ( Int32 length )
 		{
 			if ( length == 0 )
-				return String.Empty;
+				return new T[0];
 			try
 			{
-				return this.Value.Substring ( this.Position + 1, length );
+				var arr = new T[length];
+				Array.Copy ( this.Value, this.Position + 1, arr, 0, length );
+				return arr;
 			}
 			finally
 			{
