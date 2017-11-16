@@ -103,6 +103,10 @@ namespace GUtils.Net
 			// Get the response for the contents of the file
 			HttpWebResponse response = await this.GetResponseAsync ( );
 			Int64 size = response.ContentLength;
+			// If -1 then read until EOF
+			if ( size == -1 )
+				size = Int64.MaxValue;
+
 			this.TotalBytes = size;
 
 			using ( Stream webStream = response.GetResponseStream ( ) )
