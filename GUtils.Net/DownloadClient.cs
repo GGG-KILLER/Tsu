@@ -16,6 +16,11 @@ namespace GUtils.Net
 
 	public class DownloadClient
 	{
+		/// <summary>
+		/// The user agent to use when downloading the file
+		/// </summary>
+		public String UserAgent;
+
 		private readonly Int64 BufferSize;
 		private Int64 ReceivedBytes;
 		private Int64 TotalBytes;
@@ -30,7 +35,7 @@ namespace GUtils.Net
 		/// The URL where to download the content from
 		/// </param>
 		/// <param name="BufferSize">
-		/// The amount of bytes to use in the buffer (default 1 KiB)
+		/// The amount of bytes to use in the buffer (default 1 MiB)
 		/// </param>
 		public DownloadClient ( String URL, Int64 BufferSize = 1048576 )
 		{
@@ -50,19 +55,6 @@ namespace GUtils.Net
 		public Boolean IsWorking { get; private set; }
 
 		/// <summary>
-		/// Downloads the resource on <see cref="URL" /> to <paramref name="path" />
-		/// </summary>
-		/// <param name="path">
-		/// The path where to save the file to
-		/// </param>
-		/// <returns></returns>
-		public async Task DownloadToFileAsync ( String path )
-		{
-			using ( FileStream fileStream = File.Open ( path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None ) )
-				await this.DownloadToStreamAsync ( fileStream );
-		}
-
-		/// <summary>
 		/// Download the contents of <see cref="URL" /> and
 		/// returns them as an array of bytes
 		/// </summary>
@@ -71,7 +63,8 @@ namespace GUtils.Net
 		{
 			using ( var memStream = new MemoryStream ( ) )
 			{
-				await this.DownloadToStreamAsync ( memStream );
+				await this.DownloadToStreamAsync ( memStream )
+					.ConfigureAwait ( false );
 				return memStream.ToArray ( );
 			}
 		}
@@ -89,7 +82,24 @@ namespace GUtils.Net
 		public async Task<String> DownloadStringAsync ( Encoding encoding = null )
 		{
 			encoding = encoding ?? Encoding.Default;
-			return encoding.GetString ( await this.DownloadBytesAsync ( ) );
+			return encoding.GetString ( await this.DownloadBytesAsync ( )
+				.ConfigureAwait ( false ) );
+		}
+
+		/// <summary>
+		/// Downloads the resource on <see cref="URL" /> to <paramref name="path" />
+		/// </summary>
+		/// <param name="path">
+		/// The path where to save the file to
+		/// </param>
+		/// <returns></returns>
+		public async Task DownloadToFileAsync ( String path )
+		{
+			using ( FileStream fileStream = File.Open ( path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None ) )
+			{
+				await this.DownloadToStreamAsync ( fileStream )
+					.ConfigureAwait ( false );
+			}
 		}
 
 		/// <summary>
@@ -101,7 +111,8 @@ namespace GUtils.Net
 		public async Task DownloadToStreamAsync ( Stream stream )
 		{
 			// Get the response for the contents of the file
-			HttpWebResponse response = await this.GetResponseAsync ( );
+			HttpWebResponse response = await this.GetResponseAsync ( )
+				.ConfigureAwait ( false );
 			Int64 size = response.ContentLength;
 			// If -1 then read until EOF
 			if ( size == -1 )
@@ -117,7 +128,7 @@ namespace GUtils.Net
 					var dl = ( Int32 ) Math.Min ( size, this.BufferSize );
 					// Get number of bytes read as we can receive
 					// less than we asked for
-					dl = await webStream.ReadAsync ( buff, 0, dl );
+					dl = await webStream.ReadAsync ( buff, 0, dl ).ConfigureAwait ( false );
 					// Check for EOF
 					if ( dl == 0 )
 						break;
@@ -127,8 +138,8 @@ namespace GUtils.Net
 					this.ReceivedBytes += dl;
 
 					// Write from buffer to the stream and flush it
-					await stream.WriteAsync ( buff, 0, dl );
-					await stream.FlushAsync ( );
+					await stream.WriteAsync ( buff, 0, dl ).ConfigureAwait ( false );
+					await stream.FlushAsync ( ).ConfigureAwait ( false );
 
 					// Then report that progress was made
 					this.DownloadProgressChanged?.Invoke ( this, new DownloadClientDownloadProgressChangedArgs
@@ -151,7 +162,12 @@ namespace GUtils.Net
 		private async Task<HttpWebResponse> GetResponseAsync ( )
 		{
 			HttpWebRequest req = WebRequest.CreateHttp ( this.URL );
-			return ( HttpWebResponse ) await req.GetResponseAsync ( );
+			if ( this.UserAgent != null )
+			{
+				req.UserAgent = this.UserAgent;
+			}
+
+			return ( HttpWebResponse ) await req.GetResponseAsync ( ).ConfigureAwait ( false );
 		}
 	}
 }
