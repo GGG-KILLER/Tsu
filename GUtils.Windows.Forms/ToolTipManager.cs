@@ -18,78 +18,78 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace GUtils.Forms
+namespace GUtils.Windows.Forms
 {
-    /// <summary>
-    /// Manages a tooltip to make it show upon hovering of a Control
-    /// </summary>
-    public class ToolTipManager : IDisposable
-    {
-        private readonly Form Window;
-        private readonly ToolTip ToolTip;
-        private readonly Dictionary<Control, ToolTipInfo> Controls;
+	/// <summary>
+	/// Manages a tooltip to make it show upon hovering of a Control
+	/// </summary>
+	public class ToolTipManager : IDisposable
+	{
+		private readonly Form Window;
+		private readonly ToolTip ToolTip;
+		private readonly Dictionary<Control, ToolTipInfo> Controls;
 
-        public ToolTipManager ( Form Window )
-        {
-            this.Window = Window;
-            this.ToolTip = new ToolTip ( );
-            this.Controls = new Dictionary<Control, ToolTipInfo> ( );
-        }
+		public ToolTipManager ( Form Window )
+		{
+			this.Window = Window;
+			this.ToolTip = new ToolTip ( );
+			this.Controls = new Dictionary<Control, ToolTipInfo> ( );
+		}
 
-        public void Add ( Control Control, ToolTipIcon Icon, String Title, String Message )
-        {
-            this.Controls[Control] = new ToolTipInfo ( Icon, Title, Message );
-            Control.MouseEnter += this.Control_ShowToolTip;
-            Control.GotFocus += this.Control_ShowToolTip;
-            Control.MouseLeave += this.Control_HideToolTip;
-            Control.LostFocus += this.Control_HideToolTip;
-        }
+		public void Add ( Control Control, ToolTipIcon Icon, String Title, String Message )
+		{
+			this.Controls[Control] = new ToolTipInfo ( Icon, Title, Message );
+			Control.MouseEnter += this.Control_ShowToolTip;
+			Control.GotFocus += this.Control_ShowToolTip;
+			Control.MouseLeave += this.Control_HideToolTip;
+			Control.LostFocus += this.Control_HideToolTip;
+		}
 
-        private void Control_ShowToolTip ( Object sender, EventArgs e )
-        {
-            var control = ( Control ) sender;
-            ToolTipInfo info = this.Controls[control];
-            Point point = this.Window.PointToClient ( control.Parent.PointToScreen ( control.Location ) );
-            point.Offset ( new Point ( control.Size ) );
+		private void Control_ShowToolTip ( Object sender, EventArgs e )
+		{
+			var control = ( Control ) sender;
+			ToolTipInfo info = this.Controls[control];
+			Point point = this.Window.PointToClient ( control.Parent.PointToScreen ( control.Location ) );
+			point.Offset ( new Point ( control.Size ) );
 
-            this.ToolTip.ToolTipTitle = info.Title;
-            this.ToolTip.ToolTipIcon = info.Icon;
-            this.ToolTip.Show ( info.Message, this.Window, point );
-        }
+			this.ToolTip.ToolTipTitle = info.Title;
+			this.ToolTip.ToolTipIcon = info.Icon;
+			this.ToolTip.Show ( info.Message, this.Window, point );
+		}
 
-        private void Control_HideToolTip ( Object sender, EventArgs e )
-        {
-            this.ToolTip.Hide ( this.Window );
-        }
+		private void Control_HideToolTip ( Object sender, EventArgs e )
+		{
+			this.ToolTip.Hide ( this.Window );
+		}
 
-        public void Remove ( Control Control )
-        {
-            if ( Control != null && !Control.IsDisposed && this.Controls.ContainsKey ( Control ) )
-            {
-                Control.MouseEnter -= this.Control_ShowToolTip;
-                Control.GotFocus -= this.Control_ShowToolTip;
-                Control.MouseLeave -= this.Control_HideToolTip;
-                Control.LostFocus -= this.Control_HideToolTip;
-            }
-        }
+		public void Remove ( Control Control )
+		{
+			if ( Control?.IsDisposed == false && this.Controls.ContainsKey ( Control ) )
+			{
+				Control.MouseEnter -= this.Control_ShowToolTip;
+				Control.GotFocus -= this.Control_ShowToolTip;
+				Control.MouseLeave -= this.Control_HideToolTip;
+				Control.LostFocus -= this.Control_HideToolTip;
+			}
+		}
 
-        public void Dispose ( )
-        {
-            this.ToolTip.Dispose ( );
-            GC.SuppressFinalize ( this );
-        }
+		public void Dispose ( )
+		{
+			this.ToolTip.Dispose ( );
+			GC.SuppressFinalize ( this );
+		}
 
-        private class ToolTipInfo
-        {
-            internal ToolTipInfo ( ToolTipIcon Icon, String Title, String Message )
-            {
-                this.Icon = Icon;
-                this.Title = Title;
-                this.Message = Message;
-            }
+		private class ToolTipInfo
+		{
+			internal ToolTipInfo ( ToolTipIcon Icon, String Title, String Message )
+			{
+				this.Icon = Icon;
+				this.Title = Title;
+				this.Message = Message;
+			}
 
-            internal ToolTipIcon Icon;
-            internal String Title, Message;
-        }
-    }
+			internal ToolTipIcon Icon;
+			internal String Title, Message;
+		}
+	}
 }
