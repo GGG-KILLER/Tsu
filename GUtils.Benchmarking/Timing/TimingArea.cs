@@ -15,21 +15,21 @@ namespace GUtils.Benchmarking.Timing
 			this._root = parent?._root ?? this;
 			this._stopwatch = Stopwatch.StartNew ( );
 
-			Console.WriteLine ( this._indent + name );
-			Console.WriteLine ( this._indent + "{" );
+			this.Log ( name, false );
+			this.Log ( "{", false );
 		}
 
 		public TimingLine TimeLine ( String name ) => new TimingLine ( name, this );
 
-		public virtual void Log ( Object Message )
+		public virtual void Log ( Object Message, Boolean indentIn = true )
 		{
-			Console.WriteLine ( $"{this._indent}\t[{this._root._stopwatch.Elapsed}] {Message}" );
+			Console.WriteLine ( $"{this._indent}{( indentIn ? "\t" : "" )}[{this._root._stopwatch.Elapsed}] {Message}" );
 		}
 
 		public void Dispose ( )
 		{
 			this.Log ( $"Final timing: {this._stopwatch.Elapsed}" );
-			Console.WriteLine ( this._indent + "}" );
+			this.Log ( "}", false );
 			GC.SuppressFinalize ( this );
 		}
 	}
