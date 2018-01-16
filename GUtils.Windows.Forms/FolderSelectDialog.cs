@@ -5,14 +5,26 @@ using System.Windows.Forms;
 namespace GUtils.Windows.Forms
 {
 	// Credit goes to http://www.lyquidity.com/devblog/?p=136
+	// modified by GGG KILLER
 	/// <summary>
 	/// Wraps System.Windows.Forms.OpenFileDialog to make it
 	/// present a vista-style dialog.
 	/// </summary>
-	public class FolderSelectDialog
+	public class FolderSelectDialog : IDisposable
 	{
+		private static readonly Reflector reflector;
+		private static readonly Type IFileDialog;
+		private static readonly UInt32 FOS_PICKFOLDERS;
+
+		static FolderSelectDialog ( )
+		{
+			reflector = new Reflector ( "System.Windows.Forms" );
+			IFileDialog = reflector.GetType ( "FileDialogNative.IFileDialog" );
+			FOS_PICKFOLDERS = ( UInt32 ) reflector.GetEnum ( "FileDialogNative.FOS", "FOS_PICKFOLDERS" );
+		}
+
 		// Wrapped dialog
-		private readonly OpenFileDialog ofd;
+		private OpenFileDialog ofd;
 
 		/// <summary>
 		/// Default constructor
@@ -65,49 +77,32 @@ namespace GUtils.Windows.Forms
 		/// <summary>
 		/// Shows the dialog
 		/// </summary>
+		/// <param name="owner">Windows to parent the dialog</param>
 		/// <returns>True if the user presses OK else false</returns>
-		public Boolean ShowDialog ( )
+		public Boolean ShowDialog ( IWin32Window owner = null )
 		{
-			return ShowDialog ( IntPtr.Zero );
-		}
-
-		/// <summary>
-		/// Shows the dialog
-		/// </summary>
-		/// <param name="hWndOwner">
-		/// Handle of the control to be parent
-		/// </param>
-		/// <returns>True if the user presses OK else false</returns>
-		public Boolean ShowDialog ( IntPtr hWndOwner )
-		{
-			var flag = false;
-
 			if ( Environment.OSVersion.Version.Major >= 6 )
 			{
-				var r = new Reflector ( "System.Windows.Forms" );
-
-				var num = 0U;
-				Type typeIFileDialog = r.GetType ( "FileDialogNative.IFileDialog" );
 				Object dialog = Reflector.Call ( this.ofd, "CreateVistaDialog" );
 				Reflector.Call ( this.ofd, "OnBeforeVistaDialog", dialog );
 
-				var options = ( UInt32 ) Reflector.CallAs ( typeof ( FileDialog ), this.ofd, "GetOptions" );
-				options |= ( UInt32 ) r.GetEnum ( "FileDialogNative.FOS", "FOS_PICKFOLDERS" );
-				Reflector.CallAs ( typeIFileDialog, dialog, "SetOptions", options );
+				var options = ( UInt32 ) Reflector.CallAs ( typeof ( FileDialog ), this.ofd, "GetOptions" ) | FOS_PICKFOLDERS;
+				Reflector.CallAs ( IFileDialog, dialog, "SetOptions", options );
 
-				Object pfde = r.New ( "FileDialog.VistaDialogEvents", this.ofd );
-				Object[] parameters = new Object[] { pfde, num };
-				Reflector.CallAs2 ( typeIFileDialog, dialog, "Advise", parameters );
+				Object dialogEvents = reflector.New ( "FileDialog.VistaDialogEvents", this.ofd );
+				var num = 0U;
+				var parameters = new Object[] { dialogEvents, num };
+				Reflector.CallAs ( IFileDialog, dialog, "Advise", parameters );
 				num = ( UInt32 ) parameters[1];
+
 				try
 				{
-					var num2 = ( Int32 ) Reflector.CallAs ( typeIFileDialog, dialog, "Show", hWndOwner );
-					flag = 0 == num2;
+					return 0 == ( Int32 ) Reflector.CallAs ( IFileDialog, dialog, "Show", owner != null ? owner.Handle : IntPtr.Zero );
 				}
 				finally
 				{
-					Reflector.CallAs ( typeIFileDialog, dialog, "Unadvise", num );
-					GC.KeepAlive ( pfde );
+					Reflector.CallAs ( IFileDialog, dialog, "Unadvise", num );
+					GC.KeepAlive ( dialogEvents );
 				}
 			}
 			else
@@ -119,37 +114,51 @@ namespace GUtils.Windows.Forms
 					ShowNewFolderButton = false
 				} )
 				{
-					if ( fbd.ShowDialog ( new WindowWrapper ( hWndOwner ) ) != DialogResult.OK )
+					if ( ( owner != null ? fbd.ShowDialog ( owner ) : fbd.ShowDialog ( ) ) != DialogResult.OK )
 						return false;
+
 					this.ofd.FileName = fbd.SelectedPath;
-					flag = true;
+					return true;
 				}
 			}
-
-			return flag;
 		}
+
+		#region IDisposable Support
+		private Boolean disposedValue; // To detect redundant calls
+
+		protected virtual void Dispose ( Boolean disposing )
+		{
+			if ( !this.disposedValue )
+			{
+				if ( disposing )
+				{
+					this.ofd.Dispose ( );
+				}
+
+				this.ofd = null;
+				this.disposedValue = true;
+			}
+		}
+
+		// TODO: override a finalizer only if Dispose(bool
+		// disposing) above has code to free unmanaged resources.
+		~FolderSelectDialog ( )
+		{
+			// Do not change this code. Put cleanup code in
+			// Dispose ( bool disposing ) above.
+			Dispose ( false );
+		}
+
+		// This code added to correctly implement the disposable pattern.
+		public void Dispose ( )
+		{
+			Dispose ( true );
+			GC.SuppressFinalize ( this );
+		}
+
+		#endregion IDisposable Support
 
 		#endregion Methods
-	}
-
-	/// <summary>
-	/// Creates IWin32Window around an IntPtr
-	/// </summary>
-	public class WindowWrapper : IWin32Window
-	{
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="handle">Handle to wrap</param>
-		public WindowWrapper ( IntPtr handle )
-		{
-			this.Handle = handle;
-		}
-
-		/// <summary>
-		/// Original ptr
-		/// </summary>
-		public IntPtr Handle { get; }
 	}
 
 	/// <summary>
@@ -184,20 +193,22 @@ namespace GUtils.Windows.Forms
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		/// <param name="an">
+		/// <param name="assemblyName">
 		/// A specific assembly name (used if the assembly name
 		/// does not tie exactly with the namespace)
 		/// </param>
-		/// <param name="ns">
+		/// <param name="namespace">
 		/// The namespace containing types to be used
 		/// </param>
-		public Reflector ( String an, String ns )
+		public Reflector ( String assemblyName, String @namespace )
 		{
-			this.m_ns = ns;
+			this.m_ns = @namespace;
 			this.m_asmb = null;
-			foreach ( AssemblyName aN in Assembly.GetExecutingAssembly ( ).GetReferencedAssemblies ( ) )
+			foreach ( AssemblyName aN in Assembly
+				.GetExecutingAssembly ( )
+				.GetReferencedAssemblies ( ) )
 			{
-				if ( aN.FullName.StartsWith ( an ) )
+				if ( aN.FullName.StartsWith ( assemblyName ) )
 				{
 					this.m_asmb = Assembly.Load ( aN );
 					break;
@@ -220,12 +231,11 @@ namespace GUtils.Windows.Forms
 			String[] names = typeName.Split ( '.' );
 
 			if ( names.Length > 0 )
-				type = this.m_asmb.GetType ( this.m_ns + "." + names[0] );
+				type = this.m_asmb.GetType ( $"{this.m_ns}.{names[0]}" );
 
 			for ( var i = 1 ; i < names.Length ; ++i )
-			{
 				type = type.GetNestedType ( names[i], BindingFlags.NonPublic );
-			}
+
 			return type;
 		}
 
@@ -237,9 +247,8 @@ namespace GUtils.Windows.Forms
 		/// <returns>An instantiated type</returns>
 		public Object New ( String name, params Object[] parameters )
 		{
-			Type type = GetType ( name );
-
-			ConstructorInfo[] ctorInfos = type.GetConstructors ( );
+			ConstructorInfo[] ctorInfos = GetType ( name )
+				.GetConstructors ( );
 			foreach ( ConstructorInfo ci in ctorInfos )
 			{
 				try
@@ -268,23 +277,7 @@ namespace GUtils.Windows.Forms
 		/// <returns>The result of the function invocation</returns>
 		public static Object Call ( Object obj, String func, params Object[] parameters )
 		{
-			return Call2 ( obj, func, parameters );
-		}
-
-		/// <summary>
-		/// Calls method 'func' on object 'obj' passing parameters 'parameters'
-		/// </summary>
-		/// <param name="obj">
-		/// The object on which to excute function 'func'
-		/// </param>
-		/// <param name="func">The function to execute</param>
-		/// <param name="parameters">
-		/// The parameters to pass to function 'func'
-		/// </param>
-		/// <returns>The result of the function invocation</returns>
-		public static Object Call2 ( Object obj, String func, Object[] parameters )
-		{
-			return CallAs2 ( obj.GetType ( ), obj, func, parameters );
+			return CallAs ( obj.GetType ( ), obj, func, parameters );
 		}
 
 		/// <summary>
@@ -301,24 +294,6 @@ namespace GUtils.Windows.Forms
 		/// </param>
 		/// <returns>The result of the function invocation</returns>
 		public static Object CallAs ( Type type, Object obj, String func, params Object[] parameters )
-		{
-			return CallAs2 ( type, obj, func, parameters );
-		}
-
-		/// <summary>
-		/// Calls method 'func' on object 'obj' which is of type
-		/// 'type' passing parameters 'parameters'
-		/// </summary>
-		/// <param name="type">The type of 'obj'</param>
-		/// <param name="obj">
-		/// The object on which to excute function 'func'
-		/// </param>
-		/// <param name="func">The function to execute</param>
-		/// <param name="parameters">
-		/// The parameters to pass to function 'func'
-		/// </param>
-		/// <returns>The result of the function invocation</returns>
-		public static Object CallAs2 ( Type type, Object obj, String func, Object[] parameters )
 		{
 			MethodInfo methInfo = type.GetMethod ( func, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
 			return methInfo.Invoke ( obj, parameters );
