@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace GUtils.Benchmarking.Timing
+namespace GUtils.Timing
 {
 	public class TimingArea : IDisposable
 	{

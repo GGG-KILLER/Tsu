@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUtils.Windows.Forms", "GUtils.Windows.Forms\GUtils.Windows.Forms.csproj", "{9F88270E-5508-41DF-A845-5775C5BC7B98}"
 EndProject
@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Text", "GUtils.Text\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Benchmarking", "GUtils.Benchmarking\GUtils.Benchmarking.csproj", "{A2829A3A-8E0D-4F1E-9D5C-08770A67F523}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUtils.Net", "GUtils.Net\GUtils.Net.csproj", "{0C609E84-E1BE-4CC9-A472-8EC64F284155}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Net", "GUtils.Net\GUtils.Net.csproj", "{0C609E84-E1BE-4CC9-A472-8EC64F284155}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUtils.Timing", "GUtils.Timing\GUtils.Timing.csproj", "{0D76D931-D060-4B26-8710-2F78A832BAF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{0C609E84-E1BE-4CC9-A472-8EC64F284155}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C609E84-E1BE-4CC9-A472-8EC64F284155}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C609E84-E1BE-4CC9-A472-8EC64F284155}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D76D931-D060-4B26-8710-2F78A832BAF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D76D931-D060-4B26-8710-2F78A832BAF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D76D931-D060-4B26-8710-2F78A832BAF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D76D931-D060-4B26-8710-2F78A832BAF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
