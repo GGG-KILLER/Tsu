@@ -5,9 +5,9 @@ namespace GUtils.Timing
 {
     public class TimingArea : IDisposable
     {
-        private readonly String _indent;
-        private readonly Stopwatch _stopwatch;
-        private readonly TimingArea _root;
+        protected readonly String _indent;
+        protected readonly Stopwatch _stopwatch;
+        protected readonly TimingArea _root;
 
         public TimingArea ( String name, TimingArea parent = null )
         {
