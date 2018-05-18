@@ -20,84 +20,84 @@ using System.Linq;
 
 namespace GUtils.IO
 {
-	public static class FileSearch
-	{
-		/// <summary>
-		/// Internal tree class
-		/// </summary>
-		private class StringNode
-		{
-			private readonly IList<StringNode> Children;
-			private readonly String Content;
+    public static class FileSearch
+    {
+        /// <summary>
+        /// Internal tree class
+        /// </summary>
+        private class StringNode
+        {
+            private readonly IList<StringNode> Children;
+            private readonly String Content;
 
-			public StringNode ( String Content )
-			{
-				this.Content = Content;
-				this.Children = new List<StringNode> ( );
-			}
+            public StringNode ( String Content )
+            {
+                this.Content = Content;
+                this.Children = new List<StringNode> ( );
+            }
 
-			public void AddChild ( StringNode Child )
-			{
-				this.Children.Add ( Child );
-			}
+            public void AddChild ( StringNode Child )
+            {
+                this.Children.Add ( Child );
+            }
 
-			public String[] Flatten ( )
-			{
-				var @out = new List<String> ( );
-				this.Flatten ( @out );
-				return @out.ToArray ( );
-			}
+            public String[] Flatten ( )
+            {
+                var @out = new List<String> ( );
+                this.Flatten ( @out );
+                return @out.ToArray ( );
+            }
 
-			public void Flatten ( IList<String> @out )
-			{
-				if ( this.Content != null )
-					@out.Add ( this.Content );
+            public void Flatten ( IList<String> @out )
+            {
+                if ( this.Content != null )
+                    @out.Add ( this.Content );
 
-				foreach ( StringNode child in this.Children )
-					child.Flatten ( @out );
-			}
-		}
+                foreach ( StringNode child in this.Children )
+                    child.Flatten ( @out );
+            }
+        }
 
-		/// <summary>
-		/// Searchs for a file (globs not supported) while
-		/// ignoring any exceptions that are caused by permission errors
-		/// </summary>
-		/// <param name="Path">Path to search in</param>
-		/// <param name="FileName">Name of file to search</param>
-		/// <returns></returns>
-		public static String[] SafeSearch ( String Path, String FileName )
-		{
-			var Root = new StringNode ( null );
-			SubSearch ( new DirectoryInfo ( Path ), FileName, Root );
-			return Root.Flatten ( );
-		}
+        /// <summary>
+        /// Searchs for a file (globs not supported) while
+        /// ignoring any exceptions that are caused by permission errors
+        /// </summary>
+        /// <param name="Path">Path to search in</param>
+        /// <param name="FileName">Name of file to search</param>
+        /// <returns></returns>
+        public static String[] SafeSearch ( String Path, String FileName )
+        {
+            var Root = new StringNode ( null );
+            SubSearch ( new DirectoryInfo ( Path ), FileName, Root );
+            return Root.Flatten ( );
+        }
 
-		/// <summary>
-		/// Searchs for a file (globs not supported)
-		/// </summary>
-		/// <param name="Dir">Directory to search in</param>
-		/// <param name="Fn">Name of file to search</param>
-		/// <param name="Parent">Parent node</param>
-		/// <returns></returns>
-		private static void SubSearch ( DirectoryInfo Dir, String Fn, StringNode Parent )
-		{
-			var node = new StringNode ( null );
-			Parent.AddChild ( node );
+        /// <summary>
+        /// Searchs for a file (globs not supported)
+        /// </summary>
+        /// <param name="Dir">Directory to search in</param>
+        /// <param name="Fn">Name of file to search</param>
+        /// <param name="Parent">Parent node</param>
+        /// <returns></returns>
+        private static void SubSearch ( DirectoryInfo Dir, String Fn, StringNode Parent )
+        {
+            var node = new StringNode ( null );
+            Parent.AddChild ( node );
 
-			try
-			{
-				FileInfo[] fs = Dir.GetFiles ( Fn, SearchOption.TopDirectoryOnly );
-				foreach ( String f in fs.Select ( f => f.FullName ).ToArray ( ) )
-					node.AddChild ( new StringNode ( f ) );
+            try
+            {
+                FileInfo[] fs = Dir.GetFiles ( Fn, SearchOption.TopDirectoryOnly );
+                foreach ( String f in fs.Select ( f => f.FullName ).ToArray ( ) )
+                    node.AddChild ( new StringNode ( f ) );
 
-				foreach ( DirectoryInfo dir in Dir.GetDirectories ( ) )
-					SubSearch ( dir, Fn, node );
-			}
-			catch ( Exception )
-			{
-				// We silently eat up errors
-				return;
-			}
-		}
-	}
+                foreach ( DirectoryInfo dir in Dir.GetDirectories ( ) )
+                    SubSearch ( dir, Fn, node );
+            }
+            catch ( Exception )
+            {
+                // We silently eat up errors
+                return;
+            }
+        }
+    }
 }

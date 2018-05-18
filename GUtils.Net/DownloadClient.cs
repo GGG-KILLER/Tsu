@@ -128,7 +128,7 @@ namespace GUtils.Net
                 while ( size > 0 )
                 {
                     var dl = ( Int32 ) Math.Min ( size, this.BufferSize );
-                    // Get number of bytes read as we can receive
+                    // Get number of bytes read, as we can receive
                     // less than we asked for
                     Task res = timeout != -1
                         ? await Task.WhenAny ( webStream.ReadAsync ( buff, 0, dl ), Task.Delay ( timeout ) )

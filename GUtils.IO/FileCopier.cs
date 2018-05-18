@@ -43,7 +43,7 @@ namespace GUtils.IO
                 throw new ArgumentException ( "From length cannot be different than To's.", nameof ( From ) );
 
             var Len = From.Count ( );
-            for ( var i = 0 ; i < Len ; i++ )
+            for ( var i = 0; i < Len; i++ )
             {
                 await CopyFileAsync ( From.ElementAt ( i ), To.ElementAt ( i ), BufferSize );
                 FileCopied?.Invoke ( From.ElementAt ( i ), i, Len );
