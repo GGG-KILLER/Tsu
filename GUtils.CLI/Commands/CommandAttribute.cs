@@ -2,18 +2,14 @@
 
 namespace GUtils.CLI.Commands
 {
-    [AttributeUsage ( AttributeTargets.Method, Inherited = false, AllowMultiple = false )]
-    internal sealed class CommandAttribute : Attribute
+    [AttributeUsage ( AttributeTargets.Method, Inherited = true, AllowMultiple = true )]
+    public sealed class CommandAttribute : Attribute
     {
-        private readonly String _name;
-
-        private static Object Noop ( ) => null;
+        public String Name { get; }
 
         public CommandAttribute ( String Name )
         {
-            this._name = Name;
+            this.Name = Name;
         }
-
-        public String Name => this._name;
     }
 }

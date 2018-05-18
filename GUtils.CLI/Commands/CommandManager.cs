@@ -21,15 +21,16 @@ namespace GUtils.CLI.Commands
             {
                 if ( Attribute.IsDefined ( method, typeof ( CommandAttribute ) ) )
                 {
-                    var command = ( CommandAttribute ) Attribute.GetCustomAttribute ( method, typeof ( CommandAttribute ) );
-                    this._commands.Add ( command.Name, new Command ( command.Name, method, instance ) );
+                    var commands = ( CommandAttribute[] ) Attribute.GetCustomAttributes ( method, typeof ( CommandAttribute ) );
+                    foreach ( CommandAttribute command in commands )
+                        this._commands.Add ( command.Name, new Command ( command.Name, method, instance ) );
                 }
             }
         }
 
         public void Execute ( String line )
         {
-            String[] args = CLICommandParser.Parse ( line ).ToArray ( );
+            var args = CLICommandParser.Parse ( line ).ToArray ( );
             if ( args.Length < 1 )
                 throw new Exception ( "No command invoked." );
             Command cmd = this._commands[args[0]];

@@ -2,8 +2,8 @@
 
 namespace GUtils.CLI.Commands
 {
-    [AttributeUsage ( AttributeTargets.Parameter, AllowMultiple = false, Inherited = false )]
-    internal sealed class CommandArgumentRestAttribute : Attribute
+    [AttributeUsage ( AttributeTargets.Parameter, AllowMultiple = false, Inherited = true )]
+    public sealed class CommandArgumentRestAttribute : Attribute
     {
     }
 }
