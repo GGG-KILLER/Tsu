@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // following set of attributes. Change these attribute values to
 // modify the information associated with an assembly.
 [assembly: AssemblyTitle ( "GUtils.Windows.Forms" )]
-[assembly: AssemblyDescription ( "" )]
+[assembly: AssemblyDescription ( "A winforms-focused utilities library" )]
 [assembly: AssemblyConfiguration ( "" )]
 [assembly: AssemblyCompany ( "" )]
 [assembly: AssemblyProduct ( "GUtils.Windows.Forms" )]
