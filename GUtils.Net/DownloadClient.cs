@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GUtils.Net
@@ -35,9 +36,9 @@ namespace GUtils.Net
         /// The URL where to download the content from
         /// </param>
         /// <param name="BufferSize">
-        /// The amount of bytes to use in the buffer (default 1 MiB)
+        /// The amount of bytes to use in the buffer (values larger than 85000 will end up in the large object heap)
         /// </param>
-        public DownloadClient ( String URL, Int64 BufferSize = 1048576 )
+        public DownloadClient ( String URL, Int64 BufferSize = 42500 )
         {
             this.URL = URL;
             this.BufferSize = BufferSize;
@@ -94,7 +95,7 @@ namespace GUtils.Net
         /// </param>
         /// <param name="timeout"></param>
         /// <returns></returns>
-        public async Task DownloadToFileAsync ( String path, Int32 timeout = -1 )
+        public async Task DownloadToFileAsync ( String path, Int32 timeout = 5000 )
         {
             using ( FileStream fileStream = File.Open ( path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None ) )
             {
@@ -110,7 +111,7 @@ namespace GUtils.Net
         /// <param name="stream">The stream where to write to</param>
         /// <param name="timeout"></param>
         /// <returns></returns>
-        public async Task DownloadToStreamAsync ( Stream stream, Int32 timeout = -1 )
+        public async Task DownloadToStreamAsync ( Stream stream, Int32 timeout = 5000 )
         {
             // Get the response for the contents of the file
             HttpWebResponse response = await this.GetResponseAsync ( )
@@ -124,7 +125,7 @@ namespace GUtils.Net
 
             using ( Stream webStream = response.GetResponseStream ( ) )
             {
-                Byte[] buff = new Byte[this.BufferSize];
+                var buff = new Byte[this.BufferSize];
                 while ( size > 0 )
                 {
                     var dl = ( Int32 ) Math.Min ( size, this.BufferSize );
