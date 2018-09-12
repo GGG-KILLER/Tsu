@@ -87,8 +87,8 @@ namespace GUtils.IO
             try
             {
                 FileInfo[] fs = Dir.GetFiles ( Fn, SearchOption.TopDirectoryOnly );
-                foreach ( String f in fs.Select ( f => f.FullName ).ToArray ( ) )
-                    node.AddChild ( new StringNode ( f ) );
+                for ( var i = 0; i < fs.Length; i++ )
+                    node.AddChild ( new StringNode ( fs[i].FullName ) );
 
                 foreach ( DirectoryInfo dir in Dir.GetDirectories ( ) )
                     SubSearch ( dir, Fn, node );
