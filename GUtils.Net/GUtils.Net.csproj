@@ -5,7 +5,7 @@
     <CodeAnalysisRuleSet>ruleset.ruleset</CodeAnalysisRuleSet>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>3.0.0</Version>
+    <Version>4.0.0</Version>
     <Authors>GGG KILLER</Authors>
     <Description>A networking utilities library.</Description>
     <Copyright>GGG KILLER © 2017</Copyright>
@@ -13,6 +13,7 @@
     <PackageProjectUrl>https://github.com/GGG-KILLER/GUtils.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GGG-KILLER/GUtils.NET</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

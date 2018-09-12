@@ -136,7 +136,7 @@ namespace GUtils.Net
                         : webStream.ReadAsync ( buff, 0, dl );
 
                     if ( !( res is Task<Int32> ) )
-                        throw new Exception ( "Timed out." );
+                        throw new TimeoutException (  );
                     dl = ( res as Task<Int32> ).Result;
 
                     // Check for EOF
