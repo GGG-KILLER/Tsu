@@ -2,40 +2,129 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using GUtils.CLI.Commands.Errors;
+using GUtils.CLI.Commands.Help;
 
 namespace GUtils.CLI.Commands
 {
     public class CommandManager
     {
-        private readonly Dictionary<String, Command> _commands;
-        public IEnumerable<Command> Commands => this._commands.Values;
+        internal readonly List<Command> CommandList;
+        public IReadOnlyList<Command> Commands => this.CommandList.AsReadOnly ( );
+        internal readonly Dictionary<String, Command> CommandLookupTable;
 
-        public CommandManager ( )
+        private readonly Boolean ShouldUseSimpleParsing;
+
+        public CommandManager ( in CommandManagerFlags flags = CommandManagerFlags.Default )
         {
-            this._commands = new Dictionary<String, Command> ( );
+            this.CommandList = new List<Command> ( );
+            this.CommandLookupTable = new Dictionary<String, Command> ( );
+            this.ShouldUseSimpleParsing = ( flags & CommandManagerFlags.UseSimpleParsing ) != 0;
         }
 
-        public void LoadCommands ( Type type, Object instance = null )
+        private static String GetFullName ( in MethodInfo method, in Object inst ) => $"{inst?.GetType ( ).FullName ?? method.DeclaringType.FullName}.{method.Name}";
+
+        #region Commands Loading
+
+        /// <summary>
+        /// Loads all methods tagged with
+        /// <see cref="CommandAttribute" /> from a given type, be
+        /// they public or private.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="instance">
+        /// Instance to use when invoking the methods (null for
+        /// static classes)
+        /// </param>
+        public void LoadCommands<T> ( in T instance ) where T : class => this.LoadCommands ( typeof ( T ), instance );
+
+        /// <summary>
+        /// Loads all methods tagged with
+        /// <see cref="CommandAttribute" /> from a given type, be
+        /// they public or private.
+        /// </summary>
+        /// <param name="type">Type where to load commands from</param>
+        /// <param name="instance">
+        /// Instance to use when invoking the methods (null for
+        /// static classes)
+        /// </param>
+        public void LoadCommands ( in Type type, in Object instance )
         {
-            foreach ( MethodInfo method in type.GetMethods ( BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.InvokeMethod ) )
+            const BindingFlags flagsForAllMethods = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+
+            // Find static/non-static methods (choose between
+            // static and instance by the presence of a non-null instance)
+            foreach ( MethodInfo method in type.GetMethods ( flagsForAllMethods )
+                .OrderBy ( method => method.Name ) )
             {
-                if ( Attribute.IsDefined ( method, typeof ( CommandAttribute ) ) )
+                if ( method.IsDefined ( typeof ( CommandAttribute ) ) )
                 {
-                    var commands = ( CommandAttribute[] ) Attribute.GetCustomAttributes ( method, typeof ( CommandAttribute ) );
-                    foreach ( CommandAttribute command in commands )
-                        this._commands.Add ( command.Name, new Command ( command.Name, method, instance ) );
+                    // Create a single instance of the command
+                    // (will validate and compile in the constructor)
+                    var command = new Command ( method, instance );
+                    this.CommandList.Add ( command );
+
+                    // Get all command attributes and then
+                    // register all of them with the same command
+                    foreach ( CommandAttribute attr in method.GetCustomAttributes<CommandAttribute> ( ) )
+                    {
+                        if ( this.CommandLookupTable.ContainsKey ( attr.Name ) && !attr.Overwrite )
+                        {
+                            Command existingCommand = this.CommandLookupTable[attr.Name];
+                            throw new CommandDefinitionException ( method, $"Command name {attr.Name} is already defined in: {GetFullName ( existingCommand.Method, existingCommand.Instance )}" );
+                        }
+                        this.CommandLookupTable[attr.Name] = command;
+                    }
                 }
             }
         }
 
+        #endregion Commands Loading
+
+        /// <summary>
+        /// Adds the <see cref="DefaultHelpCommand"/> to this command manager
+        /// </summary>
+        public void AddHelpCommand ( ) => this.AddHelpCommand ( new DefaultHelpCommand ( this ) );
+
+        /// <summary>
+        /// Adds a help command to this command manager
+        /// </summary>
+        /// <param name="cmdClassInstance"></param>
+        public void AddHelpCommand<T> ( T cmdClassInstance ) where T : DefaultHelpCommand
+        {
+            if ( cmdClassInstance == null )
+                throw new ArgumentNullException ( nameof ( cmdClassInstance ) );
+            this.LoadCommands ( cmdClassInstance );
+        }
+
+        /// <summary>
+        /// Parses a CLI input line and executes the appropriate
+        /// command passing the proper arguments
+        /// </summary>
+        /// <param name="line"></param>
         public void Execute ( String line )
         {
-            var args = CLICommandParser.Parse ( line ).ToArray ( );
-            if ( args.Length < 1 )
-                throw new Exception ( "No command invoked." );
-            Command cmd = this._commands[args[0]];
-            args = args.Skip ( 1 ).ToArray ( );
-            cmd.Invoke ( args );
+            if ( String.IsNullOrEmpty ( line ) )
+                throw new CommandInvocationException ( String.Empty, "No command provided." );
+
+            line = line.Trim ( );
+            var spaceIdx = line.IndexOf ( ' ' );
+            var cmdName = spaceIdx != -1 ? line.Substring ( 0, spaceIdx ) : line;
+            Command cmd;
+            if ( !this.CommandLookupTable.TryGetValue ( cmdName, out cmd ) )
+                throw new NonExistentCommandException ( cmdName );
+
+            if ( cmd.IsRaw )
+                cmd.CompiledCommand ( cmdName, new[] { spaceIdx != -1
+                        ? line.Substring ( spaceIdx + 1 )
+                        : String.Empty } );
+            else if ( spaceIdx != -1 )
+                cmd.CompiledCommand ( cmdName, ( this.ShouldUseSimpleParsing
+                    ? InputLineParser.SimpleParse ( line.Substring ( spaceIdx + 1 ) )
+                    : InputLineParser.Parse ( line.Substring ( spaceIdx + 1 ) ) )
+                    .ToArray ( ) );
+            else
+                cmd.CompiledCommand ( cmdName, Array.Empty<String> ( ) );
         }
     }
 }

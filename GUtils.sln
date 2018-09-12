@@ -12,11 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		LICENSE = LICENSE
-		MyGet.bat = MyGet.bat
+		nuget-pack.ps1 = nuget-pack.ps1
 		README.md = README.md
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Benchmarking", "GUtils.Benchmarking\GUtils.Benchmarking.csproj", "{A2829A3A-8E0D-4F1E-9D5C-08770A67F523}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Net", "GUtils.Net\GUtils.Net.csproj", "{0C609E84-E1BE-4CC9-A472-8EC64F284155}"
 EndProject
@@ -25,6 +23,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.CLI", "GUtils.CLI\GUtils.CLI.csproj", "{290C1063-B569-494F-B90F-F6FA8080848D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Windows", "GUtils.Windows\GUtils.Windows.csproj", "{9BAB0491-B61F-4D02-ADE9-ABE35549175B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{55138AAF-7418-4E62-AB3B-BF2CF73A8156}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.CLI.Tests", "GUtils.CLI.Tests\GUtils.CLI.Tests.csproj", "{B4F43654-EF29-4DB4-919F-ED187C458927}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.InternalBenchmarks", "GUtils.InternalBenchmarks\GUtils.InternalBenchmarks.csproj", "{5E3C01B8-DDDB-4E6C-8EB2-12386216112A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Internal", "Internal", "{64842144-3B36-4711-8C20-4E0BD193FF2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +46,6 @@ Global
 		{D9AB8B05-6CD8-4E1A-BEB5-A2E27BBF4739}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9AB8B05-6CD8-4E1A-BEB5-A2E27BBF4739}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9AB8B05-6CD8-4E1A-BEB5-A2E27BBF4739}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A2829A3A-8E0D-4F1E-9D5C-08770A67F523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2829A3A-8E0D-4F1E-9D5C-08770A67F523}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2829A3A-8E0D-4F1E-9D5C-08770A67F523}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2829A3A-8E0D-4F1E-9D5C-08770A67F523}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0C609E84-E1BE-4CC9-A472-8EC64F284155}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0C609E84-E1BE-4CC9-A472-8EC64F284155}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C609E84-E1BE-4CC9-A472-8EC64F284155}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,9 +62,22 @@ Global
 		{9BAB0491-B61F-4D02-ADE9-ABE35549175B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BAB0491-B61F-4D02-ADE9-ABE35549175B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BAB0491-B61F-4D02-ADE9-ABE35549175B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4F43654-EF29-4DB4-919F-ED187C458927}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4F43654-EF29-4DB4-919F-ED187C458927}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4F43654-EF29-4DB4-919F-ED187C458927}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4F43654-EF29-4DB4-919F-ED187C458927}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E3C01B8-DDDB-4E6C-8EB2-12386216112A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E3C01B8-DDDB-4E6C-8EB2-12386216112A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E3C01B8-DDDB-4E6C-8EB2-12386216112A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E3C01B8-DDDB-4E6C-8EB2-12386216112A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{55138AAF-7418-4E62-AB3B-BF2CF73A8156} = {64842144-3B36-4711-8C20-4E0BD193FF2E}
+		{B4F43654-EF29-4DB4-919F-ED187C458927} = {55138AAF-7418-4E62-AB3B-BF2CF73A8156}
+		{5E3C01B8-DDDB-4E6C-8EB2-12386216112A} = {64842144-3B36-4711-8C20-4E0BD193FF2E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2935DA65-CFF2-4F42-A80B-0E23EBB88B1B}
