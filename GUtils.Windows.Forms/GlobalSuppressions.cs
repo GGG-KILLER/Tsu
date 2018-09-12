@@ -8,3 +8,5 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CC0074:Make field readonly", Justification = "<Pending>", Scope = "member", Target = "~F:GUtils.Windows.Forms.ToolTipManager.ToolTipInfo.Icon" )]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CC0074:Make field readonly", Justification = "<Pending>", Scope = "member", Target = "~F:GUtils.Windows.Forms.ToolTipManager.ToolTipInfo.Message" )]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CC0074:Make field readonly", Justification = "<Pending>", Scope = "member", Target = "~F:GUtils.Windows.Forms.ToolTipManager.ToolTipInfo.Title" )]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Style", "IDE0007:Use implicit type", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.Windows.Forms.FolderSelectDialog.ShowDialog(System.Windows.Forms.IWin32Window)~System.Boolean" )]
+
