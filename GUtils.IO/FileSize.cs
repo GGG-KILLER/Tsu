@@ -4,13 +4,14 @@ namespace GUtils.IO
 {
     public static class FileSize
     {
-        public const Int64 KiB = 1024;
-        public const Int64 MiB = 1024 * KiB;
-        public const Int64 GiB = 1024 * MiB;
-        public const Int64 TiB = 1024 * GiB;
-        public const Int64 PiB = 1024 * TiB;
+        public const Int64 KiB = 1 << 10;
+        public const Int64 MiB = 1 << 20;
+        public const Int64 GiB = 1 << 30;
+        public const Int64 TiB = 1 << 40;
+        public const Int64 PiB = 1 << 50;
+        public const Int64 EiB = 1 << 60;
 
-        private static readonly String[] _suffixes = new[] { "B", "KiB", "MiB", "GiB", "TiB", "PiB" };
+        private static readonly String[] _suffixes = new[] { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
 
         public static String Format ( Int64 Size )
         {
