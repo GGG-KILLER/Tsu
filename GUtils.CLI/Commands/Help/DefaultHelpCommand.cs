@@ -106,12 +106,12 @@ namespace GUtils.CLI.Commands.Help
                 var list = new List<String>
                 {
                     $"{command.Names[0]} - {command.Description}",
-                    "\tUsage:",
-                    $"\t\t{command.Names[0]} {String.Join ( " ", command.Arguments.Select ( arg => GetPrettyArgumentName ( arg ) ) )}"
+                    "    Usage:",
+                    $"        {command.Names[0]} {String.Join ( " ", command.Arguments.Select ( arg => GetPrettyArgumentName ( arg ) ) )}"
                 };
 
                 if ( command.Names.Length > 1 )
-                    list.Add ( $"\tAliases: {String.Join ( ", ", command.Names )}" );
+                    list.Add ( $"    Aliases: {String.Join ( ", ", command.Names )}" );
 
                 if ( command.Arguments.Length > 0 )
                 {
@@ -119,24 +119,22 @@ namespace GUtils.CLI.Commands.Help
                         arg.Name.Length
                         + 1
                         + arg.ParameterType.Name.Length );
-                    Console.WriteLine ( $"maxLen: {maxLen}" );
-                    Console.WriteLine ( $"Args: {String.Join ( ", ", command.Arguments.Select ( arg => $"{arg.Name}:{arg.ParameterType.Name}" ) )}" );
 
-                    list.Add ( "\tArguments:" );
+                    list.Add ( "    Arguments:" );
                     foreach ( ArgumentHelpData argument in command.Arguments )
                     {
                         var start = $"{argument.Name}:{argument.ParameterType.Name}";
-                        list.Add ( $"\t\t{start.PadRight ( maxLen, ' ' )} - {argument.Description}" );
+                        list.Add ( $"        {start.PadRight ( maxLen, ' ' )} - {argument.Description}" );
                         if ( argument.ParameterType.IsEnum )
-                            list.Add ( $"\t\t\tPossible values: {String.Join ( ", ", Enum.GetNames ( argument.ParameterType ) )}" );
+                            list.Add ( $"            Possible values: {String.Join ( ", ", Enum.GetNames ( argument.ParameterType ) )}" );
                     }
                 }
 
                 if ( command.Examples.Length > 0 )
                 {
-                    list.Add ( $"\tExamples:" );
+                    list.Add ( $"    Examples:" );
                     foreach ( var example in command.Examples )
-                        list.Add ( $"\t\t{example}" );
+                        list.Add ( $"        {example}" );
                 }
 
                 this.Cache[command] = list.ToArray ( );
@@ -171,7 +169,7 @@ namespace GUtils.CLI.Commands.Help
                 this.WriteLine ( "Showing help for all commands:" );
                 foreach ( Command command in this.Manager.Commands )
                     foreach ( var line in this.GetHelpLines ( command ) )
-                        this.WriteLine ( '\t' + line );
+                        this.WriteLine ( "    " + line );
             }
         }
     }
