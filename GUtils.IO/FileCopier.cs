@@ -20,81 +20,44 @@
 namespace GUtils.IO
 {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
-    using System.Linq;
     using System.Threading.Tasks;
-
-    public delegate void FileCopied ( String FileName, Int32 Processed, Int32 Total );
 
     public class FileCopier
     {
-        public event FileCopied FileCopied;
-
-        /// <summary>
-        /// Copies multiple files asynchronously
-        /// </summary>
-        /// <param name="From">The array of files to copy</param>
-        /// <param name="To">The array of files to paste</param>
-        /// <param name="BufferSize">
-        /// Size of buffer to use to copy data
-        /// </param>
-        /// <returns></returns>
-        public async Task CopyFilesAsync ( IEnumerable<String> From, IEnumerable<String> To, Int32 BufferSize = 4096 )
-        {
-            if ( From.Count ( ) != To.Count ( ) )
-                throw new ArgumentException ( "From length cannot be different than To's.", nameof ( From ) );
-
-            var Len = From.Count ( );
-            for ( var i = 0; i < Len; i++ )
-            {
-                await CopyFileAsync ( From.ElementAt ( i ), To.ElementAt ( i ), BufferSize );
-                FileCopied?.Invoke ( From.ElementAt ( i ), i, Len );
-            }
-        }
-
         /// <summary>
         /// Copies a single file asynchronously
         /// </summary>
-        /// <param name="From">The source file</param>
-        /// <param name="To">The target file</param>
-        /// <param name="BufferSize">
-        /// The buffer size to use on the copy operation
+        /// <param name="source">The source file</param>
+        /// <param name="target">The target file</param>
+        /// <param name="bufferSize">
+        /// The buffer size to use on the copy operation (4 KiB default)
         /// </param>
         /// <returns></returns>
-        public async static Task CopyFileAsync ( String From, String To, Int32 BufferSize = 4096 )
+        public async static Task CopyFileAsync ( String source, String target, Int32 bufferSize = 4096 )
         {
-            if ( BufferSize < 1 )
-                throw new ArgumentException ( $"Buffer size ({BufferSize}) cannot be smaller than 1", nameof ( BufferSize ) );
+            if ( bufferSize < 1 )
+                throw new ArgumentException ( $"Buffer size ({bufferSize}) cannot be smaller than 1", nameof ( bufferSize ) );
 
-            var fi = new FileInfo ( From );
-            var ti = new FileInfo ( To );
-            if ( !File.Exists ( fi.FullName ) )
+            var fi = new FileInfo ( source );
+            var ti = new FileInfo ( target );
+            if ( !fi.Exists )
                 throw new FileNotFoundException ( $"From file ({fi.FullName}) does not exists." );
 
+            // Delete the file if it already exists
             if ( ti.Exists )
                 ti.Delete ( );
+            // Create the full path up to the file's
             ti.Directory.Create ( );
-            using ( FileStream reader = File.OpenRead ( fi.FullName ) )
-            using ( FileStream writer = File.OpenWrite ( ti.FullName ) )
+
+            using ( FileStream reader = fi.OpenRead ( ) )
+            using ( FileStream writer = ti.OpenWrite ( ) )
             {
-                var lastPos = 0L;
-                while ( true )
+                var buffer = new Byte[bufferSize];
+                while ( reader.Position != reader.Length )
                 {
-                    var count = ( Int32 ) ( reader.Length - reader.Position );
-                    if ( count > BufferSize )
-                        count = BufferSize;
-                    Debug.Assert ( count > 0 );
-
-                    lastPos = reader.Position;
-                    var buffer = new Byte[count];
-
-                    await reader.ReadAsync ( buffer, 0, count );
-                    await writer.WriteAsync ( buffer, 0, count );
-
-                    if ( count != BufferSize )
-                        break;
+                    var readBytes = await reader.ReadAsync ( buffer, 0, bufferSize ).ConfigureAwait ( false );
+                    await writer.WriteAsync ( buffer, 0, readBytes ).ConfigureAwait ( false );
                 }
             }
         }
