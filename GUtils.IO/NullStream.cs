@@ -29,7 +29,7 @@ namespace GUtils.IO
     /// </summary>
     public class NullStream : Stream
     {
-        public NullStream ( ) : base ( )
+        public NullStream ( )
         {
         }
 
@@ -49,28 +49,15 @@ namespace GUtils.IO
             set => throw new NotSupportedException ( "This stream does not support seek." );
         }
 
-        public override Int32 ReadTimeout { get => base.ReadTimeout; set => base.ReadTimeout = value; }
+        public override Int64 Seek ( Int64 offset, SeekOrigin origin ) => throw new NotSupportedException ( "This stream does not support seeking." );
 
-        public override Int32 WriteTimeout
+        public override void SetLength ( Int64 value ) => throw new NotSupportedException ( "This stream does not support setting it's length." );
+
+        public override void Close ( )
         {
-            get => base.WriteTimeout;
-            set => base.WriteTimeout = value;
         }
 
-        public override Task CopyToAsync ( Stream destination, Int32 bufferSize, CancellationToken cancellationToken ) => throw new NotSupportedException ( "This stream does not support reading." );
-
-        public override Boolean Equals ( Object obj ) => obj is NullStream;
-
-        public override void Flush ( )
-        {
-            // Do nothing
-        }
-
-        public override Task FlushAsync ( CancellationToken cancellationToken ) => Task.CompletedTask;
-
-        public override Int32 GetHashCode ( ) =>
-            // All instances of this are one and the same
-            0;
+        #region Reading
 
         public override Int32 Read ( Byte[] buffer, Int32 offset, Int32 count ) => throw new NotSupportedException ( "This stream does not support reading." );
 
@@ -78,25 +65,48 @@ namespace GUtils.IO
 
         public override Int32 ReadByte ( ) => throw new NotSupportedException ( "This stream does not support reading." );
 
-        public override Int64 Seek ( Int64 offset, SeekOrigin origin ) => throw new NotSupportedException ( "This stream does not support seeking." );
+        public override IAsyncResult BeginRead ( Byte[] buffer, Int32 offset, Int32 count, AsyncCallback callback, Object state ) => throw new NotSupportedException ( "This stream does not support reading." );
 
-        public override void SetLength ( Int64 value )
+        public override Int32 EndRead ( IAsyncResult asyncResult ) => throw new NotSupportedException ( "This stream does not support reading." );
+
+        public override Task CopyToAsync ( Stream destination, Int32 bufferSize, CancellationToken cancellationToken ) => throw new NotSupportedException ( "This stream does not support reading." );
+
+        #endregion Reading
+
+        #region Writing
+
+        public override IAsyncResult BeginWrite ( Byte[] buffer, Int32 offset, Int32 count, AsyncCallback callback, Object state ) => Task.CompletedTask;
+
+        public override void EndWrite ( IAsyncResult asyncResult )
         {
-            // Nothing
         }
-
-        public override String ToString ( ) => "/dev/null stream";
 
         public override void Write ( Byte[] buffer, Int32 offset, Int32 count )
         {
-            // Do nothing either
         }
 
         public override Task WriteAsync ( Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken ) => Task.CompletedTask;
 
         public override void WriteByte ( Byte value )
         {
-            // Do nothing
         }
+
+        public override void Flush ( )
+        {
+        }
+
+        public override Task FlushAsync ( CancellationToken cancellationToken ) => Task.CompletedTask;
+
+        #endregion Writing
+
+        #region Object
+
+        public override Boolean Equals ( Object obj ) => obj is NullStream;
+
+        public override Int32 GetHashCode ( ) => base.GetHashCode ( );
+
+        public override String ToString ( ) => "/dev/null stream";
+
+        #endregion Object
     }
 }
