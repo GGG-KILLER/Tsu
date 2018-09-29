@@ -20,83 +20,57 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security;
 
 namespace GUtils.IO
 {
     public static class FileSearch
     {
         /// <summary>
-        /// Internal tree class
+        /// Searchs for a file recursively (globs not supported)
+        /// while ignoring any exceptions that are caused by
+        /// permission errors
         /// </summary>
-        private class StringNode
-        {
-            private readonly IList<StringNode> Children;
-            private readonly String Content;
-
-            public StringNode ( String Content )
-            {
-                this.Content = Content;
-                this.Children = new List<StringNode> ( );
-            }
-
-            public void AddChild ( StringNode Child ) => this.Children.Add ( Child );
-
-            public String[] Flatten ( )
-            {
-                var @out = new List<String> ( );
-                this.Flatten ( @out );
-                return @out.ToArray ( );
-            }
-
-            public void Flatten ( IList<String> @out )
-            {
-                if ( this.Content != null )
-                    @out.Add ( this.Content );
-
-                foreach ( StringNode child in this.Children )
-                    child.Flatten ( @out );
-            }
-        }
+        /// <param name="root">Path to search in</param>
+        /// <param name="searchPattern">Name of file to search</param>
+        /// <returns></returns>
+        public static String[] SafeSearch ( String root, String searchPattern ) =>
+            SafeEnumerate ( root, searchPattern )
+                .Select ( fi => fi.FullName )
+                .ToArray ( );
 
         /// <summary>
-        /// Searchs for a file (globs not supported) while
-        /// ignoring any exceptions that are caused by permission errors
+        /// Performs a recursive search while ignoring any exceptions.
         /// </summary>
-        /// <param name="Path">Path to search in</param>
-        /// <param name="FileName">Name of file to search</param>
+        /// <param name="root"></param>
+        /// <param name="searchPattern"></param>
         /// <returns></returns>
-        public static String[] SafeSearch ( String Path, String FileName )
+        public static IEnumerable<FileInfo> SafeEnumerate ( String root, String searchPattern )
         {
-            var Root = new StringNode ( null );
-            SubSearch ( new DirectoryInfo ( Path ), FileName, Root );
-            return Root.Flatten ( );
-        }
+            var directoryQueue = new Queue<DirectoryInfo> ( );
+            directoryQueue.Enqueue ( new DirectoryInfo ( root ) );
 
-        /// <summary>
-        /// Searchs for a file (globs not supported)
-        /// </summary>
-        /// <param name="Dir">Directory to search in</param>
-        /// <param name="Fn">Name of file to search</param>
-        /// <param name="Parent">Parent node</param>
-        /// <returns></returns>
-        private static void SubSearch ( DirectoryInfo Dir, String Fn, StringNode Parent )
-        {
-            var node = new StringNode ( null );
-            Parent.AddChild ( node );
-
-            try
+            while ( directoryQueue.Count > 0 )
             {
-                FileInfo[] fs = Dir.GetFiles ( Fn, SearchOption.TopDirectoryOnly );
-                for ( var i = 0; i < fs.Length; i++ )
-                    node.AddChild ( new StringNode ( fs[i].FullName ) );
+                DirectoryInfo directoryInfo = directoryQueue.Dequeue ( );
+                IEnumerable<FileInfo> files; IEnumerable<DirectoryInfo> directories;
 
-                foreach ( DirectoryInfo dir in Dir.GetDirectories ( ) )
-                    SubSearch ( dir, Fn, node );
-            }
-            catch ( Exception )
-            {
-                // We silently eat up errors
-                return;
+                try
+                {
+                    files = directoryInfo.EnumerateFiles ( searchPattern, SearchOption.TopDirectoryOnly );
+                    directories = directoryInfo.EnumerateDirectories ( );
+                }
+                catch ( Exception ex ) when ( ex is DirectoryNotFoundException || ex is SecurityException )
+                {
+                    continue;
+                }
+
+                foreach ( DirectoryInfo directory in directories )
+                    directoryQueue.Enqueue ( directory );
+
+                foreach ( FileInfo file in files )
+                    yield return file;
             }
         }
     }
