@@ -32,28 +32,40 @@ namespace GUtils.IO
 
         private static readonly String[] _suffixes = new[] { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
 
-        public static String Format ( Int64 Size )
+        public static (Double, String) GetFormatPair ( Int64 size )
         {
-            var i = ( Int32 ) Math.Floor ( Math.Log ( Size, 1024 ) );
-            return $"{Size / Math.Pow ( 1024, i )} {_suffixes[i]}";
+            var i = ( Int32 ) Math.Floor ( Math.Log ( size, 1024 ) );
+            return (size / Math.Pow ( 1024, i ), _suffixes[i]);
         }
 
-        public static String Format ( Double Size )
+        public static (Double, String) GetFormatPair ( Double size )
         {
-            var i = ( Int32 ) Math.Floor ( Math.Log ( Size, 1024 ) );
-            return $"{Size / Math.Pow ( 1024, i )} {_suffixes[i]}";
+            var i = ( Int32 ) Math.Floor ( Math.Log ( size, 1024 ) );
+            return (size / Math.Pow ( 1024, i ), _suffixes[i]);
         }
 
-        public static String Format ( Int64 Size, Int32 decimals )
+        public static String Format ( Int64 size )
         {
-            var i = ( Int32 ) Math.Floor ( Math.Log ( Size, 1024 ) );
-            return $"{Math.Round ( Size / Math.Pow ( 1024, i ), decimals )} {_suffixes[i]}";
+            (var newSize, var suffix) = GetFormatPair ( size );
+            return $"{newSize:.##} {suffix}";
         }
 
-        public static String Format ( Double Size, Int32 decimals )
+        public static String Format ( Double size )
         {
-            var i = ( Int32 ) Math.Floor ( Math.Log ( Size, 1024 ) );
-            return $"{Math.Round ( Size / Math.Pow ( 1024, i ), decimals )} {_suffixes[i]}";
+            (var newSize, var suffix) = GetFormatPair ( size );
+            return $"{newSize:.##} {suffix}";
+        }
+
+        public static String Format ( Int64 size, String format )
+        {
+            (var newSize, var suffix) = GetFormatPair ( size );
+            return String.Format ( format, newSize, suffix );
+        }
+
+        public static String Format ( Double size, String format )
+        {
+            (var newSize, var suffix) = GetFormatPair ( size );
+            return String.Format ( format, newSize, suffix );
         }
     }
 }
