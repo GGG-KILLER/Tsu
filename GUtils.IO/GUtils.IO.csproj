@@ -5,7 +5,7 @@
     <CodeAnalysisRuleSet>ruleset.ruleset</CodeAnalysisRuleSet>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>6.0.0</Version>
+    <Version>6.0.1</Version>
     <Authors>GGG KILLER</Authors>
     <Description>An IO utlities library.</Description>
     <Copyright>GGG KILLER © 2017</Copyright>
