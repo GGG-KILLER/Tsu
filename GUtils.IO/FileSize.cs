@@ -49,13 +49,13 @@ namespace GUtils.IO
         public static String Format ( Int64 size )
         {
             (var newSize, var suffix) = GetFormatPair ( size );
-            return $"{newSize:.##} {suffix}";
+            return $"{newSize:0.##} {suffix}";
         }
 
         public static String Format ( Double size )
         {
             (var newSize, var suffix) = GetFormatPair ( size );
-            return $"{newSize:.##} {suffix}";
+            return $"{newSize:0.##} {suffix}";
         }
 
         public static String Format ( Int64 size, String format )
