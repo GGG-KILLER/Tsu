@@ -16,11 +16,12 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 
 namespace GUtils.Timing
 {
-    public static class Timespans
+    public static class Duration
     {
         public const Double TicksPerHour = TimeSpan.TicksPerHour;
         public const Double TicksPerMinute = TicksPerHour / 60D;
