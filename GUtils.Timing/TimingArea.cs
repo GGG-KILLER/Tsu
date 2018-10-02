@@ -16,11 +16,14 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 using System.Diagnostics;
 
 namespace GUtils.Timing
 {
+    // Hello and welcome to IDisposable abuse central, how can we
+    // help you?
     public class TimingArea : IDisposable
     {
         protected readonly String _indent;
@@ -39,14 +42,11 @@ namespace GUtils.Timing
 
         public TimingLine TimeLine ( String name ) => new TimingLine ( name, this );
 
-        public virtual void Log ( Object Message, Boolean indentIn = true )
-        {
-            Console.WriteLine ( $"{this._indent}{( indentIn ? "\t" : "" )}[{this._root._stopwatch.Elapsed}] {Message}" );
-        }
+        public virtual void Log ( Object Message, Boolean extraIndent = true ) => Console.WriteLine ( $"[{this._root._stopwatch.Elapsed}]{this._indent}{( extraIndent ? "\t" : "" )} {Message}" );
 
-        public void Dispose ( )
+        public virtual void Dispose ( )
         {
-            this.Log ( $"Final timing: {Timespans.Format ( this._stopwatch.ElapsedTicks )}" );
+            this.Log ( $"Total time elapsed: {Duration.Format ( this._stopwatch.ElapsedTicks )}" );
             this.Log ( "}", false );
             GC.SuppressFinalize ( this );
         }
