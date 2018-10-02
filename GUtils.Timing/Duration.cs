@@ -30,20 +30,20 @@ namespace GUtils.Timing
         public const Double TicksPerMicrosecond = TicksPerMillisecond / 1000D;
         public const Double TicksPerNanosecond = TicksPerMicrosecond / 1000D;
 
-        public static String Format ( Int64 Ticks, String Format = "{0:##00.00}{1}" )
+        public static String Format ( Int64 ticks, String format = "{0:##00.00}{1}" )
         {
-            if ( Ticks > TicksPerHour )
-                return String.Format ( Format, Ticks / TicksPerHour, "h" );
-            else if ( Ticks > TicksPerMinute )
-                return String.Format ( Format, Ticks / TicksPerMinute, "m" );
-            else if ( Ticks > TicksPerSecond )
-                return String.Format ( Format, Ticks / TicksPerSecond, "s" );
-            else if ( Ticks > TicksPerMillisecond )
-                return String.Format ( Format, Ticks / TicksPerMillisecond, "ms" );
-            else if ( Ticks > TicksPerMicrosecond )
-                return String.Format ( Format, Ticks / TicksPerMicrosecond, "μs" );
+            if ( ticks > TicksPerHour )
+                return String.Format ( format, ticks / TicksPerHour, "h" );
+            else if ( ticks > TicksPerMinute )
+                return String.Format ( format, ticks / TicksPerMinute, "m" );
+            else if ( ticks > TicksPerSecond )
+                return String.Format ( format, ticks / TicksPerSecond, "s" );
+            else if ( ticks > TicksPerMillisecond )
+                return String.Format ( format, ticks / TicksPerMillisecond, "ms" );
+            else if ( ticks > TicksPerMicrosecond )
+                return String.Format ( format, ticks / TicksPerMicrosecond, "μs" );
             else
-                return String.Format ( Format, Ticks / TicksPerNanosecond, "ns" );
+                return String.Format ( format, ticks / TicksPerNanosecond, "ns" );
         }
     }
 }
