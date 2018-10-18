@@ -35,14 +35,15 @@ namespace GUtils.IO
         public static (Double, String) GetFormatPair ( Int64 size )
         {
             if ( size == 0 ) return (size, "B");
-            var i = ( Int32 ) Math.Floor ( Math.Log ( size, 1024 ) );
+            var i = ( Int32 ) Math.Floor ( Math.Log ( Math.Abs ( size ), 1024 ) );
             return (size / Math.Pow ( 1024, i ), _suffixes[i]);
         }
 
         public static (Double, String) GetFormatPair ( Double size )
         {
-            if ( size < 1D ) return (size, "B");
-            var i = ( Int32 ) Math.Floor ( Math.Log ( size, 1024 ) );
+            if ( Double.IsInfinity ( size ) || Double.IsNaN ( size ) || size == 0D || size == -0D )
+                return (size, "B");
+            var i = ( Int32 ) Math.Floor ( Math.Log ( Math.Abs ( size ), 1024 ) );
             return (size / Math.Pow ( 1024, i ), _suffixes[i]);
         }
 
