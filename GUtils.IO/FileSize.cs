@@ -23,9 +23,9 @@ namespace GUtils.IO
 {
     public static class FileSize
     {
-        public const Int64 KiB = 1 << 10;
-        public const Int64 MiB = 1 << 20;
-        public const Int64 GiB = 1 << 30;
+        public const Int32 KiB = 1 << 10;
+        public const Int32 MiB = 1 << 20;
+        public const Int32 GiB = 1 << 30;
         public const Int64 TiB = 1 << 40;
         public const Int64 PiB = 1 << 50;
         public const Int64 EiB = 1 << 60;
