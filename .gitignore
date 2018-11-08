@@ -21,8 +21,6 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
-.release/
-nuget-pack.ps1
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -306,4 +304,6 @@ $RECYCLE.BIN/
 /LICENSE.header.cs
 
 # Other
+.release/
+nuget-pack.ps1
 *Internal*/
