@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <CodeAnalysisRuleSet>ruleset.ruleset</CodeAnalysisRuleSet>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Version>2.0.1</Version>
     <Authors>GGG KILLER</Authors>
@@ -13,16 +12,12 @@
     <PackageProjectUrl>https://github.com/GGG-KILLER/GUtils.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GGG-KILLER/GUtils.NET</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
-    <LangVersion>7.2</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
