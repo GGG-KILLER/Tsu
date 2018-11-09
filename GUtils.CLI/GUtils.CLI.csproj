@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <CodeAnalysisRuleSet>ruleset.ruleset</CodeAnalysisRuleSet>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>3.0.0</Version>
+    <Version>3.0.1</Version>
     <Authors>GGG KILLER</Authors>
     <Description>A CLI utilities library.</Description>
     <Copyright>GGG KILLER © 2017</Copyright>
