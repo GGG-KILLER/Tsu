@@ -50,10 +50,10 @@ namespace GUtils.IO
             // Create the full path up to the file's
             ti.Directory.Create ( );
 
+            var buffer = new Byte[bufferSize];
             using ( FileStream reader = fi.OpenRead ( ) )
             using ( FileStream writer = ti.OpenWrite ( ) )
             {
-                var buffer = new Byte[bufferSize];
                 while ( reader.Position != reader.Length )
                 {
                     var readBytes = await reader.ReadAsync ( buffer, 0, bufferSize ).ConfigureAwait ( false );
