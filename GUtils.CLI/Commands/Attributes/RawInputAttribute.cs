@@ -20,6 +20,9 @@ using System;
 
 namespace GUtils.CLI.Commands
 {
+    /// <summary>
+    /// Indicates a command will only accept raw input
+    /// </summary>
     [AttributeUsage ( AttributeTargets.Method, AllowMultiple = false, Inherited = true )]
     public sealed class RawInputAttribute : Attribute
     {

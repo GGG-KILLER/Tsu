@@ -16,43 +16,53 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 using System.Diagnostics;
 
 namespace GUtils.Windows
 {
-    public class FExplorer
+    /// <summary>
+    /// A static class with utilities to open files (not streams)
+    /// in different ways
+    /// </summary>
+    public static class FExplorer
     {
-        public static void OpenFolder ( String Path )
+        /// <summary>
+        /// Opens explorer.exe with <paramref name="Path" /> as
+        /// the working directory
+        /// </summary>
+        /// <param name="Path"></param>
+        public static void OpenFolder ( String Path ) => Process.Start ( new ProcessStartInfo
         {
-            Process.Start ( new ProcessStartInfo
-            {
-                FileName = "explorer.exe",
-                Arguments = Path
-            } );
-        }
+            FileName = "explorer.exe",
+            Arguments = Path
+        } );
 
-        public static void OpenWithFileSelected ( String Path )
+        /// <summary>
+        /// Opens explorer.exe with <paramref name="Path" /> selected
+        /// </summary>
+        /// <param name="Path"></param>
+        public static void OpenWithFileSelected ( String Path ) => Process.Start ( new ProcessStartInfo
         {
-            Process.Start ( new ProcessStartInfo
-            {
-                FileName = "explorer.exe",
-                Arguments = $"/e, /select, \"{Path}\""
-            } );
-        }
+            FileName = "explorer.exe",
+            Arguments = $"/e, /select, \"{Path}\""
+        } );
 
-        public static void OpenWithDefaultProgram ( String File )
-        {
-            Process.Start ( File );
-        }
+        /// <summary>
+        /// Opens a file with the default program associated with it
+        /// </summary>
+        /// <param name="File"></param>
+        public static void OpenWithDefaultProgram ( String File ) => Process.Start ( File );
 
-        public static void OpenFolderInCmd ( String Path )
+        /// <summary>
+        /// Opens cmd.exe with the working directory set as <paramref name="Path" />
+        /// </summary>
+        /// <param name="Path"></param>
+        public static void OpenFolderInCmd ( String Path ) => Process.Start ( new ProcessStartInfo
         {
-            Process.Start ( new ProcessStartInfo
-            {
-                WorkingDirectory = Path,
-                FileName = "cmd.exe"
-            } );
-        }
+            WorkingDirectory = Path,
+            FileName = "cmd.exe"
+        } );
     }
 }

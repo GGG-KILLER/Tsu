@@ -20,6 +20,9 @@ using System;
 
 namespace GUtils.CLI.Commands
 {
+    /// <summary>
+    /// Indicates the rest of the arguments will be joined separated by spaces
+    /// </summary>
     [Obsolete ( "This attribute was replaced by the RawInputAttribute." )]
     [AttributeUsage ( AttributeTargets.Parameter, AllowMultiple = false, Inherited = true )]
     public sealed class JoinRestOfArgumentsAttribute : Attribute

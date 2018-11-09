@@ -21,6 +21,9 @@ using GUtils.CLI.Commands;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
+// We need backwards compatibility so disable obsolete stuff warnings
+#pragma warning disable CS0618
+
 namespace GUtils.CLI.Tests.Commands
 {
     [TestClass]

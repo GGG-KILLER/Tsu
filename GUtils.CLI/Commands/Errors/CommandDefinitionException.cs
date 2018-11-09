@@ -23,15 +23,32 @@ using System.Text;
 
 namespace GUtils.CLI.Commands.Errors
 {
+    /// <summary>
+    /// Thrown when a command's definition is invalid
+    /// </summary>
     public class CommandDefinitionException : Exception
     {
+        /// <summary>
+        /// The method that is the body of the command
+        /// </summary>
         public readonly MethodInfo Method;
 
+        /// <summary>
+        /// Initializes this <see cref="CommandDefinitionException"/>
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="message"></param>
         public CommandDefinitionException ( MethodInfo method, String message ) : base ( message )
         {
             this.Method = method;
         }
 
+        /// <summary>
+        /// Initializes this <see cref="CommandDefinitionException"/>
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
         public CommandDefinitionException ( MethodInfo method, String message, Exception innerException ) : base ( message, innerException )
         {
             this.Method = method;

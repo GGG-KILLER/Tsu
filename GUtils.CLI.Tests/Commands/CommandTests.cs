@@ -16,11 +16,14 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 using GUtils.CLI.Commands;
 using GUtils.CLI.Commands.Errors;
-using GUtils.CLI.Commands.Help;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+// We need backwards compatibility so disable obsolete stuff warnings
+#pragma warning disable CS0618
 
 namespace GUtils.CLI.Tests.Commands
 {

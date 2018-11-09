@@ -16,17 +16,26 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GUtils.CLI.Commands
 {
+    /// <summary>
+    /// Adds an example of invoking the command
+    /// </summary>
     [AttributeUsage ( AttributeTargets.Method, AllowMultiple = true, Inherited = true )]
     public sealed class HelpExampleAttribute : Attribute
     {
+        /// <summary>
+        /// The example of the invocation
+        /// </summary>
         public readonly String Example;
 
+        /// <summary>
+        /// Initializes a <see cref="HelpExampleAttribute" />
+        /// </summary>
+        /// <param name="example"></param>
         public HelpExampleAttribute ( String example )
         {
             if ( String.IsNullOrWhiteSpace ( example ) )

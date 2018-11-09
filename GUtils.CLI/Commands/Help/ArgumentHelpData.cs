@@ -20,22 +20,65 @@ using System;
 
 namespace GUtils.CLI.Commands.Help
 {
+    /// <summary>
+    /// The possible modifiers an argument can have
+    /// </summary>
     [Flags]
     public enum ArgumentModifiers
     {
+        /// <summary>
+        /// The required argument modifier
+        /// </summary>
         Required = 0b000,
+
+        /// <summary>
+        /// The optional argument modifier
+        /// </summary>
         Optional = 0b001,
+
+        /// <summary>
+        /// The argument requests the rest of the arguments to be joined in a string
+        /// </summary>
         JoinRest = 0b010,
+
+        /// <summary>
+        /// The arguments has the params modifier
+        /// </summary>
         Params   = 0b100
     }
 
+    /// <summary>
+    /// Represents the help information available for a given command argument
+    /// </summary>
     public readonly struct ArgumentHelpData
     {
+        /// <summary>
+        /// The name of the argument
+        /// </summary>
         public readonly String Name;
+
+        /// <summary>
+        /// The description of the argument
+        /// </summary>
         public readonly String Description;
+
+        /// <summary>
+        /// The modifiers that the argument has
+        /// </summary>
         public readonly ArgumentModifiers Modifiers;
+
+        /// <summary>
+        /// The type of the argument
+        /// </summary>
         public readonly Type ParameterType;
 
+        /// <summary>
+        /// Initializes <see cref="ArgumentHelpData"/>
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="modifiers"></param>
+        /// <param name="parameterType"></param>
         public ArgumentHelpData ( String name, String description, ArgumentModifiers modifiers, Type parameterType )
         {
             this.Name          = name;

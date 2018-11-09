@@ -20,16 +20,38 @@
 using System;
 using System.Diagnostics;
 
+// Hello and welcome to IDisposable abuse central, how can we help you?
 namespace GUtils.Timing
 {
-    // Hello and welcome to IDisposable abuse central, how can we
-    // help you?
+    /// <summary>
+    /// Represents a section of code being timed, by default
+    /// outputs everything to the console
+    /// </summary>
     public class TimingArea : IDisposable
     {
+        /// <summary>
+        /// The cached indentation level of this area
+        /// </summary>
         protected readonly String _indent;
+
+        /// <summary>
+        /// The <see cref="Stopwatch" /> measuring the elapsed
+        /// time of this area
+        /// </summary>
         protected readonly Stopwatch _stopwatch;
+
+        /// <summary>
+        /// The root <see cref="TimingArea" />
+        /// </summary>
         protected readonly TimingArea _root;
 
+        /// <summary>
+        /// Initializes this <see cref="TimingArea" /> increasing
+        /// the indentation level of the parent and printing the
+        /// name of this timing area
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="parent"></param>
         public TimingArea ( String name, TimingArea parent = null )
         {
             this._indent = parent != null ? parent._indent + '\t' : "";
@@ -40,15 +62,28 @@ namespace GUtils.Timing
             this.Log ( "{", false );
         }
 
+        /// <summary>
+        /// Initializes a new <see cref="TimingLine" />
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public TimingLine TimeLine ( String name ) => new TimingLine ( name, this );
 
+        /// <summary>
+        /// Outputs an indented line prefixed by the elapsed time
+        /// </summary>
+        /// <param name="Message"></param>
+        /// <param name="extraIndent"></param>
         public virtual void Log ( Object Message, Boolean extraIndent = true ) => Console.WriteLine ( $"[{this._root._stopwatch.Elapsed}]{this._indent}{( extraIndent ? "\t" : "" )} {Message}" );
 
+        /// <summary>
+        /// Ends this <see cref="TimingArea" /> showing the total
+        /// time elapsed and ends the indented area
+        /// </summary>
         public virtual void Dispose ( )
         {
             this.Log ( $"Total time elapsed: {Duration.Format ( this._stopwatch.ElapsedTicks )}" );
             this.Log ( "}", false );
-            GC.SuppressFinalize ( this );
         }
     }
 }

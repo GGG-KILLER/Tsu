@@ -16,14 +16,26 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 
 namespace GUtils.CLI.Commands
 {
+    /// <summary>
+    /// The flags that can be passed to the <see cref="CommandManager" />
+    /// </summary>
     [Flags]
     public enum CommandManagerFlags
     {
+        /// <summary>
+        /// Indicates the <see cref="CommandManager" /> should use
+        /// simple parsing instead of full parsing
+        /// </summary>
         UseSimpleParsing = 0b1,
+
+        /// <summary>
+        /// The default value of this enum
+        /// </summary>
         Default = 0b0
     }
 }

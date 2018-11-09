@@ -20,12 +20,26 @@ using System;
 
 namespace GUtils.CLI.Commands
 {
+    /// <summary>
+    /// Indicates a method is a command or adds a name to the command
+    /// </summary>
     [AttributeUsage ( AttributeTargets.Method, AllowMultiple = true, Inherited = true )]
     public sealed class CommandAttribute : Attribute
     {
+        /// <summary>
+        /// The name of the command
+        /// </summary>
         public String Name { get; }
+
+        /// <summary>
+        /// Whether this is intended to override any other commands with the same name
+        /// </summary>
         public Boolean Overwrite { get; set; }
 
+        /// <summary>
+        /// Initializes this <see cref="CommandAttribute"/>
+        /// </summary>
+        /// <param name="Name"></param>
         public CommandAttribute ( String Name )
         {
             if ( String.IsNullOrWhiteSpace ( Name ) )

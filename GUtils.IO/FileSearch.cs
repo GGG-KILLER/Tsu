@@ -25,12 +25,15 @@ using System.Security;
 
 namespace GUtils.IO
 {
+    /// <summary>
+    /// An utility class to safely search for patterns inside a directory
+    /// </summary>
     public static class FileSearch
     {
         /// <summary>
-        /// Searchs for a file recursively (globs not supported)
-        /// while ignoring any exceptions that are caused by
-        /// permission errors
+        /// Searchs for a pattern recursively (globs not
+        /// supported) while ignoring any exceptions that are
+        /// caused by permission errors
         /// </summary>
         /// <param name="root">Path to search in</param>
         /// <param name="searchPattern">Name of file to search</param>
@@ -41,7 +44,9 @@ namespace GUtils.IO
                 .ToArray ( );
 
         /// <summary>
-        /// Performs a recursive search while ignoring any exceptions.
+        /// Searchs for a pattern recursively (globs not
+        /// supported) while ignoring any exceptions that are
+        /// caused by permission errors
         /// </summary>
         /// <param name="root"></param>
         /// <param name="searchPattern"></param>

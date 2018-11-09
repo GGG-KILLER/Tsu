@@ -23,6 +23,9 @@ namespace GUtils.IO
     using System.IO;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Utility to copy a single file with a configurable buffer size
+    /// </summary>
     public class FileCopier
     {
         /// <summary>

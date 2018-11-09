@@ -26,12 +26,25 @@ using System.Threading.Tasks;
 
 namespace GUtils.Net
 {
+    /// <summary>
+    /// The arguments to the progress changed event
+    /// </summary>
     public struct DownloadClientDownloadProgressChangedArgs
     {
+        /// <summary>
+        /// The amount of bytes already downloaded
+        /// </summary>
         public Int64 BytesReceived;
+
+        /// <summary>
+        /// The total amount of bytes to be downloaded
+        /// </summary>
         public Int64 TotalBytes;
     }
 
+    /// <summary>
+    /// An experimental download client meant to be faster than <see cref="WebClient" />
+    /// </summary>
     public class DownloadClient
     {
         /// <summary>

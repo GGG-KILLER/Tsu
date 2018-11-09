@@ -22,15 +22,32 @@ using System.Text;
 
 namespace GUtils.CLI.Commands.Errors
 {
+    /// <summary>
+    /// Indicates a part of the input line cannot be parsed
+    /// </summary>
     public class InputLineParseException : Exception
     {
+        /// <summary>
+        /// The offset at which this exception ocurred
+        /// </summary>
         public readonly Int32 Offset;
 
+        /// <summary>
+        /// Initializes this <see cref="InputLineParseException"/>
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="offset"></param>
         public InputLineParseException ( String message, Int32 offset ) : base ( message )
         {
             this.Offset = offset;
         }
 
+        /// <summary>
+        /// Initializes this <see cref="InputLineParseException"/>
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="offset"></param>
+        /// <param name="innerException"></param>
         public InputLineParseException ( String message, Int32 offset, Exception innerException ) : base ( message, innerException )
         {
             this.Offset = offset;

@@ -23,11 +23,18 @@ using System.Text;
 
 namespace GUtils.CLI.Commands.Help
 {
+    /// <summary>
+    /// The default help command provider class
+    /// </summary>
     public class DefaultHelpCommand
     {
         private readonly CommandManager Manager;
         private readonly Dictionary<Command, String[]> Cache;
 
+        /// <summary>
+        /// Initializes the default help command class
+        /// </summary>
+        /// <param name="manager"></param>
         public DefaultHelpCommand ( in CommandManager manager )
         {
             this.Manager = manager;

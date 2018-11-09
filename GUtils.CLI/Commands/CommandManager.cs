@@ -25,14 +25,25 @@ using GUtils.CLI.Commands.Help;
 
 namespace GUtils.CLI.Commands
 {
+    /// <summary>
+    /// Manages the registering and executing of commands
+    /// </summary>
     public class CommandManager
     {
         internal readonly List<Command> CommandList;
-        public IReadOnlyList<Command> Commands => this.CommandList.AsReadOnly ( );
         internal readonly Dictionary<String, Command> CommandLookupTable;
+
+        /// <summary>
+        /// The commands registered in this <see cref="CommandManager"/>
+        /// </summary>
+        public IReadOnlyList<Command> Commands => this.CommandList.AsReadOnly ( );
 
         private readonly Boolean ShouldUseSimpleParsing;
 
+        /// <summary>
+        /// Initializes a <see cref="CommandManager"/>
+        /// </summary>
+        /// <param name="flags"></param>
         public CommandManager ( in CommandManagerFlags flags = CommandManagerFlags.Default )
         {
             this.CommandList = new List<Command> ( );

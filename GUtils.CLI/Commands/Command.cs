@@ -16,6 +16,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 using System.Collections.Immutable;
 using System.Linq;
@@ -23,14 +24,39 @@ using System.Reflection;
 using GUtils.CLI.Commands.Errors;
 using GUtils.CLI.Commands.Help;
 
+// Disable obsolete warnings since we need backwards compatibility
+#pragma warning disable CS0618
+
 namespace GUtils.CLI.Commands
 {
+    /// <summary>
+    /// Represents a command that was registered in the <see cref="CommandManager"/>
+    /// </summary>
     public class Command
     {
+        /// <summary>
+        /// The names that this command can be referred by
+        /// </summary>
         public readonly ImmutableArray<String> Names;
+
+        /// <summary>
+        /// The description shown when the help command is invoked
+        /// </summary>
         public readonly String Description;
+
+        /// <summary>
+        /// Whether this command accepts raw input
+        /// </summary>
         public readonly Boolean IsRaw;
+
+        /// <summary>
+        /// The arguments this command accepts
+        /// </summary>
         public readonly ImmutableArray<ArgumentHelpData> Arguments;
+
+        /// <summary>
+        /// The command invokation examples provided (or not)
+        /// </summary>
         public readonly ImmutableArray<String> Examples;
 
         internal readonly MethodInfo Method;
@@ -51,6 +77,11 @@ namespace GUtils.CLI.Commands
             return mods;
         }
 
+        /// <summary>
+        /// Initializes a <see cref="Command"/>
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="instance"></param>
         public Command ( in MethodInfo method, in Object instance )
         {
             ValidateMethod ( method, instance );

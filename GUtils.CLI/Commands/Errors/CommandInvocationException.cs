@@ -22,15 +22,32 @@ using System.Text;
 
 namespace GUtils.CLI.Commands.Errors
 {
+    /// <summary>
+    /// Indicates an error happened while executing the command's method
+    /// </summary>
     public class CommandInvocationException : Exception
     {
+        /// <summary>
+        /// The name of the command that failed to execute
+        /// </summary>
         public readonly String Command;
 
+        /// <summary>
+        /// Initializes this <see cref="CommandInvocationException"/>
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="message"></param>
         public CommandInvocationException ( String command, String message ) : base ( message )
         {
             this.Command = command;
         }
 
+        /// <summary>
+        /// Initializes this <see cref="CommandInvocationException"/>
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
         public CommandInvocationException ( String command, String message, Exception innerException ) : base ( message, innerException )
         {
             this.Command = command;

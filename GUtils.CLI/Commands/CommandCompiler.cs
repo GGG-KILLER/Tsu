@@ -16,25 +16,27 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using GUtils.CLI.Commands.Errors;
 
+// Disable obsolete warnings since we need backwards compatibility
+#pragma warning disable CS0618
+
 namespace GUtils.CLI.Commands
 {
     internal static class CommandCompiler
     {
-        private static MethodCallExpression GetEnumConvertExpression ( Type type, Expression arg )
-        {
+        private static MethodCallExpression GetEnumConvertExpression ( Type type, Expression arg ) =>
             // Only method available to enums is the Enum.Parse
             // method, so use that
-            return Expression.Call ( null, typeof ( Enum ).GetMethod ( "Parse", new[] {
+            Expression.Call ( null, typeof ( Enum ).GetMethod ( "Parse", new[] {
                 typeof ( Type ),
                 typeof ( String ),
                 typeof ( Boolean )
             } ), Expression.Constant ( type ), arg, Expression.Constant ( true ) );
-        }
 
         private static MethodCallExpression GetConvertExpression ( Type type, Expression arg )
         {
@@ -123,6 +125,7 @@ namespace GUtils.CLI.Commands
                         typeof ( Int32 )
                     } ), Expression.Constant ( "" ), arguments, idxExpression, Expression.Subtract ( argumentsLength, idxExpression ) );
                 }
+
                 #endregion [JoinRestOfArguments]
                 #region params
 
@@ -213,9 +216,6 @@ namespace GUtils.CLI.Commands
         /// <param name="method"></param>
         /// <param name="instance"></param>
         /// <returns></returns>
-        public static Action<String, String[]> Compile ( MethodInfo method, Object instance )
-        {
-            return CompilePartially ( method, instance ).Compile ( );
-        }
+        public static Action<String, String[]> Compile ( MethodInfo method, Object instance ) => CompilePartially ( method, instance ).Compile ( );
     }
 }

@@ -20,11 +20,21 @@ using System;
 
 namespace GUtils.CLI.Commands
 {
+    /// <summary>
+    /// Adds a description to a command or argument
+    /// </summary>
     [AttributeUsage ( AttributeTargets.Method | AttributeTargets.Parameter, AllowMultiple = false, Inherited = true )]
     public sealed class HelpDescriptionAttribute : Attribute
     {
+        /// <summary>
+        /// The description of the command or argument
+        /// </summary>
         public readonly String Description;
 
+        /// <summary>
+        /// Initializes this <see cref="HelpDescriptionAttribute"/>
+        /// </summary>
+        /// <param name="description"></param>
         public HelpDescriptionAttribute ( String description )
         {
             this.Description = description;

@@ -16,18 +16,29 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GUtils.CLI.Commands.Errors
 {
+    /// <summary>
+    /// Thrown when a command is not found by the <see cref="CommandManager" />
+    /// </summary>
     public class NonExistentCommandException : CommandInvocationException
     {
+        /// <summary>
+        /// Initializes this <see cref="NonExistentCommandException" />
+        /// </summary>
+        /// <param name="command"></param>
         public NonExistentCommandException ( String command ) : base ( command, "Command does not exist." )
         {
         }
 
+        /// <summary>
+        /// Initializes this <see cref="NonExistentCommandException" />
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="innerException"></param>
         public NonExistentCommandException ( String command, Exception innerException ) : base ( command, "Command does not exist.", innerException )
         {
         }
