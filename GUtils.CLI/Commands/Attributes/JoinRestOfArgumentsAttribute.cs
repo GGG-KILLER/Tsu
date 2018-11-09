@@ -20,6 +20,7 @@ using System;
 
 namespace GUtils.CLI.Commands
 {
+    [Obsolete ( "This attribute was replaced by the RawInputAttribute." )]
     [AttributeUsage ( AttributeTargets.Parameter, AllowMultiple = false, Inherited = true )]
     public sealed class JoinRestOfArgumentsAttribute : Attribute
     {
