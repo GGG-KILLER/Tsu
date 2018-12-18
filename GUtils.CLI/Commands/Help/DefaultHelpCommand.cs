@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GUtils.Pooling;
 
 namespace GUtils.CLI.Commands.Help
 {
@@ -84,21 +85,24 @@ namespace GUtils.CLI.Commands.Help
         /// </summary>
         /// <param name="argumentHelp"></param>
         /// <returns></returns>
-        private static String GetPrettyArgumentName ( in ArgumentHelpData argumentHelp )
+        private static String GetPrettyArgumentName ( ArgumentHelpData argumentHelp )
         {
-            var name = new StringBuilder ( argumentHelp.Name );
-
-            if ( ( argumentHelp.Modifiers & ( ArgumentModifiers.JoinRest | ArgumentModifiers.Params ) ) != 0 )
-                name.Append ( "..." );
-
-            // Both params and args with default values are optional
-            if ( ( argumentHelp.Modifiers & ( ArgumentModifiers.Optional | ArgumentModifiers.Params ) ) != 0 )
+            return StringBuilderPool.Shared.WithRentedItem ( name =>
             {
-                name.Insert ( 0, '[' );
-                name.Append ( ']' );
-            }
+                name.Append ( argumentHelp.Name );
 
-            return name.ToString ( );
+                if ( ( argumentHelp.Modifiers & ( ArgumentModifiers.JoinRest | ArgumentModifiers.Params ) ) != 0 )
+                    name.Append ( "..." );
+
+                // Both params and args with default values are optional
+                if ( ( argumentHelp.Modifiers & ( ArgumentModifiers.Optional | ArgumentModifiers.Params ) ) != 0 )
+                {
+                    name.Insert ( 0, '[' );
+                    name.Append ( ']' );
+                }
+
+                return name.ToString ( );
+            } );
         }
 
         /// <summary>

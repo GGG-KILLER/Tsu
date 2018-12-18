@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using GUtils.CLI.Commands.Errors;
+using GUtils.Pooling;
 
 namespace GUtils.CLI.Commands
 {
@@ -39,17 +40,19 @@ namespace GUtils.CLI.Commands
             var start = this.Offset;
             this.Offset++;
 
-            // Read the entire string
-            var b = new StringBuilder ( );
-            while ( this.Offset < this.Input.Length && this.Input[this.Offset] != separator )
-                b.Append ( this.ParseCharacter ( ) );
+            return StringBuilderPool.Shared.WithRentedItem ( builder =>
+            {
+                while ( this.Offset < this.Input.Length && this.Input[this.Offset] != separator )
+                    builder.Append ( this.ParseCharacter ( ) );
 
-            if ( this.Offset == this.Input.Length || this.Input[this.Offset] != separator )
-                throw new InputLineParseException ( "Unfinished quoted string literal.", start );
-            // skip '<separator>'
-            this.Offset++;
+                if ( this.Offset == this.Input.Length || this.Input[this.Offset] != separator )
+                    throw new InputLineParseException ( "Unfinished quoted string literal.", start );
 
-            return b.ToString ( );
+                // skip '<separator>'
+                this.Offset++;
+
+                return builder.ToString ( );
+            } );
         }
 
         private Char ParseCharacter ( )
@@ -161,14 +164,14 @@ namespace GUtils.CLI.Commands
                 throw new InputLineParseException ( "Expected char but got EOF", this.Offset );
         }
 
-        private String ParseSpaceSeparatedSection ( )
-        {
-            var builder = new StringBuilder ( );
-            while ( this.Offset < this.Input.Length
-                && !Char.IsWhiteSpace ( this.Input[this.Offset] ) )
-                builder.Append ( this.ParseCharacter ( ) );
-            return builder.ToString ( );
-        }
+        private String ParseSpaceSeparatedSection ( ) =>
+            StringBuilderPool.Shared.WithRentedItem ( builder =>
+            {
+                while ( this.Offset < this.Input.Length
+                    && !Char.IsWhiteSpace ( this.Input[this.Offset] ) )
+                    builder.Append ( this.ParseCharacter ( ) );
+                return builder.ToString ( );
+            } );
 
         private void ConsumeWhitespaces ( )
         {
@@ -195,6 +198,7 @@ namespace GUtils.CLI.Commands
 
                     // (raw)Rest """operator""" (r:)
                     case 'r':
+
                         // Raw rest
                         if ( this.Input[this.Offset + 1] == 'r'
                             && this.Input[this.Offset + 2] == ':' )
@@ -212,7 +216,7 @@ namespace GUtils.CLI.Commands
                             // Move from 'r' while skipping ':'
                             this.Offset += 2;
 
-                            var b = new StringBuilder ( );
+                            StringBuilder b = StringBuilderPool.Shared.Rent ( );
                             while ( this.Offset < this.Input.Length )
                                 b.Append ( this.ParseCharacter ( ) );
                             this.Offset = this.Input.Length;
@@ -221,6 +225,7 @@ namespace GUtils.CLI.Commands
                             // strings under any circumstances
                             if ( b.Length > 0 )
                                 yield return b.ToString ( );
+                            StringBuilderPool.Shared.Return ( b );
                             break;
                         }
                         else goto default;
@@ -233,10 +238,7 @@ namespace GUtils.CLI.Commands
             }
         }
 
-        public static IEnumerable<String> Parse ( String line )
-        {
-            return new InputLineParser ( line ).Parse ( );
-        }
+        public static IEnumerable<String> Parse ( String line ) => new InputLineParser ( line ).Parse ( );
 
         /// <summary>
         /// Parse the line separating only by quotes and spaces
@@ -245,12 +247,12 @@ namespace GUtils.CLI.Commands
         /// <returns></returns>
         public static IEnumerable<String> SimpleParse ( String line )
         {
-            var partAcc = new StringBuilder ( );
+            StringBuilder partAcc = StringBuilderPool.Shared.Rent ( );
             var quoteChar = '\0';
 
             foreach ( var ch in line )
             {
-                if ( ( ch == '\'' || ch == '"' ) )
+                if ( ch == '\'' || ch == '"' )
                 {
                     if ( quoteChar == '\0' )
                     {
@@ -277,6 +279,7 @@ namespace GUtils.CLI.Commands
 
             if ( partAcc.Length > 0 )
                 yield return partAcc.ToString ( );
+            StringBuilderPool.Shared.Return ( partAcc );
         }
     }
 }
