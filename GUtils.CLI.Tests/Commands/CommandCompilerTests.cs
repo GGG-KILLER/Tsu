@@ -52,6 +52,8 @@ namespace GUtils.CLI.Tests.Commands
 
         public static void DoSomething07 ( params String[] args ) => Value = String.Join ( ".", args );
 
+        public static void DoSomething08 ( Double? opt = null ) => Value = opt;
+
         [DataTestMethod]
         [DataRow ( nameof ( DoSomething01 ) )]
         [DataRow ( nameof ( DoSomething02 ) )]
@@ -59,6 +61,8 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( nameof ( DoSomething04 ) )]
         [DataRow ( nameof ( DoSomething05 ) )]
         [DataRow ( nameof ( DoSomething06 ) )]
+        [DataRow ( nameof ( DoSomething07 ) )]
+        [DataRow ( nameof ( DoSomething08 ) )]
         public void ShouldCompile ( String methodName )
         {
             MethodInfo method = typeof ( CommandCompilerTests ).GetMethod ( methodName );
@@ -74,6 +78,8 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( nameof ( DoSomething05 ), "125.215", 125.215f )]
         [DataRow ( nameof ( DoSomething06 ), "a;b;c;d;e;f;g", "a.bcdefg" )]
         [DataRow ( nameof ( DoSomething07 ), "a;b;c;d;e;f;g", "a.b.c.d.e.f.g" )]
+        [DataRow ( nameof ( DoSomething08 ), "-2", -2D )]
+        [DataRow ( nameof ( DoSomething08 ), "", null )]
         public void CompiledCommandShouldRun ( String methodName, String inputString, Object expectedVal )
         {
             MethodInfo method = typeof ( CommandCompilerTests ).GetMethod ( methodName );
@@ -82,7 +88,7 @@ namespace GUtils.CLI.Tests.Commands
             Value = null;
             comp ( String.Empty, inputString.Contains ( ';' )
                 ? inputString.Split ( ';' )
-                : new[] { inputString } );
+                : ( inputString.Length < 1 ? Array.Empty<String> ( ) : new[] { inputString } ) );
             Assert.AreEqual ( expectedVal, Value );
         }
 
@@ -92,8 +98,8 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( nameof ( DoSomething03 ), "enum03" )]
         [DataRow ( nameof ( DoSomething04 ), "0x2.p4" )]
         [DataRow ( nameof ( DoSomething05 ), "0x2.p2" )]
-        // DoSomething06 and DoSomething07 would only fail for
-        // lack of arguments
+
+        // DoSomething06 and DoSomething07 would only fail for lack of arguments
         public void CompiledCommandShouldThrowOnConversionFail ( String methodName, String inputString )
         {
             MethodInfo method = typeof ( CommandCompilerTests ).GetMethod ( methodName );

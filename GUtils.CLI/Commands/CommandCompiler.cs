@@ -30,23 +30,30 @@ namespace GUtils.CLI.Commands
     internal static class CommandCompiler
     {
         private static MethodCallExpression GetEnumConvertExpression ( Type type, Expression arg ) =>
-            // Only method available to enums is the Enum.Parse
-            // method, so use that
+
+            // Only method available to enums is the Enum.Parse method, so use that
             Expression.Call ( null, typeof ( Enum ).GetMethod ( "Parse", new[] {
                 typeof ( Type ),
                 typeof ( String ),
                 typeof ( Boolean )
             } ), Expression.Constant ( type ), arg, Expression.Constant ( true ) );
 
-        private static MethodCallExpression GetConvertExpression ( Type type, Expression arg )
+        private static Expression GetConvertExpression ( Type type, Expression arg )
         {
+            Type underlyingType;
+            if ( ( underlyingType = Nullable.GetUnderlyingType ( type ) ) != null )
+            {
+                Expression expr = GetConvertExpression ( underlyingType, arg );
+                return Expression.Convert ( expr, type );
+            }
+
             MethodInfo parseM = type.GetMethod ( "Parse", new[] { typeof ( String ) } );
             MethodInfo changeTypeM = typeof ( Convert ).GetMethod ( "ChangeType", new[] {
                 typeof ( Object ),
                 typeof ( Type )
             } );
-            // Use .Parse static method if it exists, otherwise
-            // use the Convert.ChangeType method
+
+            // Use .Parse static method if it exists, otherwise use the Convert.ChangeType method
             return parseM != null
                 ? Expression.Call ( null, parseM, arg )
                 : Expression.Call ( null, changeTypeM, arg, Expression.Constant ( type ) );
@@ -73,16 +80,14 @@ namespace GUtils.CLI.Commands
                 }
             }
 
-            // Create a new instance of the exception type using
-            // the constructor that accepts these types
+            // Create a new instance of the exception type using the constructor that accepts these types
             NewExpression @new = Expression.New ( typeof ( T ).GetConstructor ( types ), formattedArgs );
 
             // throw the exception that was created above
             UnaryExpression @throw = Expression.Throw ( @new, retType );
 
-            // And then use a hack to make the expression tree
-            // happy about the return type of this (even though
-            // it'll never return ¯\_(ツ)_/¯)
+            // And then use a hack to make the expression tree happy about the return type of this (even
+            // though it'll never return ¯\_(ツ)_/¯)
             return Expression.Convert ( @throw, retType );
         }
 
@@ -102,8 +107,8 @@ namespace GUtils.CLI.Commands
             var hasParamsArgument = false;
             var convertedArguments = new Expression[parameters.Length];
 
-            // Create expressions converting all arguments to the
-            // expected types given by the function arguments
+            // Create expressions converting all arguments to the expected types given by the function
+            // arguments
             for ( var idx = 0; idx < parameters.Length; idx++ )
             {
                 ParameterInfo param = parameters[idx];
@@ -111,8 +116,7 @@ namespace GUtils.CLI.Commands
                 Expression argument = Expression.ArrayIndex ( arguments, idxExpression );
                 Type parameterType = param.ParameterType;
 
-                // Use the appropriate conversion method depending
-                // on the argument type
+                // Use the appropriate conversion method depending on the argument type
                 #region [JoinRestOfArguments]
 
                 if ( param.IsDefined ( typeof ( JoinRestOfArgumentsAttribute ), true ) )
@@ -184,25 +188,24 @@ namespace GUtils.CLI.Commands
                                 $"Invalid argument #{idx}.", ex ) )
                 );
 
-                // Add check that there're enough arguments
-                // otherwise attempt to use default values, and if
-                // this argument doesn't has one, throw an exception
+                // Add check that there're enough arguments otherwise attempt to use default values, and
+                // if this argument doesn't has one, throw an exception
                 convertedArguments[idx] = Expression.Condition (
                     Expression.GreaterThan ( Expression.ArrayLength ( arguments ), idxExpression ),
                     argument,
                     parameters[idx].HasDefaultValue
                     ? Expression.Convert ( Expression.Constant ( parameters[idx].DefaultValue ), parameterType )
                     : ( hasParamsArgument
-                        // Params can have no arguments at all and
-                        // will call the function with no arguments
+
+                        // Params can have no arguments at all and will call the function with no
+                        // arguments
                         ? Expression.Constant ( Array.Empty<String> ( ) )
                         : GetThrowExpression<CommandInvocationException> ( parameterType, name,
                             $"Missing argument #{idx}." ) )
                 );
             }
 
-            // Return the lambda expression with the method call
-            // using the converted arguments
+            // Return the lambda expression with the method call using the converted arguments
             return Expression.Lambda<Action<String, String[]>> ( Expression.Call ( instance != null && !method.IsStatic
                 ? Expression.Constant ( instance )
                 : null,
@@ -210,8 +213,8 @@ namespace GUtils.CLI.Commands
         }
 
         /// <summary>
-        /// Compiles a command argument conversion process so that
-        /// no extra logic is made when executing them
+        /// Compiles a command argument conversion process so that no extra logic is made when executing
+        /// them
         /// </summary>
         /// <param name="method"></param>
         /// <param name="instance"></param>
