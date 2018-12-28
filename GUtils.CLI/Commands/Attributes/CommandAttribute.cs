@@ -17,6 +17,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 using System;
+using System.Linq;
 
 namespace GUtils.CLI.Commands
 {
@@ -44,7 +45,7 @@ namespace GUtils.CLI.Commands
         {
             if ( String.IsNullOrWhiteSpace ( Name ) )
                 throw new ArgumentException ( "Command name must not be null or composed of whitespaces.", nameof ( Name ) );
-            if ( Name.Contains ( " " ) )
+            if ( Name.Any ( Char.IsWhiteSpace ) )
                 throw new ArgumentException ( "Command name cannot have whitespaces in it.", nameof ( Name ) );
             this.Name = Name;
         }
