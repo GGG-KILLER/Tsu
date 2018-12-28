@@ -136,7 +136,7 @@ namespace GUtils.CLI.Commands
 
             // Command registering
             var command = new Command (
-                typeof ( Verb ).GetMethod ( nameof ( Verb.RunCommand ), BindingFlags.Instance | BindingFlags.NonPublic ),
+                typeof ( Verb ).GetMethod ( nameof ( Verb.RunCommand ), BindingFlags.Instance | BindingFlags.Public ),
                 verbInst,
                 new[] { verb },
                 isRaw: true
