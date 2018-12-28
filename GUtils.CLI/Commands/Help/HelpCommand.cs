@@ -1,33 +1,14 @@
-/*
- * Copyright © 2016 GGG KILLER <gggkiller2@gmail.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
- * and associated documentation files (the “Software”), to deal in the Software without
- * restriction, including without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
- * the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
- * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using GUtils.Pooling;
 
 namespace GUtils.CLI.Commands.Help
 {
     /// <summary>
-    /// The default help command provider class
+    /// The abstract help command provider class
     /// </summary>
-    public class DefaultHelpCommand
+    public abstract class HelpCommand
     {
         private readonly CommandManager Manager;
         private readonly Dictionary<Command, String[]> Cache;
@@ -36,33 +17,39 @@ namespace GUtils.CLI.Commands.Help
         /// Initializes the default help command class
         /// </summary>
         /// <param name="manager"></param>
-        public DefaultHelpCommand ( in CommandManager manager )
+        protected HelpCommand ( CommandManager manager )
         {
             this.Manager = manager;
             this.Cache = new Dictionary<Command, String[]> ( );
         }
 
-        #region Write/WriteLine
+        #region I/O
 
         /// <summary>
-        /// Prints a character
+        /// Writes a character to the output
         /// </summary>
         /// <param name="ch"></param>
-        protected virtual void Write ( in Char ch ) => Console.Write ( ch );
+        protected abstract void Write ( Char ch );
 
         /// <summary>
-        /// Prints a string
+        /// Writes a string to the output
         /// </summary>
-        /// <param name="text"></param>
-        protected virtual void Write ( in String text ) => Console.Write ( text );
+        /// <param name="str"></param>
+        protected abstract void Write ( String str );
 
         /// <summary>
-        /// Prints a string followed by a new line
+        /// Writes a character followed by a <see cref="Environment.NewLine" /> to the output
         /// </summary>
-        /// <param name="line"></param>
-        protected virtual void WriteLine ( in String line ) => Console.WriteLine ( line );
+        /// <param name="ch"></param>
+        protected abstract void WriteLine ( Char ch );
 
-        #endregion Write/WriteLine
+        /// <summary>
+        /// Writes a string followed by a <see cref="Environment.NewLine" /> to the output
+        /// </summary>
+        /// <param name="str"></param>
+        protected abstract void WriteLine ( String str );
+
+        #endregion I/O
 
         #region Helpers
 
@@ -71,23 +58,24 @@ namespace GUtils.CLI.Commands.Help
         /// </summary>
         /// <param name="commandName"></param>
         /// <returns></returns>
-        protected Boolean CommandExists ( in String commandName ) => this.Manager.CommandLookupTable.ContainsKey ( commandName );
+        protected Boolean CommandExists ( String commandName ) =>
+            this.Manager.CommandLookupTable.ContainsKey ( commandName );
 
         /// <summary>
         /// Returns the help text for a given command name
         /// </summary>
         /// <param name="commandName"></param>
         /// <returns></returns>
-        protected Command GetCommand ( in String commandName ) => this.Manager.CommandLookupTable[commandName];
+        protected Command GetCommand ( String commandName ) =>
+            this.Manager.CommandLookupTable[commandName];
 
         /// <summary>
         /// Returns the name of an argument formatted in a pretty way
         /// </summary>
         /// <param name="argumentHelp"></param>
         /// <returns></returns>
-        private static String GetPrettyArgumentName ( ArgumentHelpData argumentHelp )
-        {
-            return StringBuilderPool.Shared.WithRentedItem ( name =>
+        protected static String GetPrettyArgumentName ( ArgumentHelpData argumentHelp ) =>
+            StringBuilderPool.Shared.WithRentedItem ( name =>
             {
                 name.Append ( argumentHelp.Name );
 
@@ -103,14 +91,13 @@ namespace GUtils.CLI.Commands.Help
 
                 return name.ToString ( );
             } );
-        }
 
         /// <summary>
         /// Returns the lines of help text for a given command
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        protected virtual String[] GetHelpLines ( in Command command )
+        protected virtual String[] GetHelpLines ( Command command )
         {
             if ( !this.Cache.ContainsKey ( command ) )
             {
@@ -164,7 +151,7 @@ namespace GUtils.CLI.Commands.Help
         [HelpDescription ( "Shows help text" )]
         [HelpExample ( "help      (will list all commands)" )]
         [HelpExample ( "help help (will show the help text for this command)" )]
-        protected void HelpCommand (
+        protected virtual void HelpCommandAction (
             [HelpDescription ( "name of the command to get the help text" )] String commandName = null )
         {
             if ( commandName != null )
