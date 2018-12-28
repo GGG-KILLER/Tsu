@@ -30,18 +30,30 @@ namespace GUtils.CLI.Commands
     /// </summary>
     public class CommandManager
     {
-        internal readonly List<Command> CommandList;
-        internal readonly Dictionary<String, Command> CommandLookupTable;
+        /// <summary>
+        /// The list containing all commands
+        /// </summary>
+        protected readonly List<Command> CommandList;
 
         /// <summary>
-        /// The commands registered in this <see cref="CommandManager"/>
+        /// The lookup table used on command name resolution
+        /// </summary>
+        protected readonly Dictionary<String, Command> CommandLookupTable;
+
+        /// <summary>
+        /// The commands registered in this <see cref="CommandManager" />
         /// </summary>
         public IReadOnlyList<Command> Commands => this.CommandList.AsReadOnly ( );
+
+        /// <summary>
+        /// Exposes the internal command lookup table as a readonly collection
+        /// </summary>
+        public IReadOnlyDictionary<String, Command> CommandDictionary => this.CommandLookupTable;
 
         private readonly Boolean ShouldUseSimpleParsing;
 
         /// <summary>
-        /// Initializes a <see cref="CommandManager"/>
+        /// Initializes a <see cref="CommandManager" />
         /// </summary>
         /// <param name="flags"></param>
         public CommandManager ( in CommandManagerFlags flags = CommandManagerFlags.Default )
@@ -51,50 +63,47 @@ namespace GUtils.CLI.Commands
             this.ShouldUseSimpleParsing = ( flags & CommandManagerFlags.UseSimpleParsing ) != 0;
         }
 
-        private static String GetFullName ( in MethodInfo method, in Object inst ) => $"{inst?.GetType ( ).FullName ?? method.DeclaringType.FullName}.{method.Name}";
+        private static String GetFullName ( in MethodInfo method, in Object inst ) =>
+            $"{inst?.GetType ( ).FullName ?? method.DeclaringType.FullName}.{method.Name}";
 
         #region Commands Loading
 
         /// <summary>
-        /// Loads all methods tagged with
-        /// <see cref="CommandAttribute" /> from a given type, be
-        /// they public or private.
+        /// Loads all methods tagged with <see cref="CommandAttribute" /> from a given type, be they
+        /// public or private.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="instance">
-        /// Instance to use when invoking the methods (null for
-        /// static classes)
+        /// Instance to use when invoking the methods (null for static classes)
         /// </param>
-        public void LoadCommands<T> ( in T instance ) where T : class => this.LoadCommands ( typeof ( T ), instance );
+        public void LoadCommands<T> ( T instance ) where T : class =>
+            this.LoadCommands ( typeof ( T ), instance );
 
         /// <summary>
-        /// Loads all methods tagged with
-        /// <see cref="CommandAttribute" /> from a given type, be
-        /// they public or private.
+        /// Loads all methods tagged with <see cref="CommandAttribute" /> from a given type, be they
+        /// public or private.
         /// </summary>
         /// <param name="type">Type where to load commands from</param>
         /// <param name="instance">
-        /// Instance to use when invoking the methods (null for
-        /// static classes)
+        /// Instance to use when invoking the methods (null for static classes)
         /// </param>
-        public void LoadCommands ( in Type type, in Object instance )
+        public void LoadCommands ( Type type, Object instance )
         {
             const BindingFlags flagsForAllMethods = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
-            // Find static/non-static methods (choose between
-            // static and instance by the presence of a non-null instance)
+            // Find static/non-static methods (choose between static and instance by the presence of a
+            // non-null instance)
             foreach ( MethodInfo method in type.GetMethods ( flagsForAllMethods )
                 .OrderBy ( method => method.Name ) )
             {
                 if ( method.IsDefined ( typeof ( CommandAttribute ) ) )
                 {
-                    // Create a single instance of the command
-                    // (will validate and compile in the constructor)
+                    // Create a single instance of the command (will validate and compile in the
+                    // constructor)
                     var command = new Command ( method, instance );
                     this.CommandList.Add ( command );
 
-                    // Get all command attributes and then
-                    // register all of them with the same command
+                    // Get all command attributes and then register all of them with the same command
                     foreach ( CommandAttribute attr in method.GetCustomAttributes<CommandAttribute> ( ) )
                     {
                         if ( this.CommandLookupTable.ContainsKey ( attr.Name ) && !attr.Overwrite )
@@ -110,16 +119,45 @@ namespace GUtils.CLI.Commands
 
         #endregion Commands Loading
 
+        #region Nested Commands Hack
+
         /// <summary>
-        /// Adds the <see cref="DefaultHelpCommand"/> to this command manager
+        /// Adds a nested command (or verb, if you will) to this command manager.
         /// </summary>
-        public void AddHelpCommand ( ) => this.AddHelpCommand ( new DefaultHelpCommand ( this ) );
+        /// <param name="verb"></param>
+        /// <returns>The <see cref="CommandManager" /> created for the verb</returns>
+        public virtual CommandManager AddVerb ( String verb )
+        {
+            if ( String.IsNullOrWhiteSpace ( verb ) )
+                throw new ArgumentException ( "Verb cannot be null, empty or contain any whitespaces.", nameof ( verb ) );
+            if ( verb.Any ( Char.IsWhiteSpace ) )
+                throw new ArgumentException ( "Verb cannot have whitespaces.", nameof ( verb ) );
+            if ( this.CommandLookupTable.ContainsKey ( verb ) )
+                throw new InvalidOperationException ( "A command with this name already exists." );
+
+            // Verb creation
+            var verbInst = new Verb ( new CommandManager ( this.ShouldUseSimpleParsing ? CommandManagerFlags.UseSimpleParsing : CommandManagerFlags.UseSimpleParsing ) );
+
+            // Command registering
+            var command = new Command (
+                typeof ( Verb ).GetMethod ( nameof ( Verb.RunCommand ) ),
+                new[] { verb },
+                verbInst,
+                isRaw: true
+            );
+            this.CommandList.Add ( command );
+            this.CommandLookupTable[verb] = command;
+
+            return verbInst.Manager;
+        }
+
+        #endregion Nested Commands Hack
 
         /// <summary>
         /// Adds a help command to this command manager
         /// </summary>
         /// <param name="cmdClassInstance"></param>
-        public void AddHelpCommand<T> ( T cmdClassInstance ) where T : DefaultHelpCommand
+        public void AddHelpCommand<T> ( T cmdClassInstance ) where T : HelpCommand
         {
             if ( cmdClassInstance == null )
                 throw new ArgumentNullException ( nameof ( cmdClassInstance ) );
@@ -127,14 +165,13 @@ namespace GUtils.CLI.Commands
         }
 
         /// <summary>
-        /// Parses a CLI input line and executes the appropriate
-        /// command passing the proper arguments
+        /// Parses a CLI input line and executes the appropriate command passing the proper arguments.
         /// </summary>
         /// <param name="line"></param>
         public void Execute ( String line )
         {
             if ( String.IsNullOrEmpty ( line ) )
-                throw new CommandInvocationException ( String.Empty, "No command provided." );
+                return;
 
             line = line.Trim ( );
             var spaceIdx = line.IndexOf ( ' ' );

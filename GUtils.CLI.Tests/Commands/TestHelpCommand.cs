@@ -26,44 +26,52 @@ namespace GUtils.CLI.Tests.Commands
 {
     internal enum WriteType
     {
-        Char, String, Line
+        Char, String, StringLine,
+        CharLine
     }
 
-    internal class TestHelpCommand : DefaultHelpCommand
+    internal class TestHelpCommand : ConsoleHelpCommand
     {
         public readonly Queue<(WriteType, Object)> ExpectedWritesQueue;
 
-        public TestHelpCommand ( in CommandManager manager ) : base ( manager )
+        public TestHelpCommand ( CommandManager manager ) : base ( manager )
         {
             this.ExpectedWritesQueue = new Queue<(WriteType, Object)> ( );
         }
 
-        public void AddWrite ( in Char ch ) => this.ExpectedWritesQueue.Enqueue ( (WriteType.Char, ch) );
-        public void AddWrite ( in String str ) => this.ExpectedWritesQueue.Enqueue ( (WriteType.String, str) );
-        public void AddLine ( in String str ) => this.ExpectedWritesQueue.Enqueue ( (WriteType.Line, str) );
+        public void AddWrite ( Char ch ) => this.ExpectedWritesQueue.Enqueue ( (WriteType.Char, ch) );
+        public void AddWrite ( String str ) => this.ExpectedWritesQueue.Enqueue ( (WriteType.String, str) );
+        public void AddLine ( String str ) => this.ExpectedWritesQueue.Enqueue ( (WriteType.StringLine, str) );
 
-        private void CheckWrite ( in WriteType actualType, in Object actualValue )
+        private void CheckWrite ( WriteType actualType, Object actualValue )
         {
             (WriteType expectedType, var expectedValue) = this.ExpectedWritesQueue.Dequeue ( );
             Assert.AreEqual ( expectedType, actualType );
             Assert.AreEqual ( expectedValue, actualValue );
         }
 
-        protected override void Write ( in Char ch )
+        protected override void Write ( Char ch )
         {
             base.Write ( ch );
             this.CheckWrite ( WriteType.Char, ch );
         }
 
-        protected override void Write ( in String text )
+        protected override void Write ( String text )
         {
             base.Write ( text );
             this.CheckWrite ( WriteType.String, text );
         }
-        protected override void WriteLine ( in String line )
+
+        protected override void WriteLine ( Char ch )
+        {
+            base.WriteLine ( ch );
+            this.CheckWrite ( WriteType.CharLine, ch );
+        }
+
+        protected override void WriteLine ( String line )
         {
             base.WriteLine ( line );
-            this.CheckWrite ( WriteType.Line, line );
+            this.CheckWrite ( WriteType.StringLine, line );
         }
     }
 }

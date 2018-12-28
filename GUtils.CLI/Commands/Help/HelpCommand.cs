@@ -59,7 +59,7 @@ namespace GUtils.CLI.Commands.Help
         /// <param name="commandName"></param>
         /// <returns></returns>
         protected Boolean CommandExists ( String commandName ) =>
-            this.Manager.CommandLookupTable.ContainsKey ( commandName );
+            this.Manager.CommandDictionary.ContainsKey ( commandName );
 
         /// <summary>
         /// Returns the help text for a given command name
@@ -67,7 +67,7 @@ namespace GUtils.CLI.Commands.Help
         /// <param name="commandName"></param>
         /// <returns></returns>
         protected Command GetCommand ( String commandName ) =>
-            this.Manager.CommandLookupTable[commandName];
+            this.Manager.CommandDictionary[commandName];
 
         /// <summary>
         /// Returns the name of an argument formatted in a pretty way
