@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using GUtils.CLI.Commands.Help;
@@ -24,6 +25,13 @@ namespace GUtils.CLI.Commands
         /// Whether exist commands were registered with
         /// </summary>
         public Boolean HasExitCommand { get; private set; }
+
+        /// <summary>
+        /// <para>
+        /// Event is triggered when an exception that is not part of the command loop is thrown.
+        /// </para>
+        /// </summary>
+        public event EventHandler<Exception> CommandExecutionErrored;
 
         /// <summary>
         /// Initializes a console command manager
@@ -72,6 +80,8 @@ namespace GUtils.CLI.Commands
         public void AddHelpCommand ( ) =>
             this.AddHelpCommand ( new ConsoleHelpCommand ( this ) );
 
+        #region Command Loop
+
         /// <summary>
         /// Registers a command to end the command loop with the provided names
         /// </summary>
@@ -94,9 +104,30 @@ namespace GUtils.CLI.Commands
             this.HasExitCommand = true;
         }
 
+        private static void PrintError ( String line )
+        {
+            ConsoleColor fgc = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine ( line );
+            Console.ForegroundColor = fgc;
+        }
+
         /// <summary>
         /// Starts the command loop execution
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <see cref="Errors.NonExistentCommandException" />,
+        /// <see cref="Errors.CommandInvocationException" /> and
+        /// <see cref="Errors.InputLineParseException" /> are caught as part of the command execution loop
+        /// and formatted as error messages in the console.
+        /// </para>
+        /// <para>
+        /// Any other exceptions are silently caught and forwarded to
+        /// <see cref="CommandExecutionErrored" />, if and only if there are any subscriptions to this
+        /// event.
+        /// </para>
+        /// </remarks>
         public void Start ( )
         {
             if ( this.IsRunning )
@@ -105,8 +136,31 @@ namespace GUtils.CLI.Commands
             this.IsRunning = true;
             while ( this.IsRunning )
             {
-                Console.Write ( this.Prompt );
-                this.Execute ( Console.ReadLine ( ) );
+                String line = null;
+                try
+                {
+                    Console.Write ( this.Prompt );
+                    this.Execute ( line = Console.ReadLine ( ) );
+                }
+                catch ( Errors.NonExistentCommandException nce )
+                {
+                    PrintError ( $"Command '{nce.Command}' does not exist." );
+                }
+                catch ( Errors.CommandInvocationException cie )
+                {
+                    PrintError ( $"Error while executing command '{cie.Command}': {cie.Message}" );
+                    Debug.WriteLine ( cie );
+                }
+                catch ( Errors.InputLineParseException ipe )
+                {
+                    PrintError ( $@"Error while parsing input: {ipe.Message}
+{line}
+{new String ( ' ', ipe.Offset )}^" );
+                }
+                catch ( Exception ex ) when ( this.CommandExecutionErrored != null )
+                {
+                    this.CommandExecutionErrored?.Invoke ( this, ex );
+                }
             }
         }
 
@@ -120,5 +174,7 @@ namespace GUtils.CLI.Commands
 
             this.IsRunning = false;
         }
+
+        #endregion Command Loop
     }
 }
