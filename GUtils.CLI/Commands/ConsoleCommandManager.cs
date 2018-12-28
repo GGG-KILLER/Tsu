@@ -19,15 +19,14 @@ namespace GUtils.CLI.Commands
         public Boolean IsRunning { get; private set; }
 
         /// <summary>
-        /// Whether exist commands were registered with 
+        /// Whether exist commands were registered with
         /// </summary>
         public Boolean HasExitCommand { get; private set; }
 
         /// <summary>
         /// Initializes a console command manager
         /// </summary>
-        /// <param name="flags"></param>
-        public ConsoleCommandManager ( in CommandManagerFlags flags = CommandManagerFlags.Default ) : base ( flags )
+        public ConsoleCommandManager ( ) : base ( )
         {
         }
 

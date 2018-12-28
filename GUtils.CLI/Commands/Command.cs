@@ -82,10 +82,12 @@ namespace GUtils.CLI.Commands
         {
             if ( names == null )
                 throw new ArgumentNullException ( nameof ( names ) );
+            if ( names.Count ( ) < 1 )
+                throw new ArgumentException ( "No names provided", nameof ( names ) );
             this.Names = names.ToImmutableArray ( );
             this.Description = description ?? throw new ArgumentNullException ( nameof ( description ) );
             this.IsRaw = isRaw;
-            this.Method = method;
+            this.Method = method ?? throw new ArgumentNullException ( nameof ( method ) );
             this.Instance = instance;
             this.Arguments = method.GetParameters ( )
                 .Select ( arg => new ArgumentHelpData (
@@ -95,7 +97,7 @@ namespace GUtils.CLI.Commands
                         arg.ParameterType
                 ) )
                 .ToImmutableArray ( );
-            this.Examples = examples.ToImmutableArray ( );
+            this.Examples = examples?.ToImmutableArray ( ) ?? ImmutableArray<String>.Empty;
             this.CompiledCommand = CommandCompiler.Compile ( method, instance );
         }
 

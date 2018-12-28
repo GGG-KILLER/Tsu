@@ -50,17 +50,13 @@ namespace GUtils.CLI.Commands
         /// </summary>
         public IReadOnlyDictionary<String, Command> CommandDictionary => this.CommandLookupTable;
 
-        private readonly Boolean ShouldUseSimpleParsing;
-
         /// <summary>
         /// Initializes a <see cref="CommandManager" />
         /// </summary>
-        /// <param name="flags"></param>
-        public CommandManager ( in CommandManagerFlags flags = CommandManagerFlags.Default )
+        public CommandManager ( )
         {
             this.CommandList = new List<Command> ( );
             this.CommandLookupTable = new Dictionary<String, Command> ( );
-            this.ShouldUseSimpleParsing = ( flags & CommandManagerFlags.UseSimpleParsing ) != 0;
         }
 
         private static String GetFullName ( in MethodInfo method, in Object inst ) =>
@@ -136,11 +132,11 @@ namespace GUtils.CLI.Commands
                 throw new InvalidOperationException ( "A command with this name already exists." );
 
             // Verb creation
-            var verbInst = new Verb ( new CommandManager ( this.ShouldUseSimpleParsing ? CommandManagerFlags.UseSimpleParsing : CommandManagerFlags.UseSimpleParsing ) );
+            var verbInst = new Verb ( new CommandManager ( ) );
 
             // Command registering
             var command = new Command (
-                typeof ( Verb ).GetMethod ( nameof ( Verb.RunCommand ) ),
+                typeof ( Verb ).GetMethod ( nameof ( Verb.RunCommand ), BindingFlags.Instance | BindingFlags.NonPublic ),
                 verbInst,
                 new[] { verb },
                 isRaw: true
@@ -180,15 +176,16 @@ namespace GUtils.CLI.Commands
             if ( !this.CommandLookupTable.TryGetValue ( cmdName, out cmd ) )
                 throw new NonExistentCommandException ( cmdName );
 
-            if ( cmd.IsRaw )
-                cmd.CompiledCommand ( cmdName, new[] { spaceIdx != -1
-                        ? line.Substring ( spaceIdx + 1 )
-                        : String.Empty } );
-            else if ( spaceIdx != -1 )
-                cmd.CompiledCommand ( cmdName, ( this.ShouldUseSimpleParsing
-                    ? InputLineParser.SimpleParse ( line.Substring ( spaceIdx + 1 ) )
-                    : InputLineParser.Parse ( line.Substring ( spaceIdx + 1 ) ) )
-                    .ToArray ( ) );
+            if ( spaceIdx != -1 )
+            {
+                IEnumerable<String> parsed;
+                if ( cmd.IsRaw )
+                    parsed = new[] { line.Substring ( spaceIdx + 1 ) };
+                else
+                    parsed = InputLineParser.Parse ( line.Substring ( spaceIdx + 1 ) );
+
+                cmd.CompiledCommand ( cmdName, parsed.ToArray ( ) );
+            }
             else
                 cmd.CompiledCommand ( cmdName, Array.Empty<String> ( ) );
         }

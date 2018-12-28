@@ -239,47 +239,5 @@ namespace GUtils.CLI.Commands
         }
 
         public static IEnumerable<String> Parse ( String line ) => new InputLineParser ( line ).Parse ( );
-
-        /// <summary>
-        /// Parse the line separating only by quotes and spaces
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        public static IEnumerable<String> SimpleParse ( String line )
-        {
-            StringBuilder partAcc = StringBuilderPool.Shared.Rent ( );
-            var quoteChar = '\0';
-
-            foreach ( var ch in line )
-            {
-                if ( ch == '\'' || ch == '"' )
-                {
-                    if ( quoteChar == '\0' )
-                    {
-                        quoteChar = ch;
-                        continue;
-                    }
-                    else if ( quoteChar == ch )
-                    {
-                        quoteChar = '\0';
-                        yield return partAcc.ToString ( );
-                        partAcc.Clear ( );
-                        continue;
-                    }
-                }
-                else if ( ch == ' ' && quoteChar != '\0' && partAcc.Length > 0 )
-                {
-                    yield return partAcc.ToString ( );
-                    partAcc.Clear ( );
-                    continue;
-                }
-
-                partAcc.Append ( ch );
-            }
-
-            if ( partAcc.Length > 0 )
-                yield return partAcc.ToString ( );
-            StringBuilderPool.Shared.Return ( partAcc );
-        }
     }
 }
