@@ -155,5 +155,44 @@ namespace GUtils.CLI.Tests.Commands
         }
 
         #endregion Help Command Test
+
+        #region Verb Command Test
+
+        private class VerbCommands
+        {
+            public static Object Something { get; set; }
+
+            [Command ( "a" )]
+            public static void Command01 ( String a, Int32 b ) =>
+                Something = (a, b);
+
+            [Command ( "b" )]
+            public static void Command02 ( Int32 a, Int32 b ) =>
+                Something = (a, b);
+        }
+
+        [DataTestMethod]
+        [DataRow("verb0 a 'ab' 2", "ab", 2)]
+        [DataRow("verb0 b 1 2", 1, 2)]
+        [DataRow("verb0 verb1 a 'cd' 3", "cd", 3)]
+        [DataRow("verb0 verb1 b 2 3", 2, 3)]
+        [DataRow("verb0 verb1 verb2 a 'ef' 4", "ef", 4)]
+        [DataRow("verb0 verb1 verb2 b 3 4", 3, 4)]
+        public void VerbsShouldWork ( String line, Object a, Object b )
+        {
+            var root = new CommandManager ( );
+            CommandManager verb0 = root.AddVerb ( "verb0" );
+            CommandManager verb1 = verb0.AddVerb ( "verb1" );
+            CommandManager verb2 = verb1.AddVerb ( "verb2" );
+            verb0.LoadCommands<VerbCommands> ( null );
+            verb1.LoadCommands<VerbCommands> ( null );
+            verb2.LoadCommands<VerbCommands> ( null );
+
+            VerbCommands.Something = "fail";
+            root.Execute ( line );
+            Assert.AreEqual ( (a, b), VerbCommands.Something );
+        }
+
+        #endregion
     }
 }
