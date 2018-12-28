@@ -13,7 +13,7 @@ namespace GUtils.CLI.Commands
         /// <summary>
         /// The prompt to print before asking the user for a command
         /// </summary>
-        public String Prompt { get; } = "> ";
+        public String Prompt { get; set; } = "> ";
 
         /// <summary>
         /// Whether the loop of this <see cref="ConsoleCommandManager" /> is being executed
