@@ -60,7 +60,6 @@ namespace GUtils.Pooling
         /// </summary>
         /// <returns></returns>
         public T Rent ( ) =>
-
             // Return an object if we have one stored otherwise
             // create and return a new one
             this.Bucket.TryTake ( out T item )

@@ -30,7 +30,6 @@ namespace GUtils.CLI.Commands
     internal static class CommandCompiler
     {
         private static MethodCallExpression GetEnumConvertExpression ( Type type, Expression arg ) =>
-
             // Only method available to enums is the Enum.Parse method, so use that
             Expression.Call ( null, typeof ( Enum ).GetMethod ( "Parse", new[] {
                 typeof ( Type ),
@@ -47,16 +46,14 @@ namespace GUtils.CLI.Commands
                 return Expression.Convert ( expr, type );
             }
 
-            MethodInfo parseM = type.GetMethod ( "Parse", new[] { typeof ( String ) } );
-            MethodInfo changeTypeM = typeof ( Convert ).GetMethod ( "ChangeType", new[] {
-                typeof ( Object ),
-                typeof ( Type )
-            } );
 
             // Use .Parse static method if it exists, otherwise use the Convert.ChangeType method
-            return parseM != null
-                ? Expression.Call ( null, parseM, arg )
-                : Expression.Call ( null, changeTypeM, arg, Expression.Constant ( type ) );
+            return type.GetMethod ( "Parse", new[] { typeof ( String ) } ) != null
+                ? Expression.Call ( null, type.GetMethod ( "Parse", new[] { typeof ( String ) } ), arg )
+                : Expression.Call ( null, typeof ( Convert ).GetMethod ( "ChangeType", new[] {
+                    typeof ( Object ),
+                    typeof ( Type )
+                } ), arg, Expression.Constant ( type ) );
         }
 
         private static Expression GetThrowExpression<T> ( Type retType, params Object[] unformattedArgs )
@@ -219,6 +216,7 @@ namespace GUtils.CLI.Commands
         /// <param name="method"></param>
         /// <param name="instance"></param>
         /// <returns></returns>
-        public static Action<String, String[]> Compile ( MethodInfo method, Object instance ) => CompilePartially ( method, instance ).Compile ( );
+        public static Action<String, String[]> Compile ( MethodInfo method, Object instance ) =>
+            CompilePartially ( method, instance ).Compile ( );
     }
 }
