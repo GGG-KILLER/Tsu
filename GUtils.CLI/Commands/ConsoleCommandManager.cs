@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using GUtils.CLI.Commands.Help;
 
 namespace GUtils.CLI.Commands
@@ -29,6 +31,40 @@ namespace GUtils.CLI.Commands
         public ConsoleCommandManager ( ) : base ( )
         {
         }
+
+        #region Nested Commands Hack
+
+        /// <summary>
+        /// Adds a nested command (or verb, if you will) to this command manager.
+        /// </summary>
+        /// <param name="verb"></param>
+        /// <returns>The <see cref="CommandManager" /> created for the verb</returns>
+        public override CommandManager AddVerb ( String verb )
+        {
+            if ( String.IsNullOrWhiteSpace ( verb ) )
+                throw new ArgumentException ( "Verb cannot be null, empty or contain any whitespaces.", nameof ( verb ) );
+            if ( verb.Any ( Char.IsWhiteSpace ) )
+                throw new ArgumentException ( "Verb cannot have whitespaces.", nameof ( verb ) );
+            if ( this.CommandLookupTable.ContainsKey ( verb ) )
+                throw new InvalidOperationException ( "A command with this name already exists." );
+
+            // Verb creation
+            var verbInst = new Verb ( new ConsoleCommandManager ( ) );
+
+            // Command registering
+            var command = new Command (
+                typeof ( Verb ).GetMethod ( nameof ( Verb.RunCommand ), BindingFlags.Instance | BindingFlags.NonPublic ),
+                verbInst,
+                new[] { verb },
+                isRaw: true
+            );
+            this.CommandList.Add ( command );
+            this.CommandLookupTable[verb] = command;
+
+            return verbInst.Manager;
+        }
+
+        #endregion Nested Commands Hack
 
         /// <summary>
         /// Adds the <see cref="ConsoleHelpCommand" /> to this command manager
