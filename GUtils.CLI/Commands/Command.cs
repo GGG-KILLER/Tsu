@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
@@ -77,14 +78,35 @@ namespace GUtils.CLI.Commands
             return mods;
         }
 
+        internal Command ( MethodInfo method, IEnumerable<String> names, Object instance = null, String description = "No description provided for this command.", Boolean isRaw = false, IEnumerable<String> examples = null )
+        {
+            if ( names == null )
+                throw new ArgumentNullException ( nameof ( names ) );
+            this.Names = names.ToImmutableArray ( );
+            this.Description = description ?? throw new ArgumentNullException ( nameof ( description ) );
+            this.IsRaw = isRaw;
+            this.Method = method;
+            this.Instance = instance;
+            this.Arguments = method.GetParameters ( )
+                .Select ( arg => new ArgumentHelpData (
+                        arg.Name,
+                        "",
+                        GetArgumentModifiers ( arg ),
+                        arg.ParameterType
+                ) )
+                .ToImmutableArray ( );
+            this.Examples = examples.ToImmutableArray ( );
+            this.CompiledCommand = CommandCompiler.Compile ( method, instance );
+        }
+
         /// <summary>
         /// Initializes a <see cref="Command"/>
         /// </summary>
         /// <param name="method"></param>
         /// <param name="instance"></param>
-        public Command ( in MethodInfo method, in Object instance )
+        internal Command ( MethodInfo method, Object instance )
         {
-            ValidateMethod ( method, instance );
+            ValidateMethod ( method );
 
             this.IsRaw = method.IsDefined ( typeof ( RawInputAttribute ) );
             this.Method = method;
@@ -114,7 +136,7 @@ namespace GUtils.CLI.Commands
 
         #region Validation
 
-        private static void ValidateParameters ( in MethodInfo method, in Object instance, in ParameterInfo[] @params )
+        private static void ValidateParameters ( MethodInfo method, in ParameterInfo[] @params )
         {
             // Validate that the method does not contain any out
             // parameters and that the rest attribute is not
@@ -151,7 +173,7 @@ namespace GUtils.CLI.Commands
             }
         }
 
-        private static void ValidateMethod ( in MethodInfo method, in Object instance )
+        private static void ValidateMethod ( MethodInfo method )
         {
             // Validate that the method isn't generic
             if ( method.ContainsGenericParameters )
@@ -166,7 +188,7 @@ namespace GUtils.CLI.Commands
                     throw new CommandDefinitionException ( method, "Raw input command must have a singlt argument of the String type." );
             }
             // Validate the parameters of the method
-            ValidateParameters ( method, instance, @params );
+            ValidateParameters ( method, @params );
         }
 
         #endregion Validation
