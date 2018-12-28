@@ -78,7 +78,7 @@ namespace GUtils.CLI.Commands
             return mods;
         }
 
-        internal Command ( MethodInfo method, IEnumerable<String> names, Object instance = null, String description = "No description provided for this command.", Boolean isRaw = false, IEnumerable<String> examples = null )
+        internal Command ( MethodInfo method, Object instance, IEnumerable<String> names, String description = "No description provided for this command.", Boolean isRaw = false, IEnumerable<String> examples = null )
         {
             if ( names == null )
                 throw new ArgumentNullException ( nameof ( names ) );

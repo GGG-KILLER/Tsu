@@ -141,8 +141,8 @@ namespace GUtils.CLI.Commands
             // Command registering
             var command = new Command (
                 typeof ( Verb ).GetMethod ( nameof ( Verb.RunCommand ) ),
-                new[] { verb },
                 verbInst,
+                new[] { verb },
                 isRaw: true
             );
             this.CommandList.Add ( command );

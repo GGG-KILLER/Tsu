@@ -50,8 +50,8 @@ namespace GUtils.CLI.Commands
 
             var exitCommand = new Command (
                 typeof ( ConsoleCommandManager ).GetMethod ( nameof ( Stop ) ),
-                names,
                 this,
+                names,
                 "Exits this command loop." );
             this.CommandList.Add ( exitCommand );
             foreach ( var name in names )
