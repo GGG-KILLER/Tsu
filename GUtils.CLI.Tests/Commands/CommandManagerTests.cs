@@ -48,11 +48,11 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( @"""\b1100011\b1101111\x6d\o155\o141\o156\100\b100000\105\x6e\o160\o165\x74""" )]
         public void ShouldExecuteRawCommandsProperly ( String input )
         {
-            var man = new CommandManager ( );
-            man.LoadCommands<RawCommand> ( null );
-            Logger.LogMessage ( $"Commands: {String.Join ( ", ", man.Commands )}" );
+            var manager = new CommandManager ( );
+            manager.LoadCommands<RawCommand> ( null );
+            Logger.LogMessage ( $"Commands: {String.Join ( ", ", manager.Commands )}" );
 
-            man.Execute ( $"raw-command {input}" );
+            manager.Execute ( $"raw-command {input}" );
             Assert.AreEqual ( input, RawCommand.RawValue );
         }
 
@@ -66,7 +66,8 @@ namespace GUtils.CLI.Tests.Commands
 
             [Command ( "normal-command" )]
             [HelpDescription ( "Normal command." )]
-            public static void SetValues ( String a, Int32 b, UInt32 c ) => Args = (a, b, c);
+            public static void SetValues ( String a, Int32 b, UInt32 c ) =>
+                Args = (a, b, c);
         }
 
         [DataTestMethod]
@@ -74,14 +75,34 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( "hello 321 4294967295", "hello", 321, 4294967295 )]
         public void ShouldExecuteNormalCommandsProperly ( String input, String a, Int32 b, UInt32 c )
         {
-            var man = new CommandManager ( );
-            man.LoadCommands<NormalCommand> ( null );
-            Logger.LogMessage ( $"Commands: {String.Join ( ", ", man.Commands )}" );
+            var manarger = new CommandManager ( );
+            manarger.LoadCommands<NormalCommand> ( null );
+            Logger.LogMessage ( $"Commands: {String.Join ( ", ", manarger.Commands )}" );
 
-            man.Execute ( $"normal-command {input}" );
-            Assert.AreEqual ( a, NormalCommand.Args.Item1 );
-            Assert.AreEqual ( b, NormalCommand.Args.Item2 );
-            Assert.AreEqual ( c, NormalCommand.Args.Item3 );
+            manarger.Execute ( $"normal-command {input}" );
+            Assert.IsTrue ( (a, b, c) == NormalCommand.Args );
+        }
+
+        private class NormalCommand2
+        {
+            public static (Int32, Int32, Int64, Double) Args { get; private set; }
+
+            [Command ( "c" )]
+            public static void SetValues ( Int32 a, Int32 b, Int64 c, Double d ) =>
+                Args = (a, b, c, d);
+        }
+
+        [DataTestMethod]
+        [DataRow ( "1 2 3 4", 1, 2, 3L, 4D )]
+        [DataRow ( "12 23 -34 -4.5", 12, 23, -34L, -4.5D )]
+        public void ShouldExecuteNormalNumericCommandsProperly ( String input, Int32 a, Int32 b, Int64 c, Double d )
+        {
+            var manager = new CommandManager ( );
+            manager.LoadCommands<NormalCommand2> ( null );
+            Logger.LogMessage ( $"Commands: {String.Join ( ", ", manager.Commands )}" );
+
+            manager.Execute ( $"c {input}" );
+            Assert.IsTrue ( (a, b, c, d) == NormalCommand2.Args );
         }
 
         #endregion Normal Command Test
@@ -114,10 +135,10 @@ namespace GUtils.CLI.Tests.Commands
         [TestMethod]
         public void ShouldPrintProperHelpText ( )
         {
-            var man = new CommandManager ( );
-            var help = new TestHelpCommand ( man );
-            man.LoadCommands<HelpTextClass> ( null );
-            man.AddHelpCommand ( help );
+            var manager = new CommandManager ( );
+            var help = new TestHelpCommand ( manager );
+            manager.LoadCommands<HelpTextClass> ( null );
+            manager.AddHelpCommand ( help );
 
             help.AddLine ( "Showing help for all commands:" );
             help.AddLine ( "    command-with-help - This command has a help text" );
@@ -149,7 +170,7 @@ namespace GUtils.CLI.Tests.Commands
             help.AddLine ( "        Examples:" );
             help.AddLine ( "            help      (will list all commands)" );
             help.AddLine ( "            help help (will show the help text for this command)" );
-            man.Execute ( "help" );
+            manager.Execute ( "help" );
 
             Assert.AreEqual ( 0, help.ExpectedWritesQueue.Count );
         }
@@ -160,7 +181,7 @@ namespace GUtils.CLI.Tests.Commands
 
         private class VerbCommands
         {
-            public static Object Something { get; set; }
+            public static (Object, Object) Something { get; set; }
 
             [Command ( "a" )]
             public static void Command01 ( String a, Int32 b ) =>
@@ -172,27 +193,30 @@ namespace GUtils.CLI.Tests.Commands
         }
 
         [DataTestMethod]
-        [DataRow("verb0 a 'ab' 2", "ab", 2)]
-        [DataRow("verb0 b 1 2", 1, 2)]
-        [DataRow("verb0 verb1 a 'cd' 3", "cd", 3)]
-        [DataRow("verb0 verb1 b 2 3", 2, 3)]
-        [DataRow("verb0 verb1 verb2 a 'ef' 4", "ef", 4)]
-        [DataRow("verb0 verb1 verb2 b 3 4", 3, 4)]
+        [DataRow ( "a 'ab' 2", "ab", 2 )]
+        [DataRow ( "b 1 2", 1, 2 )]
+        [DataRow ( "verb0 a 'ab' 2", "ab", 2 )]
+        [DataRow ( "verb0 b 1 2", 1, 2 )]
+        [DataRow ( "verb0 verb1 a 'cd' 3", "cd", 3 )]
+        [DataRow ( "verb0 verb1 b 2 3", 2, 3 )]
+        [DataRow ( "verb0 verb1 verb2 a 'ef' 4", "ef", 4 )]
+        [DataRow ( "verb0 verb1 verb2 b 3 4", 3, 4 )]
         public void VerbsShouldWork ( String line, Object a, Object b )
         {
             var root = new CommandManager ( );
             CommandManager verb0 = root.AddVerb ( "verb0" );
             CommandManager verb1 = verb0.AddVerb ( "verb1" );
             CommandManager verb2 = verb1.AddVerb ( "verb2" );
+            root.LoadCommands<VerbCommands> ( null );
             verb0.LoadCommands<VerbCommands> ( null );
             verb1.LoadCommands<VerbCommands> ( null );
             verb2.LoadCommands<VerbCommands> ( null );
 
-            VerbCommands.Something = "fail";
+            VerbCommands.Something = ("total", "failure");
             root.Execute ( line );
-            Assert.AreEqual ( (a, b), VerbCommands.Something );
+            Assert.IsTrue ( (a, b).Equals ( VerbCommands.Something ), "Result was not the expected." );
         }
 
-        #endregion
+        #endregion Verb Command Test
     }
 }
