@@ -216,7 +216,7 @@ namespace GUtils.Timing
         /// <param name="level"></param>
         protected virtual void WriteLinePrefix ( LogLevel level )
         {
-            this.WriteInternal ( $"[{this.Elapsed:hh:mm:ss.ffffff}]{new String ( ' ', this.scopes.Count * 4 )}" );
+            this.WriteInternal ( $"[{this.Elapsed:hh\\:mm\\:ss\\.ffffff}]{new String ( ' ', this.scopes.Count * 4 )}" );
             if ( !this.PrintLevelPrefixes || level < LogLevel.Debug || level > LogLevel.Error )
                 return;
 
