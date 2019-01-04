@@ -260,8 +260,8 @@ namespace GUtils.Timing
 
             if ( message.Contains ( "\n" ) )
             {
-                var lines = message.Split ( '\n' );
-                this.WriteInternal ( lines[0] );
+                var lines = message.Split ( new[] { "\r\n", "\n" }, StringSplitOptions.None );
+                this.WriteLineInternal ( lines[0] );
                 for ( var i = 1; i < lines.Length - 1; i++ )
                 {
                     this.WriteLinePrefix ( level );
