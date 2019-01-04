@@ -51,5 +51,20 @@ namespace GUtils.Timing
             Console.WriteLine ( line );
             Console.ForegroundColor = c;
         }
+
+        #region Extra Public I/O
+
+        /// <summary>
+        /// Reads an line of input from the console
+        /// </summary>
+        /// <returns></returns>
+        public String ReadLine ( )
+        {
+            var line = Console.ReadLine ( );
+            this.hasLineBeenPrefixed = true;
+            return line;
+        }
+
+        #endregion
     }
 }

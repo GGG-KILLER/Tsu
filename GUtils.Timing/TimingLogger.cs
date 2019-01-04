@@ -109,7 +109,11 @@ namespace GUtils.Timing
 
         private readonly Stopwatch stopwatch;
         private readonly Stack<Scope> scopes;
-        private Boolean hasLineBeenPrefixed;
+
+        /// <summary>
+        /// Whether the current line has already been prefixed
+        /// </summary>
+        protected Boolean hasLineBeenPrefixed;
 
         #region Logging Level Colors
 
