@@ -61,7 +61,7 @@ namespace GUtils.Timing
         public String ReadLine ( )
         {
             var line = Console.ReadLine ( );
-            this.hasLineBeenPrefixed = true;
+            this.hasLineBeenPrefixed = false;
             return line;
         }
 
