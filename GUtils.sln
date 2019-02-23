@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28407.52
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.IO", "GUtils.IO\GUtils.IO.csproj", "{D9AB8B05-6CD8-4E1A-BEB5-A2E27BBF4739}"
 EndProject
@@ -26,7 +26,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{55138AAF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.CLI.Tests", "GUtils.CLI.Tests\GUtils.CLI.Tests.csproj", "{B4F43654-EF29-4DB4-919F-ED187C458927}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUtils.Pooling", "GUtils.Pooling\GUtils.Pooling.csproj", "{89848CEE-FB83-47C3-B550-BA444280A085}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Pooling", "GUtils.Pooling\GUtils.Pooling.csproj", "{89848CEE-FB83-47C3-B550-BA444280A085}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Parsing.BBCode", "GUtils.Parsing.BBCode\GUtils.Parsing.BBCode.csproj", "{0460A036-D964-4335-BB0D-46FE4F18BEE0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Parsing.BBCode.Tests", "GUtils.Parsing.BBCode.Tests\GUtils.Parsing.BBCode.Tests.csproj", "{71D206D0-8498-40E3-95B9-76E074350AB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUtils.Expressions", "GUtils.Expressions\GUtils.Expressions.csproj", "{5B75C25B-FB59-42EB-8314-8AF21FE61046}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,12 +68,25 @@ Global
 		{89848CEE-FB83-47C3-B550-BA444280A085}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89848CEE-FB83-47C3-B550-BA444280A085}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89848CEE-FB83-47C3-B550-BA444280A085}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0460A036-D964-4335-BB0D-46FE4F18BEE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0460A036-D964-4335-BB0D-46FE4F18BEE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0460A036-D964-4335-BB0D-46FE4F18BEE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0460A036-D964-4335-BB0D-46FE4F18BEE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71D206D0-8498-40E3-95B9-76E074350AB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71D206D0-8498-40E3-95B9-76E074350AB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71D206D0-8498-40E3-95B9-76E074350AB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71D206D0-8498-40E3-95B9-76E074350AB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B75C25B-FB59-42EB-8314-8AF21FE61046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B75C25B-FB59-42EB-8314-8AF21FE61046}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B75C25B-FB59-42EB-8314-8AF21FE61046}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B75C25B-FB59-42EB-8314-8AF21FE61046}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B4F43654-EF29-4DB4-919F-ED187C458927} = {55138AAF-7418-4E62-AB3B-BF2CF73A8156}
+		{71D206D0-8498-40E3-95B9-76E074350AB9} = {55138AAF-7418-4E62-AB3B-BF2CF73A8156}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2935DA65-CFF2-4F42-A80B-0E23EBB88B1B}

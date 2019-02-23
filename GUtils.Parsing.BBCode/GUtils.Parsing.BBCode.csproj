@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <CodeAnalysisRuleSet>ruleset.ruleset</CodeAnalysisRuleSet>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.0.0</Version>
+    <Authors>GGG KILLER</Authors>
+    <Description>A BBCode parsing library.</Description>
+    <Copyright>GGG KILLER © 2019</Copyright>
+    <PackageLicenseUrl>https://github.com/GGG-KILLER/GUtils.NET/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/GGG-KILLER/GUtils.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/GGG-KILLER/GUtils.NET</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <LangVersion>latest</LangVersion>
+    <DocumentationFile>bin\$(Configuration)\netstandard2.0\GUtils.Parsing.BBCode.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GUtils.Pooling\GUtils.Pooling.csproj" />
+  </ItemGroup>
+
+</Project>
