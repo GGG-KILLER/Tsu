@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <CodeAnalysisRuleSet>ruleset.ruleset</CodeAnalysisRuleSet>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.0.0</Version>
+    <Authors>GGG KILLER</Authors>
+    <Description>An expression trees utilities library.</Description>
+    <Copyright>GGG KILLER © 2019</Copyright>
+    <PackageLicenseUrl>https://github.com/GGG-KILLER/GUtils.NET/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/GGG-KILLER/GUtils.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/GGG-KILLER/GUtils.NET</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <LangVersion>latest</LangVersion>
+    <DocumentationFile>bin\$(Configuration)\netstandard2.0\GUtils.Expressions.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="GExpression.Generated.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GExpression.Generated.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="GExpression.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GExpression.Generated.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>
