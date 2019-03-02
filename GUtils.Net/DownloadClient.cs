@@ -1,8 +1,8 @@
 /*
- * Copyright ¬© 2016 GGG KILLER <gggkiller2@gmail.com>
+ * Copyright © 2019 GGG KILLER <gggkiller2@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
- * and associated documentation files (the ‚ÄúSoftware‚Äù), to deal in the Software without
+ * and associated documentation files (the ìSoftwareî), to deal in the Software without
  * restriction, including without limitation the rights to use, copy, modify, merge, publish,
  * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
  * the Software is furnished to do so, subject to the following conditions:
@@ -10,13 +10,12 @@
  * The above copyright notice and this permission notice shall be included in all copies or
  * substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED ‚ÄúAS IS‚Äù, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * THE SOFTWARE IS PROVIDED ìAS ISî, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
  * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 using System;
 using System.IO;
 using System.Net;
@@ -29,7 +28,7 @@ namespace GUtils.Net
     /// <summary>
     /// The arguments to the progress changed event
     /// </summary>
-    public struct DownloadClientDownloadProgressChangedArgs
+    public struct DownloadClientDownloadProgressChangedArgs : IEquatable<DownloadClientDownloadProgressChangedArgs>
     {
         /// <summary>
         /// The amount of bytes already downloaded
@@ -40,6 +39,50 @@ namespace GUtils.Net
         /// The total amount of bytes to be downloaded
         /// </summary>
         public Int64 TotalBytes;
+
+        #region Generated Code
+
+        /// <summary>
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override Boolean Equals ( Object obj ) =>
+            obj is DownloadClientDownloadProgressChangedArgs && this.Equals ( ( DownloadClientDownloadProgressChangedArgs ) obj );
+
+        /// <summary>
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public Boolean Equals ( DownloadClientDownloadProgressChangedArgs other ) =>
+            this.BytesReceived == other.BytesReceived
+            && this.TotalBytes == other.TotalBytes;
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public override Int32 GetHashCode ( )
+        {
+            var hashCode = 637993755;
+            hashCode = hashCode * -1521134295 + this.BytesReceived.GetHashCode ( );
+            hashCode = hashCode * -1521134295 + this.TotalBytes.GetHashCode ( );
+            return hashCode;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="args1"></param>
+        /// <param name="args2"></param>
+        /// <returns></returns>
+        public static Boolean operator == ( DownloadClientDownloadProgressChangedArgs args1, DownloadClientDownloadProgressChangedArgs args2 ) => args1.Equals ( args2 );
+
+        /// <summary>
+        /// </summary>
+        /// <param name="args1"></param>
+        /// <param name="args2"></param>
+        /// <returns></returns>
+        public static Boolean operator != ( DownloadClientDownloadProgressChangedArgs args1, DownloadClientDownloadProgressChangedArgs args2 ) => !( args1 == args2 );
+
+        #endregion Generated Code
     }
 
     /// <summary>
@@ -58,16 +101,13 @@ namespace GUtils.Net
         private readonly String URL;
 
         /// <summary>
-        /// Creates a new <see cref="DownloadClient" /> that will
-        /// obtain the file from <paramref name="URL" /> with
-        /// <paramref name="BufferSize" /> bytes at a time
+        /// Creates a new <see cref="DownloadClient" /> that will obtain the file from
+        /// <paramref name="URL" /> with <paramref name="BufferSize" /> bytes at a time
         /// </summary>
-        /// <param name="URL">
-        /// The URL where to download the content from
-        /// </param>
+        /// <param name="URL">The URL where to download the content from</param>
         /// <param name="BufferSize">
-        /// The amount of bytes to use in the buffer (values
-        /// larger than 85000 will end up in the large object heap)
+        /// The amount of bytes to use in the buffer (values larger than 85000 will end up in the large
+        /// object heap)
         /// </param>
         public DownloadClient ( String URL, Int32 BufferSize = 16384 )
         {
@@ -81,14 +121,12 @@ namespace GUtils.Net
         public event EventHandler<DownloadClientDownloadProgressChangedArgs> DownloadProgressChanged;
 
         /// <summary>
-        /// Indicates whether this <see cref="DownloadClient" />
-        /// is downloading
+        /// Indicates whether this <see cref="DownloadClient" /> is downloading
         /// </summary>
         public Boolean IsWorking { get; private set; }
 
         /// <summary>
-        /// Download the contents of <see cref="URL" /> and
-        /// returns them as an array of bytes
+        /// Download the contents of <see cref="URL" /> and returns them as an array of bytes
         /// </summary>
         /// <returns></returns>
         public async Task<Byte[]> DownloadBytesAsync ( )
@@ -102,13 +140,12 @@ namespace GUtils.Net
         }
 
         /// <summary>
-        /// Downloads the contents of <see cref="URL" /> as a
-        /// String with the possibility to provide an encoding to
-        /// use to decode the bytes
+        /// Downloads the contents of <see cref="URL" /> as a String with the possibility to provide an
+        /// encoding to use to decode the bytes
         /// </summary>
         /// <param name="encoding">
-        /// The encoding which to use when transforming from bytes
-        /// to a string (Defaults to Default encoding)
+        /// The encoding which to use when transforming from bytes to a string (Defaults to Default
+        /// encoding)
         /// </param>
         /// <returns></returns>
         public async Task<String> DownloadStringAsync ( Encoding encoding ) => encoding.GetString ( await this.DownloadBytesAsync ( )
@@ -117,9 +154,7 @@ namespace GUtils.Net
         /// <summary>
         /// Downloads the resource on <see cref="URL" /> to <paramref name="path" />
         /// </summary>
-        /// <param name="path">
-        /// The path where to save the file to
-        /// </param>
+        /// <param name="path">The path where to save the file to</param>
         /// <param name="timeout"></param>
         /// <returns></returns>
         public async Task DownloadToFileAsync ( String path, Int32 timeout = 5000 )
@@ -132,8 +167,7 @@ namespace GUtils.Net
         }
 
         /// <summary>
-        /// Downloads the resource from the provided URL and
-        /// writes the contents of it as they are read.
+        /// Downloads the resource from the provided URL and writes the contents of it as they are read.
         /// </summary>
         /// <param name="stream">The stream where to write to</param>
         /// <param name="timeout"></param>
@@ -174,8 +208,7 @@ namespace GUtils.Net
                     if ( receivedBytes == 0 )
                         size = 0;
 
-                    // Update remaining byte count and received
-                    // byte count
+                    // Update remaining byte count and received byte count
                     size -= receivedBytes;
                     this.ReceivedBytes += receivedBytes;
 
