@@ -40,7 +40,7 @@ namespace GUtils.CLI.Commands
         public Boolean IsRunning { get; private set; }
 
         /// <summary>
-        /// Whether exist commands were registered with
+        /// Whether exit commands were registered with
         /// </summary>
         public Boolean HasExitCommand { get; private set; }
 
