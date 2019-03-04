@@ -1,0 +1,11 @@
+﻿- name: Introduction
+  href: intro.md
+- name: GUtils.CLI
+  href: cli.md
+  items:
+    - name: Making a simple command-based CLI
+      href: cli-walkthrough.md
+- name: GUtils.IO
+  href: io.md
+- name: GUtils.Net
+  href: net.md
