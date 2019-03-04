@@ -37,6 +37,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Expressions", "GUtil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.StateMachines", "GUtils.StateMachines\GUtils.StateMachines.csproj", "{4459E350-B927-4800-B4A4-EFB9ABF294AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docs", "docs\docs.csproj", "{EA83B964-7ABB-45ED-A1AC-C4B1C2225FC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUtils.Windows.WPF", "GUtils.Windows.WPF\GUtils.Windows.WPF.csproj", "{E11CB8CE-B230-40F7-A140-D006C8D3544C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +91,14 @@ Global
 		{4459E350-B927-4800-B4A4-EFB9ABF294AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4459E350-B927-4800-B4A4-EFB9ABF294AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4459E350-B927-4800-B4A4-EFB9ABF294AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA83B964-7ABB-45ED-A1AC-C4B1C2225FC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA83B964-7ABB-45ED-A1AC-C4B1C2225FC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA83B964-7ABB-45ED-A1AC-C4B1C2225FC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA83B964-7ABB-45ED-A1AC-C4B1C2225FC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E11CB8CE-B230-40F7-A140-D006C8D3544C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E11CB8CE-B230-40F7-A140-D006C8D3544C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E11CB8CE-B230-40F7-A140-D006C8D3544C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E11CB8CE-B230-40F7-A140-D006C8D3544C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
