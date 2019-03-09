@@ -16,15 +16,10 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-using System;
 
-namespace GUtils.Windows.WPF.MVVM
-{
-    [AttributeUsage ( AttributeTargets.Property, AllowMultiple = false, Inherited = true )]
-    public sealed class NotProxiedAttribute : Attribute
-    {
-        public NotProxiedAttribute ( )
-        {
-        }
-    }
-}
+// This file is used by Code Analysis to maintain SuppressMessage attributes that are applied to this
+// project. Project-level suppressions either have no target or are given a specific target and scoped to
+// a namespace, type, member, etc.
+
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CC0091:Use static method", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.Windows.WPF.MVVM.DynamicViewModelConfigurator`1.GetModelType~System.Type" )]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.Windows.WPF.MVVM.DynamicViewModelConfigurator`1.GetModelType~System.Type" )]

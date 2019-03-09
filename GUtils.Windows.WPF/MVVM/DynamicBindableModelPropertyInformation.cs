@@ -22,50 +22,43 @@ using System.Reflection;
 
 namespace GUtils.Windows.WPF.MVVM
 {
-    internal readonly struct DynamicViewModelPropertyInformation : IEquatable<DynamicViewModelPropertyInformation>
+    internal readonly struct DynamicBindableModelPropertyInformation : IEquatable<DynamicBindableModelPropertyInformation>
     {
         public PropertyInfo PropertyInfo { get; }
 
         public Boolean IsCollection { get; }
 
-        public Boolean ShouldItemsBeProxied { get; }
+        public Boolean ShouldBeProxied { get; }
 
-        public DynamicViewModelPropertyInformation ( PropertyInfo propertyInfo )
+        public DynamicBindableModelPropertyInformation ( PropertyInfo propertyInfo, Boolean isCollection, Boolean shouldBeProxied )
         {
-            this.PropertyInfo         = propertyInfo;
-            this.IsCollection         = false;
-            this.ShouldItemsBeProxied = false;
-        }
-
-        public DynamicViewModelPropertyInformation ( PropertyInfo propertyInfo, Boolean shouldItemsBeProxied )
-        {
-            this.PropertyInfo         = propertyInfo;
-            this.IsCollection         = false;
-            this.ShouldItemsBeProxied = shouldItemsBeProxied;
+            this.PropertyInfo    = propertyInfo;
+            this.IsCollection    = isCollection;
+            this.ShouldBeProxied = shouldBeProxied;
         }
 
         #region Generated Code
 
         public override Boolean Equals ( Object obj ) =>
-            obj is DynamicViewModelPropertyInformation && this.Equals ( ( DynamicViewModelPropertyInformation ) obj );
+            obj is DynamicBindableModelPropertyInformation && this.Equals ( ( DynamicBindableModelPropertyInformation ) obj );
 
-        public Boolean Equals ( DynamicViewModelPropertyInformation other ) =>
+        public Boolean Equals ( DynamicBindableModelPropertyInformation other ) =>
             EqualityComparer<PropertyInfo>.Default.Equals ( this.PropertyInfo, other.PropertyInfo )
             && this.IsCollection == other.IsCollection
-            && this.ShouldItemsBeProxied == other.ShouldItemsBeProxied;
+            && this.ShouldBeProxied == other.ShouldBeProxied;
 
         public override Int32 GetHashCode ( )
         {
             var hashCode = 1850586761;
             hashCode = hashCode * -1521134295 + EqualityComparer<PropertyInfo>.Default.GetHashCode ( this.PropertyInfo );
             hashCode = hashCode * -1521134295 + this.IsCollection.GetHashCode ( );
-            hashCode = hashCode * -1521134295 + this.ShouldItemsBeProxied.GetHashCode ( );
+            hashCode = hashCode * -1521134295 + this.ShouldBeProxied.GetHashCode ( );
             return hashCode;
         }
 
-        public static Boolean operator == ( DynamicViewModelPropertyInformation information1, DynamicViewModelPropertyInformation information2 ) => information1.Equals ( information2 );
+        public static Boolean operator == ( DynamicBindableModelPropertyInformation information1, DynamicBindableModelPropertyInformation information2 ) => information1.Equals ( information2 );
 
-        public static Boolean operator != ( DynamicViewModelPropertyInformation information1, DynamicViewModelPropertyInformation information2 ) => !( information1 == information2 );
+        public static Boolean operator != ( DynamicBindableModelPropertyInformation information1, DynamicBindableModelPropertyInformation information2 ) => !( information1 == information2 );
 
         #endregion Generated Code
     }

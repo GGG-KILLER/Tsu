@@ -60,13 +60,15 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MarkupExtensions\EnumValuesSourceExtension.cs" />
-    <Compile Include="MVVM\CollectionProxy.cs" />
-    <Compile Include="MVVM\DynamicViewModelBuilder.cs" />
-    <Compile Include="MVVM\DynamicViewModelCreator.cs" />
-    <Compile Include="MVVM\DynamicViewModelPropertyInformation.cs" />
-    <Compile Include="MVVM\ICollectionProxy.cs" />
-    <Compile Include="MVVM\NotProxiedAttribute.cs" />
+    <Compile Include="MVVM\CollectionProxies\CollectionProxy`T.cs" />
+    <Compile Include="MVVM\CollectionProxies\ListProxy`T.cs" />
+    <Compile Include="MVVM\DynamicBindableModelCompiler.cs" />
+    <Compile Include="MVVM\DynamicBindableModelConfigurator`T.cs" />
+    <Compile Include="MVVM\DynamicBindableModelFactory.cs" />
+    <Compile Include="MVVM\DynamicBindableModelFactoryBuilder.cs" />
+    <Compile Include="MVVM\DynamicBindableModelPropertyInformation.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
