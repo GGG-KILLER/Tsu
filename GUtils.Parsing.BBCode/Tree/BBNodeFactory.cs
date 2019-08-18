@@ -28,9 +28,15 @@ namespace GUtils.Parsing.BBCode.Tree
         /// Initializes a new <see cref="BBTagNode" /> with the provided <paramref name="name" />.
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="children"></param>
         /// <returns></returns>
-        public static BBTagNode Tag ( String name ) =>
-            new BBTagNode ( name, null );
+        public static BBTagNode Tag ( String name, params BBNode[] children )
+        {
+            var tag = new BBTagNode ( name, null );
+            foreach ( BBNode child in children )
+                tag.AddChild ( child );
+            return tag;
+        }
 
         /// <summary>
         /// Initializes a new <see cref="BBTagNode" /> with the provided <paramref name="name" /> and
@@ -38,8 +44,14 @@ namespace GUtils.Parsing.BBCode.Tree
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
+        /// <param name="children"></param>
         /// <returns></returns>
-        public static BBTagNode Tag ( String name, String value ) =>
-            new BBTagNode ( name, value );
+        public static BBTagNode Tag ( String name, String value, params BBNode[] children )
+        {
+            var tag = new BBTagNode ( name, value );
+            foreach ( BBNode child in children )
+                tag.AddChild ( child );
+            return tag;
+        }
     }
 }
