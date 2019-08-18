@@ -4,11 +4,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <CodeAnalysisRuleSet>ruleset.ruleset</CodeAnalysisRuleSet>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Authors>GGG KILLER</Authors>
     <Description>A BBCode parsing library.</Description>
     <Copyright>GGG KILLER © 2019</Copyright>
-    <PackageLicenseUrl>https://github.com/GGG-KILLER/GUtils.NET/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/GGG-KILLER/GUtils.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GGG-KILLER/GUtils.NET</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>

@@ -64,6 +64,7 @@ namespace GUtils.Parsing.BBCode
 
         private void ParseOpeningTag ( BBToken nameToken )
         {
+            var selfClosing = false;
             String name = nameToken.Value,
                 value = null;
             if ( nameToken.Type != BBTokenType.Text )
@@ -79,12 +80,24 @@ namespace GUtils.Parsing.BBCode
 
                 rbracket = this.Lexer.NextToken ( );
             }
+            else if ( rbracket.Type == BBTokenType.Slash )
+            {
+                selfClosing = true;
+            }
             if ( rbracket.Type != BBTokenType.RBracket )
                 throw new FormatException ( $"Unfinished tag '{name}'." );
 
-            var node = new BBTagNode ( name, value );
+            BBTagNode node;
+            if ( selfClosing )
+            {
+                node = new BBTagNode ( name );
+            }
+            else
+            {
+                node = new BBTagNode ( name, value );
+                this.NodeStack.Push ( node );
+            }
             this.NodeStack.Peek ( ).AddChild ( node );
-            this.NodeStack.Push ( node );
         }
 
         /// <summary>

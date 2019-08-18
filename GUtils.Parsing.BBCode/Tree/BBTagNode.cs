@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace GUtils.Parsing.BBCode.Tree
 {
@@ -36,12 +37,32 @@ namespace GUtils.Parsing.BBCode.Tree
         /// </summary>
         public override String Value { get; }
 
+        /// <summary>
+        /// Whether this is a self-closing tag
+        /// </summary>
+        public Boolean SelfClosing { get; }
+
         private readonly List<BBNode> _children;
 
         /// <summary>
         /// This tag's children
         /// </summary>
         public IReadOnlyList<BBNode> Children => this._children;
+
+        /// <summary>
+        /// Initializes a new self-contained tag node
+        /// </summary>
+        /// <param name="name"></param>
+        public BBTagNode ( String name )
+        {
+            if ( String.IsNullOrWhiteSpace ( name ) )
+                throw new ArgumentException ( "Name of tag cannot be null or composed only of whitespaces", nameof ( name ) );
+
+            this.SelfClosing = true;
+            this.Name = name;
+            this.Value = null;
+            this._children = null;
+        }
 
         /// <summary>
         /// Initializes a new tag node
@@ -53,6 +74,7 @@ namespace GUtils.Parsing.BBCode.Tree
             if ( String.IsNullOrWhiteSpace ( name ) )
                 throw new ArgumentException ( "Name of tag cannot be null or composed only of whitespaces", nameof ( name ) );
 
+            this.SelfClosing = false;
             this.Name = name;
             this.Value = value;
             this._children = new List<BBNode> ( );
@@ -62,17 +84,27 @@ namespace GUtils.Parsing.BBCode.Tree
         /// <inheritdoc />
         /// </summary>
         /// <param name="child"></param>
-        public void AddChild ( BBNode child ) =>
-            this._children.Add ( child );
+        public void AddChild ( BBNode child )
+        {
+            if ( this.SelfClosing )
+                this._children.Add ( child );
+            else
+                throw new InvalidOperationException ( "A self-closing tag cannot have children." );
+        }
 
         /// <summary>
         /// <inheritdoc />
         /// </summary>
         /// <returns></returns>
-        public override String ToString ( ) =>
-            this.Value != null
-                ? $"[{this.Name}={this.Value}]{String.Join ( "", this.Children )}[{this.Name}]"
-                : $"[{this.Name}]{String.Join ( "", this.Children )}[/{this.Name}]";
+        public override String ToString ( )
+        {
+            if ( this.SelfClosing )
+                return $"[{this.Name}/]";
+            else if ( this.Value is null )
+                return $"[{this.Name}]{String.Join ( "", this.Children )}[/{this.Name}]";
+            else
+                return $"[{this.Name}={this.Value}]{String.Join ( "", this.Children )}[{this.Name}]";
+        }
 
         #region Visitor Pattern
 
