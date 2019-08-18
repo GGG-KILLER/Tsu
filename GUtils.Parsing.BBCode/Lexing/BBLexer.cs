@@ -61,11 +61,13 @@ namespace GUtils.Parsing.BBCode.Lexing
                         goto default;
                     this.Reader.Read ( );
                     return new BBToken ( BBTokenType.Equals, "=" );
-
+                        
                 default:
                     return new BBToken ( BBTokenType.Text, StringBuilderPool.Shared.WithRentedItem ( sequence =>
                     {
-                        while ( ( this.InsideTag ? this.Reader.Peek ( ) != '=' && this.Reader.Peek ( ) != ']' : this.Reader.Peek ( ) != '[' ) && this.Reader.Peek ( ) != -1 )
+                        while ( this.Reader.Peek ( ) != -1
+                                && this.Reader.Peek ( ) != '['
+                                && ( !this.InsideTag || ( this.Reader.Peek ( ) != '=' && this.Reader.Peek ( ) != ']' ) ) )
                         {
                             if ( this.Reader.Peek ( ) == '\\' )
                                 this.Reader.Read ( );
