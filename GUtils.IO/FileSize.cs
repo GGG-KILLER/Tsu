@@ -55,7 +55,7 @@ namespace GUtils.IO
         /// </summary>
         public const Int64 EiB = 1 << 60;
 
-        private static readonly String[] _suffixes = new[] { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
+        private static readonly String[] _suffixes = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
 
         /// <summary>
         /// Returns the size provided as a pair of the new size and the suffix
