@@ -30,5 +30,8 @@ namespace GUtils.Parsing.BBCode.Lexing
             this.Type  = type;
             this.Value = value;
         }
+
+        public override String ToString ( ) =>
+            $"BBToken<{this.Type}, {this.Value}>";
     }
 }
