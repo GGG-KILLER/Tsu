@@ -26,9 +26,11 @@ namespace GUtils.Parsing.BBCode.Tree
     public abstract class BBNode
     {
         /// <summary>
-        /// The node's value
+        /// Whether this node is structurally equivalent to another node
         /// </summary>
-        public abstract String Value { get; }
+        /// <param name="node">The node to compare against</param>
+        /// <returns></returns>
+        public abstract Boolean StructurallyEquals ( BBNode node );
 
         /// <summary>
         /// Converts the node back into BBCode

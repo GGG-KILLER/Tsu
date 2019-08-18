@@ -26,24 +26,28 @@ namespace GUtils.Parsing.BBCode.Tree
     public class BBTextNode : BBNode
     {
         /// <summary>
-        /// <inheritdoc />
+        /// The content of this text node
         /// </summary>
-        public override String Value { get; }
+        public String Content { get; }
 
         /// <summary>
         /// Initializes a new text node
         /// </summary>
-        /// <param name="value"></param>
-        public BBTextNode ( String value )
+        /// <param name="content"></param>
+        public BBTextNode ( String content )
         {
-            this.Value = value;
+            this.Content = content;
         }
 
-        /// <summary>
         /// <inheritdoc />
-        /// </summary>
-        /// <returns></returns>
-        public override String ToString ( ) => this.Value;
+        public override String ToString ( ) => this.Content;
+
+        /// <inheritdoc />
+        public override Boolean StructurallyEquals ( BBNode node )
+        {
+            return node is BBTextNode textNode
+                && this.Content == textNode.Content;
+        }
 
         #region Visitor Pattern
 

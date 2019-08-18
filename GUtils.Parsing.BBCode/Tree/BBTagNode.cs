@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace GUtils.Parsing.BBCode.Tree
@@ -33,9 +34,9 @@ namespace GUtils.Parsing.BBCode.Tree
         public String Name { get; }
 
         /// <summary>
-        /// <inheritdoc />
+        /// The value associated with this tag
         /// </summary>
-        public override String Value { get; }
+        public String Value { get; }
 
         /// <summary>
         /// Whether this is a self-closing tag
@@ -80,10 +81,7 @@ namespace GUtils.Parsing.BBCode.Tree
             this._children = new List<BBNode> ( );
         }
 
-        /// <summary>
         /// <inheritdoc />
-        /// </summary>
-        /// <param name="child"></param>
         public void AddChild ( BBNode child )
         {
             if ( this.SelfClosing )
@@ -92,10 +90,7 @@ namespace GUtils.Parsing.BBCode.Tree
                 throw new InvalidOperationException ( "A self-closing tag cannot have children." );
         }
 
-        /// <summary>
         /// <inheritdoc />
-        /// </summary>
-        /// <returns></returns>
         public override String ToString ( )
         {
             if ( this.SelfClosing )
@@ -104,6 +99,16 @@ namespace GUtils.Parsing.BBCode.Tree
                 return $"[{this.Name}]{String.Join ( "", this.Children )}[/{this.Name}]";
             else
                 return $"[{this.Name}={this.Value}]{String.Join ( "", this.Children )}[{this.Name}]";
+        }
+
+        /// <inheritdoc />
+        public override Boolean StructurallyEquals ( BBNode node )
+        {
+            return node is BBTagNode tagNode
+                && this.SelfClosing == tagNode.SelfClosing
+                && this.Name == tagNode.Name
+                && this.Value == tagNode.Value
+                && this.Children.Zip ( tagNode.Children, ( a, b ) => a.StructurallyEquals ( b ) ).All ( x => x );
         }
 
         #region Visitor Pattern
