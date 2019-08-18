@@ -48,10 +48,12 @@ namespace GUtils.StateMachines.Transducers
                 // Serialize all transitions
                 var cases = new List<SwitchCase> ( );
                 foreach ( KeyValuePair<InputT, TransducerState<InputT, OutputT>> kv in state.TransitionTable )
+                {
                     cases.Add ( Expression.SwitchCase (
                         GetStateExpressionTree ( kv.Value, enumerator, depth + 1, returnLabelTarget ),
                         Expression.Constant ( kv.Key )
                     ) );
+                }
 
                 ConstantExpression retVal = state.IsTerminal
                     ? Expression.Constant ( default ( (Int32, OutputT) ) )

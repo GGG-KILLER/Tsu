@@ -114,10 +114,13 @@ namespace GUtils.CLI.Commands
                     {
                         var idx = this.Offset;
                         while ( idx < this.Input.Length
-                            && ( ( '0' <= this.Input[idx] && this.Input[idx] <= '9' )
-                                || ( 'a' <= this.Input[idx] && this.Input[idx] <= 'f' )
-                                || ( 'A' <= this.Input[idx] && this.Input[idx] <= 'F' ) ) )
+                                && ( ( '0' <= this.Input[idx] && this.Input[idx] <= '9' )
+                                     || ( 'a' <= this.Input[idx] && this.Input[idx] <= 'f' )
+                                     || ( 'A' <= this.Input[idx] && this.Input[idx] <= 'F' ) ) )
+                        {
                             idx++;
+                        }
+
                         if ( this.Offset == idx )
                             throw new InputLineParseException ( "Invalid hexadecimal escape.", this.Offset - 2 );
 
@@ -159,25 +162,34 @@ namespace GUtils.CLI.Commands
                 }
             }
             else if ( this.Offset < this.Input.Length )
+            {
                 return this.Input[this.Offset++];
+            }
             else
+            {
                 throw new InputLineParseException ( "Expected char but got EOF", this.Offset );
+            }
         }
 
         private String ParseSpaceSeparatedSection ( ) =>
             StringBuilderPool.Shared.WithRentedItem ( builder =>
             {
                 while ( this.Offset < this.Input.Length
-                    && !Char.IsWhiteSpace ( this.Input[this.Offset] ) )
+                        && !Char.IsWhiteSpace ( this.Input[this.Offset] ) )
+                {
                     builder.Append ( this.ParseCharacter ( ) );
+                }
+
                 return builder.ToString ( );
             } );
 
         private void ConsumeWhitespaces ( )
         {
             while ( this.Offset < this.Input.Length
-                && Char.IsWhiteSpace ( this.Input[this.Offset] ) )
+                    && Char.IsWhiteSpace ( this.Input[this.Offset] ) )
+            {
                 this.Offset++;
+            }
         }
 
         private IEnumerable<String> Parse ( )
@@ -228,7 +240,10 @@ namespace GUtils.CLI.Commands
                             StringBuilderPool.Shared.Return ( b );
                             break;
                         }
-                        else goto default;
+                        else
+                        {
+                            goto default;
+                        }
 
                     // Normal space-separated string
                     default:

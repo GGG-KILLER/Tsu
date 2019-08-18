@@ -8,7 +8,7 @@
     <Authors>GGG KILLER</Authors>
     <Description>A networking utilities library.</Description>
     <Copyright>GGG KILLER © 2017</Copyright>
-    <PackageLicenseUrl>https://github.com/GGG-KILLER/GUtils.NET/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/GGG-KILLER/GUtils.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GGG-KILLER/GUtils.NET</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>

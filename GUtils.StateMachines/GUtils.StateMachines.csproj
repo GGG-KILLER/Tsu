@@ -6,7 +6,7 @@
     <Authors>GGG KILLER</Authors>
     <Description>State machines</Description>
     <Copyright>GGG KILLER © 2018</Copyright>
-    <PackageLicenseUrl>https://github.com/GGG-KILLER/GUtils.NET/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/GGG-KILLER/GUtils.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GGG-KILLER/GUtils.NET</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>

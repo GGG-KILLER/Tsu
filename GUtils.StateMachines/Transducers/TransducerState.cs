@@ -99,7 +99,9 @@ namespace GUtils.StateMachines.Transducers
                 return this.transitionTable[input] = newState;
             }
             else
+            {
                 return this.transitionTable[input] = new TransducerState<InputT, OutputT> ( output );
+            }
         }
 
         /// <summary>

@@ -202,7 +202,9 @@ namespace GUtils.Net
                         }
                     }
                     else
+                    {
                         receivedBytes = await webStream.ReadAsync ( buff, 0, this.BufferSize ).ConfigureAwait ( false );
+                    }
 
                     // Check for EOF
                     if ( receivedBytes == 0 )

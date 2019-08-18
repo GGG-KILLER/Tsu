@@ -298,7 +298,9 @@ namespace GUtils.Timing
                 }
             }
             else
+            {
                 this.WriteInternal ( message );
+            }
         }
 
         private void ProcessWriteLine ( LogLevel level, String message )

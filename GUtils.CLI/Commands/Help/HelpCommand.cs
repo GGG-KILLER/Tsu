@@ -175,17 +175,23 @@ namespace GUtils.CLI.Commands.Help
             if ( commandName != null )
             {
                 if ( this.CommandExists ( commandName ) )
+                {
                     foreach ( var line in this.GetHelpLines ( this.GetCommand ( commandName ) ) )
                         this.WriteLine ( line );
+                }
                 else
+                {
                     this.WriteLine ( $"Command '{commandName}' doesn't exists." );
+                }
             }
             else
             {
                 this.WriteLine ( "Showing help for all commands:" );
                 foreach ( Command command in this.Manager.Commands )
+                {
                     foreach ( var line in this.GetHelpLines ( command ) )
                         this.WriteLine ( "    " + line );
+                }
             }
         }
     }

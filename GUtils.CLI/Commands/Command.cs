@@ -156,7 +156,9 @@ namespace GUtils.CLI.Commands
                 }
                 // piggyback on 'params' check
                 else if ( @params[i].ParameterType.IsArray )
+                {
                     throw new CommandDefinitionException ( method, $"Methods with non-params array parameters are not supported." );
+                }
 
                 // in
                 if ( @params[i].IsIn )

@@ -187,7 +187,9 @@ namespace GUtils.CLI.Commands
                 cmd.CompiledCommand ( cmdName, parsed.ToArray ( ) );
             }
             else
+            {
                 cmd.CompiledCommand ( cmdName, Array.Empty<String> ( ) );
+            }
         }
     }
 }
