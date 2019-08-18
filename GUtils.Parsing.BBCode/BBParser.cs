@@ -80,9 +80,10 @@ namespace GUtils.Parsing.BBCode
 
                 rbracket = this.Lexer.NextToken ( );
             }
-            else if ( rbracket.Type == BBTokenType.Slash )
+            if ( rbracket.Type == BBTokenType.Slash )
             {
                 selfClosing = true;
+                rbracket = this.Lexer.NextToken ( );
             }
             if ( rbracket.Type != BBTokenType.RBracket )
                 throw new FormatException ( $"Unfinished tag '{name}'." );
