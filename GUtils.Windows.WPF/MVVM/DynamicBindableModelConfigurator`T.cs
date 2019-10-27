@@ -41,9 +41,12 @@ namespace GUtils.Windows.WPF.MVVM
         /// </exception>
         private static PropertyInfo GetPropertyInfoFromExpression<TProperty> ( Expression<Func<T, TProperty>> propertySelector )
         {
-            if ( !( propertySelector.Body is MemberExpression memberExpression ) || !( memberExpression.Member is PropertyInfo propertyInfo )
-                || ( propertySelector.Parameters[0] != memberExpression.Expression ) )
+            if ( !( propertySelector.Body is MemberExpression memberExpression )
+                 || !( memberExpression.Member is PropertyInfo propertyInfo )
+                 || ( propertySelector.Parameters[0] != memberExpression.Expression ) )
+            {
                 throw new ArgumentException ( "Provided expression does not represent a non-nested property acess" );
+            }
 
             if ( !propertyInfo.GetGetMethod ( ).IsVirtual || !propertyInfo.GetSetMethod ( ).IsVirtual )
                 throw new NotSupportedException ( "Non-virtual properties aren't supported because they cannot be intercepted!" );
