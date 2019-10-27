@@ -24,6 +24,9 @@ using System.Threading.Tasks;
 
 namespace GUtils.Windows.WPF.MVVM
 {
+    /// <summary>
+    /// A factory for DynamicBindableModels
+    /// </summary>
     public class DynamicBindableModelFactory
     {
         private readonly IDictionary<Type, DynamicBindableModelCompiler> dynamicModelMap = new Dictionary<Type, DynamicBindableModelCompiler> ( );
