@@ -69,7 +69,6 @@
     <Compile Include="MVVM\DynamicBindableModelFactory.cs" />
     <Compile Include="MVVM\DynamicBindableModelFactoryBuilder.cs" />
     <Compile Include="MVVM\DynamicBindableModelPropertyInformation.cs" />
-    <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
