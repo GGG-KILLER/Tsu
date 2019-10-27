@@ -14,6 +14,9 @@ namespace GUtils.Windows.WPF.MarkupExtensions
         private Type type;
         private Array values;
 
+        /// <summary>
+        /// The <see cref="System.Type" /> of the <see cref="Enum" />
+        /// </summary>
         public Type Type
         {
             get => this.type;
@@ -38,21 +41,36 @@ namespace GUtils.Windows.WPF.MarkupExtensions
                         this.values = vals;
                     }
                     else
+                    {
                         this.values = null;
+                    }
+
                     this.type = value;
                 }
             }
         }
 
+        /// <summary>
+        /// Initializes this source extension
+        /// </summary>
         public EnumValuesSourceExtension ( )
         {
         }
 
+        /// <summary>
+        /// Initializes this source extension with the provided <paramref name="type" />
+        /// </summary>
+        /// <param name="type"></param>
         public EnumValuesSourceExtension ( Type type )
         {
             this.Type = type;
         }
 
+        /// <summary>
+        /// Returns the possible values for the type stored in this source extension
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <returns></returns>
         public override Object ProvideValue ( IServiceProvider serviceProvider ) =>
             this.values ?? throw new InvalidOperationException ( "The type stored in this is null." );
     }
