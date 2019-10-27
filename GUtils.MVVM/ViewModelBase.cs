@@ -4,8 +4,12 @@ using System.Runtime.CompilerServices;
 
 namespace GUtils.MVVM
 {
+    /// <summary>
+    /// Implements a few utility functions for a ViewModel base
+    /// </summary>
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
+        /// <inheritdoc/>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
