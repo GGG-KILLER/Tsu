@@ -28,31 +28,49 @@ namespace GUtils.CLI.Commands
 {
     internal static class CommandCompiler
     {
-        private static MethodCallExpression GetEnumConvertExpression ( Type type, Expression arg ) =>
-            // Only method available to enums is the Enum.Parse method, so use that
-            Expression.Call ( null, typeof ( Enum ).GetMethod ( "Parse", new[] {
-                typeof ( Type ),
-                typeof ( String ),
-                typeof ( Boolean )
-            } ), Expression.Constant ( type ), arg, Expression.Constant ( true ) );
+        private static readonly MethodInfo MI_Enum_Parse = typeof ( Enum ).GetMethod ( "Parse", new[] {
+            typeof ( Type ),
+            typeof ( String ),
+            typeof ( Boolean )
+        } );
+
+        private static readonly MethodInfo MI_Convert_ChangeType = typeof ( Convert ).GetMethod ( "ChangeType", new[] {
+            typeof ( Object ),
+            typeof ( Type )
+        } );
+
+        private static readonly MethodInfo MI_String_Join = typeof ( String ).GetMethod ( "Join", new[]
+        {
+            typeof ( String ),
+            typeof ( String[] ),
+            typeof ( Int32 ),
+            typeof ( Int32 )
+        } );
+
+        private static readonly MethodInfo MI_Array_Copy = typeof ( Array ).GetMethod ( "Copy", new[]
+        {
+            typeof ( Array ),
+            typeof ( Array ),
+            typeof ( Int32 )
+        } );
+
+        private static readonly Type T_Converter = typeof ( Converter<String, String> ).GetGenericTypeDefinition ( );
 
         private static Expression GetConvertExpression ( Type type, Expression arg )
         {
-            Type underlyingType;
-            if ( ( underlyingType = Nullable.GetUnderlyingType ( type ) ) != null )
+            if ( Nullable.GetUnderlyingType ( type ) is Type underlyingType )
             {
                 Expression expr = GetConvertExpression ( underlyingType, arg );
                 return Expression.Convert ( expr, type );
             }
 
-
             // Use .Parse static method if it exists, otherwise use the Convert.ChangeType method
-            return type.GetMethod ( "Parse", new[] { typeof ( String ) } ) != null
-                ? Expression.Call ( null, type.GetMethod ( "Parse", new[] { typeof ( String ) } ), arg )
-                : Expression.Call ( null, typeof ( Convert ).GetMethod ( "ChangeType", new[] {
-                    typeof ( Object ),
-                    typeof ( Type )
-                } ), arg, Expression.Constant ( type ) );
+            MethodInfo parseMethod = type.GetMethod ( "Parse", new[] { typeof ( String ) } );
+            return Expression.Convert ( type.IsEnum
+                ? Expression.Call ( null, MI_Enum_Parse, Expression.Constant ( type ), arg, Expression.Constant ( true ) )
+                : parseMethod != null && parseMethod.IsStatic
+                    ? Expression.Call ( null, parseMethod, arg )
+                    : Expression.Call ( null, MI_Convert_ChangeType, arg, Expression.Constant ( type ) ), type );
         }
 
         private static Expression GetThrowExpression<T> ( Type retType, params Object[] unformattedArgs )
@@ -87,6 +105,38 @@ namespace GUtils.CLI.Commands
             return Expression.Convert ( @throw, retType );
         }
 
+        private static Expression CompileParamsParameter ( ParameterExpression arguments, UnaryExpression argumentsLength, ParameterInfo param, ConstantExpression idxExpression )
+        {
+            Type arrayType = param.ParameterType.GetElementType ( );
+            ParameterExpression section = Expression.Variable ( typeof ( String[] ), "section" );
+            BinaryExpression sectionLength = Expression.Subtract ( argumentsLength, idxExpression );
+
+            ParameterExpression input = Expression.Parameter ( typeof ( String ) );
+            Delegate converterDelegate = Expression.Lambda (
+                T_Converter.MakeGenericType ( typeof ( String ), arrayType ),
+                GetConvertExpression ( arrayType, input ),
+                input ).Compile ( );
+
+            return Expression.Block (
+                param.ParameterType,
+                /* String[] arr; */
+                new[] { section },
+                /* arr = new String[args.Length - <i>]; */
+                Expression.Assign (
+                    section,
+                    Expression.NewArrayBounds ( typeof ( String ), sectionLength ) ),
+                /* Array.CopyTo ( args, arr, args.Length - <i> ); */
+                Expression.Call ( null, MI_Array_Copy, arguments, section, sectionLength ),
+                /* return Array.ConvertAll<String, TParam> ( section, <Converter Delegate> ); */
+                Expression.Call (
+                    null,
+                    typeof ( Array ).GetMethod ( "ConvertAll" ).MakeGenericMethod ( typeof ( String ), arrayType ),
+                    section,
+                    Expression.Constant ( converterDelegate )
+                )
+            );
+        }
+
         /// <summary>
         /// Transforms the conversion process into expression trees
         /// </summary>
@@ -100,74 +150,35 @@ namespace GUtils.CLI.Commands
             UnaryExpression argumentsLength = Expression.ArrayLength ( arguments );
 
             ParameterInfo[] parameters = method.GetParameters ( );
-            var hasParamsArgument = false;
             var convertedArguments = new Expression[parameters.Length];
 
             // Create expressions converting all arguments to the expected types given by the function
             // arguments
             for ( var idx = 0; idx < parameters.Length; idx++ )
             {
+                var hasParamsArgument = false;
                 ParameterInfo param = parameters[idx];
                 ConstantExpression idxExpression = Expression.Constant ( idx );
                 Expression argument = Expression.ArrayIndex ( arguments, idxExpression );
                 Type parameterType = param.ParameterType;
 
                 // Use the appropriate conversion method depending on the argument type
-                #region [JoinRestOfArguments]
-
+                /* [JoinRestOfArguments] */
                 if ( param.IsDefined ( typeof ( JoinRestOfArgumentsAttribute ), true ) )
                 {
-                    argument = Expression.Call ( null, typeof ( String ).GetMethod ( "Join", new[]
-                      {
-                        typeof ( String ),
-                        typeof ( String[] ),
-                        typeof ( Int32 ),
-                        typeof ( Int32 )
-                    } ), Expression.Constant ( "" ), arguments, idxExpression, Expression.Subtract ( argumentsLength, idxExpression ) );
+                    argument = Expression.Call ( null, MI_String_Join, Expression.Constant ( "" ), arguments, idxExpression, Expression.Subtract ( argumentsLength, idxExpression ) );
                 }
-
-                #endregion [JoinRestOfArguments]
-                #region params
-
+                /* params */
                 else if ( param.IsDefined ( typeof ( ParamArrayAttribute ), true ) )
                 {
-                    ParameterExpression section = Expression.Variable ( typeof ( String[] ), "section" );
-                    BinaryExpression sectionLength = Expression.Subtract ( argumentsLength, idxExpression );
-
                     hasParamsArgument = true;
-                    argument = Expression.Block (
-                        typeof ( String[] ),
-                        /* String[] arr; */
-                        new[] { section },
-                        /* arr = new String[args.Length - <i>]; */
-                        Expression.Assign (
-                            section,
-                            Expression.NewArrayBounds ( typeof ( String ), sectionLength ) ),
-                        /* Array.CopyTo ( args, arr, args.Length - <i> ); */
-                        Expression.Call ( null, typeof ( Array ).GetMethod ( "Copy", new[]
-                        {
-                            typeof ( Array ),
-                            typeof ( Array ),
-                            typeof ( Int32 )
-                        } ), arguments, section, sectionLength ),
-                        /* return arr; (?) */
-                        section
-                    );
+                    argument = CompileParamsParameter ( arguments, argumentsLength, param, idxExpression );
                 }
-
-                #endregion params
-                #region Enum arg
-
-                else if ( parameterType.IsEnum )
-                    argument = GetEnumConvertExpression ( parameterType, argument );
-
-                #endregion Enum arg
-                #region Non-String arg
-
+                /* Non-String arg */
                 else if ( parameterType != typeof ( String ) )
+                {
                     argument = GetConvertExpression ( parameterType, argument );
-
-                #endregion Non-String arg
+                }
 
                 // Handle exceptions when converting
                 ParameterExpression ex = Expression.Variable ( typeof ( Exception ), "ex" );
@@ -179,9 +190,7 @@ namespace GUtils.CLI.Commands
                 /* catch ( Exception ex )
                  *     throw new CommandInvocationException ( <command>, <message>, ex );
                  */
-                    Expression.Catch ( ex,
-                        GetThrowExpression<CommandInvocationException> ( parameterType, name,
-                                $"Invalid argument #{idx}.", ex ) )
+                    Expression.Catch ( ex, GetThrowExpression<CommandInvocationException> ( parameterType, name, $"Invalid argument #{idx}.", ex ) )
                 );
 
                 // Add check that there're enough arguments otherwise attempt to use default values, and
@@ -192,12 +201,9 @@ namespace GUtils.CLI.Commands
                     parameters[idx].HasDefaultValue
                     ? Expression.Convert ( Expression.Constant ( parameters[idx].DefaultValue ), parameterType )
                     : ( hasParamsArgument
-
-                        // Params can have no arguments at all and will call the function with no
-                        // arguments
+                        /* Params can have no arguments at all and will call the function with no arguments */
                         ? Expression.Constant ( Array.Empty<String> ( ) )
-                        : GetThrowExpression<CommandInvocationException> ( parameterType, name,
-                            $"Missing argument #{idx}." ) )
+                        : GetThrowExpression<CommandInvocationException> ( parameterType, name, $"Missing argument #{idx}." ) )
                 );
             }
 
