@@ -155,7 +155,7 @@ namespace GUtils.Timing
             {
                 if ( !this.disposed )
                 {
-                    this._owner.EndScope ( this );
+                    this._owner.EndOperation ( this );
                     this.disposed = true;
                 }
             }
