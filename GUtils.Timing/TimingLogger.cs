@@ -506,12 +506,16 @@ namespace GUtils.Timing
         /// <returns></returns>
         public IDisposable BeginScope ( String name, Boolean shouldPrintElapsedTime = true )
         {
-            this.WriteLine ( name );
+            this.WriteLine ( $"{name}..." );
             this.WriteLine ( "{" );
             var scope = new Scope ( this, name, this.Elapsed, shouldPrintElapsedTime );
             this.scopes.Push ( scope );
             return scope;
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1304:Specify CultureInfo", Justification = "By design." )]
+        private static String UnCapitalize ( String text ) =>
+            text.Length > 1 ? Char.ToLower ( text[0] ) + text.Substring ( 1 ) : text.ToLower ( );
 
         private void EndScope ( Scope scope )
         {
@@ -521,9 +525,10 @@ namespace GUtils.Timing
             if ( !this.scopes.Peek ( ).Equals ( scope ) )
                 throw new InvalidOperationException ( "Attempt to end outer scope without ending inner scope(s)." );
 
-            scope = this.scopes.Pop ( );
             if ( scope.ShouldPrintElapsedTime )
-                this.WriteLine ( $"Elapsed {Duration.Format ( ( this.Elapsed - scope.StartedAt ).Ticks )} in {scope.Name}." );
+                this.WriteLine ( $"Elapsed {Duration.Format ( ( this.Elapsed - scope.StartedAt ).Ticks )} in {UnCapitalize ( scope.Name )}." );
+
+            this.scopes.Pop ( );
             this.WriteLine ( "}" );
         }
 
@@ -538,15 +543,18 @@ namespace GUtils.Timing
         /// <param name="name"></param>
         /// <param name="shouldPrintElapsedTime"></param>
         /// <returns></returns>
-        public IDisposable BeginOperation ( String name, Boolean shouldPrintElapsedTime = true ) =>
-            new Operation ( this, name, this.Elapsed, shouldPrintElapsedTime );
+        public IDisposable BeginOperation ( String name, Boolean shouldPrintElapsedTime = true )
+        {
+            this.Write ( $"{name}..." );
+            return new Operation ( this, name, this.Elapsed, shouldPrintElapsedTime );
+        }
 
         private void EndOperation ( Operation operation )
         {
             if ( operation.ShouldPrintElapsedTime )
-                this.WriteLine ( $"Finished {operation.Name} in {Duration.Format ( ( this.Elapsed - operation.StartedAt ).Ticks )}." );
+                this.WriteLine ( $" done. ({Duration.Format ( ( this.Elapsed - operation.StartedAt ).Ticks )})" );
             else
-                this.WriteLine ( $"Finished {operation.Name}." );
+                this.WriteLine ( $" done." );
         }
 
         #endregion Operation Management
