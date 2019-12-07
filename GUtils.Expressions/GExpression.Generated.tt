@@ -6,15 +6,11 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" encoding="utf-8" #>
 <#
-    // Arbitrary number
+    // The max type params in the BCL (in Func<...> at least)
     const Int32 maxTypeParams = 16;
 
-    IEnumerable<String> getseq ( Int32 count, String prefix = "a" )
-    {
-        var i = count;
-        while ( i-- > 0 )
-            yield return $"{prefix}{count  - i}";
-    }
+    IEnumerable<String> getseq ( Int32 count, String prefix = "a" ) =>
+        Enumerable.Range ( 1, count ).Select ( n => $"{prefix}{n}" );
 
     IEnumerable<String> gettparams ( Int32 count ) => getseq ( count, "T" );
 #>
@@ -39,6 +35,7 @@
 using System;
 using System.Reflection;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 
 namespace GUtils.Expressions
 {
@@ -52,24 +49,28 @@ namespace GUtils.Expressions
         /// <summary>
         /// Creates a method call expression
         /// </summary>
-        /// <param name="inst"></param>
+        /// <param name="type"></param>
+        /// <param name="instance"></param>
         /// <param name="name"></param>
-        /// <typeparam name="Class"></typeparam>
-        public static MethodCallExpression MethodCall<Class> ( Expression inst, String name )
+        public static MethodCallExpression MethodCall ( Type type, Expression instance, String name )
         {
-            return Expression.Call ( inst, typeof ( Class ).GetMethod ( name ) );
+            if ( type is null )
+                throw new ArgumentNullException ( nameof ( type ) );
+
+            if ( String.IsNullOrWhiteSpace ( name ) )
+                throw new ArgumentException ( "The name of the method cannot be null, empty or whitespaces.", nameof ( name ) );
+
+            return Expression.Call ( instance, type.GetMethod ( name ) );
         }
 
         /// <summary>
         /// Creates a method call expression
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="inst"></param>
+        /// <param name="instance"></param>
         /// <param name="name"></param>
-        public static MethodCallExpression MethodCall ( Type type, Expression inst, String name )
-        {
-            return Expression.Call ( inst, type.GetMethod ( name ) );
-        }
+        /// <typeparam name="TInstance"></typeparam>
+        public static MethodCallExpression MethodCall<TInstance> ( Expression instance, String name ) =>
+            MethodCall ( typeof ( TInstance ), instance, name );
 
 <#
 for ( var i = 1; i < maxTypeParams + 1; i++ )
@@ -80,53 +81,39 @@ for ( var i = 1; i < maxTypeParams + 1; i++ )
         /// Creates a method call expression
         /// </summary>
         /// <param name="type"></param>
-        /// <param name="inst"></param>
+        /// <param name="instance"></param>
         /// <param name="name"></param>
         /// <param name="args"></param>
-<#foreach ( var tparam in tparams ) {#>
-        /// <typeparam name="<#=tparam#>"></typeparam>
-<#}#>
-        public static MethodCallExpression MethodCall<<#=String.Join ( ", ", tparams )#>> ( Type type, Expression inst, String name, params Expression[] args )
+        public static MethodCallExpression MethodCall<<#=String.Join ( ", ", tparams )#>> ( Type type, Expression instance, String name, params Object[] args )
         {
-            MethodInfo method = type.GetMethod ( name, new[] {
+            if ( type is null )
+                throw new ArgumentNullException ( nameof ( type ) );
+
+            if ( String.IsNullOrWhiteSpace ( name ) )
+                throw new ArgumentException ( "The method name cannot be null, empty or whitespaces.", nameof ( name ) );
+
+            if ( args is null )
+                throw new ArgumentNullException ( nameof ( args ) );
+
+            MethodInfo method = type.GetMethod ( name, new[]
+            {
 <#foreach ( var tparam in tparams ) {#>
                 typeof ( <#=tparam#> ),
 <#}#>
             } );
             ParameterInfo[] @params = method.GetParameters ( );
 
-            return Expression.Call ( inst, method,
-<#for ( var ii = 0; ii < i; ii++ ) {#>
-                args.Length > <#=ii#> ? args[<#=ii#>] : ( @params[<#=ii#>].HasDefaultValue ? Expression.Constant ( @params[<#=ii#>].DefaultValue ) : throw new InvalidOperationException ( "Argument #<#=ii#> does not have a default value." ) )<#=(ii<i-1?",":"")#>
-<#}#>
-            );
+            return Expression.Call ( instance, method, GetParametersExpressions ( @params, args ) );
         }
 
         /// <summary>
         /// Creates a method call expression
         /// </summary>
-        /// <param name="inst"></param>
+        /// <param name="instance"></param>
         /// <param name="name"></param>
         /// <param name="args"></param>
-        /// <typeparam name="Class"></typeparam>
-<#foreach ( var tparam in tparams ) {#>
-        /// <typeparam name="<#=tparam#>"></typeparam>
-<#}#>
-        public static MethodCallExpression MethodCall<Class, <#=String.Join ( ", ", tparams )#>> ( Expression inst, String name, params Expression[] args )
-        {
-            MethodInfo method = typeof ( Class ).GetMethod ( name, new[] {
-<#foreach ( var tparam in tparams ) {#>
-                typeof ( <#=tparam#> ),
-<#}#>
-            } );
-            ParameterInfo[] @params = method.GetParameters ( );
-
-            return Expression.Call ( inst, method,
-<#for ( var ii = 0; ii < i; ii++ ) {#>
-                args.Length > <#=ii#> ? args[<#=ii#>] : ( @params[<#=ii#>].HasDefaultValue ? Expression.Constant ( @params[<#=ii#>].DefaultValue ) : throw new InvalidOperationException ( "Argument #<#=ii#> does not have a default value." ) )<#=(ii<i-1?",":"")#>
-<#}#>
-            );
-        }
+        public static MethodCallExpression MethodCall<TInstance, <#=String.Join ( ", ", tparams )#>> ( Expression instance, String name, params Expression[] args ) =>
+            MethodCall<<#=String.Join ( ", ", tparams )#>> ( typeof ( TInstance ), instance, name, args );
 
 <#}#>
         #endregion MethodCall (Generated Code)
@@ -135,13 +122,10 @@ for ( var i = 1; i < maxTypeParams + 1; i++ )
         #region New (Generated Code)
 
         /// <summary>
-        /// Returns a <see cref="NewExpression" /> of <typeparamref name="Class" />
+        /// Returns a <see cref="NewExpression" /> of <typeparamref name="TInstance" />
         /// </summary>
-        /// <typeparam name="Class"></typeparam>
-        public static NewExpression New<Class> ( )
-        {
-            return Expression.New ( typeof ( Class ) );
-        }
+        public static NewExpression New<TInstance> ( ) =>
+            Expression.New ( typeof ( TInstance ) );
 
 <#
 for ( var i = 1; i < maxTypeParams + 1; i++ )
@@ -150,23 +134,23 @@ for ( var i = 1; i < maxTypeParams + 1; i++ )
 #>
 
         /// <summary>
-        /// Returns a <see cref="NewExpression" /> of <typeparamref name="Class" />
+        /// Returns a <see cref="NewExpression" /> of <typeparamref name="TInstance" />
         /// </summary>
         /// <param name="args"></param>
-        /// <typeparam name="Class"></typeparam>
-<#foreach ( var tparam in tparams ) {#>
-        /// <typeparam name="<#=tparam#>"></typeparam>
-<#}#>
-        public static NewExpression New<Class, <#=String.Join ( ", ", tparams )#>> ( params Expression[] args )
+        public static NewExpression New<TInstance, <#=String.Join ( ", ", tparams )#>> ( params Object[] args )
         {
-            ConstructorInfo constructor = typeof ( Class ).GetConstructor ( new[]
+            if ( args is null )
+                throw new ArgumentNullException ( nameof ( args ) );
+
+            ConstructorInfo constructor = typeof ( TInstance ).GetConstructor ( new[]
             {
 <#foreach ( var tparam in tparams ) {#>
                 typeof ( <#=tparam#> ),
 <#}#>
             } );
+            var @params = constructor.GetParameters ( );
 
-            return Expression.New ( constructor, args );
+            return Expression.New ( constructor, GetParametersExpressions ( @params, args ) );
         }
 <#
 }
@@ -178,13 +162,10 @@ for ( var i = 1; i < maxTypeParams + 1; i++ )
         #region Throw (Generated Code)
 
         /// <summary>
-        /// Returns a throw expression of type <typeparamref name="Class" />
+        /// Returns a throw expression of type <typeparamref name="TInstance" />
         /// </summary>
-        /// <typeparam name="Class"></typeparam>
-        public static UnaryExpression Throw<Class> ( ) where Class : Exception
-        {
-            return Expression.Throw ( New<Class> ( ), typeof ( Class ) );
-        }
+        public static UnaryExpression Throw<TInstance> ( ) where TInstance : Exception =>
+            Expression.Throw ( New<TInstance> ( ), typeof ( TInstance ) );
 
 <#
 for ( var i = 1; i < maxTypeParams + 1; i++ )
@@ -193,17 +174,11 @@ for ( var i = 1; i < maxTypeParams + 1; i++ )
 #>
 
         /// <summary>
-        /// Returns a throw expression of type <typeparamref name="Class" />
+        /// Returns a throw expression of type <typeparamref name="TInstance" />
         /// </summary>
         /// <param name="args"></param>
-        /// <typeparam name="Class"></typeparam>
-<#foreach ( var tparam in tparams ) {#>
-        /// <typeparam name="<#=tparam#>"></typeparam>
-<#}#>
-        public static UnaryExpression Throw<Class, <#=String.Join ( ", ", tparams )#>> ( params Expression[] args ) where Class : Exception
-        {
-            return Expression.Throw ( New<Class, <#=String.Join ( ", ", tparams )#>> ( args ), typeof ( Class ) );
-        }
+        public static UnaryExpression Throw<TInstance, <#=String.Join ( ", ", tparams )#>> ( params Object[] args ) where TInstance : Exception =>
+            Expression.Throw ( New<TInstance, <#=String.Join ( ", ", tparams )#>> ( args ), typeof ( TInstance ) );
 <#
 }
 #>
