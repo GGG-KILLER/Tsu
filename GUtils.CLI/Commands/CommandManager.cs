@@ -16,6 +16,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,15 +34,15 @@ namespace GUtils.CLI.Commands
         /// <summary>
         /// The list containing all commands
         /// </summary>
-        protected readonly List<Command> CommandList;
+        protected List<Command> CommandList { get; }
 
         /// <summary>
         /// The lookup table used on command name resolution
         /// </summary>
-        protected readonly Dictionary<String, Command> CommandLookupTable;
+        protected Dictionary<String, Command> CommandLookupTable { get; }
 
         /// <summary>
-        /// The commands registered in this <see cref="CommandManager" />
+        /// The commands registered in this <see cref="CommandManager"/>
         /// </summary>
         public IReadOnlyList<Command> Commands => this.CommandList.AsReadOnly ( );
 
@@ -51,7 +52,7 @@ namespace GUtils.CLI.Commands
         public IReadOnlyDictionary<String, Command> CommandDictionary => this.CommandLookupTable;
 
         /// <summary>
-        /// Initializes a <see cref="CommandManager" />
+        /// Initializes a <see cref="CommandManager"/>
         /// </summary>
         public CommandManager ( )
         {
@@ -59,43 +60,39 @@ namespace GUtils.CLI.Commands
             this.CommandLookupTable = new Dictionary<String, Command> ( );
         }
 
-        private static String GetFullName ( in MethodInfo method, in Object inst ) =>
+        private static String GetFullName ( MethodInfo method, Object inst ) =>
             $"{inst?.GetType ( ).FullName ?? method.DeclaringType.FullName}.{method.Name}";
 
         #region Commands Loading
 
         /// <summary>
-        /// Loads all methods tagged with <see cref="CommandAttribute" /> from a given type, be they
+        /// Loads all methods tagged with <see cref="CommandAttribute"/> from a given type, be they
         /// public or private.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="instance">
-        /// Instance to use when invoking the methods (null for static classes)
-        /// </param>
+        /// <param name="instance">Instance to use when invoking the methods (null for static classes)</param>
         public void LoadCommands<T> ( T instance ) where T : class =>
             this.LoadCommands ( typeof ( T ), instance );
 
         /// <summary>
-        /// Loads all methods tagged with <see cref="CommandAttribute" /> from a given type, be they
+        /// Loads all methods tagged with <see cref="CommandAttribute"/> from a given type, be they
         /// public or private.
         /// </summary>
         /// <param name="type">Type where to load commands from</param>
-        /// <param name="instance">
-        /// Instance to use when invoking the methods (null for static classes)
-        /// </param>
+        /// <param name="instance">Instance to use when invoking the methods (null for static classes)</param>
         public void LoadCommands ( Type type, Object instance )
         {
-            const BindingFlags flagsForAllMethods = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+            if ( type is null )
+                throw new ArgumentNullException ( nameof ( type ) );
 
-            // Find static/non-static methods (choose between static and instance by the presence of a
-            // non-null instance)
-            foreach ( MethodInfo method in type.GetMethods ( flagsForAllMethods )
+            // Find static/non-static methods (choose between static and instance by the presence of
+            // a non-null instance)
+            foreach ( MethodInfo method in type.GetMethods ( BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic )
                 .OrderBy ( method => method.Name ) )
             {
                 if ( method.IsDefined ( typeof ( CommandAttribute ) ) )
                 {
-                    // Create a single instance of the command (will validate and compile in the
-                    // constructor)
+                    // Create a single instance of the command (will validate and compile in the constructor)
                     var command = new Command ( method, instance );
                     this.CommandList.Add ( command );
 
@@ -121,7 +118,7 @@ namespace GUtils.CLI.Commands
         /// Adds a nested command (or verb, if you will) to this command manager.
         /// </summary>
         /// <param name="verb"></param>
-        /// <returns>The <see cref="CommandManager" /> created for the verb</returns>
+        /// <returns>The <see cref="CommandManager"/> created for the verb</returns>
         public virtual CommandManager AddVerb ( String verb )
         {
             if ( String.IsNullOrWhiteSpace ( verb ) )
@@ -155,7 +152,7 @@ namespace GUtils.CLI.Commands
         /// <param name="cmdClassInstance"></param>
         public void AddHelpCommand<T> ( T cmdClassInstance ) where T : HelpCommand
         {
-            if ( cmdClassInstance == null )
+            if ( cmdClassInstance is null )
                 throw new ArgumentNullException ( nameof ( cmdClassInstance ) );
             this.LoadCommands ( cmdClassInstance );
         }

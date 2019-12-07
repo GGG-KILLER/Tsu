@@ -45,6 +45,7 @@ namespace GUtils.CLI.Tests.Commands
         public static void Error05 ( [JoinRestOfArguments] String a, String b ) => _ = a + b;
 
         [Command ( "f" )]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>" )]
         public static void Error06 ( String[] a, String b ) => _ = a[0] == b;
 
         [Command ( "g" ), HelpDescription ( "Sucess" )]

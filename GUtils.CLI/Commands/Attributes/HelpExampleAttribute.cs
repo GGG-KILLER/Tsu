@@ -29,7 +29,7 @@ namespace GUtils.CLI.Commands
         /// <summary>
         /// The example of the invocation
         /// </summary>
-        public readonly String Example;
+        public String Example { get; }
 
         /// <summary>
         /// Initializes a <see cref="HelpExampleAttribute" />

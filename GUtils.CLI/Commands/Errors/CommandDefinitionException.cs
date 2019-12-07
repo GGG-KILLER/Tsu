@@ -31,7 +31,7 @@ namespace GUtils.CLI.Commands.Errors
         /// <summary>
         /// The method that is the body of the command
         /// </summary>
-        public readonly MethodInfo Method;
+        public MethodInfo Method { get; }
 
         /// <summary>
         /// Initializes this <see cref="CommandDefinitionException"/>

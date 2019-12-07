@@ -29,7 +29,7 @@ namespace GUtils.CLI.Commands
         /// <summary>
         /// The description of the command or argument
         /// </summary>
-        public readonly String Description;
+        public String Description { get; }
 
         /// <summary>
         /// Initializes this <see cref="HelpDescriptionAttribute"/>

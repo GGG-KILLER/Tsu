@@ -120,12 +120,14 @@ namespace GUtils.CLI.Tests.Commands
                 [HelpDescription ( "All other values" )] params String[] c ) => a + b + c.Length;
 
             [Command ( "second-command-with-help" )]
+            [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>" )]
             public static Boolean DoAbsolutelyNothing02 (
                 [HelpDescription ( "First attribute" )] Int32 a,
                 [JoinRestOfArguments] String b
             ) => a.ToString ( ) == b;
 
             [Command ( "third-command-with-help" )]
+            [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>" )]
             public static Boolean DoAbsolutelyNothing03 (
                 [HelpDescription ( "First attribute" )] Int32 a,
                 [JoinRestOfArguments] String b = null

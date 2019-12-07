@@ -37,33 +37,33 @@ namespace GUtils.CLI.Commands
         /// <summary>
         /// The names that this command can be referred by
         /// </summary>
-        public readonly ImmutableArray<String> Names;
+        public ImmutableArray<String> Names { get; }
 
         /// <summary>
         /// The description shown when the help command is invoked
         /// </summary>
-        public readonly String Description;
+        public String Description { get; }
 
         /// <summary>
         /// Whether this command accepts raw input
         /// </summary>
-        public readonly Boolean IsRaw;
+        public Boolean IsRaw { get; }
 
         /// <summary>
         /// The arguments this command accepts
         /// </summary>
-        public readonly ImmutableArray<ArgumentHelpData> Arguments;
+        public ImmutableArray<ArgumentHelpData> Arguments { get; }
 
         /// <summary>
         /// The command invokation examples provided (or not)
         /// </summary>
-        public readonly ImmutableArray<String> Examples;
+        public ImmutableArray<String> Examples { get; }
 
         internal readonly MethodInfo Method;
         internal readonly Object Instance;
         internal readonly Action<String, String[]> CompiledCommand;
 
-        private static ArgumentModifiers GetArgumentModifiers ( in ParameterInfo info )
+        private static ArgumentModifiers GetArgumentModifiers ( ParameterInfo info )
         {
             ArgumentModifiers mods = ArgumentModifiers.Required;
 
@@ -81,21 +81,21 @@ namespace GUtils.CLI.Commands
         {
             if ( names == null )
                 throw new ArgumentNullException ( nameof ( names ) );
-            if ( names.Count ( ) < 1 )
+
+            if ( !names.Any ( ) )
                 throw new ArgumentException ( "No names provided", nameof ( names ) );
+
             this.Names = names.ToImmutableArray ( );
             this.Description = description ?? throw new ArgumentNullException ( nameof ( description ) );
             this.IsRaw = isRaw;
             this.Method = method ?? throw new ArgumentNullException ( nameof ( method ) );
             this.Instance = instance;
             this.Arguments = method.GetParameters ( )
-                .Select ( arg => new ArgumentHelpData (
-                        arg.Name,
-                        "",
-                        GetArgumentModifiers ( arg ),
-                        arg.ParameterType
-                ) )
-                .ToImmutableArray ( );
+                                   .Select ( arg => new ArgumentHelpData ( arg.Name,
+                                                                           "",
+                                                                           GetArgumentModifiers ( arg ),
+                                                                           arg.ParameterType ) )
+                                   .ToImmutableArray ( );
             this.Examples = examples?.ToImmutableArray ( ) ?? ImmutableArray<String>.Empty;
             this.CompiledCommand = CommandCompiler.Compile ( method, instance );
         }
@@ -137,7 +137,7 @@ namespace GUtils.CLI.Commands
 
         #region Validation
 
-        private static void ValidateParameters ( MethodInfo method, in ParameterInfo[] @params )
+        private static void ValidateParameters ( MethodInfo method, ParameterInfo[] @params )
         {
             // Validate that the method does not contain any out
             // parameters and that the rest attribute is not
@@ -164,15 +164,13 @@ namespace GUtils.CLI.Commands
                 if ( @params[i].IsIn )
                     throw new CommandDefinitionException ( method, $"Methods with 'in' parameters are not supported." );
 
-                // ref and out
-                if ( @params[i].ParameterType.IsByRef )
-                {
-                    if ( @params[i].IsOut )
+                // out
+                if ( @params[i].IsOut )
+                    throw new CommandDefinitionException ( method, $"Methods with 'out' parameters are not supported." );
 
-                        throw new CommandDefinitionException ( method, $"Methods with 'out' parameters are not supported." );
-                    else
+                // ref
+                if ( @params[i].ParameterType.IsByRef )
                         throw new CommandDefinitionException ( method, $"Methods with 'ref' parameters are not supported." );
-                }
             }
         }
 

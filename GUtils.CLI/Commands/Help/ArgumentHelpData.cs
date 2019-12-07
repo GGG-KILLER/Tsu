@@ -56,22 +56,22 @@ namespace GUtils.CLI.Commands.Help
         /// <summary>
         /// The name of the argument
         /// </summary>
-        public readonly String Name;
+        public String Name { get; }
 
         /// <summary>
         /// The description of the argument
         /// </summary>
-        public readonly String Description;
+        public String Description { get; }
 
         /// <summary>
         /// The modifiers that the argument has
         /// </summary>
-        public readonly ArgumentModifiers Modifiers;
+        public ArgumentModifiers Modifiers { get; }
 
         /// <summary>
         /// The type of the argument
         /// </summary>
-        public readonly Type ParameterType;
+        public Type ParameterType { get; }
 
         /// <summary>
         /// Initializes <see cref="ArgumentHelpData" />

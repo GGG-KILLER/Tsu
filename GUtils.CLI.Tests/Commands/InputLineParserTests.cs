@@ -16,6 +16,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 using GUtils.CLI.Commands;
 using GUtils.CLI.Commands.Errors;
@@ -28,6 +29,7 @@ namespace GUtils.CLI.Tests.Commands
     public class InputLineParserTests
     {
         [DataTestMethod, TestCategory ( "Complex Parse" )]
+
         #region Escapes
 
         [DataRow ( @"\a\b\f", "\a\b\f" )]
@@ -35,6 +37,7 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( "\"a \\\" b\"", "a \" b" )]
 
         #endregion Escapes
+
         #region Space-separated stuff
 
         [DataRow ( @"hello world", "hello;world" )]
@@ -42,6 +45,7 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( @"\thello\t \tworld\t", "\thello\t;\tworld\t" )]
 
         #endregion Space-separated stuff
+
         #region Quoted stuff
 
         [DataRow ( "\"hello world\" 'how are you?'", "hello world;how are you?" )]
@@ -50,6 +54,7 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( @"'\o150\b1100101\o154\x6c\x6f\x20\b1110111\o157\x72\o154\x64'", "hello world" )]
 
         #endregion Quoted stuff
+
         #region Rest "operator"
 
         [DataRow ( @"let\'s start by saying r:\o150\b1100101\o154\x6c\x6f\x20\b1110111\o157\x72\o154\x64 how are you?", "let's;start;by;saying;hello world how are you?" )]
@@ -59,6 +64,8 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( @"rr:hello\x20world", "hello\\x20world" )]
 
         #endregion Rest "operator"
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>" )]
         public void ParseShouldParse ( String input, String rawExpected )
         {
             try

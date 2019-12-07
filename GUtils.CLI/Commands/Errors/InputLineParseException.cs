@@ -30,7 +30,7 @@ namespace GUtils.CLI.Commands.Errors
         /// <summary>
         /// The offset at which this exception ocurred
         /// </summary>
-        public readonly Int32 Offset;
+        public Int32 Offset { get; }
 
         /// <summary>
         /// Initializes this <see cref="InputLineParseException"/>

@@ -30,7 +30,7 @@ namespace GUtils.CLI.Commands.Errors
         /// <summary>
         /// The name of the command that failed to execute
         /// </summary>
-        public readonly String Command;
+        public String Command { get; }
 
         /// <summary>
         /// Initializes this <see cref="CommandInvocationException"/>

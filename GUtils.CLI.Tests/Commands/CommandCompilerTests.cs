@@ -80,6 +80,8 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( nameof ( DoSomething07 ), "a;b;c;d;e;f;g", "a.b.c.d.e.f.g" )]
         [DataRow ( nameof ( DoSomething08 ), "-2", -2D )]
         [DataRow ( nameof ( DoSomething08 ), "", null )]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>" )]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1307:Specify StringComparison", Justification = "<Pending>" )]
         public void CompiledCommandShouldRun ( String methodName, String inputString, Object expectedVal )
         {
             MethodInfo method = typeof ( CommandCompilerTests ).GetMethod ( methodName );
