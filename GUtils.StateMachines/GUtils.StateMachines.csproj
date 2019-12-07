@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <CodeAnalysisRuleSet>RuleSet1.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>ruleset.ruleset</CodeAnalysisRuleSet>
     <Authors>GGG KILLER</Authors>
     <Description>State machines</Description>
     <Copyright>GGG KILLER © 2018</Copyright>
