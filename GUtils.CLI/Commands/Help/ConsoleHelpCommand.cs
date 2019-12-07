@@ -16,10 +16,8 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using GUtils.Pooling;
 
 namespace GUtils.CLI.Commands.Help
 {
@@ -39,25 +37,25 @@ namespace GUtils.CLI.Commands.Help
         #region Write/WriteLine
 
         /// <summary>
-        /// <inheritdoc />
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="ch"></param>
         protected override void Write ( Char ch ) => Console.Write ( ch );
 
         /// <summary>
-        /// <inheritdoc />
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="text"></param>
         protected override void Write ( String text ) => Console.Write ( text );
 
         /// <summary>
-        /// <inheritdoc />
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="ch"></param>
         protected override void WriteLine ( Char ch ) => Console.WriteLine ( ch );
 
         /// <summary>
-        /// <inheritdoc />
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="line"></param>
         protected override void WriteLine ( String line ) => Console.WriteLine ( line );

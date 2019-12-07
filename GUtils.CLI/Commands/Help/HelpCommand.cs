@@ -16,10 +16,11 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GUtils.Pooling;
+using System.Text;
 
 namespace GUtils.CLI.Commands.Help
 {
@@ -56,13 +57,13 @@ namespace GUtils.CLI.Commands.Help
         protected abstract void Write ( String str );
 
         /// <summary>
-        /// Writes a character followed by a <see cref="Environment.NewLine" /> to the output
+        /// Writes a character followed by a <see cref="Environment.NewLine"/> to the output
         /// </summary>
         /// <param name="ch"></param>
         protected abstract void WriteLine ( Char ch );
 
         /// <summary>
-        /// Writes a string followed by a <see cref="Environment.NewLine" /> to the output
+        /// Writes a string followed by a <see cref="Environment.NewLine"/> to the output
         /// </summary>
         /// <param name="str"></param>
         protected abstract void WriteLine ( String str );
@@ -92,23 +93,24 @@ namespace GUtils.CLI.Commands.Help
         /// </summary>
         /// <param name="argumentHelp"></param>
         /// <returns></returns>
-        protected static String GetPrettyArgumentName ( ArgumentHelpData argumentHelp ) =>
-            StringBuilderPool.Shared.WithRentedItem ( name =>
+        protected static String GetPrettyArgumentName ( ArgumentHelpData argumentHelp )
+        {
+            var name = new StringBuilder ( );
+
+            name.Append ( argumentHelp.Name );
+
+            if ( ( argumentHelp.Modifiers & ( ArgumentModifiers.JoinRest | ArgumentModifiers.Params ) ) != 0 )
+                name.Append ( "..." );
+
+            // Both params and args with default values are optional
+            if ( ( argumentHelp.Modifiers & ( ArgumentModifiers.Optional | ArgumentModifiers.Params ) ) != 0 )
             {
-                name.Append ( argumentHelp.Name );
+                name.Insert ( 0, '[' );
+                name.Append ( ']' );
+            }
 
-                if ( ( argumentHelp.Modifiers & ( ArgumentModifiers.JoinRest | ArgumentModifiers.Params ) ) != 0 )
-                    name.Append ( "..." );
-
-                // Both params and args with default values are optional
-                if ( ( argumentHelp.Modifiers & ( ArgumentModifiers.Optional | ArgumentModifiers.Params ) ) != 0 )
-                {
-                    name.Insert ( 0, '[' );
-                    name.Append ( ']' );
-                }
-
-                return name.ToString ( );
-            } );
+            return name.ToString ( );
+        }
 
         /// <summary>
         /// Returns the lines of help text for a given command
@@ -117,6 +119,9 @@ namespace GUtils.CLI.Commands.Help
         /// <returns></returns>
         protected virtual String[] GetHelpLines ( Command command )
         {
+            if ( command is null )
+                throw new ArgumentNullException ( nameof ( command ) );
+
             if ( !this.Cache.ContainsKey ( command ) )
             {
                 var list = new List<String>

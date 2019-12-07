@@ -30,8 +30,4 @@
     <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\GUtils.Pooling\GUtils.Pooling.csproj" />
-  </ItemGroup>
-
 </Project>

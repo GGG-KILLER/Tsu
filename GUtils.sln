@@ -27,8 +27,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{55138AAF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.CLI.Tests", "GUtils.CLI.Tests\GUtils.CLI.Tests.csproj", "{B4F43654-EF29-4DB4-919F-ED187C458927}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Pooling", "GUtils.Pooling\GUtils.Pooling.csproj", "{89848CEE-FB83-47C3-B550-BA444280A085}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Parsing.BBCode", "GUtils.Parsing.BBCode\GUtils.Parsing.BBCode.csproj", "{0460A036-D964-4335-BB0D-46FE4F18BEE0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Parsing.BBCode.Tests", "GUtils.Parsing.BBCode.Tests\GUtils.Parsing.BBCode.Tests.csproj", "{71D206D0-8498-40E3-95B9-76E074350AB9}"
@@ -43,7 +41,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUtils.Windows.WPF", "GUtil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Numerics", "GUtils.Numerics\GUtils.Numerics.csproj", "{D6157530-755C-40B8-9CD3-B3449BD7E805}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUtils.MVVM", "GUtils.MVVM\GUtils.MVVM.csproj", "{6220606C-DADE-4358-8285-1EB7D25D457F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.MVVM", "GUtils.MVVM\GUtils.MVVM.csproj", "{6220606C-DADE-4358-8285-1EB7D25D457F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,10 +73,6 @@ Global
 		{B4F43654-EF29-4DB4-919F-ED187C458927}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4F43654-EF29-4DB4-919F-ED187C458927}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4F43654-EF29-4DB4-919F-ED187C458927}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89848CEE-FB83-47C3-B550-BA444280A085}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{89848CEE-FB83-47C3-B550-BA444280A085}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{89848CEE-FB83-47C3-B550-BA444280A085}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{89848CEE-FB83-47C3-B550-BA444280A085}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0460A036-D964-4335-BB0D-46FE4F18BEE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0460A036-D964-4335-BB0D-46FE4F18BEE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0460A036-D964-4335-BB0D-46FE4F18BEE0}.Release|Any CPU.ActiveCfg = Release|Any CPU

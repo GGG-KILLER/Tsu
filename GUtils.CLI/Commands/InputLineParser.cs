@@ -16,11 +16,11 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 using GUtils.CLI.Commands.Errors;
-using GUtils.Pooling;
 
 namespace GUtils.CLI.Commands
 {
@@ -40,19 +40,18 @@ namespace GUtils.CLI.Commands
             var start = this.Offset;
             this.Offset++;
 
-            return StringBuilderPool.Shared.WithRentedItem ( builder =>
-            {
-                while ( this.Offset < this.Input.Length && this.Input[this.Offset] != separator )
-                    builder.Append ( this.ParseCharacter ( ) );
+            var builder = new StringBuilder ( );
 
-                if ( this.Offset == this.Input.Length || this.Input[this.Offset] != separator )
-                    throw new InputLineParseException ( "Unfinished quoted string literal.", start );
+            while ( this.Offset < this.Input.Length && this.Input[this.Offset] != separator )
+                builder.Append ( this.ParseCharacter ( ) );
 
-                // skip '<separator>'
-                this.Offset++;
+            if ( this.Offset == this.Input.Length || this.Input[this.Offset] != separator )
+                throw new InputLineParseException ( "Unfinished quoted string literal.", start );
 
-                return builder.ToString ( );
-            } );
+            // skip '<separator>'
+            this.Offset++;
+
+            return builder.ToString ( );
         }
 
         private Char ParseCharacter ( )
@@ -143,8 +142,7 @@ namespace GUtils.CLI.Commands
 
                     case Char ch when '0' <= ch && ch <= '9':
                     {
-                        // We ended up consuming one of the digits
-                        // on this one
+                        // We ended up consuming one of the digits on this one
                         this.Offset--;
                         var idx = this.Offset;
                         while ( '0' <= this.Input[idx] && this.Input[idx] <= '9' )
@@ -171,17 +169,18 @@ namespace GUtils.CLI.Commands
             }
         }
 
-        private String ParseSpaceSeparatedSection ( ) =>
-            StringBuilderPool.Shared.WithRentedItem ( builder =>
-            {
-                while ( this.Offset < this.Input.Length
-                        && !Char.IsWhiteSpace ( this.Input[this.Offset] ) )
-                {
-                    builder.Append ( this.ParseCharacter ( ) );
-                }
+        private String ParseSpaceSeparatedSection ( )
+        {
+            var builder = new StringBuilder ( );
 
-                return builder.ToString ( );
-            } );
+            while ( this.Offset < this.Input.Length
+            && !Char.IsWhiteSpace ( this.Input[this.Offset] ) )
+            {
+                builder.Append ( this.ParseCharacter ( ) );
+            }
+
+            return builder.ToString ( );
+        }
 
         private void ConsumeWhitespaces ( )
         {
@@ -215,8 +214,7 @@ namespace GUtils.CLI.Commands
                         if ( this.Input[this.Offset + 1] == 'r'
                             && this.Input[this.Offset + 2] == ':' )
                         {
-                            // Move from 'r' while skipping 'r'
-                            // and ':'
+                            // Move from 'r' while skipping 'r' and ':'
                             this.Offset += 3;
 
                             yield return this.Input.Substring ( this.Offset );
@@ -228,16 +226,14 @@ namespace GUtils.CLI.Commands
                             // Move from 'r' while skipping ':'
                             this.Offset += 2;
 
-                            StringBuilder b = StringBuilderPool.Shared.Rent ( );
+                            var builder = new StringBuilder ( );
                             while ( this.Offset < this.Input.Length )
-                                b.Append ( this.ParseCharacter ( ) );
+                                builder.Append ( this.ParseCharacter ( ) );
                             this.Offset = this.Input.Length;
 
-                            // We do not return non-explicit empty
-                            // strings under any circumstances
-                            if ( b.Length > 0 )
-                                yield return b.ToString ( );
-                            StringBuilderPool.Shared.Return ( b );
+                            // We do not return non-explicit empty strings under any circumstances
+                            if ( builder.Length > 0 )
+                                yield return builder.ToString ( );
                             break;
                         }
                         else
