@@ -55,7 +55,13 @@ namespace GUtils.Parsing.BBCode.Tree
         /// <inheritdoc />
         /// </summary>
         /// <param name="visitor"></param>
-        public override void Accept ( IBBTreeVisitor visitor ) => visitor.Visit ( this );
+        public override void Accept ( IBBTreeVisitor visitor )
+        {
+            if ( visitor is null )
+                throw new ArgumentNullException ( nameof ( visitor ) );
+
+            visitor.Visit ( this );
+        }
 
         /// <summary>
         /// <inheritdoc />
@@ -63,7 +69,13 @@ namespace GUtils.Parsing.BBCode.Tree
         /// <typeparam name="T"></typeparam>
         /// <param name="visitor"></param>
         /// <returns></returns>
-        public override T Accept<T> ( IBBTreeVisitor<T> visitor ) => visitor.Visit ( this );
+        public override T Accept<T> ( IBBTreeVisitor<T> visitor )
+        {
+            if ( visitor is null )
+                throw new ArgumentNullException ( nameof ( visitor ) );
+
+            return visitor.Visit ( this );
+        }
 
         #endregion Visitor Pattern
     }

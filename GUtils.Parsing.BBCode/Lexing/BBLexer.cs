@@ -16,9 +16,12 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
-using GUtils.Pooling;
+using System.Text;
 
 namespace GUtils.Parsing.BBCode.Lexing
 {
@@ -32,8 +35,9 @@ namespace GUtils.Parsing.BBCode.Lexing
             this.Reader = reader;
         }
 
-        public BBToken NextToken ( )
+        public BBToken? NextToken ( )
         {
+            var sequence = new StringBuilder();
             switch ( this.Reader.Peek ( ) )
             {
                 case '[':
@@ -61,20 +65,115 @@ namespace GUtils.Parsing.BBCode.Lexing
                         goto default;
                     this.Reader.Read ( );
                     return new BBToken ( BBTokenType.Equals, "=" );
-                        
+
+                case -1:
+                    return null;
+
                 default:
-                    return new BBToken ( BBTokenType.Text, StringBuilderPool.Shared.WithRentedItem ( sequence =>
+                {
+                    while ( this.Reader.Peek ( ) != -1
+                            && this.Reader.Peek ( ) != '['
+                            && ( !this.InsideTag || ( this.Reader.Peek ( ) != '=' && this.Reader.Peek ( ) != ']' ) ) )
                     {
-                        while ( this.Reader.Peek ( ) != -1
-                                && this.Reader.Peek ( ) != '['
-                                && ( !this.InsideTag || ( this.Reader.Peek ( ) != '=' && this.Reader.Peek ( ) != ']' ) ) )
+                        if ( this.Reader.Peek ( ) == '\\' )
+                            this.Reader.Read ( );
+
+                        sequence.Append ( ( Char ) this.Reader.Read ( ) );
+                    }
+                    return new BBToken ( BBTokenType.Text, sequence.ToString ( ) );
+                }
+            }
+        }
+
+        public static IEnumerable<BBToken> Lex ( TextReader reader )
+        {
+            var inTag = false;
+            var inValue = false;
+            var buffer = new StringBuilder ( );
+
+            while ( reader.Peek ( ) != -1 )
+            {
+                var peeked = reader.Peek ( );
+                if ( inTag )
+                {
+                    switch ( peeked )
+                    {
+                        case '[':
+                            throw new FormatException ( "Unexpected '[' inside tag." );
+
+                        case ']':
+                            inTag = false;
+                            reader.Read ( );
+                            yield return new BBToken ( BBTokenType.RBracket, "]" );
+                            break;
+
+                        case '/':
+                            reader.Read ( );
+                            yield return new BBToken ( BBTokenType.Slash, "/" );
+                            break;
+
+
+                    }
+                }
+                switch ( reader.Peek ( ) )
+                {
+                    case '[':
+                        if ( inTag )
+                            throw new FormatException ( $"Unexpected '[' inside tag." );
+                        inTag = true;
+                        reader.Read ( );
+                        yield return new BBToken ( BBTokenType.LBracket, "[" );
+                        break;
+
+                    case ']':
+                        if ( !inTag )
+                            goto default;
+                        inTag = false;
+                        reader.Read ( );
+                        yield return new BBToken ( BBTokenType.RBracket, "]" );
+                        break;
+
+                    case '/':
+                        if ( !inTag )
+                            goto default;
+                        reader.Read ( );
+                        yield return new BBToken ( BBTokenType.Slash, "/" );
+                        break;
+
+                    case '=':
+                        if ( !inTag )
+                            goto default;
+                        reader.Read ( );
+                        yield return new BBToken ( BBTokenType.Equals, "=" );
+                        break;
+
+                    default:
+                    {
+                        while ( reader.Peek ( ) != -1
+                                && reader.Peek ( ) != '['
+                                && ( !inTag || ( reader.Peek ( ) != '=' && reader.Peek ( ) != ']' ) ) )
                         {
-                            if ( this.Reader.Peek ( ) == '\\' )
-                                this.Reader.Read ( );
-                            sequence.Append ( ( Char ) this.Reader.Read ( ) );
+                            if ( reader.Peek ( ) == '\\' )
+                                reader.Read ( );
+
+                            buffer.Append ( ( Char ) reader.Read ( ) );
                         }
-                        return sequence.ToString ( );
-                    } ) );
+                        yield return new BBToken ( BBTokenType.Text, flushBuffer ( ) );
+                        break;
+                    }
+                }
+            }
+
+            String flushBuffer ( )
+            {
+                try
+                {
+                    return buffer.ToString ( );
+                }
+                finally
+                {
+                    buffer.Clear ( );
+                }
             }
         }
     }

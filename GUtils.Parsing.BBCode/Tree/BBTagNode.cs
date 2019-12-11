@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace GUtils.Parsing.BBCode.Tree
 {
@@ -51,43 +50,29 @@ namespace GUtils.Parsing.BBCode.Tree
         public IReadOnlyList<BBNode> Children => this._children;
 
         /// <summary>
-        /// Initializes a new self-contained tag node
-        /// </summary>
-        /// <param name="name"></param>
-        public BBTagNode ( String name )
-        {
-            if ( String.IsNullOrWhiteSpace ( name ) )
-                throw new ArgumentException ( "Name of tag cannot be null or composed only of whitespaces", nameof ( name ) );
-
-            this.SelfClosing = true;
-            this.Name = name;
-            this.Value = null;
-            this._children = null;
-        }
-
-        /// <summary>
         /// Initializes a new tag node
         /// </summary>
+        /// <param name="selfClosing"></param>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        public BBTagNode ( String name, String value )
+        public BBTagNode ( Boolean selfClosing, String name, String value )
         {
             if ( String.IsNullOrWhiteSpace ( name ) )
                 throw new ArgumentException ( "Name of tag cannot be null or composed only of whitespaces", nameof ( name ) );
 
-            this.SelfClosing = false;
-            this.Name = name;
-            this.Value = value;
-            this._children = new List<BBNode> ( );
+            this.SelfClosing = selfClosing;
+            this.Name        = name;
+            this.Value       = value;
+            this._children   = new List<BBNode> ( );
         }
 
         /// <inheritdoc />
         public void AddChild ( BBNode child )
         {
             if ( this.SelfClosing )
-                this._children.Add ( child );
-            else
                 throw new InvalidOperationException ( "A self-closing tag cannot have children." );
+            else
+                this._children.Add ( child );
         }
 
         /// <inheritdoc />
@@ -117,7 +102,13 @@ namespace GUtils.Parsing.BBCode.Tree
         /// <inheritdoc />
         /// </summary>
         /// <param name="visitor"></param>
-        public override void Accept ( IBBTreeVisitor visitor ) => visitor.Visit ( this );
+        public override void Accept ( IBBTreeVisitor visitor )
+        {
+            if ( visitor is null )
+                throw new ArgumentNullException ( nameof ( visitor ) );
+
+            visitor.Visit ( this );
+        }
 
         /// <summary>
         /// <inheritdoc />
@@ -125,7 +116,13 @@ namespace GUtils.Parsing.BBCode.Tree
         /// <typeparam name="T"></typeparam>
         /// <param name="visitor"></param>
         /// <returns></returns>
-        public override T Accept<T> ( IBBTreeVisitor<T> visitor ) => visitor.Visit ( this );
+        public override T Accept<T> ( IBBTreeVisitor<T> visitor )
+        {
+            if ( visitor is null )
+                throw new ArgumentNullException ( nameof ( visitor ) );
+
+            return visitor.Visit ( this );
+        }
 
         #endregion Visitor Pattern
     }

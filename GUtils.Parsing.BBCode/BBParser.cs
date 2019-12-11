@@ -19,9 +19,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using GUtils.Parsing.BBCode.Lexing;
 using GUtils.Parsing.BBCode.Tree;
-using GUtils.Pooling;
 
 namespace GUtils.Parsing.BBCode
 {
@@ -34,7 +35,7 @@ namespace GUtils.Parsing.BBCode
         private readonly StringReader Reader;
         private readonly BBLexer Lexer;
         private readonly Stack<BBTagNode> NodeStack;
-        private BBNode Parsed;
+        private BBNode[] Parsed;
 
         /// <summary>
         /// Initializes a new BBCode parser
@@ -45,20 +46,21 @@ namespace GUtils.Parsing.BBCode
             this.Reader = new StringReader ( code );
             this.Lexer = new BBLexer ( this.Reader );
             this.NodeStack = new Stack<BBTagNode> ( );
+            this.Parsed = null;
         }
 
         private void ParseClosingTag ( )
         {
-            BBToken name = this.Lexer.NextToken ( );
-            if ( name.Type != BBTokenType.Text )
+            BBToken? name = this.Lexer.NextToken ( );
+            if ( name?.Type != BBTokenType.Text )
                 throw new FormatException ( "Expected tag name after the slash." );
 
             var topName = this.NodeStack.Peek ( ).Name;
-            if ( topName != name.Value )
+            if ( topName != name.Value.Value )
                 throw new FormatException ( $"Closing tag for '{name.Value}' found but last opened tag was a '{topName}' tag." );
             this.NodeStack.Pop ( );
 
-            if ( this.Lexer.NextToken ( ).Type != BBTokenType.RBracket )
+            if ( this.Lexer.NextToken ( )?.Type != BBTokenType.RBracket )
                 throw new FormatException ( $"Unfinished closing tag '[/{name.Value}'." );
         }
 
@@ -70,35 +72,31 @@ namespace GUtils.Parsing.BBCode
             if ( nameToken.Type != BBTokenType.Text )
                 throw new FormatException ( $"Expected tag name but got {nameToken.Type}." );
 
-            BBToken rbracket = this.Lexer.NextToken ( );
-            if ( rbracket.Type == BBTokenType.Equals )
+            BBToken? rbracket = this.Lexer.NextToken ( );
+            if ( rbracket?.Type == BBTokenType.Equals )
             {
-                BBToken valueToken = this.Lexer.NextToken ( );
-                if ( valueToken.Type != BBTokenType.Text )
+                BBToken? valueToken = this.Lexer.NextToken ( );
+                if ( valueToken?.Type != BBTokenType.Text )
                     throw new FormatException ( "Value must come after the equals sign." );
-                value = valueToken.Value;
+                value = valueToken.Value.Value;
 
                 rbracket = this.Lexer.NextToken ( );
             }
-            if ( rbracket.Type == BBTokenType.Slash )
+            if ( rbracket?.Type == BBTokenType.Slash )
             {
                 selfClosing = true;
                 rbracket = this.Lexer.NextToken ( );
             }
-            if ( rbracket.Type != BBTokenType.RBracket )
+            if ( rbracket?.Type != BBTokenType.RBracket )
                 throw new FormatException ( $"Unfinished tag '{name}'." );
 
             BBTagNode node;
-            if ( selfClosing )
+            node = new BBTagNode ( selfClosing, name, value );
+            this.NodeStack.Peek ( ).AddChild ( node );
+            if ( !selfClosing )
             {
-                node = new BBTagNode ( name );
-            }
-            else
-            {
-                node = new BBTagNode ( name, value );
                 this.NodeStack.Push ( node );
             }
-            this.NodeStack.Peek ( ).AddChild ( node );
         }
 
         /// <summary>
@@ -106,28 +104,28 @@ namespace GUtils.Parsing.BBCode
         /// </summary>
         /// <returns>A new node as the root with all the parsed contents as children</returns>
         /// <exception cref="FormatException">Thrown when invalid BBCode is fed to the parser</exception>
-        public BBNode Parse ( )
+        public BBNode[] Parse ( )
         {
             if ( this.Parsed == null )
             {
-                this.NodeStack.Push ( new BBTagNode ( "root", null ) );
+                this.NodeStack.Push ( new BBTagNode ( false, "root", null ) );
                 while ( this.Reader.Peek ( ) != -1 )
                 {
-                    BBToken token = this.Lexer.NextToken ( );
-                    switch ( token.Type )
+                    BBToken? token = this.Lexer.NextToken ( );
+                    switch ( token?.Type )
                     {
                         case BBTokenType.Text:
                             this.NodeStack
                                 .Peek ( )
-                                .AddChild ( new BBTextNode ( token.Value ) );
+                                .AddChild ( new BBTextNode ( token.Value.Value ) );
                             break;
 
                         case BBTokenType.LBracket:
                             token = this.Lexer.NextToken ( );
-                            if ( token.Type == BBTokenType.Slash )
+                            if ( token?.Type == BBTokenType.Slash )
                                 this.ParseClosingTag ( );
                             else
-                                this.ParseOpeningTag ( token );
+                                this.ParseOpeningTag ( token.Value );
                             break;
 
                         default:
@@ -137,7 +135,7 @@ namespace GUtils.Parsing.BBCode
 
                 if ( this.NodeStack.Count > 1 )
                     throw new FormatException ( $"Unclosed tag '{this.NodeStack.Peek ( ).Name}'." );
-                this.Parsed = this.NodeStack.Pop ( );
+                this.Parsed = this.NodeStack.Pop ( ).Children.ToArray ( );
             }
 
             return this.Parsed;
@@ -148,10 +146,10 @@ namespace GUtils.Parsing.BBCode
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static BBNode Parse ( String input )
+        public static BBNode[] Parse ( String input )
         {
-            using ( var parser = new BBParser ( input ) )
-                return parser.Parse ( );
+            using var parser = new BBParser ( input );
+            return parser.Parse ( );
         }
 
         /// <summary>
@@ -159,30 +157,34 @@ namespace GUtils.Parsing.BBCode
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static String Escape ( String input ) =>
-            StringBuilderPool.Shared.WithRentedItem ( b =>
+        public static String Escape ( String input )
+        {
+            if ( input is null )
+                throw new ArgumentNullException ( nameof ( input ) );
+
+            var builder = new StringBuilder ( );
+
+            for ( var i = 0; i < input.Length; i++ )
             {
-                for ( var i = 0; i < input.Length; i++ )
+                var c = input[i];
+                switch ( c )
                 {
-                    var c = input[i];
-                    switch ( c )
-                    {
-                        case '[':
-                        case '\\':
-                        case '=':
-                        case '/':
-                        case ']':
-                            b.Append ( '\\' );
-                            goto default;
+                    case '[':
+                    case '\\':
+                    case '=':
+                    case '/':
+                    case ']':
+                        builder.Append ( '\\' );
+                        goto default;
 
-                        default:
-                            b.Append ( c );
-                            break;
-                    }
+                    default:
+                        builder.Append ( c );
+                        break;
                 }
+            }
 
-                return b.ToString ( );
-            } );
+            return builder.ToString ( );
+        }
 
         #region IDisposable Support
 
