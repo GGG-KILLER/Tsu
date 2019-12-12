@@ -16,6 +16,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,7 +34,7 @@ namespace GUtils.Parsing.BBCode
     public class BBParser : IDisposable
     {
         private readonly StringReader Reader;
-        private readonly BBLexer Lexer;
+        private readonly IEnumerator<BBToken> Lexer;
         private readonly Stack<BBTagNode> NodeStack;
         private BBNode[] Parsed;
 
@@ -44,14 +45,24 @@ namespace GUtils.Parsing.BBCode
         public BBParser ( String code )
         {
             this.Reader = new StringReader ( code );
-            this.Lexer = new BBLexer ( this.Reader );
+            this.Lexer = BBLexer.Lex ( this.Reader ).GetEnumerator ( );
             this.NodeStack = new Stack<BBTagNode> ( );
             this.Parsed = null;
         }
 
+        private BBToken? GetNextToken ( )
+        {
+            if ( this.Lexer.MoveNext ( ) )
+            {
+                return this.Lexer.Current;
+            }
+
+            return null;
+        }
+
         private void ParseClosingTag ( )
         {
-            BBToken? name = this.Lexer.NextToken ( );
+            BBToken? name = this.GetNextToken ( );
             if ( name?.Type != BBTokenType.Text )
                 throw new FormatException ( "Expected tag name after the slash." );
 
@@ -60,7 +71,7 @@ namespace GUtils.Parsing.BBCode
                 throw new FormatException ( $"Closing tag for '{name.Value}' found but last opened tag was a '{topName}' tag." );
             this.NodeStack.Pop ( );
 
-            if ( this.Lexer.NextToken ( )?.Type != BBTokenType.RBracket )
+            if ( this.GetNextToken ( )?.Type != BBTokenType.RBracket )
                 throw new FormatException ( $"Unfinished closing tag '[/{name.Value}'." );
         }
 
@@ -72,20 +83,20 @@ namespace GUtils.Parsing.BBCode
             if ( nameToken.Type != BBTokenType.Text )
                 throw new FormatException ( $"Expected tag name but got {nameToken.Type}." );
 
-            BBToken? rbracket = this.Lexer.NextToken ( );
+            BBToken? rbracket = this.GetNextToken ( );
             if ( rbracket?.Type == BBTokenType.Equals )
             {
-                BBToken? valueToken = this.Lexer.NextToken ( );
+                BBToken? valueToken = this.GetNextToken ( );
                 if ( valueToken?.Type != BBTokenType.Text )
                     throw new FormatException ( "Value must come after the equals sign." );
                 value = valueToken.Value.Value;
 
-                rbracket = this.Lexer.NextToken ( );
+                rbracket = this.GetNextToken ( );
             }
             if ( rbracket?.Type == BBTokenType.Slash )
             {
                 selfClosing = true;
-                rbracket = this.Lexer.NextToken ( );
+                rbracket = this.GetNextToken ( );
             }
             if ( rbracket?.Type != BBTokenType.RBracket )
                 throw new FormatException ( $"Unfinished tag '{name}'." );
@@ -111,7 +122,7 @@ namespace GUtils.Parsing.BBCode
                 this.NodeStack.Push ( new BBTagNode ( false, "root", null ) );
                 while ( this.Reader.Peek ( ) != -1 )
                 {
-                    BBToken? token = this.Lexer.NextToken ( );
+                    BBToken? token = this.GetNextToken ( );
                     switch ( token?.Type )
                     {
                         case BBTokenType.Text:
@@ -121,7 +132,7 @@ namespace GUtils.Parsing.BBCode
                             break;
 
                         case BBTokenType.LBracket:
-                            token = this.Lexer.NextToken ( );
+                            token = this.GetNextToken ( );
                             if ( token?.Type == BBTokenType.Slash )
                                 this.ParseClosingTag ( );
                             else
@@ -191,7 +202,7 @@ namespace GUtils.Parsing.BBCode
         private Boolean disposedValue; // To detect redundant calls
 
         /// <summary>
-        /// <inheritdoc />
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="disposing"></param>
         protected virtual void Dispose ( Boolean disposing )
@@ -201,6 +212,7 @@ namespace GUtils.Parsing.BBCode
                 if ( disposing )
                 {
                     this.Reader.Dispose ( );
+                    this.Lexer.Dispose ( );
                 }
 
                 this.Parsed = null;
@@ -217,7 +229,7 @@ namespace GUtils.Parsing.BBCode
         }
 
         /// <summary>
-        /// <inheritdoc />
+        /// <inheritdoc/>
         /// </summary>
         public void Dispose ( )
         {

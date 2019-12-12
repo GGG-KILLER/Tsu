@@ -18,73 +18,14 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
 namespace GUtils.Parsing.BBCode.Lexing
 {
-    internal class BBLexer
+    internal static class BBLexer
     {
-        private readonly TextReader Reader;
-        private Boolean InsideTag;
-
-        public BBLexer ( TextReader reader )
-        {
-            this.Reader = reader;
-        }
-
-        public BBToken? NextToken ( )
-        {
-            var sequence = new StringBuilder();
-            switch ( this.Reader.Peek ( ) )
-            {
-                case '[':
-                    if ( this.InsideTag )
-                        throw new FormatException ( $"Unexpected '[' inside tag." );
-                    this.InsideTag = true;
-                    this.Reader.Read ( );
-                    return new BBToken ( BBTokenType.LBracket, "[" );
-
-                case ']':
-                    if ( !this.InsideTag )
-                        goto default;
-                    this.InsideTag = false;
-                    this.Reader.Read ( );
-                    return new BBToken ( BBTokenType.RBracket, "]" );
-
-                case '/':
-                    if ( !this.InsideTag )
-                        goto default;
-                    this.Reader.Read ( );
-                    return new BBToken ( BBTokenType.Slash, "/" );
-
-                case '=':
-                    if ( !this.InsideTag )
-                        goto default;
-                    this.Reader.Read ( );
-                    return new BBToken ( BBTokenType.Equals, "=" );
-
-                case -1:
-                    return null;
-
-                default:
-                {
-                    while ( this.Reader.Peek ( ) != -1
-                            && this.Reader.Peek ( ) != '['
-                            && ( !this.InsideTag || ( this.Reader.Peek ( ) != '=' && this.Reader.Peek ( ) != ']' ) ) )
-                    {
-                        if ( this.Reader.Peek ( ) == '\\' )
-                            this.Reader.Read ( );
-
-                        sequence.Append ( ( Char ) this.Reader.Read ( ) );
-                    }
-                    return new BBToken ( BBTokenType.Text, sequence.ToString ( ) );
-                }
-            }
-        }
-
         public static IEnumerable<BBToken> Lex ( TextReader reader )
         {
             var inTag = false;
@@ -93,78 +34,114 @@ namespace GUtils.Parsing.BBCode.Lexing
 
             while ( reader.Peek ( ) != -1 )
             {
-                var peeked = reader.Peek ( );
-                if ( inTag )
-                {
-                    switch ( peeked )
-                    {
-                        case '[':
-                            throw new FormatException ( "Unexpected '[' inside tag." );
+                var peek = reader.Peek ( );
 
-                        case ']':
-                            inTag = false;
-                            reader.Read ( );
-                            yield return new BBToken ( BBTokenType.RBracket, "]" );
-                            break;
-
-                        case '/':
-                            reader.Read ( );
-                            yield return new BBToken ( BBTokenType.Slash, "/" );
-                            break;
-
-
-                    }
-                }
-                switch ( reader.Peek ( ) )
+                switch ( peek )
                 {
                     case '[':
+                    {
                         if ( inTag )
-                            throw new FormatException ( $"Unexpected '[' inside tag." );
+                        {
+                            throw new FormatException ( "Unexpected '[' inside tag." );
+                        }
+
+                        if ( buffer.Length > 0 )
+                            yield return new BBToken ( readAndFlushBuffer ( ) );
+
                         inTag = true;
                         reader.Read ( );
-                        yield return new BBToken ( BBTokenType.LBracket, "[" );
+                        yield return new BBToken ( BBTokenType.LBracket );
+
+                        if ( reader.Peek ( ) == '/' )
+                        {
+                            reader.Read ( );
+                            yield return new BBToken ( BBTokenType.Slash );
+                        }
                         break;
+                    }
 
                     case ']':
+                    {
                         if ( !inTag )
-                            goto default;
-                        inTag = false;
-                        reader.Read ( );
-                        yield return new BBToken ( BBTokenType.RBracket, "]" );
+                        {
+                            appendRead ( );
+                        }
+                        else
+                        {
+                            if ( buffer.Length > 0 )
+                                yield return new BBToken ( readAndFlushBuffer ( ) );
+
+                            inTag = false;
+                            inValue = false;
+                            reader.Read ( );
+                            yield return new BBToken ( BBTokenType.RBracket );
+                        }
                         break;
+                    }
 
                     case '/':
+                    {
                         if ( !inTag )
-                            goto default;
-                        reader.Read ( );
-                        yield return new BBToken ( BBTokenType.Slash, "/" );
+                        {
+                            appendRead ( );
+                        }
+                        else
+                        {
+                            reader.Read ( );
+
+                            if ( reader.Peek ( ) == ']' )
+                            {
+                                if ( buffer.Length > 0 )
+                                    yield return new BBToken ( readAndFlushBuffer ( ) );
+
+                                yield return new BBToken ( BBTokenType.Slash );
+                            }
+                            else
+                            {
+                                buffer.Append ( '/' );
+                            }
+                        }
+
                         break;
+                    }
 
                     case '=':
-                        if ( !inTag )
-                            goto default;
-                        reader.Read ( );
-                        yield return new BBToken ( BBTokenType.Equals, "=" );
+                    {
+                        if ( !inTag || inValue )
+                        {
+                            appendRead ( );
+                        }
+                        else
+                        {
+                            if ( buffer.Length > 0 )
+                                yield return new BBToken ( readAndFlushBuffer ( ) );
+
+                            inValue = true;
+                            reader.Read ( );
+                            yield return new BBToken ( BBTokenType.Equals );
+                        }
                         break;
+                    }
+
+                    case '\\':
+                    {
+                        reader.Read ( );
+                        appendRead ( );
+                        break;
+                    }
 
                     default:
                     {
-                        while ( reader.Peek ( ) != -1
-                                && reader.Peek ( ) != '['
-                                && ( !inTag || ( reader.Peek ( ) != '=' && reader.Peek ( ) != ']' ) ) )
-                        {
-                            if ( reader.Peek ( ) == '\\' )
-                                reader.Read ( );
-
-                            buffer.Append ( ( Char ) reader.Read ( ) );
-                        }
-                        yield return new BBToken ( BBTokenType.Text, flushBuffer ( ) );
+                        appendRead ( );
                         break;
                     }
                 }
             }
 
-            String flushBuffer ( )
+            if ( buffer.Length > 0 )
+                yield return new BBToken ( readAndFlushBuffer ( ) );
+
+            String readAndFlushBuffer ( )
             {
                 try
                 {
@@ -175,6 +152,8 @@ namespace GUtils.Parsing.BBCode.Lexing
                     buffer.Clear ( );
                 }
             }
+
+            void appendRead ( ) => buffer.Append ( ( Char ) reader.Read ( ) );
         }
     }
 }
