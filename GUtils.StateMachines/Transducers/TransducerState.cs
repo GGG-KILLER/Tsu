@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using GUtils.StateMachines.Transducers;
 
 namespace GUtils.StateMachines.Transducers
 {
     /// <summary>
-    /// Represents a state of the <see cref="Transducer{InputT, OutputT}" />
+    /// Represents a state of the <see cref="Transducer{InputT, OutputT}"/>
     /// </summary>
     /// <typeparam name="TInput">
-    /// The type of input the <see cref="Transducer{InputT, OutputT}" /> accepts
+    /// The type of input the <see cref="Transducer{InputT, OutputT}"/> accepts
     /// </typeparam>
     /// <typeparam name="TOutput">
-    /// The type of the output the <see cref="Transducer{InputT, OutputT}" /> emits
+    /// The type of the output the <see cref="Transducer{InputT, OutputT}"/> emits
     /// </typeparam>
     public class TransducerState<TInput, TOutput>
     {
@@ -177,9 +176,7 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="action">
         /// The action that will configure the transitions of the non-terminal state
         /// </param>
-        /// <param name="startIndex">
-        /// The index to start adding transitions from the <paramref name="sequence" />
-        /// </param>
+        /// <param name="startIndex">The index to start adding transitions from the <paramref name="sequence"/></param>
         /// <returns></returns>
         public TransducerState<TInput, TOutput> OnInput ( TInput[] sequence, Action<TransducerState<TInput, TOutput>> action, Int32 startIndex = 0 )
         {
@@ -204,9 +201,7 @@ namespace GUtils.StateMachines.Transducers
         /// </summary>
         /// <param name="sequence">The string of inputs that will trigger the transition</param>
         /// <param name="output">The output of the terminal state</param>
-        /// <param name="startIndex">
-        /// The index to start adding transitions from the <paramref name="sequence" />
-        /// </param>
+        /// <param name="startIndex">The index to start adding transitions from the <paramref name="sequence"/></param>
         /// <returns></returns>
         public TransducerState<TInput, TOutput> OnInput ( TInput[] sequence, TOutput output, Int32 startIndex = 0 )
         {
@@ -232,9 +227,7 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="action">
         /// The action that will configure the transitions of the terminal state
         /// </param>
-        /// <param name="startIndex">
-        /// The index to start adding transitions from the <paramref name="sequence" />
-        /// </param>
+        /// <param name="startIndex">The index to start adding transitions from the <paramref name="sequence"/></param>
         /// <returns></returns>
         public TransducerState<TInput, TOutput> OnInput ( TInput[] sequence, TOutput output, Action<TransducerState<TInput, TOutput>> action, Int32 startIndex = 0 )
         {
