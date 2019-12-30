@@ -28,6 +28,7 @@ namespace GUtils.Timing
     /// A micro profiler. Basically a tree of Stopwatches with associated names.
     /// </summary>
     [DebuggerDisplay ( "{Name}" )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Performance", "CA1815:Override equals and operator equals on value types", Justification = "There is no point to checking equality of two microprofilers" )]
     public readonly struct MicroProfiler : IDisposable
     {
         /// <summary>
@@ -45,12 +46,12 @@ namespace GUtils.Timing
         /// <summary>
         /// The name associated with this microprofiler
         /// </summary>
-        public readonly String Name;
+        public String Name { get; }
 
         /// <summary>
         /// The list of child microprofilers
         /// </summary>
-        public readonly List<MicroProfiler> ChildResults;
+        public List<MicroProfiler> ChildResults { get; }
 
         /// <summary>
         /// The stopwatch used for timing of this microprofiler
