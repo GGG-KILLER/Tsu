@@ -104,12 +104,14 @@ namespace GUtils.IO
             return $"{newSize:0.##} {suffix}";
         }
 
+
         /// <summary>
         /// Formats the provided file size in a human readable format (in bibytes)
         /// </summary>
         /// <param name="size"></param>
         /// <param name="format">default value is: "{0} {1}"</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Unnecessary." )]
         public static String Format ( Int64 size, String format )
         {
             (var newSize, var suffix) = GetFormatPair ( size );
@@ -122,6 +124,7 @@ namespace GUtils.IO
         /// <param name="size"></param>
         /// <param name="format">default value is: "{0} {1}"</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Unnecessary." )]
         public static String Format ( Double size, String format )
         {
             (var newSize, var suffix) = GetFormatPair ( size );
