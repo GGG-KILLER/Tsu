@@ -53,14 +53,12 @@ namespace GUtils.IO
             targetFile.Directory.Create ( );
 
             var buffer = new Byte[bufferSize];
-            using ( FileStream reader = sourceFile.OpenRead ( ) )
-            using ( FileStream writer = targetFile.OpenWrite ( ) )
+            using FileStream reader = sourceFile.OpenRead ( );
+            using FileStream writer = targetFile.OpenWrite ( );
+            while ( reader.Position != reader.Length )
             {
-                while ( reader.Position != reader.Length )
-                {
-                    var readBytes = await reader.ReadAsync ( buffer, 0, bufferSize ).ConfigureAwait ( false );
-                    await writer.WriteAsync ( buffer, 0, readBytes ).ConfigureAwait ( false );
-                }
+                var readBytes = await reader.ReadAsync ( buffer, 0, bufferSize ).ConfigureAwait ( false );
+                await writer.WriteAsync ( buffer, 0, readBytes ).ConfigureAwait ( false );
             }
         }
     }
