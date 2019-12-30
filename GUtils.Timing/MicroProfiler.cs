@@ -116,6 +116,9 @@ namespace GUtils.Timing
         /// <param name="builder"></param>
         public void WriteTreeString ( StringBuilder builder )
         {
+            if ( builder is null )
+                throw new ArgumentNullException ( nameof ( builder ) );
+
             var x = 0UL;
             this.WriteTreeString ( builder, 0, ref x );
         }
