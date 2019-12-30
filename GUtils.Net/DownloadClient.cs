@@ -16,6 +16,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 using System.IO;
 using System.Net;
@@ -33,12 +34,12 @@ namespace GUtils.Net
         /// <summary>
         /// The amount of bytes already downloaded
         /// </summary>
-        public Int64 BytesReceived;
+        public Int64 BytesReceived { get; set; }
 
         /// <summary>
         /// The total amount of bytes to be downloaded
         /// </summary>
-        public Int64 TotalBytes;
+        public Int64 TotalBytes { get; set; }
 
         #region Generated Code
 
@@ -86,33 +87,46 @@ namespace GUtils.Net
     }
 
     /// <summary>
-    /// An experimental download client meant to be faster than <see cref="WebClient" />
+    /// An experimental download client meant to be faster than <see cref="WebClient"/>
     /// </summary>
     public class DownloadClient
     {
         /// <summary>
         /// The user agent to use when downloading the file
         /// </summary>
-        public String UserAgent;
+        public String UserAgent { get; set; }
 
-        private readonly Int32 BufferSize;
-        private Int64 ReceivedBytes;
-        private Int64 TotalBytes;
-        private readonly String URL;
+        private readonly Int32 _bufferSize;
+        private Int64 _receivedBytes;
+        private Int64 _totalBytes;
+        private readonly String _url;
+        private readonly Uri _uri;
 
         /// <summary>
-        /// Creates a new <see cref="DownloadClient" /> that will obtain the file from
-        /// <paramref name="URL" /> with <paramref name="BufferSize" /> bytes at a time
+        /// Creates a new <see cref="DownloadClient"/> that will obtain the file from <paramref
+        /// name="url"/> with <paramref name="bufferSize"/> bytes at a time.
         /// </summary>
-        /// <param name="URL">The URL where to download the content from</param>
-        /// <param name="BufferSize">
-        /// The amount of bytes to use in the buffer (values larger than 85000 will end up in the large
-        /// object heap)
+        /// <param name="url">The URL where to download the content from</param>
+        /// <param name="bufferSize">
+        /// The amount of bytes to use in the buffer (values larger than 85000 will end up in the
+        /// large object heap)
         /// </param>
-        public DownloadClient ( String URL, Int32 BufferSize = 16384 )
+        public DownloadClient ( String url, Int32 bufferSize = 16384 )
         {
-            this.URL = URL;
-            this.BufferSize = BufferSize;
+            this._url = url;
+            this._bufferSize = bufferSize;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="DownloadClient"/> that will obtain the file from a <paramref
+        /// name="uri"/> with <paramref name="bufferSize"/> bytes at a time.
+        /// </summary>
+        /// <param name="uri">The source URI</param>
+        /// <param name="bufferSize">The size of the buffer</param>
+        public DownloadClient ( Uri uri, Int32 bufferSize = 16384 )
+        {
+            this._uri = uri;
+            this._bufferSize = bufferSize;
         }
 
         /// <summary>
@@ -121,49 +135,49 @@ namespace GUtils.Net
         public event EventHandler<DownloadClientDownloadProgressChangedArgs> DownloadProgressChanged;
 
         /// <summary>
-        /// Indicates whether this <see cref="DownloadClient" /> is downloading
+        /// Indicates whether this <see cref="DownloadClient"/> is downloading
         /// </summary>
         public Boolean IsWorking { get; private set; }
 
         /// <summary>
-        /// Download the contents of <see cref="URL" /> and returns them as an array of bytes
+        /// Download the contents of <see cref="_url"/> and returns them as an array of bytes
         /// </summary>
         /// <returns></returns>
         public async Task<Byte[]> DownloadBytesAsync ( )
         {
-            using ( var memStream = new MemoryStream ( ) )
-            {
-                await this.DownloadToStreamAsync ( memStream )
-                    .ConfigureAwait ( false );
-                return memStream.ToArray ( );
-            }
+            using var memStream = new MemoryStream ( );
+            await this.DownloadToStreamAsync ( memStream )
+                      .ConfigureAwait ( false );
+            return memStream.ToArray ( );
         }
 
         /// <summary>
-        /// Downloads the contents of <see cref="URL" /> as a String with the possibility to provide an
-        /// encoding to use to decode the bytes
+        /// Downloads the contents of <see cref="_url"/> as a String with the possibility to provide
+        /// an encoding to use to decode the bytes
         /// </summary>
         /// <param name="encoding">
-        /// The encoding which to use when transforming from bytes to a string (Defaults to Default
-        /// encoding)
+        /// The encoding which to use when transforming from bytes to a string (Defaults to Default encoding)
         /// </param>
         /// <returns></returns>
-        public async Task<String> DownloadStringAsync ( Encoding encoding ) => encoding.GetString ( await this.DownloadBytesAsync ( )
-                .ConfigureAwait ( false ) );
+        public async Task<String> DownloadStringAsync ( Encoding encoding )
+        {
+            if ( encoding is null )
+                throw new ArgumentNullException ( nameof ( encoding ) );
+            return encoding.GetString ( await this.DownloadBytesAsync ( )
+                                                  .ConfigureAwait ( false ) );
+        }
 
         /// <summary>
-        /// Downloads the resource on <see cref="URL" /> to <paramref name="path" />
+        /// Downloads the resource on <see cref="_url"/> to <paramref name="path"/>
         /// </summary>
         /// <param name="path">The path where to save the file to</param>
         /// <param name="timeout"></param>
         /// <returns></returns>
         public async Task DownloadToFileAsync ( String path, Int32 timeout = 5000 )
         {
-            using ( FileStream fileStream = File.Open ( path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read ) )
-            {
-                await this.DownloadToStreamAsync ( fileStream, timeout )
-                    .ConfigureAwait ( false );
-            }
+            using FileStream fileStream = File.Open ( path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read );
+            await this.DownloadToStreamAsync ( fileStream, timeout )
+                      .ConfigureAwait ( false );
         }
 
         /// <summary>
@@ -175,60 +189,58 @@ namespace GUtils.Net
         public async Task DownloadToStreamAsync ( Stream stream, Int32 timeout = 5000 )
         {
             // Get the response for the contents of the file
-            HttpWebResponse response = await this.GetResponseAsync ( )
-                .ConfigureAwait ( false );
+            HttpWebResponse response = await this.GetResponseAsync( )
+                                                 .ConfigureAwait( false );
 
             var size = response.ContentLength;
-            this.TotalBytes = size;
+            this._totalBytes = size;
 
-            using ( Stream webStream = response.GetResponseStream ( ) )
+            using Stream webStream = response.GetResponseStream ( );
+            var buff = new Byte[this._bufferSize];
+            while ( size != 0 )
             {
-                var buff = new Byte[this.BufferSize];
-                while ( size != 0 )
+                Int32 receivedBytes;
+                if ( timeout != -1 )
                 {
-                    Int32 receivedBytes;
-                    if ( timeout != -1 )
+                    using var source = new CancellationTokenSource ( timeout );
+                    try
                     {
-                        using ( var source = new CancellationTokenSource ( timeout ) )
-                        {
-                            try
-                            {
-                                receivedBytes = await webStream.ReadAsync ( buff, 0, this.BufferSize, source.Token ).ConfigureAwait ( false );
-                            }
-                            catch ( TaskCanceledException )
-                            {
-                                throw new TimeoutException ( "Reading operation timed out." );
-                            }
-                        }
+                        receivedBytes = await webStream.ReadAsync ( buff, 0, this._bufferSize, source.Token )
+                                                       .ConfigureAwait ( false );
                     }
-                    else
+                    catch ( TaskCanceledException )
                     {
-                        receivedBytes = await webStream.ReadAsync ( buff, 0, this.BufferSize ).ConfigureAwait ( false );
+                        throw new TimeoutException ( "Reading operation timed out." );
                     }
-
-                    // Check for EOF
-                    if ( receivedBytes == 0 )
-                        size = 0;
-
-                    // Update remaining byte count and received byte count
-                    size -= receivedBytes;
-                    this.ReceivedBytes += receivedBytes;
-
-                    // Write from buffer to the stream and flush it
-                    await stream.WriteAsync ( buff, 0, receivedBytes ).ConfigureAwait ( false );
-
-                    // Then report that progress was made
-                    this.DownloadProgressChanged?.Invoke ( this, new DownloadClientDownloadProgressChangedArgs
-                    {
-                        BytesReceived = this.ReceivedBytes,
-                        TotalBytes = this.TotalBytes
-                    } );
+                }
+                else
+                {
+                    receivedBytes = await webStream.ReadAsync ( buff, 0, this._bufferSize )
+                                                   .ConfigureAwait ( false );
                 }
 
-                // Remove possible sensitive information from the buffer
-                for ( var i = 0; i < this.BufferSize; i++ )
-                    buff[i] = 0;
+                // Check for EOF
+                if ( receivedBytes == 0 )
+                    size = 0;
+
+                // Update remaining byte count and received byte count
+                size -= receivedBytes;
+                this._receivedBytes += receivedBytes;
+
+                // Write from buffer to the stream and flush it
+                await stream.WriteAsync ( buff, 0, receivedBytes )
+                            .ConfigureAwait ( false );
+
+                // Then report that progress was made
+                this.DownloadProgressChanged?.Invoke ( this, new DownloadClientDownloadProgressChangedArgs
+                {
+                    BytesReceived = this._receivedBytes,
+                    TotalBytes = this._totalBytes
+                } );
             }
+
+            // Remove possible sensitive information from the buffer
+            Array.Clear ( buff, 0, buff.Length );
         }
 
         /// <summary>
@@ -237,7 +249,7 @@ namespace GUtils.Net
         /// <returns></returns>
         private async Task<HttpWebResponse> GetResponseAsync ( )
         {
-            HttpWebRequest req = WebRequest.CreateHttp ( this.URL );
+            HttpWebRequest req = WebRequest.CreateHttp ( this._url );
             if ( this.UserAgent != null )
                 req.UserAgent = this.UserAgent;
 
