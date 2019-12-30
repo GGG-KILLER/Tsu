@@ -82,17 +82,17 @@ namespace GUtils.StateMachines.Transducers
         /// Executes this state machine on a string of inputs until no transitions happen anymore or the
         /// end of the string is reached
         /// </summary>
-        /// <param name="string">The string of inputs</param>
+        /// <param name="sequence">The string of inputs</param>
         /// <param name="output">The output of the execution</param>
         /// <returns>The amount of inputs read</returns>
-        public Int32 Execute ( IEnumerable<TInput> @string, out TOutput output )
+        public Int32 Execute ( IEnumerable<TInput> sequence, out TOutput output )
         {
-            if ( @string == null )
-                throw new ArgumentNullException ( nameof ( @string ) );
+            if ( sequence == null )
+                throw new ArgumentNullException ( nameof ( sequence ) );
 
             var consumedInputs = 0;
             TransducerState<TInput, TOutput> state = this.InitialState;
-            foreach ( TInput value in @string )
+            foreach ( TInput value in sequence )
             {
                 if ( !state.TransitionTable.TryGetValue ( value, out TransducerState<TInput, TOutput> tmp ) )
                     break;
