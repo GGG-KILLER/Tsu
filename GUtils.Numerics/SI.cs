@@ -130,6 +130,7 @@ namespace GUtils.Numerics
         /// <param name="number">The number to be formatted</param>
         /// <param name="format">The format string. Must contain two format locations/slots.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Unnecessary." )]
         public static String Format ( Double number, String format )
         {
             (var scaled, var suffix) = GetFormatPair ( number );
