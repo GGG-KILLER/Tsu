@@ -6,30 +6,30 @@ namespace GUtils.StateMachines.Transducers
     /// <summary>
     /// A Transducer Finite State Machine
     /// </summary>
-    /// <typeparam name="InputT">The type of input this transducer accepts</typeparam>
-    /// <typeparam name="OutputT">The type of output this transducer emits</typeparam>
-    public class Transducer<InputT, OutputT>
+    /// <typeparam name="TInput">The type of input this transducer accepts</typeparam>
+    /// <typeparam name="TOutput">The type of output this transducer emits</typeparam>
+    public class Transducer<TInput, TOutput>
     {
         /// <summary>
         /// The initial state of the <see cref="Transducer{InputT, OutputT}" />
         /// </summary>
-        public TransducerState<InputT, OutputT> InitialState { get; }
+        public TransducerState<TInput, TOutput> InitialState { get; }
 
         /// <summary>
         /// Initializes a transducer with a non-terminal <see cref="InitialState" />
         /// </summary>
         public Transducer ( )
         {
-            this.InitialState = new TransducerState<InputT, OutputT> ( );
+            this.InitialState = new TransducerState<TInput, TOutput> ( );
         }
 
         /// <summary>
         /// Initializes a transducer with a terminal <see cref="InitialState" />
         /// </summary>
         /// <param name="output"></param>
-        public Transducer ( OutputT output )
+        public Transducer ( TOutput output )
         {
-            this.InitialState = new TransducerState<InputT, OutputT> ( output );
+            this.InitialState = new TransducerState<TInput, TOutput> ( output );
         }
 
         /// <summary>
@@ -37,10 +37,10 @@ namespace GUtils.StateMachines.Transducers
         /// </summary>
         /// <param name="output"></param>
         /// <returns></returns>
-        public Transducer<InputT, OutputT> WithDefaultOutput ( OutputT output )
+        public Transducer<TInput, TOutput> WithDefaultOutput ( TOutput output )
         {
-            var transducer = new Transducer<InputT,OutputT> ( output );
-            foreach ( KeyValuePair<InputT, TransducerState<InputT, OutputT>> kv in this.InitialState.transitionTable )
+            var transducer = new Transducer<TInput,TOutput> ( output );
+            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.InitialState.transitionTable )
                 transducer.InitialState.transitionTable[kv.Key] = kv.Value.DeepCopy ( );
             return transducer;
         }
@@ -49,17 +49,17 @@ namespace GUtils.StateMachines.Transducers
         /// Creates a deep copy of this transducer without an output for the <see cref="InitialState" />
         /// </summary>
         /// <returns></returns>
-        public Transducer<InputT, OutputT> WithoutDefaultOutput ( )
+        public Transducer<TInput, TOutput> WithoutDefaultOutput ( )
         {
-            var transducer = new Transducer<InputT,OutputT> ( );
-            foreach ( KeyValuePair<InputT, TransducerState<InputT, OutputT>> kv in this.InitialState.transitionTable )
+            var transducer = new Transducer<TInput,TOutput> ( );
+            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.InitialState.transitionTable )
                 transducer.InitialState.transitionTable[kv.Key] = kv.Value.DeepCopy ( );
             return transducer;
         }
 
         #region Copiable
 
-        private Transducer ( Boolean isShallowCopy, Transducer<InputT, OutputT> transducer )
+        private Transducer ( Boolean isShallowCopy, Transducer<TInput, TOutput> transducer )
         {
             this.InitialState = isShallowCopy ? transducer.InitialState.ShallowCopy ( ) : transducer.InitialState.DeepCopy ( );
         }
@@ -68,13 +68,13 @@ namespace GUtils.StateMachines.Transducers
         /// Creates a shallow copy of this transducer
         /// </summary>
         /// <returns></returns>
-        public Transducer<InputT, OutputT> ShallowCopy ( ) => new Transducer<InputT, OutputT> ( true, this );
+        public Transducer<TInput, TOutput> ShallowCopy ( ) => new Transducer<TInput, TOutput> ( true, this );
 
         /// <summary>
         /// Creates a deep copy of this transducer
         /// </summary>
         /// <returns></returns>
-        public Transducer<InputT, OutputT> DeepCopy ( ) => new Transducer<InputT, OutputT> ( false, this );
+        public Transducer<TInput, TOutput> DeepCopy ( ) => new Transducer<TInput, TOutput> ( false, this );
 
         #endregion Copiable
 
@@ -85,16 +85,16 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="string">The string of inputs</param>
         /// <param name="output">The output of the execution</param>
         /// <returns>The amount of inputs read</returns>
-        public Int32 Execute ( IEnumerable<InputT> @string, out OutputT output )
+        public Int32 Execute ( IEnumerable<TInput> @string, out TOutput output )
         {
             if ( @string == null )
                 throw new ArgumentNullException ( nameof ( @string ) );
 
             var consumedInputs = 0;
-            TransducerState<InputT, OutputT> state = this.InitialState;
-            foreach ( InputT value in @string )
+            TransducerState<TInput, TOutput> state = this.InitialState;
+            foreach ( TInput value in @string )
             {
-                if ( !state.TransitionTable.TryGetValue ( value, out TransducerState<InputT, OutputT> tmp ) )
+                if ( !state.TransitionTable.TryGetValue ( value, out TransducerState<TInput, TOutput> tmp ) )
                     break;
                 state = tmp;
                 consumedInputs++;
