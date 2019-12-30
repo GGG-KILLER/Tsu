@@ -127,7 +127,7 @@ namespace GUtils.Numerics
             {
                 var index = Math.DivRem(offset, elementBitCount, out offset);
                 var mask = 1U << offset;
-                return ( this.containers[index] & mask ) == mask;
+                return ( this.containers[index] & mask ) != 0;
             }
         }
 
