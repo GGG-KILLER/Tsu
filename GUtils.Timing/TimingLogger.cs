@@ -91,7 +91,6 @@ namespace GUtils.Timing
             /// <param name="name"></param>
             /// <param name="startedAt"></param>
             /// <param name="shouldPrintElapsedTime"></param>
-            /// <param name="parent"></param>
             public Scope ( TimingLogger owner, String name, TimeSpan startedAt, Boolean shouldPrintElapsedTime )
             {
                 this._owner = owner;
@@ -167,7 +166,7 @@ namespace GUtils.Timing
         /// <summary>
         /// Whether the current line has already been prefixed
         /// </summary>
-        protected Boolean hasLineBeenPrefixed;
+        protected Boolean HasLineBeenPrefixed { get; set; }
 
         #region Logging Level Colors
 
@@ -309,10 +308,10 @@ namespace GUtils.Timing
         /// <param name="message"></param>
         private void ProcessWrite ( LogLevel level, String message )
         {
-            if ( !this.hasLineBeenPrefixed )
+            if ( !this.HasLineBeenPrefixed )
             {
                 this.WriteLinePrefix ( level );
-                this.hasLineBeenPrefixed = true;
+                this.HasLineBeenPrefixed = true;
             }
 
             if ( message.Contains ( "\n" ) )
@@ -345,9 +344,12 @@ namespace GUtils.Timing
         /// <param name="message"></param>
         protected virtual void ProcessWriteLine ( LogLevel level, String message )
         {
+            if ( message is null )
+                throw new ArgumentNullException ( nameof ( message ) );
+
             this.ProcessWrite ( level, message );
             this.WriteLineInternal ( "" );
-            this.hasLineBeenPrefixed = false;
+            this.HasLineBeenPrefixed = false;
         }
 
         #endregion Input message processing
@@ -365,8 +367,13 @@ namespace GUtils.Timing
         /// Writes a value to the output
         /// </summary>
         /// <param name="value"></param>
-        public void Write ( String value ) =>
+        public void Write ( String value )
+        {
+            if ( value is null )
+                throw new ArgumentNullException ( nameof ( value ) );
+
             this.ProcessWrite ( LogLevel.None, value );
+        }
 
         /// <summary>
         /// Writes a value to the output
