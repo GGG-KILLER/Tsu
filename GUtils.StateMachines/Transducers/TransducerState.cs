@@ -66,17 +66,17 @@ namespace GUtils.StateMachines.Transducers
         /// <summary>
         /// Retrieves a state from the state graph with this node as a starting point
         /// </summary>
-        /// <param name="string">The string of inputs that would lead to the desired state</param>
+        /// <param name="sequence">The string of inputs that would lead to the desired state</param>
         /// <param name="startingIndex">The index at which to start reading the inputs from</param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> GetState ( TInput[] @string, Int32 startingIndex = 0 )
+        public TransducerState<TInput, TOutput> GetState ( TInput[] sequence, Int32 startingIndex = 0 )
         {
-            if ( startingIndex < 0 || startingIndex >= @string.Length )
+            if ( startingIndex < 0 || startingIndex >= sequence.Length )
                 throw new ArgumentOutOfRangeException ( nameof ( startingIndex ) );
 
-            return startingIndex < @string.Length - 1
-                ? this.GetState ( @string[startingIndex] ).GetState ( @string, startingIndex + 1 )
-                : this.GetState ( @string[startingIndex] );
+            return startingIndex < sequence.Length - 1
+                ? this.GetState ( sequence[startingIndex] ).GetState ( sequence, startingIndex + 1 )
+                : this.GetState ( sequence[startingIndex] );
         }
 
         /// <summary>
@@ -107,14 +107,14 @@ namespace GUtils.StateMachines.Transducers
         /// <summary>
         /// Retrieves a state from the state graph with this node as a starting point
         /// </summary>
-        /// <param name="string">The string of inputs that would lead to the desired state</param>
+        /// <param name="sequence">The string of inputs that would lead to the desired state</param>
         /// <param name="output">The output the desired state will have</param>
         /// <param name="startingIndex">The index at which to start reading the inputs from</param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> SetStateOutput ( TInput[] @string, TOutput output, Int32 startingIndex = 0 ) =>
-            startingIndex < @string.Length - 1
-                ? this.GetState ( @string[startingIndex] ).GetState ( @string, startingIndex + 1 )
-                : this.SetStateOutput ( @string[startingIndex], output );
+        public TransducerState<TInput, TOutput> SetStateOutput ( TInput[] sequence, TOutput output, Int32 startingIndex = 0 ) =>
+            startingIndex < sequence.Length - 1
+                ? this.GetState ( sequence[startingIndex] ).GetState ( sequence, startingIndex + 1 )
+                : this.SetStateOutput ( sequence[startingIndex], output );
 
         /// <summary>
         /// Adds a new transition to a new terminal state
@@ -162,46 +162,46 @@ namespace GUtils.StateMachines.Transducers
         /// <summary>
         /// Adds a new transition to a non-terminal state
         /// </summary>
-        /// <param name="string">The string of inputs that will trigger the transition</param>
+        /// <param name="sequence">The string of inputs that will trigger the transition</param>
         /// <param name="action">
         /// The action that will configure the transitions of the non-terminal state
         /// </param>
         /// <param name="startIndex">
-        /// The index to start adding transitions from the <paramref name="string" />
+        /// The index to start adding transitions from the <paramref name="sequence" />
         /// </param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> OnInput ( TInput[] @string, Action<TransducerState<TInput, TOutput>> action, Int32 startIndex = 0 )
+        public TransducerState<TInput, TOutput> OnInput ( TInput[] sequence, Action<TransducerState<TInput, TOutput>> action, Int32 startIndex = 0 )
         {
-            if ( startIndex < 0 || startIndex >= @string.Length )
+            if ( startIndex < 0 || startIndex >= sequence.Length )
                 throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
             if ( action == null )
                 throw new ArgumentNullException ( nameof ( action ) );
 
-            if ( startIndex < @string.Length - 1 )
-                this.OnInput ( @string[startIndex], state => state.OnInput ( @string, action, startIndex + 1 ) );
+            if ( startIndex < sequence.Length - 1 )
+                this.OnInput ( sequence[startIndex], state => state.OnInput ( sequence, action, startIndex + 1 ) );
             else
-                this.OnInput ( @string[startIndex], action );
+                this.OnInput ( sequence[startIndex], action );
             return this;
         }
 
         /// <summary>
         /// Adds a new transition to a terminal state
         /// </summary>
-        /// <param name="string">The string of inputs that will trigger the transition</param>
+        /// <param name="sequence">The string of inputs that will trigger the transition</param>
         /// <param name="output">The output of the terminal state</param>
         /// <param name="startIndex">
-        /// The index to start adding transitions from the <paramref name="string" />
+        /// The index to start adding transitions from the <paramref name="sequence" />
         /// </param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> OnInput ( TInput[] @string, TOutput output, Int32 startIndex = 0 )
+        public TransducerState<TInput, TOutput> OnInput ( TInput[] sequence, TOutput output, Int32 startIndex = 0 )
         {
-            if ( startIndex < 0 || startIndex >= @string.Length )
+            if ( startIndex < 0 || startIndex >= sequence.Length )
                 throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
 
-            if ( startIndex < @string.Length - 1 )
-                this.OnInput ( @string[startIndex], state => state.OnInput ( @string, output, startIndex + 1 ) );
+            if ( startIndex < sequence.Length - 1 )
+                this.OnInput ( sequence[startIndex], state => state.OnInput ( sequence, output, startIndex + 1 ) );
             else
-                this.OnInput ( @string[startIndex], output );
+                this.OnInput ( sequence[startIndex], output );
 
             return this;
         }
@@ -209,24 +209,24 @@ namespace GUtils.StateMachines.Transducers
         /// <summary>
         /// Adds a new transition to a terminal state
         /// </summary>
-        /// <param name="string">The string of inputs that will trigger the transition</param>
+        /// <param name="sequence">The string of inputs that will trigger the transition</param>
         /// <param name="output">The output of the terminal state</param>
         /// <param name="action">
         /// The action that will configure the transitions of the terminal state
         /// </param>
         /// <param name="startIndex">
-        /// The index to start adding transitions from the <paramref name="string" />
+        /// The index to start adding transitions from the <paramref name="sequence" />
         /// </param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> OnInput ( TInput[] @string, TOutput output, Action<TransducerState<TInput, TOutput>> action, Int32 startIndex = 0 )
+        public TransducerState<TInput, TOutput> OnInput ( TInput[] sequence, TOutput output, Action<TransducerState<TInput, TOutput>> action, Int32 startIndex = 0 )
         {
-            if ( startIndex < 0 || startIndex >= @string.Length )
+            if ( startIndex < 0 || startIndex >= sequence.Length )
                 throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
 
-            if ( startIndex < @string.Length - 1 )
-                this.OnInput ( @string[startIndex], state => state.OnInput ( @string, output, action, startIndex + 1 ) );
+            if ( startIndex < sequence.Length - 1 )
+                this.OnInput ( sequence[startIndex], state => state.OnInput ( sequence, output, action, startIndex + 1 ) );
             else
-                this.OnInput ( @string[startIndex], output, action );
+                this.OnInput ( sequence[startIndex], output, action );
 
             return this;
         }
