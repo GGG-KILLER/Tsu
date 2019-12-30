@@ -55,6 +55,7 @@ namespace GUtils.Timing
         /// </summary>
         public const Double TicksPerNanosecond = TicksPerMicrosecond / 1000D;
 
+
         /// <summary>
         /// Formats the amount of ticks provided into a human
         /// readable format
@@ -62,6 +63,7 @@ namespace GUtils.Timing
         /// <param name="ticks"></param>
         /// <param name="format"></param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Unnecessary." )]
         public static String Format ( Int64 ticks, String format = "{0:##00.00}{1}" )
         {
             if ( ticks > TicksPerHour )
