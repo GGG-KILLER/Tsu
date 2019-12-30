@@ -88,25 +88,25 @@ namespace GUtils.Numerics
         /// </summary>
         public const Double Yocto = Zepto * 0.001;
 
-        private static readonly Char[] _prefixes =
+        private static readonly String[] _prefixes =
         {
-            /* -8 */ 'y',
-            /* -7 */ 'z',
-            /* -6 */ 'a',
-            /* -5 */ 'f',
-            /* -4 */ 'p',
-            /* -3 */ 'n',
-            /* -2 */ 'μ',
-            /* -1 */ 'm',
-            /*  0 */ '\uFFFF',
-            /*  1 */ 'k',
-            /*  2 */ 'M',
-            /*  3 */ 'G',
-            /*  4 */ 'T',
-            /*  5 */ 'P',
-            /*  6 */ 'E',
-            /*  7 */ 'Z',
-            /*  8 */ 'Y',
+            /* -8 */ "y",
+            /* -7 */ "z",
+            /* -6 */ "a",
+            /* -5 */ "f",
+            /* -4 */ "p",
+            /* -3 */ "n",
+            /* -2 */ "μ",
+            /* -1 */ "m",
+            /*  0 */ "\uFFFF",
+            /*  1 */ "k",
+            /*  2 */ "M",
+            /*  3 */ "G",
+            /*  4 */ "T",
+            /*  5 */ "P",
+            /*  6 */ "E",
+            /*  7 */ "Z",
+            /*  8 */ "Y",
         };
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace GUtils.Numerics
             if ( pow == 0 )
                 return (number, "");
 
-            return (number / Math.Pow ( 1000, pow ), _prefixes[8 + pow].ToString ( ));
+            return (number / Math.Pow ( 1000, pow ), _prefixes[8 + pow]);
         }
 
         /// <summary>
