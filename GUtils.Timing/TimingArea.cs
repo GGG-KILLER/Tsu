@@ -26,23 +26,28 @@ namespace GUtils.Timing
     /// Represents a section of code being timed, by default
     /// outputs everything to the console
     /// </summary>
+    [Obsolete("TimingArea is obsolete. Use TimingLogger instead.")]
     public class TimingArea : IDisposable
     {
         /// <summary>
         /// The cached indentation level of this area
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1051:Do not declare visible instance fields", Justification = "Class is obsolete." )]
         protected readonly String _indent;
 
         /// <summary>
         /// The <see cref="Stopwatch" /> measuring the elapsed
         /// time of this area
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1051:Do not declare visible instance fields", Justification = "Class is obsolete." )]
         protected readonly Stopwatch _stopwatch;
 
         /// <summary>
         /// The root <see cref="TimingArea" />
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1051:Do not declare visible instance fields", Justification = "Class is obsolete." )]
         protected readonly TimingArea _root;
+
 
         /// <summary>
         /// Initializes this <see cref="TimingArea" /> increasing
@@ -51,6 +56,7 @@ namespace GUtils.Timing
         /// </summary>
         /// <param name="name"></param>
         /// <param name="parent"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CA2214:Do not call overridable methods in constructors", Justification = "Class is obsolete." )]
         public TimingArea ( String name, TimingArea parent = null )
         {
             this._indent = parent != null ? parent._indent + '\t' : "";
@@ -75,10 +81,12 @@ namespace GUtils.Timing
         /// <param name="extraIndent"></param>
         public virtual void Log ( Object Message, Boolean extraIndent = true ) => Console.WriteLine ( $"[{this._root._stopwatch.Elapsed}]{this._indent}{( extraIndent ? "\t" : "" )} {Message}" );
 
+
         /// <summary>
         /// Ends this <see cref="TimingArea" /> showing the total
         /// time elapsed and ends the indented area
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "Class is obsolete." )]
         public virtual void Dispose ( )
         {
             this.Log ( $"Total time elapsed: {Duration.Format ( this._stopwatch.ElapsedTicks )}" );

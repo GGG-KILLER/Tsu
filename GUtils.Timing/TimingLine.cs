@@ -25,6 +25,7 @@ namespace GUtils.Timing
     /// A class that shows the timing spent since its creation
     /// until its disposal in a single line of the <see cref="TimingArea" />
     /// </summary>
+    [Obsolete("TimingLine is obsolete. Use TimingLogger instead.")]
     public class TimingLine : IDisposable
     {
         private readonly TimingArea parent;
@@ -39,9 +40,11 @@ namespace GUtils.Timing
             this.stopwatch = Stopwatch.StartNew ( );
         }
 
+
         /// <summary>
         /// Ends this timing line showing the total elapsed time
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "Class is obsolete." )]
         public void Dispose ( ) => this.parent.Log ( $"Time elapsed on {this.name}: {Duration.Format ( this.stopwatch.ElapsedTicks )}" );
     }
 }
