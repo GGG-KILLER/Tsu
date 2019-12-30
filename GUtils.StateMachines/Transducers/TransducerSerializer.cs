@@ -20,6 +20,9 @@ namespace GUtils.StateMachines.Transducers
         /// <returns></returns>
         public static Expression<Func<IEnumerable<TInput>, (Int32, TOutput)>> GetExpressionTree<TInput, TOutput> ( Transducer<TInput, TOutput> transducer )
         {
+            if ( transducer is null )
+                throw new ArgumentNullException ( nameof ( transducer ) );
+
             ParameterExpression inputArg = Expression.Parameter ( typeof ( IEnumerable<TInput> ), "input" );
             ParameterExpression enumerator = Expression.Variable ( typeof ( IEnumerator<TInput> ), "enumerator" );
             LabelTarget returnLabelTarget = Expression.Label ( typeof ( (Int32, TOutput) ), "return-label" );
@@ -43,6 +46,15 @@ namespace GUtils.StateMachines.Transducers
 
         private static Expression GetStateExpressionTree<TInput, TOutput> ( TransducerState<TInput, TOutput> state, ParameterExpression enumerator, Int32 depth, LabelTarget returnLabelTarget )
         {
+            if ( state is null )
+                throw new ArgumentNullException ( nameof ( state ) );
+            
+            if ( enumerator is null )
+                throw new ArgumentNullException ( nameof ( enumerator ) );
+            
+            if ( returnLabelTarget is null )
+                throw new ArgumentNullException ( nameof ( returnLabelTarget ) );
+
             if ( state.TransitionTable.Count > 0 )
             {
                 // Serialize all transitions
@@ -90,6 +102,9 @@ namespace GUtils.StateMachines.Transducers
         /// <returns></returns>
         public static Func<IEnumerable<TInput>, (Int32, TOutput)> Compile<TInput, TOutput> ( Transducer<TInput, TOutput> transducer )
         {
+            if ( transducer is null )
+                throw new ArgumentNullException ( nameof ( transducer ) );
+
             Expression<Func<IEnumerable<TInput>, (Int32, TOutput)>> lambda = GetExpressionTree ( transducer );
             Func<IEnumerable<TInput>, (Int32, TOutput)> compiled = lambda.Compile ( );
             return compiled;
