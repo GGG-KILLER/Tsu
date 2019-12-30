@@ -110,6 +110,7 @@ namespace GUtils.Numerics
         /// <param name="size"></param>
         /// <param name="format">default value is: "{0} {1}"</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Unnecessary." )]
         public static String Format ( Int64 size, String format )
         {
             (var newSize, var suffix) = GetFormatPair ( size );
@@ -122,6 +123,7 @@ namespace GUtils.Numerics
         /// <param name="size"></param>
         /// <param name="format">default value is: "{0} {1}"</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Unnecessary." )]
         public static String Format ( Double size, String format )
         {
             (var newSize, var suffix) = GetFormatPair ( size );
