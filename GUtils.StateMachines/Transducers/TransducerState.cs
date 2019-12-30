@@ -71,6 +71,9 @@ namespace GUtils.StateMachines.Transducers
         /// <returns></returns>
         public TransducerState<TInput, TOutput> GetState ( TInput[] sequence, Int32 startingIndex = 0 )
         {
+            if ( sequence is null )
+                throw new ArgumentNullException ( nameof ( sequence ) );
+
             if ( startingIndex < 0 || startingIndex >= sequence.Length )
                 throw new ArgumentOutOfRangeException ( nameof ( startingIndex ) );
 
@@ -111,10 +114,18 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="output">The output the desired state will have</param>
         /// <param name="startingIndex">The index at which to start reading the inputs from</param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> SetStateOutput ( TInput[] sequence, TOutput output, Int32 startingIndex = 0 ) =>
-            startingIndex < sequence.Length - 1
+        public TransducerState<TInput, TOutput> SetStateOutput ( TInput[] sequence, TOutput output, Int32 startingIndex = 0 )
+        {
+            if ( sequence is null )
+                throw new ArgumentNullException ( nameof ( sequence ) );
+
+            if ( startingIndex < 0 )
+                throw new ArgumentOutOfRangeException ( nameof ( sequence ) );
+
+            return startingIndex < sequence.Length - 1
                 ? this.GetState ( sequence[startingIndex] ).GetState ( sequence, startingIndex + 1 )
                 : this.SetStateOutput ( sequence[startingIndex], output );
+        }
 
         /// <summary>
         /// Adds a new transition to a new terminal state
@@ -172,10 +183,14 @@ namespace GUtils.StateMachines.Transducers
         /// <returns></returns>
         public TransducerState<TInput, TOutput> OnInput ( TInput[] sequence, Action<TransducerState<TInput, TOutput>> action, Int32 startIndex = 0 )
         {
-            if ( startIndex < 0 || startIndex >= sequence.Length )
-                throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
+            if ( sequence is null )
+                throw new ArgumentNullException ( nameof ( sequence ) );
+
             if ( action == null )
                 throw new ArgumentNullException ( nameof ( action ) );
+
+            if ( startIndex < 0 || startIndex >= sequence.Length )
+                throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
 
             if ( startIndex < sequence.Length - 1 )
                 this.OnInput ( sequence[startIndex], state => state.OnInput ( sequence, action, startIndex + 1 ) );
@@ -195,6 +210,9 @@ namespace GUtils.StateMachines.Transducers
         /// <returns></returns>
         public TransducerState<TInput, TOutput> OnInput ( TInput[] sequence, TOutput output, Int32 startIndex = 0 )
         {
+            if ( sequence is null )
+                throw new ArgumentNullException ( nameof ( sequence ) );
+
             if ( startIndex < 0 || startIndex >= sequence.Length )
                 throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
 
@@ -220,6 +238,12 @@ namespace GUtils.StateMachines.Transducers
         /// <returns></returns>
         public TransducerState<TInput, TOutput> OnInput ( TInput[] sequence, TOutput output, Action<TransducerState<TInput, TOutput>> action, Int32 startIndex = 0 )
         {
+            if ( sequence is null )
+                throw new ArgumentNullException ( nameof ( sequence ) );
+
+            if ( action is null )
+                throw new ArgumentNullException ( nameof ( action ) );
+
             if ( startIndex < 0 || startIndex >= sequence.Length )
                 throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
 
