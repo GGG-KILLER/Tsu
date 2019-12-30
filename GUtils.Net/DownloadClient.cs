@@ -249,11 +249,14 @@ namespace GUtils.Net
         /// <returns></returns>
         private async Task<HttpWebResponse> GetResponseAsync ( )
         {
-            HttpWebRequest req = WebRequest.CreateHttp ( this._url );
+            HttpWebRequest req = this._uri is null
+                ? WebRequest.CreateHttp ( this._url )
+                : WebRequest.CreateHttp ( this._uri );
             if ( this.UserAgent != null )
                 req.UserAgent = this.UserAgent;
 
-            return ( HttpWebResponse ) await req.GetResponseAsync ( ).ConfigureAwait ( false );
+            return ( HttpWebResponse ) await req.GetResponseAsync ( )
+                                                .ConfigureAwait ( false );
         }
     }
 }
