@@ -77,6 +77,9 @@ namespace GUtils.Numerics
         /// <param name="bitVector">The bit vector to copy from</param>
         public VariableLengthBitVector ( VariableLengthBitVector bitVector )
         {
+            if ( bitVector is null )
+                throw new ArgumentNullException ( nameof ( bitVector ) );
+
             this.containers = ( BitContainer[] ) bitVector.containers.Clone ( );
         }
 
