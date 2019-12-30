@@ -40,8 +40,8 @@ namespace GUtils.StateMachines.Transducers
         public Transducer<TInput, TOutput> WithDefaultOutput ( TOutput output )
         {
             var transducer = new Transducer<TInput,TOutput> ( output );
-            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.InitialState.transitionTable )
-                transducer.InitialState.transitionTable[kv.Key] = kv.Value.DeepCopy ( );
+            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.InitialState.InternalTransitionTable )
+                transducer.InitialState.InternalTransitionTable[kv.Key] = kv.Value.DeepCopy ( );
             return transducer;
         }
 
@@ -52,8 +52,8 @@ namespace GUtils.StateMachines.Transducers
         public Transducer<TInput, TOutput> WithoutDefaultOutput ( )
         {
             var transducer = new Transducer<TInput,TOutput> ( );
-            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.InitialState.transitionTable )
-                transducer.InitialState.transitionTable[kv.Key] = kv.Value.DeepCopy ( );
+            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.InitialState.InternalTransitionTable )
+                transducer.InitialState.InternalTransitionTable[kv.Key] = kv.Value.DeepCopy ( );
             return transducer;
         }
 

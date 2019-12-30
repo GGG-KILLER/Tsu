@@ -17,7 +17,7 @@ namespace GUtils.StateMachines.Transducers
         /// <summary>
         /// The transitions this input has
         /// </summary>
-        protected internal readonly Dictionary<TInput, TransducerState<TInput, TOutput>> transitionTable = new Dictionary<TInput, TransducerState<TInput, TOutput>> ( );
+        protected internal Dictionary<TInput, TransducerState<TInput, TOutput>> InternalTransitionTable { get; } = new Dictionary<TInput, TransducerState<TInput, TOutput>> ( );
 
         /// <summary>
         /// Whether this is a terminal state (one that has an output related with it)
@@ -32,7 +32,7 @@ namespace GUtils.StateMachines.Transducers
         /// <summary>
         /// The transitions this input has
         /// </summary>
-        public IReadOnlyDictionary<TInput, TransducerState<TInput, TOutput>> TransitionTable => this.transitionTable;
+        public IReadOnlyDictionary<TInput, TransducerState<TInput, TOutput>> TransitionTable => this.InternalTransitionTable;
 
         /// <summary>
         /// Creates a new non-terminal state
@@ -58,9 +58,9 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="input"></param>
         /// <returns></returns>
         public TransducerState<TInput, TOutput> GetState ( TInput input ) =>
-            this.transitionTable.ContainsKey ( input )
-                ? this.transitionTable[input]
-                : this.transitionTable[input] = new TransducerState<TInput, TOutput> ( );
+            this.InternalTransitionTable.ContainsKey ( input )
+                ? this.InternalTransitionTable[input]
+                : this.InternalTransitionTable[input] = new TransducerState<TInput, TOutput> ( );
 
         /// <summary>
         /// Retrieves a state from the state graph with this node as a starting point
@@ -89,20 +89,20 @@ namespace GUtils.StateMachines.Transducers
         /// <returns></returns>
         public TransducerState<TInput, TOutput> SetStateOutput ( TInput input, TOutput output )
         {
-            if ( this.transitionTable.ContainsKey ( input ) )
+            if ( this.InternalTransitionTable.ContainsKey ( input ) )
             {
-                TransducerState<TInput, TOutput> state = this.transitionTable[input];
+                TransducerState<TInput, TOutput> state = this.InternalTransitionTable[input];
 
                 // Create a new state with all transitions of the previous state
                 var newState = new TransducerState<TInput, TOutput> ( output );
-                foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in state.transitionTable )
-                    newState.transitionTable[kv.Key] = kv.Value;
+                foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in state.InternalTransitionTable )
+                    newState.InternalTransitionTable[kv.Key] = kv.Value;
 
-                return this.transitionTable[input] = newState;
+                return this.InternalTransitionTable[input] = newState;
             }
             else
             {
-                return this.transitionTable[input] = new TransducerState<TInput, TOutput> ( output );
+                return this.InternalTransitionTable[input] = new TransducerState<TInput, TOutput> ( output );
             }
         }
 
@@ -255,8 +255,8 @@ namespace GUtils.StateMachines.Transducers
         public TransducerState<TInput, TOutput> ShallowCopy ( )
         {
             TransducerState<TInput, TOutput> state = this.IsTerminal ? new TransducerState<TInput, TOutput> ( this.Output ) : new TransducerState<TInput, TOutput> ( );
-            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.transitionTable )
-                state.transitionTable[kv.Key] = kv.Value;
+            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.InternalTransitionTable )
+                state.InternalTransitionTable[kv.Key] = kv.Value;
             return state;
         }
 
@@ -267,8 +267,8 @@ namespace GUtils.StateMachines.Transducers
         public TransducerState<TInput, TOutput> DeepCopy ( )
         {
             TransducerState<TInput, TOutput> state = this.IsTerminal ? new TransducerState<TInput, TOutput> ( this.Output ) : new TransducerState<TInput, TOutput> ( );
-            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.transitionTable )
-                state.transitionTable[kv.Key] = kv.Value.DeepCopy ( );
+            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.InternalTransitionTable )
+                state.InternalTransitionTable[kv.Key] = kv.Value.DeepCopy ( );
             return state;
         }
     }
