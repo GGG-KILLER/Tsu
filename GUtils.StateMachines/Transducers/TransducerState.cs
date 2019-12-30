@@ -7,18 +7,18 @@ namespace GUtils.StateMachines.Transducers
     /// <summary>
     /// Represents a state of the <see cref="Transducer{InputT, OutputT}" />
     /// </summary>
-    /// <typeparam name="InputT">
+    /// <typeparam name="TInput">
     /// The type of input the <see cref="Transducer{InputT, OutputT}" /> accepts
     /// </typeparam>
-    /// <typeparam name="OutputT">
+    /// <typeparam name="TOutput">
     /// The type of the output the <see cref="Transducer{InputT, OutputT}" /> emits
     /// </typeparam>
-    public class TransducerState<InputT, OutputT>
+    public class TransducerState<TInput, TOutput>
     {
         /// <summary>
         /// The transitions this input has
         /// </summary>
-        protected internal readonly Dictionary<InputT, TransducerState<InputT, OutputT>> transitionTable = new Dictionary<InputT, TransducerState<InputT, OutputT>> ( );
+        protected internal readonly Dictionary<TInput, TransducerState<TInput, TOutput>> transitionTable = new Dictionary<TInput, TransducerState<TInput, TOutput>> ( );
 
         /// <summary>
         /// Whether this is a terminal state (one that has an output related with it)
@@ -28,12 +28,12 @@ namespace GUtils.StateMachines.Transducers
         /// <summary>
         /// The output of the state if it is a terminal state
         /// </summary>
-        public OutputT Output { get; set; }
+        public TOutput Output { get; set; }
 
         /// <summary>
         /// The transitions this input has
         /// </summary>
-        public IReadOnlyDictionary<InputT, TransducerState<InputT, OutputT>> TransitionTable => this.transitionTable;
+        public IReadOnlyDictionary<TInput, TransducerState<TInput, TOutput>> TransitionTable => this.transitionTable;
 
         /// <summary>
         /// Creates a new non-terminal state
@@ -47,7 +47,7 @@ namespace GUtils.StateMachines.Transducers
         /// Creates a new terminal state with the ouput
         /// </summary>
         /// <param name="output"></param>
-        public TransducerState ( OutputT output )
+        public TransducerState ( TOutput output )
         {
             this.IsTerminal = true;
             this.Output = output;
@@ -58,10 +58,10 @@ namespace GUtils.StateMachines.Transducers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public TransducerState<InputT, OutputT> GetState ( InputT input ) =>
+        public TransducerState<TInput, TOutput> GetState ( TInput input ) =>
             this.transitionTable.ContainsKey ( input )
                 ? this.transitionTable[input]
-                : this.transitionTable[input] = new TransducerState<InputT, OutputT> ( );
+                : this.transitionTable[input] = new TransducerState<TInput, TOutput> ( );
 
         /// <summary>
         /// Retrieves a state from the state graph with this node as a starting point
@@ -69,7 +69,7 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="string">The string of inputs that would lead to the desired state</param>
         /// <param name="startingIndex">The index at which to start reading the inputs from</param>
         /// <returns></returns>
-        public TransducerState<InputT, OutputT> GetState ( InputT[] @string, Int32 startingIndex = 0 )
+        public TransducerState<TInput, TOutput> GetState ( TInput[] @string, Int32 startingIndex = 0 )
         {
             if ( startingIndex < 0 || startingIndex >= @string.Length )
                 throw new ArgumentOutOfRangeException ( nameof ( startingIndex ) );
@@ -85,22 +85,22 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="input"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public TransducerState<InputT, OutputT> SetStateOutput ( InputT input, OutputT output )
+        public TransducerState<TInput, TOutput> SetStateOutput ( TInput input, TOutput output )
         {
             if ( this.transitionTable.ContainsKey ( input ) )
             {
-                TransducerState<InputT, OutputT> state = this.transitionTable[input];
+                TransducerState<TInput, TOutput> state = this.transitionTable[input];
 
                 // Create a new state with all transitions of the previous state
-                var newState = new TransducerState<InputT, OutputT> ( output );
-                foreach ( KeyValuePair<InputT, TransducerState<InputT, OutputT>> kv in state.transitionTable )
+                var newState = new TransducerState<TInput, TOutput> ( output );
+                foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in state.transitionTable )
                     newState.transitionTable[kv.Key] = kv.Value;
 
                 return this.transitionTable[input] = newState;
             }
             else
             {
-                return this.transitionTable[input] = new TransducerState<InputT, OutputT> ( output );
+                return this.transitionTable[input] = new TransducerState<TInput, TOutput> ( output );
             }
         }
 
@@ -111,7 +111,7 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="output">The output the desired state will have</param>
         /// <param name="startingIndex">The index at which to start reading the inputs from</param>
         /// <returns></returns>
-        public TransducerState<InputT, OutputT> SetStateOutput ( InputT[] @string, OutputT output, Int32 startingIndex = 0 ) =>
+        public TransducerState<TInput, TOutput> SetStateOutput ( TInput[] @string, TOutput output, Int32 startingIndex = 0 ) =>
             startingIndex < @string.Length - 1
                 ? this.GetState ( @string[startingIndex] ).GetState ( @string, startingIndex + 1 )
                 : this.SetStateOutput ( @string[startingIndex], output );
@@ -122,7 +122,7 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="input">The input that will trigger the transition</param>
         /// <param name="output">The output that will be returned in this state</param>
         /// <returns></returns>
-        public TransducerState<InputT, OutputT> OnInput ( InputT input, OutputT output )
+        public TransducerState<TInput, TOutput> OnInput ( TInput input, TOutput output )
         {
             this.SetStateOutput ( input, output );
             return this;
@@ -134,7 +134,7 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="input">The input that will trigger the transition</param>
         /// <param name="action">The action to configure the transitions of the new state</param>
         /// <returns></returns>
-        public TransducerState<InputT, OutputT> OnInput ( InputT input, Action<TransducerState<InputT, OutputT>> action )
+        public TransducerState<TInput, TOutput> OnInput ( TInput input, Action<TransducerState<TInput, TOutput>> action )
         {
             if ( action == null )
                 throw new ArgumentNullException ( nameof ( action ) );
@@ -150,7 +150,7 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="output">The output that will be returned on this state</param>
         /// <param name="action"></param>
         /// <returns></returns>
-        public TransducerState<InputT, OutputT> OnInput ( InputT input, OutputT output, Action<TransducerState<InputT, OutputT>> action )
+        public TransducerState<TInput, TOutput> OnInput ( TInput input, TOutput output, Action<TransducerState<TInput, TOutput>> action )
         {
             if ( action == null )
                 throw new ArgumentNullException ( nameof ( action ) );
@@ -170,7 +170,7 @@ namespace GUtils.StateMachines.Transducers
         /// The index to start adding transitions from the <paramref name="string" />
         /// </param>
         /// <returns></returns>
-        public TransducerState<InputT, OutputT> OnInput ( InputT[] @string, Action<TransducerState<InputT, OutputT>> action, Int32 startIndex = 0 )
+        public TransducerState<TInput, TOutput> OnInput ( TInput[] @string, Action<TransducerState<TInput, TOutput>> action, Int32 startIndex = 0 )
         {
             if ( startIndex < 0 || startIndex >= @string.Length )
                 throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
@@ -193,7 +193,7 @@ namespace GUtils.StateMachines.Transducers
         /// The index to start adding transitions from the <paramref name="string" />
         /// </param>
         /// <returns></returns>
-        public TransducerState<InputT, OutputT> OnInput ( InputT[] @string, OutputT output, Int32 startIndex = 0 )
+        public TransducerState<TInput, TOutput> OnInput ( TInput[] @string, TOutput output, Int32 startIndex = 0 )
         {
             if ( startIndex < 0 || startIndex >= @string.Length )
                 throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
@@ -218,7 +218,7 @@ namespace GUtils.StateMachines.Transducers
         /// The index to start adding transitions from the <paramref name="string" />
         /// </param>
         /// <returns></returns>
-        public TransducerState<InputT, OutputT> OnInput ( InputT[] @string, OutputT output, Action<TransducerState<InputT, OutputT>> action, Int32 startIndex = 0 )
+        public TransducerState<TInput, TOutput> OnInput ( TInput[] @string, TOutput output, Action<TransducerState<TInput, TOutput>> action, Int32 startIndex = 0 )
         {
             if ( startIndex < 0 || startIndex >= @string.Length )
                 throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
@@ -235,10 +235,10 @@ namespace GUtils.StateMachines.Transducers
         /// Creates a shallow copy of this state
         /// </summary>
         /// <returns></returns>
-        public TransducerState<InputT, OutputT> ShallowCopy ( )
+        public TransducerState<TInput, TOutput> ShallowCopy ( )
         {
-            TransducerState<InputT, OutputT> state = this.IsTerminal ? new TransducerState<InputT, OutputT> ( this.Output ) : new TransducerState<InputT, OutputT> ( );
-            foreach ( KeyValuePair<InputT, TransducerState<InputT, OutputT>> kv in this.transitionTable )
+            TransducerState<TInput, TOutput> state = this.IsTerminal ? new TransducerState<TInput, TOutput> ( this.Output ) : new TransducerState<TInput, TOutput> ( );
+            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.transitionTable )
                 state.transitionTable[kv.Key] = kv.Value;
             return state;
         }
@@ -247,10 +247,10 @@ namespace GUtils.StateMachines.Transducers
         /// Creates a deep copy of this state
         /// </summary>
         /// <returns></returns>
-        public TransducerState<InputT, OutputT> DeepCopy ( )
+        public TransducerState<TInput, TOutput> DeepCopy ( )
         {
-            TransducerState<InputT, OutputT> state = this.IsTerminal ? new TransducerState<InputT, OutputT> ( this.Output ) : new TransducerState<InputT, OutputT> ( );
-            foreach ( KeyValuePair<InputT, TransducerState<InputT, OutputT>> kv in this.transitionTable )
+            TransducerState<TInput, TOutput> state = this.IsTerminal ? new TransducerState<TInput, TOutput> ( this.Output ) : new TransducerState<TInput, TOutput> ( );
+            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.transitionTable )
                 state.transitionTable[kv.Key] = kv.Value.DeepCopy ( );
             return state;
         }

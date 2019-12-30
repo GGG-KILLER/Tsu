@@ -14,21 +14,21 @@ namespace GUtils.StateMachines.Transducers
         /// <summary>
         /// Transforms the transducer into an expression tree
         /// </summary>
-        /// <typeparam name="InputT">The type of input accepted by the transducer</typeparam>
-        /// <typeparam name="OutputT">The type of output emitted by the transducer</typeparam>
+        /// <typeparam name="TInput">The type of input accepted by the transducer</typeparam>
+        /// <typeparam name="TOutput">The type of output emitted by the transducer</typeparam>
         /// <param name="transducer">The transducer to compile</param>
         /// <returns></returns>
-        public static Expression<Func<IEnumerable<InputT>, (Int32, OutputT)>> GetExpressionTree<InputT, OutputT> ( Transducer<InputT, OutputT> transducer )
+        public static Expression<Func<IEnumerable<TInput>, (Int32, TOutput)>> GetExpressionTree<TInput, TOutput> ( Transducer<TInput, TOutput> transducer )
         {
-            ParameterExpression inputArg = Expression.Parameter ( typeof ( IEnumerable<InputT> ), "input" );
-            ParameterExpression enumerator = Expression.Variable ( typeof ( IEnumerator<InputT> ), "enumerator" );
-            LabelTarget returnLabelTarget = Expression.Label ( typeof ( (Int32, OutputT) ), "return-label" );
+            ParameterExpression inputArg = Expression.Parameter ( typeof ( IEnumerable<TInput> ), "input" );
+            ParameterExpression enumerator = Expression.Variable ( typeof ( IEnumerator<TInput> ), "enumerator" );
+            LabelTarget returnLabelTarget = Expression.Label ( typeof ( (Int32, TOutput) ), "return-label" );
 
-            var lambda = Expression.Lambda<Func<IEnumerable<InputT>, (Int32, OutputT)>> (
+            var lambda = Expression.Lambda<Func<IEnumerable<TInput>, (Int32, TOutput)>> (
                 Expression.Block (
-                    typeof ( (Int32, OutputT) ),
+                    typeof ( (Int32, TOutput) ),
                     new[] { enumerator },
-                    Expression.Assign ( enumerator, GExpression.MethodCall<IEnumerable<InputT>> ( inputArg, e => e.GetEnumerator ( ) ) ),
+                    Expression.Assign ( enumerator, GExpression.MethodCall<IEnumerable<TInput>> ( inputArg, e => e.GetEnumerator ( ) ) ),
                     Expression.TryFinally (
                         GetStateExpressionTree ( transducer.InitialState, enumerator, 0, returnLabelTarget ),
                         Expression.IfThen (
@@ -41,13 +41,13 @@ namespace GUtils.StateMachines.Transducers
             return lambda;
         }
 
-        private static Expression GetStateExpressionTree<InputT, OutputT> ( TransducerState<InputT, OutputT> state, ParameterExpression enumerator, Int32 depth, LabelTarget returnLabelTarget )
+        private static Expression GetStateExpressionTree<TInput, TOutput> ( TransducerState<TInput, TOutput> state, ParameterExpression enumerator, Int32 depth, LabelTarget returnLabelTarget )
         {
             if ( state.TransitionTable.Count > 0 )
             {
                 // Serialize all transitions
                 var cases = new List<SwitchCase> ( );
-                foreach ( KeyValuePair<InputT, TransducerState<InputT, OutputT>> kv in state.TransitionTable )
+                foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in state.TransitionTable )
                 {
                     cases.Add ( Expression.SwitchCase (
                         GetStateExpressionTree ( kv.Value, enumerator, depth + 1, returnLabelTarget ),
@@ -56,14 +56,14 @@ namespace GUtils.StateMachines.Transducers
                 }
 
                 ConstantExpression retVal = state.IsTerminal
-                    ? Expression.Constant ( default ( (Int32, OutputT) ) )
+                    ? Expression.Constant ( default ( (Int32, TOutput) ) )
                     : Expression.Constant ( ( depth, state.Output ) );
 
                 return Expression.Condition (
                     GExpression.MethodCall<IEnumerator> ( enumerator, e => e.MoveNext ( ) ),
                     Expression.Switch (
-                        typeof ( (Int32, OutputT) ),
-                        GExpression.PropertyGet<IEnumerator<InputT>, InputT> ( enumerator, e => e.Current ),
+                        typeof ( (Int32, TOutput) ),
+                        GExpression.PropertyGet<IEnumerator<TInput>, TInput> ( enumerator, e => e.Current ),
                         retVal,
                         null,
                         cases.ToArray ( ) ),
@@ -84,14 +84,14 @@ namespace GUtils.StateMachines.Transducers
         /// <summary>
         /// Compiles a transducer into a method for faster execution
         /// </summary>
-        /// <typeparam name="InputT"></typeparam>
-        /// <typeparam name="OutputT"></typeparam>
+        /// <typeparam name="TInput"></typeparam>
+        /// <typeparam name="TOutput"></typeparam>
         /// <param name="transducer"></param>
         /// <returns></returns>
-        public static Func<IEnumerable<InputT>, (Int32, OutputT)> Compile<InputT, OutputT> ( Transducer<InputT, OutputT> transducer )
+        public static Func<IEnumerable<TInput>, (Int32, TOutput)> Compile<TInput, TOutput> ( Transducer<TInput, TOutput> transducer )
         {
-            Expression<Func<IEnumerable<InputT>, (Int32, OutputT)>> lambda = GetExpressionTree ( transducer );
-            Func<IEnumerable<InputT>, (Int32, OutputT)> compiled = lambda.Compile ( );
+            Expression<Func<IEnumerable<TInput>, (Int32, TOutput)>> lambda = GetExpressionTree ( transducer );
+            Func<IEnumerable<TInput>, (Int32, TOutput)> compiled = lambda.Compile ( );
             return compiled;
         }
     }
