@@ -1,0 +1,29 @@
+version: '{build}'
+image: Visual Studio 2019
+configuration: Release
+before_build:
+- pwsh: >-
+    nuget restore
+
+    dotnet restore
+build:
+  publish_nuget: true
+  parallel: true
+  verbosity: minimal
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/ggg-killer/api/v2/package
+  api_key:
+    secure: Ufjp6cc+x5kIt10jHw5MIw+S9ywdZtFDUEQ6NiQe01bnkH6p2p241NXg8GViF1XQ
+  skip_symbols: true
+  symbol_server: https://www.myget.org/F/ggg-killer/symbols/api/v2/package
+  on:
+    branch: master
+notifications:
+- provider: Email
+  to:
+  - gggkiller2@gmail.com
+  subject: AppVeyor - GUtils.NET - Build Failure
+  on_build_success: false
+  on_build_failure: true
+  on_build_status_changed: false
