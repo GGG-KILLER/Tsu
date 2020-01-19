@@ -149,10 +149,15 @@ namespace GUtils.CLI.Commands
 
                 if ( @params[i].IsDefined ( typeof ( ParamArrayAttribute ) ) )
                 {
+                    // params T[], ...)
                     if ( i != @params.Length - 1 )
                         throw new CommandDefinitionException ( method, $"Methods with 'params' not as the final parameter are not supported." );
-                    if ( @params[i].ParameterType != typeof ( String[] ) )
-                        throw new CommandDefinitionException ( method, $"Methods with 'params' must have the 'params' parameter of the String[] type." );
+                    // params T[,]
+                    if ( @params[i].ParameterType.GetArrayRank ( ) != 1 )
+                        throw new CommandDefinitionException ( method, "Methods with 'params' and multi-dimensional arrays are not supported." );
+                    // params T[][]
+                    if ( @params[i].ParameterType.GetElementType ( ).IsArray )
+                        throw new CommandDefinitionException ( method, "Methods with 'params' and arrays of arrays are not supported." );
                 }
                 // piggyback on 'params' check
                 else if ( @params[i].ParameterType.IsArray )

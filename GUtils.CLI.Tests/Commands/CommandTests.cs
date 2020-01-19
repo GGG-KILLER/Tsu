@@ -38,15 +38,12 @@ namespace GUtils.CLI.Tests.Commands
         [Command ( "c" )]
         public static void Error03 ( in String c ) => _ = c;
 
-        [Command ( "d" )]
-        public static void Error04 ( params Int32[] stuff ) => _ = stuff;
-
         [Command ( "e" )]
-        public static void Error05 ( [JoinRestOfArguments] String a, String b ) => _ = a + b;
+        public static void Error04 ( [JoinRestOfArguments] String a, String b ) => _ = a + b;
 
         [Command ( "f" )]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>" )]
-        public static void Error06 ( String[] a, String b ) => _ = a[0] == b;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "Arguments are known" )]
+        public static void Error05 ( String[] a, String b ) => _ = a[0] == b;
 
         [Command ( "g" ), HelpDescription ( "Sucess" )]
         public static String Success01 (
@@ -54,12 +51,11 @@ namespace GUtils.CLI.Tests.Commands
             [HelpDescription ( "Second arg" )] Int32 second ) => first + second;
 
         [DataTestMethod]
-        [DataRow ( typeof ( CommandTests ), "Error01" )]
-        [DataRow ( typeof ( CommandTests ), "Error02" )]
-        [DataRow ( typeof ( CommandTests ), "Error03" )]
-        [DataRow ( typeof ( CommandTests ), "Error04" )]
-        [DataRow ( typeof ( CommandTests ), "Error05" )]
-        [DataRow ( typeof ( CommandTests ), "Error06" )]
+        [DataRow ( typeof ( CommandTests ), nameof ( Error01 ) )]
+        [DataRow ( typeof ( CommandTests ), nameof ( Error02 ) )]
+        [DataRow ( typeof ( CommandTests ), nameof ( Error03 ) )]
+        [DataRow ( typeof ( CommandTests ), nameof ( Error04 ) )]
+        [DataRow ( typeof ( CommandTests ), nameof ( Error05 ) )]
         public void CtorShouldThrow ( Type type, String name )
             => Assert.ThrowsException<CommandDefinitionException> ( ( ) => new Command ( type.GetMethod ( name ), null ) );
     }

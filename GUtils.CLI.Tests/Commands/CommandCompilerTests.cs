@@ -54,6 +54,8 @@ namespace GUtils.CLI.Tests.Commands
 
         public static void DoSomething08 ( Double? opt = null ) => Value = opt;
 
+        public static void DoSomething09 ( params RandomEnum[] enums ) => Value = String.Join ( ".", enums );
+
         [DataTestMethod]
         [DataRow ( nameof ( DoSomething01 ) )]
         [DataRow ( nameof ( DoSomething02 ) )]
@@ -63,6 +65,7 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( nameof ( DoSomething06 ) )]
         [DataRow ( nameof ( DoSomething07 ) )]
         [DataRow ( nameof ( DoSomething08 ) )]
+        [DataRow ( nameof ( DoSomething09 ) )]
         public void ShouldCompile ( String methodName )
         {
             MethodInfo method = typeof ( CommandCompilerTests ).GetMethod ( methodName );
@@ -80,8 +83,11 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( nameof ( DoSomething07 ), "a;b;c;d;e;f;g", "a.b.c.d.e.f.g" )]
         [DataRow ( nameof ( DoSomething08 ), "-2", -2D )]
         [DataRow ( nameof ( DoSomething08 ), "", null )]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>" )]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1307:Specify StringComparison", Justification = "<Pending>" )]
+        [DataRow ( nameof ( DoSomething09 ), "enum01", "Enum01" )]
+        [DataRow ( nameof ( DoSomething09 ), "enum01;enum01", "Enum01.Enum01" )]
+        [DataRow ( nameof ( DoSomething09 ), "enum01;enum02;enum01", "Enum01.Enum02.Enum01" )]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "Inputs are known" )]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1307:Specify StringComparison", Justification = "Unnecessary" )]
         public void CompiledCommandShouldRun ( String methodName, String inputString, Object expectedVal )
         {
             MethodInfo method = typeof ( CommandCompilerTests ).GetMethod ( methodName );

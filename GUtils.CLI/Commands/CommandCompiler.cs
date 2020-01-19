@@ -16,6 +16,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -46,15 +47,6 @@ namespace GUtils.CLI.Commands
             typeof ( Int32 ),
             typeof ( Int32 )
         } );
-
-        private static readonly MethodInfo MI_Array_Copy = typeof ( Array ).GetMethod ( "Copy", new[]
-        {
-            typeof ( Array ),
-            typeof ( Array ),
-            typeof ( Int32 )
-        } );
-
-        private static readonly Type T_Converter = typeof ( Converter<String, String> ).GetGenericTypeDefinition ( );
 
         private static Expression GetConvertExpression ( Type type, Expression arg )
         {
@@ -100,40 +92,39 @@ namespace GUtils.CLI.Commands
             // throw the exception that was created above
             UnaryExpression @throw = Expression.Throw ( @new, retType );
 
-            // And then use a hack to make the expression tree happy about the return type of this (even
-            // though it'll never return ¯\_(ツ)_/¯)
+            // And then use a hack to make the expression tree happy about the return type of this
+            // (even though it'll never return ¯\_(ツ)_/¯)
             return Expression.Convert ( @throw, retType );
         }
 
         private static Expression CompileParamsParameter ( ParameterExpression arguments, UnaryExpression argumentsLength, ParameterInfo param, ConstantExpression idxExpression )
         {
-            Type arrayType = param.ParameterType.GetElementType ( );
-            ParameterExpression section = Expression.Variable ( typeof ( String[] ), "section" );
+            Type elementType = param.ParameterType.GetElementType ( );
+            ParameterExpression converted = Expression.Variable ( param.ParameterType, "converted" );
+            ParameterExpression offset = Expression.Variable ( typeof ( Int32 ), "offset" );
             BinaryExpression sectionLength = Expression.Subtract ( argumentsLength, idxExpression );
-
-            ParameterExpression input = Expression.Parameter ( typeof ( String ) );
-            Delegate converterDelegate = Expression.Lambda (
-                T_Converter.MakeGenericType ( typeof ( String ), arrayType ),
-                GetConvertExpression ( arrayType, input ),
-                input ).Compile ( );
+            LabelTarget breakLabel = Expression.Label ( "break" );
 
             return Expression.Block (
                 param.ParameterType,
-                /* String[] arr; */
-                new[] { section },
-                /* arr = new String[args.Length - <i>]; */
-                Expression.Assign (
-                    section,
-                    Expression.NewArrayBounds ( typeof ( String ), sectionLength ) ),
-                /* Array.CopyTo ( args, arr, args.Length - <i> ); */
-                Expression.Call ( null, MI_Array_Copy, arguments, section, sectionLength ),
-                /* return Array.ConvertAll<String, TParam> ( section, <Converter Delegate> ); */
-                Expression.Call (
-                    null,
-                    typeof ( Array ).GetMethod ( "ConvertAll" ).MakeGenericMethod ( typeof ( String ), arrayType ),
-                    section,
-                    Expression.Constant ( converterDelegate )
-                )
+                /* String[] converted; Int32 offset; */
+                new[] { converted, offset },
+                /* converted = new String[args.Length - <i>]; */
+                Expression.Assign ( converted, Expression.NewArrayBounds ( elementType, sectionLength ) ),
+                /* offset = 0; */
+                Expression.Assign ( offset, Expression.Constant ( 0 ) ),
+                /* loop { */
+                Expression.Loop ( Expression.Block (
+                    /* if ( offset >= args.Length - <i> ) break; */
+                    Expression.IfThen ( Expression.GreaterThanOrEqual ( offset, sectionLength ), Expression.Break ( breakLabel ) ),
+                    /* converted[offset] = <ConvertExpression ( <arrayType>, arguments[<idxExpression> + offset] )>; */
+                    Expression.Assign ( Expression.ArrayAccess ( converted, offset ), GetConvertExpression ( elementType, Expression.ArrayAccess ( arguments, Expression.Add ( idxExpression, offset ) ) ) ),
+                    /* offset++; */
+                    Expression.Assign ( offset, Expression.Increment ( offset ) )
+                ), breakLabel ),
+                /* } */
+                /* return converted; */
+                converted
             );
         }
 
@@ -145,15 +136,15 @@ namespace GUtils.CLI.Commands
         /// <returns></returns>
         public static Expression<Action<String, String[]>> CompilePartially ( MethodInfo method, Object instance )
         {
-            ParameterExpression name = Expression.Parameter ( typeof ( String ) );
-            ParameterExpression arguments = Expression.Parameter ( typeof ( String[] ) );
+            ParameterExpression name = Expression.Parameter ( typeof ( String ), "name" );
+            ParameterExpression arguments = Expression.Parameter ( typeof ( String[] ), "args" );
             UnaryExpression argumentsLength = Expression.ArrayLength ( arguments );
 
             ParameterInfo[] parameters = method.GetParameters ( );
             var convertedArguments = new Expression[parameters.Length];
 
-            // Create expressions converting all arguments to the expected types given by the function
-            // arguments
+            // Create expressions converting all arguments to the expected types given by the
+            // function arguments
             for ( var idx = 0; idx < parameters.Length; idx++ )
             {
                 var hasParamsArgument = false;
@@ -193,8 +184,8 @@ namespace GUtils.CLI.Commands
                     Expression.Catch ( ex, GetThrowExpression<CommandInvocationException> ( parameterType, name, $"Invalid argument #{idx}.", ex ) )
                 );
 
-                // Add check that there're enough arguments otherwise attempt to use default values, and
-                // if this argument doesn't has one, throw an exception
+                // Add check that there're enough arguments otherwise attempt to use default values,
+                // and if this argument doesn't has one, throw an exception
                 convertedArguments[idx] = Expression.Condition (
                     Expression.GreaterThan ( Expression.ArrayLength ( arguments ), idxExpression ),
                     argument,
@@ -202,7 +193,7 @@ namespace GUtils.CLI.Commands
                     ? Expression.Convert ( Expression.Constant ( parameters[idx].DefaultValue ), parameterType )
                     : ( hasParamsArgument
                         /* Params can have no arguments at all and will call the function with no arguments */
-                        ? Expression.Constant ( Array.Empty<String> ( ) )
+                        ? Expression.NewArrayBounds ( parameterType.GetElementType ( ), Expression.Constant ( 0 ) )
                         : GetThrowExpression<CommandInvocationException> ( parameterType, name, $"Missing argument #{idx}." ) )
                 );
             }
@@ -215,8 +206,8 @@ namespace GUtils.CLI.Commands
         }
 
         /// <summary>
-        /// Compiles a command argument conversion process so that no extra logic is made when executing
-        /// them
+        /// Compiles a command argument conversion process so that no extra logic is made when
+        /// executing them
         /// </summary>
         /// <param name="method"></param>
         /// <param name="instance"></param>
