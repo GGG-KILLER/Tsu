@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -23,7 +24,7 @@ namespace GUtils.MVVM
         [MethodImpl ( MethodImplOptions.NoInlining )]
         protected virtual void SetField<T> ( ref T field, T newValue, [CallerMemberName] String propertyName = null )
         {
-            if ( field.Equals ( newValue ) )
+            if ( EqualityComparer<T>.Default.Equals ( field, newValue ) )
                 return;
             field = newValue;
             this.OnPropertyChanged ( propertyName );
