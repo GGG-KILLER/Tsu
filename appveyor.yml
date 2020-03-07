@@ -8,6 +8,8 @@ before_build:
     dotnet restore
 build:
   publish_nuget: true
+  publish_nuget_symbols: true
+  use_snupkg_format: true
   parallel: true
   verbosity: minimal
 deploy:
@@ -15,7 +17,7 @@ deploy:
   server: https://www.myget.org/F/ggg-killer/api/v2/package
   api_key:
     secure: Ufjp6cc+x5kIt10jHw5MIw+S9ywdZtFDUEQ6NiQe01bnkH6p2p241NXg8GViF1XQ
-  skip_symbols: true
+  skip_symbols: false
   symbol_server: https://www.myget.org/F/ggg-killer/symbols/api/v2/package
   on:
     branch: master
