@@ -13,7 +13,7 @@
     <RepositoryUrl>https://github.com/GGG-KILLER/GUtils.NET</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <LangVersion>latest</LangVersion>
-    <DocumentationFile>bin\$(Configuration)\netstandard2.0\GUtils.MVVM.xml</DocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\GUtils.MVVM.xml</DocumentationFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!-- Source Link -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
