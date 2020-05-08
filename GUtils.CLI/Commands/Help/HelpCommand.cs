@@ -136,10 +136,9 @@ namespace GUtils.CLI.Commands.Help
 
                 if ( command.Arguments.Length > 0 )
                 {
-                    var maxLen = command.Arguments.Max ( arg =>
-                        arg.Name.Length
-                        + 1
-                        + arg.ParameterType.Name.Length );
+                    var maxLen = command.Arguments.Max ( arg => arg.Name.Length
+                                                                + 1
+                                                                + arg.ParameterType.Name.Length );
 
                     list.Add ( "    Arguments:" );
                     foreach ( ArgumentHelpData argument in command.Arguments )

@@ -96,7 +96,7 @@ namespace GUtils.CLI.Commands.Help
         /// <param name="obj"></param>
         /// <returns></returns>
         public override Boolean Equals ( Object obj ) =>
-            obj is ArgumentHelpData && this.Equals ( ( ArgumentHelpData ) obj );
+            obj is ArgumentHelpData data && this.Equals ( data );
 
         /// <summary>
         /// <inheritdoc />
