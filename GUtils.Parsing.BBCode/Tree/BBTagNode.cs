@@ -61,9 +61,9 @@ namespace GUtils.Parsing.BBCode.Tree
                 throw new ArgumentException ( "Name of tag cannot be null or composed only of whitespaces", nameof ( name ) );
 
             this.SelfClosing = selfClosing;
-            this.Name        = name;
-            this.Value       = value;
-            this._children   = new List<BBNode> ( );
+            this.Name = name;
+            this.Value = value;
+            this._children = new List<BBNode> ( );
         }
 
         /// <inheritdoc />
@@ -79,11 +79,20 @@ namespace GUtils.Parsing.BBCode.Tree
         public override String ToString ( )
         {
             if ( this.SelfClosing )
-                return $"[{this.Name}/]";
-            else if ( this.Value is null )
-                return $"[{this.Name}]{String.Join ( "", this.Children )}[/{this.Name}]";
+            {
+                if ( this.Value is null )
+                    return $"[{this.Name}/]";
+                else
+                    return $"[{this.Name}={this.Value}/]";
+            }
             else
-                return $"[{this.Name}={this.Value}]{String.Join ( "", this.Children )}[{this.Name}]";
+            {
+                var concatenatedChildren = String.Join ( "", this.Children );
+                if ( this.Value is null )
+                    return $"[{this.Name}]{concatenatedChildren}[/{this.Name}]";
+                else
+                    return $"[{this.Name}={this.Value}]{concatenatedChildren}[{this.Name}]";
+            }
         }
 
         /// <inheritdoc />
