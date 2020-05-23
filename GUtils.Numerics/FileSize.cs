@@ -16,7 +16,10 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace GUtils.Numerics
 {
@@ -25,68 +28,90 @@ namespace GUtils.Numerics
     /// </summary>
     public static class FileSize
     {
+        private static readonly String[] _suffixes = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
+
         /// <summary>
-        /// A KiB in bytes
+        /// The regular expression used for parsing floating point file sizes. Accepts 0.0, 0.0B and 0.0KiB
+        /// </summary>
+        private static readonly Regex _floatParseRegex = new Regex ( @"^\s*(?<number>\d+\.\d+|\d+|\.\d+)\s*(?<suffix>|B|(?:K|M|G|T|P|E)iB)\s*$",
+                                                                     RegexOptions.Compiled | RegexOptions.CultureInvariant,
+                                                                     TimeSpan.FromMilliseconds ( 250 ) );
+
+        /// <summary>
+        /// The regular expression used for parsing integer file sizes. Accepts 0, 0B and 0KiB
+        /// </summary>
+        private static readonly Regex _integerParseRegex = new Regex ( @"^\s*(?<number>\d+)\s*(?<suffix>|B|(?:K|M|G|T|P|E)iB)\s*$",
+                                                                       RegexOptions.Compiled | RegexOptions.CultureInvariant,
+                                                                       TimeSpan.FromMilliseconds ( 250 ) );
+
+        /// <summary>
+        /// A KiB (1024 B) in bytes.
         /// </summary>
         public const Int32 KiB = 1 << 10;
 
         /// <summary>
-        /// A MiB in bytes
+        /// A MiB (1024 KiB) in bytes.
         /// </summary>
         public const Int32 MiB = 1 << 20;
 
         /// <summary>
-        /// A GiB in bytes
+        /// A GiB (1024 MiB) in bytes.
         /// </summary>
         public const Int32 GiB = 1 << 30;
 
         /// <summary>
-        /// A TiB in bytes
+        /// A TiB (1024 GiB) in bytes.
         /// </summary>
         public const Int64 TiB = 1 << 40;
 
         /// <summary>
-        /// A PiB in bytes
+        /// A PiB (1024 TiB) in bytes.
         /// </summary>
         public const Int64 PiB = 1 << 50;
 
         /// <summary>
-        /// An EiB in bytes
+        /// An EiB (1024 PiB) in bytes.
         /// </summary>
         public const Int64 EiB = 1 << 60;
 
-        private static readonly String[] _suffixes = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
-
         /// <summary>
-        /// Returns the size provided as a pair of the new size and the suffix
+        /// Receives a file size (in bytes) and returns a tuple containing the scaled file size and
+        /// the suffix to be used on display.
         /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        public static (Double, String) GetFormatPair ( Int64 size )
+        /// <param name="size">The size (in bytes) to be formatted.</param>
+        /// <returns>A tuple containing the scaled size and the suffix.</returns>
+        public static (Double size, String suffix) GetFormatPair ( Int64 size )
         {
-            if ( size == 0 ) return (size, "B");
-            var i = ( Int32 ) Math.Floor ( Math.Log ( Math.Abs ( size ), 1024 ) );
-            return (size / Math.Pow ( 1024, i ), _suffixes[i]);
+            if ( size == 0 )
+                return (size, "B");
+
+            var power = ( Int32 ) Math.Max ( Math.Min ( Math.Floor ( Math.Log ( Math.Abs ( size ), 1024 ) ), 7 ), 0 );
+            if ( power == 0 )
+                return (size, "");
+            return (size / Math.Pow ( 1024, power ), _suffixes[power]);
         }
 
         /// <summary>
-        /// Returns the size provided as a pair of the new size and the suffix
+        /// <inheritdoc cref="GetFormatPair(Int64)" />
         /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        public static (Double, String) GetFormatPair ( Double size )
+        /// <param name="size"><inheritdoc cref="GetFormatPair(Int64)" /></param>
+        /// <returns><inheritdoc cref="GetFormatPair(Int64)" /></returns>
+        public static (Double size, String suffix) GetFormatPair ( Double size )
         {
             if ( Double.IsInfinity ( size ) || Double.IsNaN ( size ) || size == 0D || size == -0D )
                 return (size, "B");
-            var i = ( Int32 ) Math.Floor ( Math.Log ( Math.Abs ( size ), 1024 ) );
-            return (size / Math.Pow ( 1024, i ), _suffixes[i]);
+
+            var power = ( Int32 ) Math.Max ( Math.Min ( Math.Floor ( Math.Log ( Math.Abs ( size ), 1024 ) ), 7 ), 0 );
+            if ( power == 0 )
+                return (size, "");
+            return (size / Math.Pow ( 1024, power ), _suffixes[power]);
         }
 
         /// <summary>
-        /// Formats the provided file size in a human readable format (in bibytes)
+        /// Formats the provided file size in a human readable format (in bibytes).
         /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
+        /// <param name="size"><inheritdoc cref="GetFormatPair(Int64)" /></param>
+        /// <returns>A formatted string containing the scaled file size and the size suffix.</returns>
         public static String Format ( Int64 size )
         {
             (var newSize, var suffix) = GetFormatPair ( size );
@@ -94,10 +119,10 @@ namespace GUtils.Numerics
         }
 
         /// <summary>
-        /// Formats the provided file size in a human readable format (in bibytes)
+        /// <inheritdoc cref="Format(Int64)" />
         /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
+        /// <param name="size"><inheritdoc cref="Format(Int64)" /></param>
+        /// <returns><inheritdoc cref="Format(Int64)" /></returns>
         public static String Format ( Double size )
         {
             (var newSize, var suffix) = GetFormatPair ( size );
@@ -105,12 +130,14 @@ namespace GUtils.Numerics
         }
 
         /// <summary>
-        /// Formats the provided file size in a human readable format (in bibytes)
+        /// <inheritdoc cref="Format(Int64)" />
         /// </summary>
-        /// <param name="size"></param>
-        /// <param name="format">default value is: "{0} {1}"</param>
-        /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Unnecessary." )]
+        /// <param name="size"><inheritdoc cref="Format(Int64)" /></param>
+        /// <param name="format">
+        /// The format template. Must contain two format placeholders. Default value is: <c>{0:0.##} {1}</c>
+        /// </param>
+        /// <returns><inheritdoc cref="Format(Int64)" /></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "There's already another overload for this." )]
         public static String Format ( Int64 size, String format )
         {
             (var newSize, var suffix) = GetFormatPair ( size );
@@ -118,16 +145,187 @@ namespace GUtils.Numerics
         }
 
         /// <summary>
-        /// Formats the provided file size in a human readable format (in bibytes)
+        /// <inheritdoc cref="Format(Double)" />
         /// </summary>
-        /// <param name="size"></param>
-        /// <param name="format">default value is: "{0} {1}"</param>
-        /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Unnecessary." )]
+        /// <param name="size"><inheritdoc cref="Format(Double)" /></param>
+        /// <param name="format"><inheritdoc cref="Format(Int64, String)" /></param>
+        /// <returns><inheritdoc cref="Format(Double)" /></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "There's already another overload for this." )]
         public static String Format ( Double size, String format )
         {
             (var newSize, var suffix) = GetFormatPair ( size );
             return String.Format ( format, newSize, suffix );
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="Format(Int64, String)" />
+        /// </summary>
+        /// <param name="size"><inheritdoc cref="Format(Int64, String)" /></param>
+        /// <param name="format"><inheritdoc cref="Format(Int64, String)" /></param>
+        /// <param name="provider">
+        /// <inheritdoc cref="String.Format(IFormatProvider, String, Object, Object)" />
+        /// </param>
+        /// <returns><inheritdoc cref="Format(Int64, String)" /></returns>
+        public static String Format ( Int64 size, String format, IFormatProvider provider )
+        {
+            (var newSize, var suffix) = GetFormatPair ( size );
+            return String.Format ( provider, format, newSize, suffix );
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="Format(Double, String)" />
+        /// </summary>
+        /// <param name="size"><inheritdoc cref="Format(Double, String)" /></param>
+        /// <param name="format"><inheritdoc cref="Format(Double, String)" /></param>
+        /// <param name="provider">
+        /// <inheritdoc cref="String.Format(IFormatProvider, String, Object, Object)" />
+        /// </param>
+        /// <returns><inheritdoc cref="Format(Double, String)" /></returns>
+        public static String Format ( Double size, String format, IFormatProvider provider )
+        {
+            (var newSize, var suffix) = GetFormatPair ( size );
+            return String.Format ( provider, format, newSize, suffix );
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="TryParseDouble(String, out Double)" />
+        /// </summary>
+        /// <param name="input"><inheritdoc cref="TryParseDouble(String, out Double)" /></param>
+        /// <returns>
+        /// <inheritdoc cref="TryParseDouble(String, out Double)" path="/param[@name='bytes']" />
+        /// </returns>
+        public static Double ParseDouble ( String input )
+        {
+            if ( TryParseInteger ( input, out var bytes ) )
+                return bytes;
+            throw new FormatException ( "The input string was in an unknown format." );
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="TryParseInteger(String, out Int64)" />
+        /// </summary>
+        /// <param name="input"><inheritdoc cref="TryParseInteger(String, out Int64)" /></param>
+        /// <returns>
+        /// <inheritdoc cref="TryParseInteger(String, out Int64)" path="/param[@name='bytes']" />
+        /// </returns>
+        public static Int64 ParseInteger ( String input )
+        {
+            if ( TryParseInteger ( input, out var bytes ) )
+                return bytes;
+            throw new FormatException ( "The input string was in an unknown format." );
+        }
+
+        /// <summary>
+        /// Parses a file size in the format <c>(0|.0|0.0) (|B|KiB|MiB|GiB|TiB|PiB|EiB)</c>. Might
+        /// suffer from precision loss.
+        /// </summary>
+        /// <param name="input">The input string to be parsed.</param>
+        /// <param name="bytes">The amount of bytes that the inputted string is equivalent to.</param>
+        /// <returns>Whether the amount of bytes was parsed successfully</returns>
+        public static Boolean TryParseDouble ( String input, out Double bytes )
+        {
+            Match match = _floatParseRegex.Match ( input );
+            if ( !match.Success )
+            {
+                bytes = default;
+                return false;
+            }
+
+            if ( !Double.TryParse ( match.Groups["number"].Value, NumberStyles.Number, CultureInfo.InvariantCulture, out var number ) )
+            {
+                bytes = default;
+                return false;
+            }
+
+            switch ( match.Groups["suffix"].Value )
+            {
+                case "":
+                case "B":
+                    bytes = number;
+                    return true;
+
+                case "KiB":
+                    bytes = number * KiB;
+                    return true;
+
+                case "MiB":
+                    bytes = number * MiB;
+                    return true;
+
+                case "GiB":
+                    bytes = number * GiB;
+                    return true;
+
+                case "TiB":
+                    bytes = number * TiB;
+                    return true;
+
+                case "PiB":
+                    bytes = number * PiB;
+                    return true;
+
+                case "EiB":
+                    bytes = number * EiB;
+                    return true;
+
+                default:
+                    bytes = default;
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Parses a file size in the format <c>0 (|B|KiB|MiB|GiB|TiB|PiB|EiB)</c>. Might suffer
+        /// from precision loss although less likely than with the <see cref="Double" />-accepting counterpart.
+        /// </summary>
+        /// <param name="input">The input string to be parsed.</param>
+        /// <param name="bytes">The amount of bytes that the inputted string is equivalent to.</param>
+        /// <returns>Whether the amount of bytes was parsed successfully.</returns>
+        public static Boolean TryParseInteger ( String input, out Int64 bytes )
+        {
+            Match match = _integerParseRegex.Match ( input );
+            if ( !match.Success )
+            {
+                bytes = default;
+                return false;
+            }
+
+            var number = Int64.Parse ( match.Groups["number"].Value, CultureInfo.InvariantCulture );
+            switch ( match.Groups["suffix"].Value )
+            {
+                case "":
+                case "B":
+                    bytes = number;
+                    return true;
+
+                case "KiB":
+                    bytes = number * KiB;
+                    return true;
+
+                case "MiB":
+                    bytes = number * MiB;
+                    return true;
+
+                case "GiB":
+                    bytes = number * GiB;
+                    return true;
+
+                case "TiB":
+                    bytes = number * TiB;
+                    return true;
+
+                case "PiB":
+                    bytes = number * PiB;
+                    return true;
+
+                case "EiB":
+                    bytes = number * EiB;
+                    return true;
+
+                default:
+                    bytes = default;
+                    return false;
+            }
         }
     }
 }
