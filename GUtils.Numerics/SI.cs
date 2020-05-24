@@ -35,7 +35,7 @@ namespace GUtils.Numerics
         /// <summary>
         /// The regular expression used for parsing floating point file sizes. Accepts 0.0, 0.0B and 0.0KiB
         /// </summary>
-        private static readonly Regex _floatParseRegex = new Regex ( @"^\s*(?<number>\d+\.\d+|\d+|\.\d+)\s*(?<suffix>y|z|a|f|p|n|u|μ|m||k|M|G|T|P|E|Z|Y)\w*\s*$",
+        private static readonly Regex _floatParseRegex = new Regex ( @"^\s*(?<number>-?(?:\d+\.\d+|\d+|\.\d+))\s*(?<suffix>y|z|a|f|p|n|u|μ|m||k|M|G|T|P|E|Z|Y)\w*\s*$",
                                                                      RegexOptions.Compiled | RegexOptions.CultureInvariant,
                                                                      TimeSpan.FromMilliseconds ( 250 ) );
 
@@ -187,13 +187,13 @@ namespace GUtils.Numerics
         public static Boolean TryParse ( String input, out Double number )
         {
             Match match = _floatParseRegex.Match ( input );
-            if ( match.Success )
+            if ( !match.Success )
             {
                 number = default;
                 return false;
             }
 
-            if ( !Double.TryParse ( match.Groups["number"].Value, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsed ) )
+            if ( !Double.TryParse ( match.Groups["number"].Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var parsed ) )
             {
                 number = default;
                 return false;

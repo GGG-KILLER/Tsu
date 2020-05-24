@@ -33,14 +33,14 @@ namespace GUtils.Numerics
         /// <summary>
         /// The regular expression used for parsing floating point file sizes. Accepts 0.0, 0.0B and 0.0KiB
         /// </summary>
-        private static readonly Regex _floatParseRegex = new Regex ( @"^\s*(?<number>\d+\.\d+|\d+|\.\d+)\s*(?<suffix>|B|(?:K|M|G|T|P|E)iB)\s*$",
+        private static readonly Regex _floatParseRegex = new Regex ( @"^\s*(?<number>-?(?:\d+\.\d+|\d+|\.\d+))\s*(?<suffix>|B|(?:K|M|G|T|P|E)iB)\s*$",
                                                                      RegexOptions.Compiled | RegexOptions.CultureInvariant,
                                                                      TimeSpan.FromMilliseconds ( 250 ) );
 
         /// <summary>
         /// The regular expression used for parsing integer file sizes. Accepts 0, 0B and 0KiB
         /// </summary>
-        private static readonly Regex _integerParseRegex = new Regex ( @"^\s*(?<number>\d+)\s*(?<suffix>|B|(?:K|M|G|T|P|E)iB)\s*$",
+        private static readonly Regex _integerParseRegex = new Regex ( @"^\s*(?<number>-?\d+)\s*(?<suffix>|B|(?:K|M|G|T|P|E)iB)\s*$",
                                                                        RegexOptions.Compiled | RegexOptions.CultureInvariant,
                                                                        TimeSpan.FromMilliseconds ( 250 ) );
 
@@ -231,7 +231,7 @@ namespace GUtils.Numerics
                 return false;
             }
 
-            if ( !Double.TryParse ( match.Groups["number"].Value, NumberStyles.Number, CultureInfo.InvariantCulture, out var number ) )
+            if ( !Double.TryParse ( match.Groups["number"].Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var number ) )
             {
                 bytes = default;
                 return false;
@@ -290,7 +290,12 @@ namespace GUtils.Numerics
                 return false;
             }
 
-            var number = Int64.Parse ( match.Groups["number"].Value, CultureInfo.InvariantCulture );
+            if ( !Int64.TryParse ( match.Groups["number"].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var number ) )
+            {
+                bytes = default;
+                return false;
+            }
+
             switch ( match.Groups["suffix"].Value )
             {
                 case "":
