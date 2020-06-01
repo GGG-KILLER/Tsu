@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="New Rule Set" Description=" " ToolsVersion="16.0">
+  <Rules AnalyzerId="CodeCracker.CSharp" RuleNamespace="CodeCracker.CSharp">
+    <Rule Id="CC0001" Action="None" />
+    <Rule Id="CC0004" Action="None" />
+    <Rule Id="CC0021" Action="None" />
+    <Rule Id="CC0048" Action="None" />
+    <Rule Id="CC0073" Action="None" />
+    <Rule Id="CC0088" Action="None" />
+    <Rule Id="CC0095" Action="None" />
+    <Rule Id="CC0105" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.NetCore.Analyzers" RuleNamespace="Microsoft.NetCore.Analyzers">
+    <Rule Id="CA1303" Action="None" />
+  </Rules>
+</RuleSet>

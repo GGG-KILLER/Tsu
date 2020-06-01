@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <CodeAnalysisRuleSet>ruleset.ruleset</CodeAnalysisRuleSet>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.0.0</Version>
+    <Authors>GGG KILLER</Authors>
+    <Description>A library that contains test helpers.</Description>
+    <Copyright>GGG KILLER © 2020</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/GGG-KILLER/GUtils.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/GGG-KILLER/GUtils.NET</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <LangVersion>latest</LangVersion>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\GUtils.Testing.xml</DocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Nullable>enable</Nullable>
+    <!-- Source Link -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="DelegateHelpers.Generated.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DelegateHelpers.Generated.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="DelegateHelpers.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DelegateHelpers.Generated.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>
