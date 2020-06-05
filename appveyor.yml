@@ -1,17 +1,45 @@
 version: '{build}'
-image: Visual Studio 2019
+image:
+- Visual Studio 2019
+- Ubuntu
 configuration: Release
-before_build:
-- pwsh: >-
-    nuget restore
 
-    dotnet restore
+# Scripts
+for:
+-
+    matrix:
+        only:
+            - image: Visual Studio 2019
+    install:
+    - ps: >-
+        Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1' -OutFile 'dotnet-install.ps1';
+        
+        .\dotnet-install.ps1 -Channel master;
+    before_build:
+    - ps: >-
+        nuget restore;
+        
+        dotnet restore;
+-
+    matrix:
+        only:
+            - image: Ubuntu
+    install:
+    - sh: >-
+        curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel master
+    before_build:
+    - sh: >-
+        dotnet restore
+
+# Build settings
 build:
   publish_nuget: true
   publish_nuget_symbols: true
   use_snupkg_format: true
   parallel: true
   verbosity: minimal
+
+# Deploy
 deploy:
 - provider: NuGet
   server: https://www.myget.org/F/ggg-killer/api/v2/package
@@ -21,6 +49,8 @@ deploy:
   symbol_server: https://www.myget.org/F/ggg-killer/symbols/api/v2/package
   on:
     branch: master
+
+# Notifications
 notifications:
 - provider: Email
   to:
