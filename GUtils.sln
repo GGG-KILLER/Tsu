@@ -36,8 +36,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Expressions", "GUtil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.StateMachines", "GUtils.StateMachines\GUtils.StateMachines.csproj", "{4459E350-B927-4800-B4A4-EFB9ABF294AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docs", "docs\docs.csproj", "{EA83B964-7ABB-45ED-A1AC-C4B1C2225FC4}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Numerics", "GUtils.Numerics\GUtils.Numerics.csproj", "{D6157530-755C-40B8-9CD3-B3449BD7E805}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.MVVM", "GUtils.MVVM\GUtils.MVVM.csproj", "{6220606C-DADE-4358-8285-1EB7D25D457F}"
@@ -46,9 +44,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils", "GUtils\GUtils.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Tests", "GUtils.Tests\GUtils.Tests.csproj", "{22CA35FB-52F1-414B-AEDF-24A446A94BFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUtils.Testing", "GUtils.Testing\GUtils.Testing.csproj", "{40147EC7-DADC-4403-A5B3-44FBCE54441F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Testing", "GUtils.Testing\GUtils.Testing.csproj", "{40147EC7-DADC-4403-A5B3-44FBCE54441F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUtils.Testing.Tests", "GUtils.Testing.Tests\GUtils.Testing.Tests.csproj", "{B1A64207-286C-4743-BEA4-A8FDC98998BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Testing.Tests", "GUtils.Testing.Tests\GUtils.Testing.Tests.csproj", "{B1A64207-286C-4743-BEA4-A8FDC98998BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,10 +94,6 @@ Global
 		{4459E350-B927-4800-B4A4-EFB9ABF294AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4459E350-B927-4800-B4A4-EFB9ABF294AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4459E350-B927-4800-B4A4-EFB9ABF294AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA83B964-7ABB-45ED-A1AC-C4B1C2225FC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA83B964-7ABB-45ED-A1AC-C4B1C2225FC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA83B964-7ABB-45ED-A1AC-C4B1C2225FC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA83B964-7ABB-45ED-A1AC-C4B1C2225FC4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D6157530-755C-40B8-9CD3-B3449BD7E805}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D6157530-755C-40B8-9CD3-B3449BD7E805}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6157530-755C-40B8-9CD3-B3449BD7E805}.Release|Any CPU.ActiveCfg = Release|Any CPU
