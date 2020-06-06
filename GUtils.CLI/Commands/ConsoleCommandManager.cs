@@ -27,7 +27,7 @@ namespace GUtils.CLI.Commands
     /// <summary>
     /// A command manager made to be used within a console application
     /// </summary>
-    public class ConsoleCommandManager : CommandManager
+    public class ConsoleCommandManager : CompiledCommandManager
     {
         /// <summary>
         /// The prompt to print before asking the user for a command
@@ -64,21 +64,21 @@ namespace GUtils.CLI.Commands
         /// Adds a nested command (or verb, if you will) to this command manager.
         /// </summary>
         /// <param name="verb"></param>
-        /// <returns>The <see cref="CommandManager" /> created for the verb</returns>
-        public override CommandManager AddVerb ( String verb )
+        /// <returns>The <see cref="CompiledCommandManager" /> created for the verb</returns>
+        public override CompiledCommandManager AddVerb ( String verb )
         {
             if ( String.IsNullOrWhiteSpace ( verb ) )
                 throw new ArgumentException ( "Verb cannot be null, empty or contain any whitespaces.", nameof ( verb ) );
             if ( verb.Any ( Char.IsWhiteSpace ) )
                 throw new ArgumentException ( "Verb cannot have whitespaces.", nameof ( verb ) );
-            if ( this.CommandLookupTable.ContainsKey ( verb ) )
+            if ( this.CommandDictionary.ContainsKey ( verb ) )
                 throw new InvalidOperationException ( "A command with this name already exists." );
 
             // Verb creation
             var verbInst = new Verb ( new ConsoleCommandManager ( ) );
 
             // Command registering
-            var command = new Command (
+            var command = new CompiledCommand (
                 typeof ( Verb ).GetMethod ( nameof ( Verb.RunCommand ), BindingFlags.Instance | BindingFlags.Public ),
                 verbInst,
                 new[] { verb },
@@ -111,7 +111,7 @@ namespace GUtils.CLI.Commands
             if ( names.Length < 1 )
                 throw new ArgumentException ( "No names provided.", nameof ( names ) );
 
-            var exitCommand = new Command (
+            var exitCommand = new CompiledCommand (
                 typeof ( ConsoleCommandManager ).GetMethod ( nameof ( Stop ) ),
                 this,
                 names,

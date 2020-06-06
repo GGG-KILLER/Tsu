@@ -27,7 +27,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GUtils.CLI.Tests.Commands
 {
     [TestClass]
-    public class CommandTests
+    public class CompiledCommandTests
     {
         [Command ( "a" )]
         public static void Error01 ( out String a ) => a = "";
@@ -51,12 +51,12 @@ namespace GUtils.CLI.Tests.Commands
             [HelpDescription ( "Second arg" )] Int32 second ) => first + second;
 
         [DataTestMethod]
-        [DataRow ( typeof ( CommandTests ), nameof ( Error01 ) )]
-        [DataRow ( typeof ( CommandTests ), nameof ( Error02 ) )]
-        [DataRow ( typeof ( CommandTests ), nameof ( Error03 ) )]
-        [DataRow ( typeof ( CommandTests ), nameof ( Error04 ) )]
-        [DataRow ( typeof ( CommandTests ), nameof ( Error05 ) )]
+        [DataRow ( typeof ( CompiledCommandTests ), nameof ( Error01 ) )]
+        [DataRow ( typeof ( CompiledCommandTests ), nameof ( Error02 ) )]
+        [DataRow ( typeof ( CompiledCommandTests ), nameof ( Error03 ) )]
+        [DataRow ( typeof ( CompiledCommandTests ), nameof ( Error04 ) )]
+        [DataRow ( typeof ( CompiledCommandTests ), nameof ( Error05 ) )]
         public void CtorShouldThrow ( Type type, String name )
-            => Assert.ThrowsException<CommandDefinitionException> ( ( ) => new Command ( type.GetMethod ( name ), null ) );
+            => Assert.ThrowsException<CommandDefinitionException> ( ( ) => new CompiledCommand ( type.GetMethod ( name ), null ) );
     }
 }

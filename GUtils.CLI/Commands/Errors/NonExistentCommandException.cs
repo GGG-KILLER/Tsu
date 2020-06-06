@@ -21,7 +21,7 @@ using System;
 namespace GUtils.CLI.Commands.Errors
 {
     /// <summary>
-    /// Thrown when a command is not found by the <see cref="CommandManager" />
+    /// Thrown when a command is not found by the command manager
     /// </summary>
     public class NonExistentCommandException : CommandInvocationException
     {

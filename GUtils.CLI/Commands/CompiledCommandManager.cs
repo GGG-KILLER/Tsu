@@ -29,7 +29,7 @@ namespace GUtils.CLI.Commands
     /// <summary>
     /// Manages the registering and executing of commands
     /// </summary>
-    public class CommandManager
+    public class CompiledCommandManager : BaseCommandManager
     {
         /// <summary>
         /// The list containing all commands
@@ -41,20 +41,16 @@ namespace GUtils.CLI.Commands
         /// </summary>
         protected Dictionary<String, Command> CommandLookupTable { get; }
 
-        /// <summary>
-        /// The commands registered in this <see cref="CommandManager"/>
-        /// </summary>
-        public IReadOnlyList<Command> Commands => this.CommandList.AsReadOnly ( );
+        /// <inheritdoc />
+        public override IReadOnlyList<Command> Commands => this.CommandList.AsReadOnly ( );
+
+        /// <inheritdoc />
+        public override IReadOnlyDictionary<String, Command> CommandDictionary => this.CommandLookupTable;
 
         /// <summary>
-        /// Exposes the internal command lookup table as a readonly collection
+        /// Initializes a <see cref="CompiledCommandManager"/>
         /// </summary>
-        public IReadOnlyDictionary<String, Command> CommandDictionary => this.CommandLookupTable;
-
-        /// <summary>
-        /// Initializes a <see cref="CommandManager"/>
-        /// </summary>
-        public CommandManager ( )
+        public CompiledCommandManager ( )
         {
             this.CommandList = new List<Command> ( );
             this.CommandLookupTable = new Dictionary<String, Command> ( );
@@ -93,7 +89,7 @@ namespace GUtils.CLI.Commands
                 if ( method.IsDefined ( typeof ( CommandAttribute ) ) )
                 {
                     // Create a single instance of the command (will validate and compile in the constructor)
-                    var command = new Command ( method, instance );
+                    var command = new CompiledCommand ( method, instance );
                     this.CommandList.Add ( command );
 
                     // Get all command attributes and then register all of them with the same command
@@ -101,7 +97,7 @@ namespace GUtils.CLI.Commands
                     {
                         if ( this.CommandLookupTable.ContainsKey ( attr.Name ) && !attr.Overwrite )
                         {
-                            Command existingCommand = this.CommandLookupTable[attr.Name];
+                            var existingCommand = ( CompiledCommand ) this.CommandLookupTable[attr.Name];
                             throw new CommandDefinitionException ( method, $"Command name {attr.Name} is already defined in: {GetFullName ( existingCommand.Method, existingCommand.Instance )}" );
                         }
                         this.CommandLookupTable[attr.Name] = command;
@@ -118,8 +114,8 @@ namespace GUtils.CLI.Commands
         /// Adds a nested command (or verb, if you will) to this command manager.
         /// </summary>
         /// <param name="verb"></param>
-        /// <returns>The <see cref="CommandManager"/> created for the verb</returns>
-        public virtual CommandManager AddVerb ( String verb )
+        /// <returns>The <see cref="CompiledCommandManager"/> created for the verb</returns>
+        public virtual CompiledCommandManager AddVerb ( String verb )
         {
             if ( String.IsNullOrWhiteSpace ( verb ) )
                 throw new ArgumentException ( "Verb cannot be null, empty or contain any whitespaces.", nameof ( verb ) );
@@ -129,10 +125,10 @@ namespace GUtils.CLI.Commands
                 throw new InvalidOperationException ( "A command with this name already exists." );
 
             // Verb creation
-            var verbInst = new Verb ( new CommandManager ( ) );
+            var verbInst = new Verb ( new CompiledCommandManager ( ) );
 
             // Command registering
-            var command = new Command (
+            var command = new CompiledCommand (
                 typeof ( Verb ).GetMethod ( nameof ( Verb.RunCommand ), BindingFlags.Instance | BindingFlags.Public ),
                 verbInst,
                 new[] { verb },
@@ -157,11 +153,8 @@ namespace GUtils.CLI.Commands
             this.LoadCommands ( cmdClassInstance );
         }
 
-        /// <summary>
-        /// Parses a CLI input line and executes the appropriate command passing the proper arguments.
-        /// </summary>
-        /// <param name="line"></param>
-        public void Execute ( String line )
+        /// <inheritdoc/>
+        public override void Execute ( String line )
         {
             if ( String.IsNullOrEmpty ( line ) )
                 return;
@@ -169,10 +162,10 @@ namespace GUtils.CLI.Commands
             line = line.Trim ( );
             var spaceIdx = line.IndexOf ( ' ' );
             var cmdName = spaceIdx != -1 ? line.Substring ( 0, spaceIdx ) : line;
-            Command cmd;
-            if ( !this.CommandLookupTable.TryGetValue ( cmdName, out cmd ) )
+            if ( !this.CommandLookupTable.TryGetValue ( cmdName, out Command tmpCmd ) )
                 throw new NonExistentCommandException ( cmdName );
 
+            var cmd = ( CompiledCommand ) tmpCmd;
             if ( spaceIdx != -1 )
             {
                 IEnumerable<String> parsed;
@@ -181,11 +174,11 @@ namespace GUtils.CLI.Commands
                 else
                     parsed = InputLineParser.Parse ( line.Substring ( spaceIdx + 1 ) );
 
-                cmd.CompiledCommand ( cmdName, parsed.ToArray ( ) );
+                cmd.CompiledCommandDelegate ( cmdName, parsed.ToArray ( ) );
             }
             else
             {
-                cmd.CompiledCommand ( cmdName, Array.Empty<String> ( ) );
+                cmd.CompiledCommandDelegate ( cmdName, Array.Empty<String> ( ) );
             }
         }
     }

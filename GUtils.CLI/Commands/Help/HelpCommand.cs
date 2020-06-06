@@ -29,14 +29,14 @@ namespace GUtils.CLI.Commands.Help
     /// </summary>
     public abstract class HelpCommand
     {
-        private readonly CommandManager Manager;
+        private readonly BaseCommandManager Manager;
         private readonly Dictionary<Command, String[]> Cache;
 
         /// <summary>
         /// Initializes the default help command class
         /// </summary>
         /// <param name="manager"></param>
-        protected HelpCommand ( CommandManager manager )
+        protected HelpCommand ( BaseCommandManager manager )
         {
             this.Manager = manager;
             this.Cache = new Dictionary<Command, String[]> ( );

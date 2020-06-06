@@ -25,9 +25,9 @@ namespace GUtils.CLI.Commands
     /// </summary>
     internal class Verb
     {
-        public CommandManager Manager { get; }
+        public CompiledCommandManager Manager { get; }
 
-        public Verb ( CommandManager manager )
+        public Verb ( CompiledCommandManager manager )
         {
             this.Manager = manager;
         }

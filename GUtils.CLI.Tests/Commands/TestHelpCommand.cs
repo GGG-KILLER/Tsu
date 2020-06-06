@@ -34,7 +34,7 @@ namespace GUtils.CLI.Tests.Commands
     {
         public readonly Queue<(WriteType, Object)> ExpectedWritesQueue;
 
-        public TestHelpCommand ( CommandManager manager ) : base ( manager )
+        public TestHelpCommand ( CompiledCommandManager manager ) : base ( manager )
         {
             this.ExpectedWritesQueue = new Queue<(WriteType, Object)> ( );
         }

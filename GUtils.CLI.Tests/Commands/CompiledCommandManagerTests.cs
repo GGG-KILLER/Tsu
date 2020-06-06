@@ -27,7 +27,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 namespace GUtils.CLI.Tests.Commands
 {
     [TestClass]
-    public class CommandManagerTests
+    public class CompiledCommandManagerTests
     {
         #region Raw Command Test
 
@@ -48,7 +48,7 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( @"""\b1100011\b1101111\x6d\o155\o141\o156\100\b100000\105\x6e\o160\o165\x74""" )]
         public void ShouldExecuteRawCommandsProperly ( String input )
         {
-            var manager = new CommandManager ( );
+            var manager = new CompiledCommandManager ( );
             manager.LoadCommands<RawCommand> ( null );
             Logger.LogMessage ( $"Commands: {String.Join ( ", ", manager.Commands )}" );
 
@@ -75,7 +75,7 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( "hello 321 4294967295", "hello", 321, 4294967295 )]
         public void ShouldExecuteNormalCommandsProperly ( String input, String a, Int32 b, UInt32 c )
         {
-            var manarger = new CommandManager ( );
+            var manarger = new CompiledCommandManager ( );
             manarger.LoadCommands<NormalCommand> ( null );
             Logger.LogMessage ( $"Commands: {String.Join ( ", ", manarger.Commands )}" );
 
@@ -97,7 +97,7 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( "12 23 -34 -4.5", 12, 23, -34L, -4.5D )]
         public void ShouldExecuteNormalNumericCommandsProperly ( String input, Int32 a, Int32 b, Int64 c, Double d )
         {
-            var manager = new CommandManager ( );
+            var manager = new CompiledCommandManager ( );
             manager.LoadCommands<NormalCommand2> ( null );
             Logger.LogMessage ( $"Commands: {String.Join ( ", ", manager.Commands )}" );
 
@@ -137,7 +137,7 @@ namespace GUtils.CLI.Tests.Commands
         [TestMethod]
         public void ShouldPrintProperHelpText ( )
         {
-            var manager = new CommandManager ( );
+            var manager = new CompiledCommandManager ( );
             var help = new TestHelpCommand ( manager );
             manager.LoadCommands<HelpTextClass> ( null );
             manager.AddHelpCommand ( help );
@@ -205,10 +205,10 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( "verb0 verb1 verb2 b 3 4", 3, 4 )]
         public void VerbsShouldWork ( String line, Object a, Object b )
         {
-            var root = new CommandManager ( );
-            CommandManager verb0 = root.AddVerb ( "verb0" );
-            CommandManager verb1 = verb0.AddVerb ( "verb1" );
-            CommandManager verb2 = verb1.AddVerb ( "verb2" );
+            var root = new CompiledCommandManager ( );
+            CompiledCommandManager verb0 = root.AddVerb ( "verb0" );
+            CompiledCommandManager verb1 = verb0.AddVerb ( "verb1" );
+            CompiledCommandManager verb2 = verb1.AddVerb ( "verb2" );
             root.LoadCommands<VerbCommands> ( null );
             verb0.LoadCommands<VerbCommands> ( null );
             verb1.LoadCommands<VerbCommands> ( null );
