@@ -22,16 +22,5 @@
 // suppressions either have no target or are given a specific
 // target and scoped to a namespace, type, member, etc.
 
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CC0004:Catch block cannot be empty", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.CLI.Tests.Commands.CommandCompilerTests.CompileFailsTests" )]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Style", "IDE0007:Use implicit type", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.CLI.Tests.Commands.CommandCompilerTests.CompileSuccessTests" )]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Style", "IDE0007:Use implicit type", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.CLI.Tests.Commands.CommandCompilerTests.CompileFailsTests" )]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Style", "IDE0007:Use implicit type", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.CLI.Tests.Commands.InputLineParserTests.ParseShouldParseSpaceSeparatedInput(System.String,System.String)" )]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Style", "IDE0007:Use implicit type", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.CLI.Tests.Commands.InputLineParserTests.ParseShouldParse(System.String,System.String)" )]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.CLI.Tests.Commands.CommandManagerTests.ShouldExecuteRawCommandsProperly(System.String)" )]
-
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.CLI.Tests.Commands.CommandManagerTests.ShouldExecuteNormalCommandsProperly(System.String,System.String,System.Int32,System.UInt32)" )]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.CLI.Tests.Commands.CommandManagerTests.ShouldExecuteNormalNumericCommandsProperly(System.String,System.Int32,System.Int32,System.Int64,System.Double)" )]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.CLI.Tests.Commands.CommandManagerTests.VerbsShouldWork(System.String,System.Object,System.Object)" )]
-
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.CLI.Tests.Commands.CommandTests.CtorShouldThrow(System.Type,System.String)" )]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage ( "Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~M:GUtils.CLI.Tests.Commands.InputLineParserTests.ParseShouldParse(System.String,System.String)" )]
