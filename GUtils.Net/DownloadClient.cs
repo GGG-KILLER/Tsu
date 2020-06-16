@@ -48,7 +48,7 @@ namespace GUtils.Net
         /// <param name="obj"></param>
         /// <returns></returns>
         public override Boolean Equals ( Object obj ) =>
-            obj is DownloadClientDownloadProgressChangedArgs && this.Equals ( ( DownloadClientDownloadProgressChangedArgs ) obj );
+            obj is DownloadClientDownloadProgressChangedArgs args && this.Equals ( args );
 
         /// <summary>
         /// </summary>
