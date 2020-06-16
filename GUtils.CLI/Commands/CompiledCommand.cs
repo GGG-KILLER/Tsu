@@ -19,8 +19,8 @@ namespace GUtils.CLI.Commands
 
 #pragma warning disable CS0618 // Type or member is obsolete
             if ( info.IsDefined ( typeof ( JoinRestOfArgumentsAttribute ) ) )
-#pragma warning restore CS0618 // Type or member is obsolete
                 mods |= ArgumentModifiers.JoinRest;
+#pragma warning restore CS0618 // Type or member is obsolete
             if ( info.IsDefined ( typeof ( ParamArrayAttribute ) ) )
                 mods |= ArgumentModifiers.Params;
             if ( info.HasDefaultValue )
@@ -114,8 +114,10 @@ namespace GUtils.CLI.Commands
             // defined for an argument that isn't the last
             for ( var i = 0; i < @params.Length; i++ )
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 if ( @params[i].IsDefined ( typeof ( JoinRestOfArgumentsAttribute ) ) && i != @params.Length - 1 )
                     throw new CommandDefinitionException ( method, $"CommandArgumentRest should only be used on the last parameter of a method." );
+#pragma warning restore CS0618 // Type or member is obsolete
 
                 if ( @params[i].IsDefined ( typeof ( ParamArrayAttribute ) ) )
                 {
