@@ -33,6 +33,7 @@ namespace GUtils.Parsing.BBCode
     /// <remarks>This parser DOES NOT SUPPORT BBCode lists.</remarks>
     public class BBParser : IDisposable
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CA2213:Disposable fields should be disposed", Justification = "Is being disposed on Dispose(bool)." )]
         private readonly StringReader Reader;
         private readonly IEnumerator<BBToken> Lexer;
         private readonly Stack<BBTagNode> NodeStack;
