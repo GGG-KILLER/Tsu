@@ -9,7 +9,7 @@ namespace GUtils.Parsing.BBCode.Tests
     [TestClass]
     public class BBParserTests
     {
-        private void AssertParse ( String code, BBNode expected )
+        private static void AssertParse ( String code, BBNode expected )
         {
             Logger.LogMessage ( "Testing:  {0}", code );
             Logger.LogMessage ( "Expected: {0}", expected );
@@ -23,23 +23,23 @@ namespace GUtils.Parsing.BBCode.Tests
 
         [TestMethod]
         public void ShouldParseTagWithoutValue ( ) =>
-            this.AssertParse ( "[b]a[/b]", Tag ( "b", Text ( "a" ) ) );
+            AssertParse ( "[b]a[/b]", Tag ( "b", Text ( "a" ) ) );
 
         [TestMethod]
         public void ShouldParseTagWithValue ( ) =>
-            this.AssertParse ( "[c=red]a[/c]", Tag ( "c", "red", Text ( "a" ) ) );
+            AssertParse ( "[c=red]a[/c]", Tag ( "c", "red", Text ( "a" ) ) );
 
         [TestMethod]
         public void ShouldParseSelfClosingTagWithoutValue ( ) =>
-            this.AssertParse ( "[hr/]", SelfClosingTag ( "hr" ) );
+            AssertParse ( "[hr/]", SelfClosingTag ( "hr" ) );
 
         [TestMethod]
         public void ShouldParseSelfClosingTagWithValue ( ) =>
-            this.AssertParse ( "[youtube=x/]", SelfClosingTag ( "youtube", "x" ) );
+            AssertParse ( "[youtube=x/]", SelfClosingTag ( "youtube", "x" ) );
 
         [TestMethod]
         public void ShouldParseEverythingAtOnce ( ) =>
-            this.AssertParse (
+            AssertParse (
                 "[b][c=red][youtube=youtube/][hr/][youtube=youtube/][/c][youtube=youtube/][hr/][youtube=youtube/][/b]",
                 Tag ( "b",
                     Tag ( "c", "red",
