@@ -185,7 +185,7 @@ namespace GUtils.Tests
         {
             var some = Option.Some ( "some" );
             DelegateInvocationCounter<Func<String, Boolean>> filterCounter =
-                DelegateHelpers.TrackInvocationCount ( ( String s ) => s.Equals ( "some" ) );
+                DelegateHelpers.TrackInvocationCount ( ( String s ) => s.Equals ( "some", StringComparison.Ordinal ) );
 
             Assert.AreEqual ( some, some.Filter ( filterCounter.WrappedDelegate ) );
             Assert.AreEqual ( 1, filterCounter.InvocationCount );
@@ -196,7 +196,7 @@ namespace GUtils.Tests
         {
             var some = Option.Some ( "some" );
             DelegateInvocationCounter<Func<String, Boolean>> filterCounter =
-                DelegateHelpers.TrackInvocationCount ( ( String s ) => s.Equals ( "" ) );
+                DelegateHelpers.TrackInvocationCount ( ( String s ) => s.Equals ( "a", StringComparison.Ordinal ) );
 
             Assert.AreEqual ( Option.None<String> ( ), some.Filter ( filterCounter.WrappedDelegate ) );
             Assert.AreEqual ( 1, filterCounter.InvocationCount );
@@ -207,7 +207,7 @@ namespace GUtils.Tests
         {
             var none = Option.None<String> ( );
             DelegateInvocationCounter<Func<String, Boolean>> filterCounter =
-                DelegateHelpers.TrackInvocationCount ( ( String s ) => s.Equals ( "" ) );
+                DelegateHelpers.TrackInvocationCount ( ( String s ) => s.Equals ( "a", StringComparison.Ordinal ) );
 
             Assert.AreEqual ( none, none.Filter ( filterCounter.WrappedDelegate ) );
             Assert.AreEqual ( 0, filterCounter.InvocationCount );
