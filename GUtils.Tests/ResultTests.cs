@@ -21,9 +21,9 @@ namespace GUtils.Tests
             public Boolean Equals ( [AllowNull] T other ) => this.Boxed.Equals ( other );
         }
 
-        private static readonly String OkValue = "ok";
+        private const String OkValue = "ok";
 
-        private static readonly Int32 ErrValue = -1;
+        private const Int32 ErrValue = -1;
 
         private static Result<String, Int32> Ok => Result.Ok<String, Int32> ( OkValue );
 
