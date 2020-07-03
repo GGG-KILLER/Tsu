@@ -22,7 +22,7 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --configuration Release --no-restore
-  
+
   push:
     name: NuGet Push
     runs-on: ubuntu-latest
@@ -38,6 +38,8 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
+    - name: Train Intellicode Model
+      uses: microsoft/vs-intellicode@v1
     - name: Generate NuGet packages
       run: dotnet pack --configuration Release --output ./packages --no-restore --include-symbols -p:SymbolPackageFormat=snupkg
     - name: Publish packages
