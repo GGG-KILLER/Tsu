@@ -46,4 +46,4 @@ jobs:
     - name: Generate NuGet packages
       run: dotnet pack --configuration Release --output ./packages --no-restore --include-symbols -p:SymbolPackageFormat=snupkg
     - name: Publish packages
-      run: dotnet nuget push ./packages/ --source https://www.myget.org/F/ggg-killer/api/v2/package --symbol-source https://www.myget.org/F/ggg-killer/api/v3/index.json --api-key ${{ secrets.MYGET_API_KEY }} --symbol-api-key ${{ secrets.MYGET_API_KEY }} --skip-duplicate
+      run: dotnet nuget push ./packages/* --source https://www.myget.org/F/ggg-killer/api/v2/package --symbol-source https://www.myget.org/F/ggg-killer/api/v3/index.json --api-key ${{ secrets.MYGET_API_KEY }} --symbol-api-key ${{ secrets.MYGET_API_KEY }} --skip-duplicate
