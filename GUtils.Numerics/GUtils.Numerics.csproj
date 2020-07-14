@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <Authors>GGG KILLER</Authors>
     <Description>A numerics utlities library.</Description>
     <Copyright>GGG KILLER © 2020</Copyright>

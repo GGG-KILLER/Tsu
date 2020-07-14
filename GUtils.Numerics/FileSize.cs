@@ -62,17 +62,17 @@ namespace GUtils.Numerics
         /// <summary>
         /// A TiB (1024 GiB) in bytes.
         /// </summary>
-        public const Int64 TiB = 1 << 40;
+        public const Int64 TiB = 1L << 40;
 
         /// <summary>
         /// A PiB (1024 TiB) in bytes.
         /// </summary>
-        public const Int64 PiB = 1 << 50;
+        public const Int64 PiB = 1L << 50;
 
         /// <summary>
         /// An EiB (1024 PiB) in bytes.
         /// </summary>
-        public const Int64 EiB = 1 << 60;
+        public const Int64 EiB = 1L << 60;
 
         /// <summary>
         /// Receives a file size (in bytes) and returns a tuple containing the scaled file size and

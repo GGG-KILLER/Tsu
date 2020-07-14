@@ -43,17 +43,17 @@ namespace GUtils.IO
         /// <summary>
         /// A TiB in bytes
         /// </summary>
-        public const Int64 TiB = 1 << 40;
+        public const Int64 TiB = 1L << 40;
 
         /// <summary>
         /// A PiB in bytes
         /// </summary>
-        public const Int64 PiB = 1 << 50;
+        public const Int64 PiB = 1L << 50;
 
         /// <summary>
         /// An EiB in bytes
         /// </summary>
-        public const Int64 EiB = 1 << 60;
+        public const Int64 EiB = 1L << 60;
 
         private static readonly String[] _suffixes = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
 
