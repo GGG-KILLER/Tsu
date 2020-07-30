@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.156
@@ -47,7 +47,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Testing", "GUtils.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Testing.Tests", "GUtils.Testing.Tests\GUtils.Testing.Tests.csproj", "{B1A64207-286C-4743-BEA4-A8FDC98998BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUtils.Text.Code", "GUtils.Text.Code\GUtils.Text.Code.csproj", "{2996C2F5-0F59-43B1-9ABD-BB0D33667742}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.CLI.SourceGenerator", "GUtils.CLI.SourceGenerator\GUtils.CLI.SourceGenerator.csproj", "{52BB17F1-FBDB-4D8F-AC56-C7D07E6CF6A7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Text.Code", "GUtils.Text.Code\GUtils.Text.Code.csproj", "{2996C2F5-0F59-43B1-9ABD-BB0D33667742}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Benchmarks", "GUtils.Benchmarks\GUtils.Benchmarks.csproj", "{A68C3D54-4460-4901-97AE-AB9ACEB2F4EA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmarks", "Benchmarks", "{35524A74-34E6-4866-8309-1BDD1A34FADE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUtils.Numerics.Tests", "GUtils.Numerics.Tests\GUtils.Numerics.Tests.csproj", "{FB0EA2C3-E9AA-4B22-BCA8-D172411079BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,10 +127,22 @@ Global
 		{B1A64207-286C-4743-BEA4-A8FDC98998BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1A64207-286C-4743-BEA4-A8FDC98998BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1A64207-286C-4743-BEA4-A8FDC98998BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52BB17F1-FBDB-4D8F-AC56-C7D07E6CF6A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52BB17F1-FBDB-4D8F-AC56-C7D07E6CF6A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52BB17F1-FBDB-4D8F-AC56-C7D07E6CF6A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52BB17F1-FBDB-4D8F-AC56-C7D07E6CF6A7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2996C2F5-0F59-43B1-9ABD-BB0D33667742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2996C2F5-0F59-43B1-9ABD-BB0D33667742}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2996C2F5-0F59-43B1-9ABD-BB0D33667742}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2996C2F5-0F59-43B1-9ABD-BB0D33667742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A68C3D54-4460-4901-97AE-AB9ACEB2F4EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A68C3D54-4460-4901-97AE-AB9ACEB2F4EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A68C3D54-4460-4901-97AE-AB9ACEB2F4EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A68C3D54-4460-4901-97AE-AB9ACEB2F4EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB0EA2C3-E9AA-4B22-BCA8-D172411079BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB0EA2C3-E9AA-4B22-BCA8-D172411079BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB0EA2C3-E9AA-4B22-BCA8-D172411079BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB0EA2C3-E9AA-4B22-BCA8-D172411079BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -132,6 +152,8 @@ Global
 		{71D206D0-8498-40E3-95B9-76E074350AB9} = {55138AAF-7418-4E62-AB3B-BF2CF73A8156}
 		{22CA35FB-52F1-414B-AEDF-24A446A94BFA} = {55138AAF-7418-4E62-AB3B-BF2CF73A8156}
 		{B1A64207-286C-4743-BEA4-A8FDC98998BE} = {55138AAF-7418-4E62-AB3B-BF2CF73A8156}
+		{A68C3D54-4460-4901-97AE-AB9ACEB2F4EA} = {35524A74-34E6-4866-8309-1BDD1A34FADE}
+		{FB0EA2C3-E9AA-4B22-BCA8-D172411079BA} = {55138AAF-7418-4E62-AB3B-BF2CF73A8156}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2935DA65-CFF2-4F42-A80B-0E23EBB88B1B}
