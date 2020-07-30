@@ -28,8 +28,6 @@ namespace GUtils.Numerics
     /// </summary>
     public static class FileSize
     {
-        private static readonly String[] _suffixes = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
-
         /// <summary>
         /// The regular expression used for parsing floating point file sizes. Accepts 0.0, 0.0B and 0.0KiB
         /// </summary>
@@ -82,13 +80,24 @@ namespace GUtils.Numerics
         /// <returns>A tuple containing the scaled size and the suffix.</returns>
         public static (Double size, String suffix) GetFormatPair ( Int64 size )
         {
-            if ( size == 0 )
+            var abs = Math.Abs ( size );
+            if ( abs == 0 )
                 return (size, "B");
 
-            var power = ( Int32 ) Math.Max ( Math.Min ( Math.Floor ( Math.Log ( Math.Abs ( size ), 1024 ) ), 7 ), 0 );
-            if ( power == 0 )
-                return (size, "");
-            return (size / Math.Pow ( 1024, power ), _suffixes[power]);
+            if ( abs >= EiB )
+                return (size / ( Double ) EiB, nameof ( EiB ));
+            else if ( abs >= PiB )
+                return (size / ( Double ) PiB, nameof ( PiB ));
+            else if ( abs >= TiB )
+                return (size / ( Double ) TiB, nameof ( TiB ));
+            else if ( abs >= GiB )
+                return (size / ( Double ) GiB, nameof ( GiB ));
+            else if ( abs >= MiB )
+                return (size / ( Double ) MiB, nameof ( MiB ));
+            else if ( abs >= KiB )
+                return (size / ( Double ) KiB, nameof ( KiB ));
+            else
+                return (size, "B");
         }
 
         /// <summary>
@@ -101,10 +110,21 @@ namespace GUtils.Numerics
             if ( Double.IsInfinity ( size ) || Double.IsNaN ( size ) || size == 0D || size == -0D )
                 return (size, "B");
 
-            var power = ( Int32 ) Math.Max ( Math.Min ( Math.Floor ( Math.Log ( Math.Abs ( size ), 1024 ) ), 7 ), 0 );
-            if ( power == 0 )
-                return (size, "");
-            return (size / Math.Pow ( 1024, power ), _suffixes[power]);
+            var abs = Math.Abs ( size );
+            if ( abs >= EiB )
+                return (size / EiB, nameof ( EiB ));
+            else if ( abs >= PiB )
+                return (size / PiB, nameof ( PiB ));
+            else if ( abs >= TiB )
+                return (size / TiB, nameof ( TiB ));
+            else if ( abs >= GiB )
+                return (size / GiB, nameof ( GiB ));
+            else if ( abs >= MiB )
+                return (size / MiB, nameof ( MiB ));
+            else if ( abs >= KiB )
+                return (size / KiB, nameof ( KiB ));
+            else
+                return (size, "B");
         }
 
         /// <summary>
