@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
+using GUtils.Text.Code;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -149,6 +150,7 @@ namespace GUtils.CLI.SourceGenerator.CommandManager
         {
             ImmutableDictionary<String, IMethodSymbol>.Builder dictionaryBuilder =
                 ImmutableDictionary.CreateBuilder<String, IMethodSymbol> ( );
+
             foreach ( INamedTypeSymbol commandType in commandTypes )
             {
                 IEnumerable<IMethodSymbol> methods = commandType.GetMembers ( )
@@ -160,14 +162,31 @@ namespace GUtils.CLI.SourceGenerator.CommandManager
                 {
                     foreach ( AttributeData attr in method.GetAttributes ( ).Where ( attr => this.IsCommandAttributeSymbol ( attr.AttributeClass ) ) )
                     {
+                        var commandName = attr.ConstructorArguments.Single ( ).Value as String;
+                        if ( !dictionaryBuilder.ContainsKey ( commandName )
+                             || attr.NamedArguments.Any ( kv => kv.Key == nameof ( Commands.CommandAttribute.Overwrite ) && kv.Value.Value is true ) )
+                        {
+                            dictionaryBuilder[commandName] = method;
+                        }
                     }
                 }
             }
+
+            return dictionaryBuilder.ToImmutable ( );
         }
 
         public Result<String, Diagnostic> GenerateCommandManager ( )
         {
             Result<ImmutableArray<INamedTypeSymbol>, Diagnostic> typesRes = this.GetCommandClasses ( );
+
+            Result<ImmutableDictionary<String, IMethodSymbol>, Diagnostic> commands = typesRes.Map ( symbols => this.GetCommandMethods ( symbols ) );
+
+            return commands.Map<String> ( commands =>
+            {
+                var writer = new StringBuilderCodeWriter ( "    " );
+
+                throw new NotImplementedException ( );
+            } );
         }
     }
 }
