@@ -19,13 +19,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using GUtils.CLI.Commands.Errors;
 
 namespace GUtils.CLI.Commands
 {
-    internal class InputLineParser
+    /// <summary>
+    /// The input line parser.
+    /// </summary>
+    public class InputLineParser
     {
+        [MethodImpl ( MethodImplOptions.AggressiveInlining )]
+        private static Boolean IsInRange ( Char start, Char value, Char end ) =>
+            ( UInt32 ) ( value - start ) <= ( end - start );
+
         private readonly String Input;
         private Int32 Offset;
 
@@ -90,7 +98,7 @@ namespace GUtils.CLI.Commands
                     case 'o':
                     {
                         var idx = this.Offset;
-                        while ( '0' <= this.Input[idx] && this.Input[idx] <= '8' )
+                        while ( IsInRange ( '0', this.Input[idx], '8' ) )
                             idx++;
                         if ( this.Offset == idx )
                             throw new InputLineParseException ( "Invalid octal escape.", this.Offset - 2 );
@@ -113,9 +121,9 @@ namespace GUtils.CLI.Commands
                     {
                         var idx = this.Offset;
                         while ( idx < this.Input.Length
-                                && ( ( '0' <= this.Input[idx] && this.Input[idx] <= '9' )
-                                     || ( 'a' <= this.Input[idx] && this.Input[idx] <= 'f' )
-                                     || ( 'A' <= this.Input[idx] && this.Input[idx] <= 'F' ) ) )
+                                && ( IsInRange ( '0', this.Input[idx], '9' )
+                                     || IsInRange ( 'a', this.Input[idx], 'f' )
+                                     || IsInRange ( 'A', this.Input[idx], 'F' ) ) )
                         {
                             idx++;
                         }
@@ -140,12 +148,12 @@ namespace GUtils.CLI.Commands
                     case '\\':
                         return '\\';
 
-                    case Char ch when '0' <= ch && ch <= '9':
+                    case Char ch when IsInRange ( '0', ch, '9' ):
                     {
                         // We ended up consuming one of the digits on this one
                         this.Offset--;
                         var idx = this.Offset;
-                        while ( '0' <= this.Input[idx] && this.Input[idx] <= '9' )
+                        while ( IsInRange ( '0', this.Input[idx], '9' ) )
                             idx++;
                         if ( this.Offset == idx )
                             throw new InputLineParseException ( "Invalid decimal escape.", this.Offset - 2 );
@@ -249,6 +257,12 @@ namespace GUtils.CLI.Commands
             }
         }
 
-        public static IEnumerable<String> Parse ( String line ) => new InputLineParser ( line ).Parse ( );
+        /// <summary>
+        /// Parses an input line.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public static IEnumerable<String> Parse ( String line ) =>
+            new InputLineParser ( line ).Parse ( );
     }
 }
