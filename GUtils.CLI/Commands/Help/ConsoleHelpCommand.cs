@@ -30,7 +30,7 @@ namespace GUtils.CLI.Commands.Help
         /// Initializes the default help command class
         /// </summary>
         /// <param name="manager"></param>
-        public ConsoleHelpCommand ( CompiledCommandManager manager ) : base ( manager )
+        public ConsoleHelpCommand ( BaseCommandManager manager ) : base ( manager )
         {
         }
 
