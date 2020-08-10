@@ -75,10 +75,12 @@ namespace GUtils.CLI.Commands
                 throw new InvalidOperationException ( "A command with this name already exists." );
 
             // Verb creation
-            var verbInst = new Verb ( new ConsoleCommandManager ( ) );
+            var verbCommandManager = new ConsoleCommandManager ( );
+            var verbInst = new Verb ( verbCommandManager );
 
             // Command registering
-            var command = new CompiledCommand (
+            var command = new VerbCompiledCommand (
+                verbCommandManager,
                 typeof ( Verb ).GetMethod ( nameof ( Verb.RunCommand ), BindingFlags.Instance | BindingFlags.Public ),
                 verbInst,
                 new[] { verb },
