@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
 
 namespace GUtils.Text.Code
 {
@@ -8,6 +9,31 @@ namespace GUtils.Text.Code
     /// </summary>
     public abstract class CodeWriter
     {
+        /// <summary>
+        /// A struct that represents an indentation level.
+        /// </summary>
+        public ref struct IndentationDisposable
+        {
+            private readonly CodeWriter codeWriter;
+            private Boolean disposed;
+
+            internal IndentationDisposable ( CodeWriter codeWriter )
+            {
+                this.codeWriter = codeWriter;
+                this.disposed = false;
+            }
+
+            /// <inheritdoc />
+            public void Dispose ( )
+            {
+                if ( !this.disposed )
+                {
+                    this.codeWriter.Outdent ( );
+                    this.disposed = true;
+                }
+            }
+        }
+
         /// <summary>
         /// Repeats a an <paramref name="repetitions" /> string for the number of <paramref
         /// name="repetitions" /> provided.
@@ -34,7 +60,7 @@ namespace GUtils.Text.Code
         public Int32 Indentation
         {
             get => this._indentation;
-            protected set
+            set
             {
                 if ( value < 0 )
                     throw new ArgumentOutOfRangeException ( nameof ( value ) );
@@ -197,5 +223,13 @@ namespace GUtils.Text.Code
             cb ( );
             this.Outdent ( );
         }
+
+        /// <summary>
+        /// Increases the indentation and decreases it when the <see cref="IndentationDisposable" />
+        /// is disposed.
+        /// </summary>
+        /// <returns></returns>
+        public IndentationDisposable WithIndentation ( ) =>
+            new IndentationDisposable ( this );
     }
 }
