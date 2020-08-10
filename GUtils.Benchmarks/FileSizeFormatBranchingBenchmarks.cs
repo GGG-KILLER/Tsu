@@ -1,10 +1,16 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Environments;
+using BenchmarkDotNet.Jobs;
 using GUtils.Numerics;
 
 namespace GUtils.Benchmarks
 {
-    [Config ( typeof ( MyBenchmarkConfig ) )]
+    [SimpleJob ( RuntimeMoniker.Net48 )]
+    [SimpleJob ( RuntimeMoniker.NetCoreApp31, baseline: true )]
+    [SimpleJob ( RuntimeMoniker.NetCoreApp50 )]
+    [MemoryDiagnoser]
+    [DisassemblyDiagnoser ( exportHtml: true, exportCombinedDisassemblyReport: true, exportDiff: true )]
     public class FileSizeFormatBranchingBenchmarks
     {
         private static readonly String[] _suffixes = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };

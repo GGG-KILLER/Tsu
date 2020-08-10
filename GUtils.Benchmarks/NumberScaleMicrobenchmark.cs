@@ -1,10 +1,15 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Environments;
+using BenchmarkDotNet.Jobs;
 
 namespace GUtils.Benchmarks
 {
-    [Config ( typeof ( MyBenchmarkConfig ) )]
-    [DisassemblyDiagnoser]
+    [SimpleJob ( RuntimeMoniker.Net48 )]
+    [SimpleJob ( RuntimeMoniker.NetCoreApp31, baseline: true )]
+    [SimpleJob ( RuntimeMoniker.NetCoreApp50 )]
+    [MemoryDiagnoser]
+    [DisassemblyDiagnoser ( exportHtml: true, exportCombinedDisassemblyReport: true, exportDiff: true )]
     public class NumberScaleMicrobenchmark
     {
         private const Double inv3 = 1d / 3d;
