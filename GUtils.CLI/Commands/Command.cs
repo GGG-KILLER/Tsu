@@ -22,9 +22,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using GUtils.CLI.Commands.Help;
 
-// Disable obsolete warnings since we need backwards compatibility
-#pragma warning disable CS0618
-
 namespace GUtils.CLI.Commands
 {
     /// <summary>
