@@ -57,13 +57,13 @@ namespace GUtils.CLI.Commands.Help
         protected abstract void Write ( String str );
 
         /// <summary>
-        /// Writes a character followed by a <see cref="Environment.NewLine"/> to the output
+        /// Writes a character followed by a <see cref="Environment.NewLine" /> to the output
         /// </summary>
         /// <param name="ch"></param>
         protected abstract void WriteLine ( Char ch );
 
         /// <summary>
-        /// Writes a string followed by a <see cref="Environment.NewLine"/> to the output
+        /// Writes a string followed by a <see cref="Environment.NewLine" /> to the output
         /// </summary>
         /// <param name="str"></param>
         protected abstract void WriteLine ( String str );
@@ -75,18 +75,29 @@ namespace GUtils.CLI.Commands.Help
         /// <summary>
         /// Checks whether a given command exists
         /// </summary>
-        /// <param name="commandName"></param>
+        /// <param name="input"></param>
+        /// <param name="command"></param>
+        /// <param name="parentCommand"></param>
         /// <returns></returns>
-        protected Boolean CommandExists ( String commandName ) =>
-            this.Manager.CommandDictionary.ContainsKey ( commandName );
+        protected Boolean TryGetCommand ( String input, out Command command, IVerbCommand parentCommand = null )
+        {
+            if ( String.IsNullOrEmpty ( input ) )
+                throw new ArgumentException ( $"'{nameof ( input )}' cannot be null or empty", nameof ( input ) );
 
-        /// <summary>
-        /// Returns the help text for a given command name
-        /// </summary>
-        /// <param name="commandName"></param>
-        /// <returns></returns>
-        protected Command GetCommand ( String commandName ) =>
-            this.Manager.CommandDictionary[commandName];
+            BaseCommandManager commandManager = parentCommand?.CommandManager ?? this.Manager;
+            var spaceIdx = input.IndexOf ( ' ' );
+            var commandName = spaceIdx != -1 ? input.Substring ( 0, spaceIdx ) : input;
+            if ( commandManager.CommandDictionary.TryGetValue ( commandName, out command ) )
+            {
+                var subCommandName = spaceIdx != -1 ? input.Substring ( spaceIdx + 1 ).Trim ( ) : "";
+                if ( !String.IsNullOrWhiteSpace ( subCommandName ) && command is IVerbCommand verb )
+                    return this.TryGetCommand ( subCommandName, out command, verb );
+
+                return true;
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// Returns the name of an argument formatted in a pretty way
@@ -169,6 +180,7 @@ namespace GUtils.CLI.Commands.Help
         /// Shows the help for a specific command or all commands
         /// </summary>
         /// <param name="commandName"></param>
+        [RawInput]
         [Command ( "help", Overwrite = true )]
         [HelpDescription ( "Shows help text" )]
         [HelpExample ( "help      (will list all commands)" )]
@@ -178,10 +190,22 @@ namespace GUtils.CLI.Commands.Help
         {
             if ( commandName != null )
             {
-                if ( this.CommandExists ( commandName ) )
+                if ( this.TryGetCommand ( commandName, out Command command ) )
                 {
-                    foreach ( var line in this.GetHelpLines ( this.GetCommand ( commandName ) ) )
-                        this.WriteLine ( line );
+                    if ( command is IVerbCommand verb )
+                    {
+                        this.WriteLine ( $"Showing help for all commands of {commandName}:" );
+                        foreach ( Command subCommand in verb.CommandManager.Commands )
+                        {
+                            foreach ( var line in this.GetHelpLines ( subCommand ) )
+                                this.WriteLine ( "    " + line );
+                        }
+                    }
+                    else
+                    {
+                        foreach ( var line in this.GetHelpLines ( command ) )
+                            this.WriteLine ( line );
+                    }
                 }
                 else
                 {
