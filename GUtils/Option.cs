@@ -342,6 +342,13 @@ namespace GUtils
         /// </returns>
         public static Boolean operator != ( Option<T> left, T right ) => !( left == right );
 
+        /// <summary>
+        /// Converts a value to a <see cref="Option.Some{T}(T)" /> option.
+        /// </summary>
+        /// <param name="value">The value to be wrapped.</param>
+        public static implicit operator Option<T> ( T value ) =>
+            new Option<T> ( value );
+
         #endregion Operators
 
         private String GetDebuggerDisplay ( ) =>

@@ -320,6 +320,20 @@ namespace GUtils
         /// <returns></returns>
         public static Boolean operator != ( Result<TOk, TErr> left, Result<TOk, TErr> right ) => !( left == right );
 
+        /// <summary>
+        /// Converts an <paramref name="ok" /> value to a result.
+        /// </summary>
+        /// <param name="ok"></param>
+        public static explicit operator Result<TOk, TErr> ( TOk ok ) =>
+            new Result<TOk, TErr> ( true, ok, default! );
+
+        /// <summary>
+        /// Converts an <paramref name="err" /> value to a result.
+        /// </summary>
+        /// <param name="err"></param>
+        public static explicit operator Result<TOk, TErr> ( TErr err ) =>
+            new Result<TOk, TErr> ( false, default!, err );
+
         #endregion Operators
 
         private String GetDebuggerDisplay ( ) =>
