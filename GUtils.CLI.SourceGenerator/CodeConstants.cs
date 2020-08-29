@@ -40,20 +40,36 @@ using System;
 
 namespace GUtils.CLI
 {
-    [AttributeUsage ( AttributeTargets.Class, AllowMultiple = false, Inherited = false )]
+    [AttributeUsage ( AttributeTargets.Class, AllowMultiple = true, Inherited = false )]
     public class " + Name + @" : Attribute
     {
-        public Type[] CommandClasses { get; }
+        public Type CommandClass { get; }
+        public String Verb { get; set; }
 
-        public " + Name + @" ( Type commandClass, params Type[] otherCommandClasses )
+        public " + Name + @" ( Type commandClass )
         {
-            var classes = new Type[otherCommandClasses.Length + 1];
-            classes[0] = commandClass;
-            for ( var i = 0; i < otherCommandClasses.Length; i++ )
-            {
-                classes[i + 1] = otherCommandClasses[i];
-            }
-            this.CommandClasses = classes;
+            this.CommandClass = commandClass;
+        }
+    }
+}";
+
+            /// <summary>
+            /// The source code for the attribute when nullable reference types are enabled.
+            /// </summary>
+            public const String NullableCode = @"
+using System;
+
+namespace GUtils.CLI
+{
+    [AttributeUsage ( AttributeTargets.Class, AllowMultiple = true, Inherited = false )]
+    public class " + Name + @" : Attribute
+    {
+        public Type CommandClass { get; }
+        public String? Verb { get; set; }
+
+        public " + Name + @" ( Type commandClass )
+        {
+            this.CommandClass = commandClass;
         }
     }
 }";

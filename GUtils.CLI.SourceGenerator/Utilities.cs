@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using GUtils.CLI.SourceGenerator.CommandManager;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace GUtils.CLI.SourceGenerator
 {
@@ -25,6 +27,41 @@ namespace GUtils.CLI.SourceGenerator
                                     || ( 'a' <= ch && ch <= 'z' )
                                     || ( 'A' <= ch && ch <= 'Z' ) );
         }
+
+        /// <summary>
+        /// Converts an object a basic type to a <see cref="LiteralExpressionSyntax" /> and returns
+        /// objects of the type <see cref="ExpressionSyntax" /> as they are.
+        /// </summary>
+        /// <param name="obj">The input object.</param>
+        /// <returns></returns>
+        public static ExpressionSyntax GetExpressionSyntax ( Object obj ) =>
+            obj switch
+            {
+                Char value => LiteralExpression ( SyntaxKind.CharacterLiteralExpression, Literal ( value ) ),
+                String value => LiteralExpression ( SyntaxKind.StringLiteralExpression, Literal ( value ) ),
+
+                Single value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+                Double value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+
+                Decimal value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+
+                SByte value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+                Byte value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+
+                Int16 value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+                UInt16 value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+
+                Int32 value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+                UInt32 value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+
+                Int64 value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+                UInt64 value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+
+                ExpressionSyntax expression => expression,
+                ExprSyntaxDynObj syntaxObject => ( ExpressionSyntax ) ( dynamic ) syntaxObject,
+
+                _ => throw new InvalidOperationException ( "Cannot convert this object to an expression." ),
+            };
 
         /// <summary>
         /// Attempts to get the method with the provided <paramref name="name" /> and <paramref
@@ -61,13 +98,18 @@ namespace GUtils.CLI.SourceGenerator
             if ( namedTypeSymbol is null )
                 throw new ArgumentNullException ( nameof ( namedTypeSymbol ) );
 
-            return SyntaxFactory.ParseTypeName ( namedTypeSymbol.ToDisplayString ( SymbolDisplayFormat.MinimallyQualifiedFormat ) );
+            return ParseTypeName ( namedTypeSymbol.ToDisplayString ( SymbolDisplayFormat.MinimallyQualifiedFormat ) );
         }
 
         /// <summary>
         /// Gets the <see cref="MemberAccessExpressionSyntax" /> for the provided instance <paramref
         /// name="methodSymbol" /> on the provided <paramref name="instance" />.
         /// </summary>
+        /// <remarks>
+        /// Nothing more than the name of the <paramref name="methodSymbol" /> is used so
+        /// technically it is not necessary to use it, but it's good to have the symbol of the
+        /// method to ensure that the method can be accessed from the code being generated.
+        /// </remarks>
         /// <param name="instance"></param>
         /// <param name="methodSymbol"></param>
         /// <returns></returns>
@@ -82,10 +124,11 @@ namespace GUtils.CLI.SourceGenerator
             if ( methodSymbol.MethodKind != MethodKind.Ordinary )
                 throw new ArgumentException ( "Method is not an ordinary method.", nameof ( methodSymbol ) );
 
-            return SyntaxFactory.MemberAccessExpression (
+            return MemberAccessExpression (
                 SyntaxKind.SimpleMemberAccessExpression,
                 instance,
-                SyntaxFactory.IdentifierName ( methodSymbol.Name ) );
+                IdentifierName ( methodSymbol.Name )
+            );
         }
 
         /// <summary>
@@ -103,10 +146,10 @@ namespace GUtils.CLI.SourceGenerator
             if ( methodSymbol.MethodKind != MethodKind.Ordinary )
                 throw new ArgumentException ( "Method is not an ordinary method.", nameof ( methodSymbol ) );
 
-            return SyntaxFactory.MemberAccessExpression (
+            return MemberAccessExpression (
                 SyntaxKind.SimpleMemberAccessExpression,
                 GetTypeSyntax ( methodSymbol.ContainingType ),
-                SyntaxFactory.IdentifierName ( methodSymbol.Name ) );
+                IdentifierName ( methodSymbol.Name ) );
         }
 
         /// <summary>
@@ -148,10 +191,10 @@ namespace GUtils.CLI.SourceGenerator
 
             if ( typeSymbol.TypeKind == TypeKind.Enum )
             {
-                return SyntaxFactory.InvocationExpression (
-                    GetMemberAccessExpression ( commonSymbols.System_Enum_Parse_Type_String ),
-                    SyntaxFactory.ArgumentList (
-                        SyntaxFactory.SeparatedList ( new[]
+                return InvocationExpression (
+                    GetMemberAccessExpression ( commonSymbols.System_Enum__ParseTypeString ),
+                    ArgumentList (
+                        SeparatedList ( new[]
                         {
                             GetTypeSyntax ( typeSymbol ),
                             inputNode
@@ -160,10 +203,10 @@ namespace GUtils.CLI.SourceGenerator
 
             if ( GetMethodSymbol ( typeSymbol, "Parse", true, SpecialType.System_String ) is IMethodSymbol parseMethodSymbol )
             {
-                return SyntaxFactory.InvocationExpression (
+                return InvocationExpression (
                     GetMemberAccessExpression ( parseMethodSymbol ),
-                    SyntaxFactory.ArgumentList (
-                        SyntaxFactory.SeparatedList ( new[]
+                    ArgumentList (
+                        SeparatedList ( new[]
                         {
                             inputNode
                         } ) ) );
@@ -172,10 +215,10 @@ namespace GUtils.CLI.SourceGenerator
             if ( typeSymbol.Constructors.Any ( ctor =>
                   ctor.Parameters.Length == 1 && ctor.Parameters[0].Type.SpecialType == SpecialType.System_String ) )
             {
-                return SyntaxFactory.ObjectCreationExpression (
-                    SyntaxFactory.ParseTypeName (
+                return ObjectCreationExpression (
+                    ParseTypeName (
                         typeSymbol.ToDisplayString ( SymbolDisplayFormat.MinimallyQualifiedFormat ) ),
-                    SyntaxFactory.ArgumentList ( SyntaxFactory.SeparatedList ( new[]
+                    ArgumentList ( SeparatedList ( new[]
                     {
                         inputNode
                     } ) ),
@@ -216,6 +259,23 @@ namespace GUtils.CLI.SourceGenerator
             }
 
             return ( T ) inst;
+        }
+
+        /// <summary>
+        /// Attempts to get an attribute from a list of attributes.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="attributes"></param>
+        /// <param name="typeSymbol"></param>
+        /// <returns></returns>
+        public static T? TryGetAttribute<T> ( ImmutableArray<AttributeData> attributes, INamedTypeSymbol typeSymbol )
+            where T : Attribute
+        {
+            if ( attributes.FirstOrDefault ( attribute => SymbolEqualityComparer.Default.Equals ( attribute.AttributeClass, typeSymbol ) ) is AttributeData attribute )
+            {
+                return AttributeFromAttributeData<T> ( attribute );
+            }
+            return null;
         }
     }
 }

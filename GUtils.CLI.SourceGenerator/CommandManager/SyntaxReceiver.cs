@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace GUtils.CLI.SourceGenerator
+namespace GUtils.CLI.SourceGenerator.CommandManager
 {
     /// <summary>
     /// The command manager syntax receiver that accummulates the class declarations that contain an
