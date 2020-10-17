@@ -57,7 +57,7 @@ namespace GUtils.Parsing.BBCode.Tests
             Assert.ThrowsException<FormatException> ( ( ) =>
             {
                 using var reader = new StringReader ( text );
-                BBLexer.Lex ( reader ).ToArray ( );
+                _ = BBLexer.Lex ( reader ).ToArray ( );
             } );
     }
 }
