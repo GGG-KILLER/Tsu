@@ -31,7 +31,7 @@ namespace GUtils.Numerics
         /// <summary>
         /// The amount of bits that fit on one container.
         /// </summary>
-        private const Int32 ElementBitCount = sizeof(Byte) * 8;
+        private const Int32 ElementBitCount = sizeof ( Byte ) * 8;
 
         /// <summary>
         /// The amount we must shift by to convert to/from bits.
@@ -56,7 +56,7 @@ namespace GUtils.Numerics
         /// <summary>
         /// The amount of bits that this bit vector contains
         /// </summary>
-        public Int32 Bits => this.Length * ElementBitCount;
+        public Int32 Bits => this.Length >> ShiftAmount;
 
         /// <summary>
         /// Initializes this <see cref="VariableLengthBitVector"/>
@@ -72,11 +72,12 @@ namespace GUtils.Numerics
         /// <param name="bits">The amount of bits required</param>
         public VariableLengthBitVector ( Int32 bits )
         {
-            var size = Math.DivRem(bits, ElementBitCount, out var rem);
-            if ( rem > 0 )
-            {
+            if ( bits < 0 )
+                throw new ArgumentOutOfRangeException ( nameof ( bits ) );
+
+            var size = bits >> ShiftAmount;
+            if ( ( bits & RemainderMask ) != 0 )
                 size++;
-            }
             this.containers = new Byte[size];
         }
 
@@ -120,9 +121,10 @@ namespace GUtils.Numerics
         {
             set
             {
-                var index = Math.DivRem(offset, ElementBitCount, out offset);
+                var index = offset >> ShiftAmount;
+                offset &= RemainderMask;
                 this.EnsureBitContainer ( index );
-                var mask = 1U << offset;
+                var mask = 1 << offset;
                 if ( value )
                 {
                     this.containers[index] |= ( Byte ) mask;
@@ -134,7 +136,8 @@ namespace GUtils.Numerics
             }
             get
             {
-                var index = Math.DivRem(offset, ElementBitCount, out offset);
+                var index = offset >> ShiftAmount;
+                offset &= RemainderMask;
                 var mask = 1U << offset;
                 return ( this.containers[index] & mask ) != 0;
             }
@@ -143,8 +146,8 @@ namespace GUtils.Numerics
         #region IEquatable<VariableLengthBitVector>
 
         /// <inheritdoc/>
-        public Boolean Equals ( VariableLengthBitVector other ) =>
-            other != null
+        public Boolean Equals ( VariableLengthBitVector? other ) =>
+            other is VariableLengthBitVector
             && this.containers.SequenceEqual ( other.containers );
 
         #endregion IEquatable<VariableLengthBitVector>
@@ -156,16 +159,17 @@ namespace GUtils.Numerics
             String.Join ( "", this.containers.Select ( n => Convert.ToString ( n, 2 ).PadLeft ( ElementBitCount, '0' ) ).Reverse ( ) );
 
         /// <inheritdoc/>
-        public override Boolean Equals ( Object obj ) =>
+        public override Boolean Equals ( Object? obj ) =>
             this.Equals ( obj as VariableLengthBitVector );
 
         /// <inheritdoc/>
         public override Int32 GetHashCode ( )
         {
             var hashCode = -1534987273;
-            for ( var i = 0; i < this.containers.Length; i++ )
+            var containers = this.containers;
+            for ( var i = 0; i < containers.Length; i++ )
             {
-                hashCode = unchecked(hashCode * -1521134295 + this.containers[i].GetHashCode ( ));
+                hashCode = unchecked(hashCode * -1521134295 + containers[i].GetHashCode ( ));
             }
             return hashCode;
         }
