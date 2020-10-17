@@ -11,27 +11,6 @@ namespace GUtils.Numerics
     /// </summary>
     public static class SI
     {
-        private static readonly String[] _prefixes =
-        {
-            /* -8 */ "y",
-            /* -7 */ "z",
-            /* -6 */ "a",
-            /* -5 */ "f",
-            /* -4 */ "p",
-            /* -3 */ "n",
-            /* -2 */ "μ",
-            /* -1 */ "m",
-            /*  0 */ "\uFFFF",
-            /*  1 */ "k",
-            /*  2 */ "M",
-            /*  3 */ "G",
-            /*  4 */ "T",
-            /*  5 */ "P",
-            /*  6 */ "E",
-            /*  7 */ "Z",
-            /*  8 */ "Y",
-        };
-
         /// <summary>
         /// The regular expression used for parsing floating point file sizes. Accepts 0.0, 0.0B and 0.0KiB
         /// </summary>
@@ -129,10 +108,43 @@ namespace GUtils.Numerics
             if ( Double.IsInfinity ( number ) || Double.IsNaN ( number ) || number == 0D || number == -0D )
                 return (number, "");
 
-            var power = ( Int32 ) Math.Max ( Math.Min ( Math.Floor ( Math.Log ( Math.Abs ( number ), 1000 ) ), 8 ), -8 );
-            if ( power == 0 )
+            // Fast path for non-scaled numbers
+            if ( 1 <= number && number < Kilo )
                 return (number, "");
-            return (number / Math.Pow ( 1000, power ), _prefixes[8 + power]);
+            if ( number >= Yotta )
+                return (number / Yotta, "Y");
+            else if ( number >= Zetta )
+                return (number / Zetta, "Z");
+            else if ( number >= Exa )
+                return (number / Exa, "E");
+            else if ( number >= Peta )
+                return (number / Peta, "P");
+            else if ( number >= Tera )
+                return (number / Tera, "T");
+            else if ( number >= Giga )
+                return (number / Giga, "G");
+            else if ( number >= Mega )
+                return (number / Mega, "M");
+            else if ( number >= Kilo )
+                return (number / Kilo, "k");
+            else if ( number >= Milli )
+                return (number / Milli, "m");
+            else if ( number >= Micro )
+                return (number / Micro, "μ");
+            else if ( number >= Nano )
+                return (number / Nano, "n");
+            else if ( number >= Pico )
+                return (number / Pico, "p");
+            else if ( number >= Femto )
+                return (number / Femto, "f");
+            else if ( number >= Atto )
+                return (number / Atto, "a");
+            else if ( number >= Zepto )
+                return (number / Zepto, "z");
+            else if ( number >= Yocto )
+                return (number / Yocto, "y");
+            else
+                return (number, "");
         }
 
         /// <summary>

@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BitContainer = System.Byte;
 
 namespace GUtils.Numerics
 {
@@ -30,14 +29,24 @@ namespace GUtils.Numerics
     public class VariableLengthBitVector : IEquatable<VariableLengthBitVector>
     {
         /// <summary>
-        /// The amount of bits that fit on one <see cref="BitContainer"/>
+        /// The amount of bits that fit on one container.
         /// </summary>
-        private const Int32 elementBitCount = sizeof(BitContainer) * 8;
+        private const Int32 ElementBitCount = sizeof(Byte) * 8;
+
+        /// <summary>
+        /// The amount we must shift by to convert to/from bits.
+        /// </summary>
+        private const Int32 ShiftAmount = 3;
+
+        /// <summary>
+        /// The mask for getting the remainder of bits.
+        /// </summary>
+        private const Int32 RemainderMask = ( 1 << ElementBitCount ) - 1;
 
         /// <summary>
         /// The containers that back this bit vector
         /// </summary>
-        private BitContainer[] containers;
+        private Byte[] containers;
 
         /// <summary>
         /// The length of the inner array of this bit vector
@@ -47,14 +56,14 @@ namespace GUtils.Numerics
         /// <summary>
         /// The amount of bits that this bit vector contains
         /// </summary>
-        public Int32 Bits => this.Length * elementBitCount;
+        public Int32 Bits => this.Length * ElementBitCount;
 
         /// <summary>
         /// Initializes this <see cref="VariableLengthBitVector"/>
         /// </summary>
         public VariableLengthBitVector ( )
         {
-            this.containers = new BitContainer[1];
+            this.containers = new Byte[1];
         }
 
         /// <summary>
@@ -63,12 +72,12 @@ namespace GUtils.Numerics
         /// <param name="bits">The amount of bits required</param>
         public VariableLengthBitVector ( Int32 bits )
         {
-            var size = Math.DivRem(bits, elementBitCount, out var rem);
+            var size = Math.DivRem(bits, ElementBitCount, out var rem);
             if ( rem > 0 )
             {
                 size++;
             }
-            this.containers = new BitContainer[size];
+            this.containers = new Byte[size];
         }
 
         /// <summary>
@@ -80,7 +89,7 @@ namespace GUtils.Numerics
             if ( bitVector is null )
                 throw new ArgumentNullException ( nameof ( bitVector ) );
 
-            this.containers = ( BitContainer[] ) bitVector.containers.Clone ( );
+            this.containers = ( Byte[] ) bitVector.containers.Clone ( );
         }
 
         /// <summary>
@@ -111,21 +120,21 @@ namespace GUtils.Numerics
         {
             set
             {
-                var index = Math.DivRem(offset, elementBitCount, out offset);
+                var index = Math.DivRem(offset, ElementBitCount, out offset);
                 this.EnsureBitContainer ( index );
                 var mask = 1U << offset;
                 if ( value )
                 {
-                    this.containers[index] |= ( BitContainer ) mask;
+                    this.containers[index] |= ( Byte ) mask;
                 }
                 else
                 {
-                    this.containers[index] &= ( BitContainer ) ~mask;
+                    this.containers[index] &= ( Byte ) ~mask;
                 }
             }
             get
             {
-                var index = Math.DivRem(offset, elementBitCount, out offset);
+                var index = Math.DivRem(offset, ElementBitCount, out offset);
                 var mask = 1U << offset;
                 return ( this.containers[index] & mask ) != 0;
             }
@@ -144,7 +153,7 @@ namespace GUtils.Numerics
 
         /// <inheritdoc/>
         public override String ToString ( ) =>
-            String.Join ( "", this.containers.Select ( n => Convert.ToString ( n, 2 ).PadLeft ( elementBitCount, '0' ) ).Reverse ( ) );
+            String.Join ( "", this.containers.Select ( n => Convert.ToString ( n, 2 ).PadLeft ( ElementBitCount, '0' ) ).Reverse ( ) );
 
         /// <inheritdoc/>
         public override Boolean Equals ( Object obj ) =>
