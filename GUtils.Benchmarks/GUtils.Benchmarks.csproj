@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GUtils.CLI\GUtils.CLI.csproj" />
-    <ProjectReference Include="..\GUtils.Numerics\GUtils.Numerics.csproj" />
   </ItemGroup>
 
 </Project>
