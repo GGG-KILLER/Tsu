@@ -11,8 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		GUtils.sln.licenseheader = GUtils.sln.licenseheader
+		LibraryProject.props = LibraryProject.props
 		LICENSE = LICENSE
 		README.md = README.md
+		Shared.Compilation.props = Shared.Compilation.props
+		Shared.Defines.props = Shared.Defines.props
+		Shared.NugetPackage.props = Shared.NugetPackage.props
+		Shared.Packages.props = Shared.Packages.props
+		Shared.Props.props = Shared.Props.props
+		TestProject.props = TestProject.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Net", "GUtils.Net\GUtils.Net.csproj", "{0C609E84-E1BE-4CC9-A472-8EC64F284155}"

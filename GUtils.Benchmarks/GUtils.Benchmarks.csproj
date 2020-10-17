@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GUtils.CLI\GUtils.CLI.csproj" />
+    <ProjectReference Include="..\GUtils\GUtils.csproj" />
   </ItemGroup>
 
 </Project>

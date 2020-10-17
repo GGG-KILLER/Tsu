@@ -1,0 +1,33 @@
+<Project>
+
+  <Import Project="Shared.Props.props"/>
+
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == ''">
+    <TargetFrameworkIdentifier>$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)'))</TargetFrameworkIdentifier>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFrameworkVersion)' == ''">
+    <TargetFrameworkVersion>$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)'))</TargetFrameworkVersion>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <!-- ValueTuple flag -->
+    <DefineConstants Condition="('$(TargetFrameworkIdentifier)' == '.NETFramework' AND '$(TargetFrameworkVersion)' >= '4.7')
+                     OR '$(TargetFrameworkIdentifier)' == '.NETCoreApp'
+                     OR '$(TargetFrameworkIdentifier)' == '.NETStandard'">$(DefineConstants);HAS_VALUETUPLE</DefineConstants>
+
+    <!-- Span<T>/Memory<T> flag -->
+    <DefineConstants Condition="('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And '$(TargetFrameworkVersion)' >= '2.1')
+                     Or ('$(TargetFrameworkIdentifier)' == '.NETStandard' And '$(TargetFrameworkVersion)' >= '2.1')">$(DefineConstants);HAS_SPAN</DefineConstants>
+    
+    <!-- RuntimeFeature flag -->
+    <DefineConstants Condition="('$(TargetFrameworkIdentifier)' == '.NETFramework' And '$(TargetFrameworkVersion)' >= '4.7.1')
+                     Or ('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And '$(TargetFrameworkVersion)' >= '2.0')
+                     Or ('$(TargetFrameworkIdentifier)' == '.NETStandard' And '$(TargetFrameworkVersion)' >= '2.1')">$(DefineConstants);HAS_RUNTIMEFEATURE</DefineConstants>
+    
+    <!-- RuntimeFeature.IsDynamicCode* flag -->
+    <DefineConstants Condition="('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And '$(TargetFrameworkVersion)' >= '3.0')
+                     Or ('$(TargetFrameworkIdentifier)' == '.NETStandard' And '$(TargetFrameworkVersion)' >= '2.1')">$(DefineConstants);HAS_RUNTIMEFEATURE_DYNAMICCODE</DefineConstants>
+  </PropertyGroup>
+
+</Project>

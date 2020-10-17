@@ -1,24 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="../LibraryProject.props" />
+
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageId>GUtils.Text.Code</PackageId>
     <Version>1.1.0</Version>
-    <Authors>GGG KILLER</Authors>
     <Description>A library that contains text utilties aimed at source code.</Description>
-    <Copyright>GGG KILLER © 2020</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/GGG-KILLER/GUtils.NET</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/GGG-KILLER/GUtils.NET</RepositoryUrl>
-    <RepositoryType>Git</RepositoryType>
-    <LangVersion>latest</LangVersion>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Nullable>enable</Nullable>
-    <!-- Source Link -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
 </Project>
