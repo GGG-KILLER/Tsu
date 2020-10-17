@@ -306,24 +306,21 @@ namespace GUtils.CLI.SourceGenerator.CommandManager
         /// <returns></returns>
         private static ExpressionSyntax GroupIfRequired ( ExpressionSyntax expressionSyntax )
         {
-            switch ( expressionSyntax )
+            return expressionSyntax switch
             {
-                case AnonymousFunctionExpressionSyntax _:
-                case AssignmentExpressionSyntax _:
-                case AwaitExpressionSyntax _:
-                case BinaryExpressionSyntax _:
-                case CastExpressionSyntax _:
-                case ConditionalExpressionSyntax _:
-                case IsPatternExpressionSyntax _:
-                case MakeRefExpressionSyntax _:
-                case PrefixUnaryExpressionSyntax _:
-                case QueryExpressionSyntax _:
-                case RefExpressionSyntax _:
-                    return ParenthesizedExpression ( expressionSyntax );
-
-                default:
-                    return expressionSyntax;
-            }
+                AnonymousFunctionExpressionSyntax
+                or AssignmentExpressionSyntax 
+                or AwaitExpressionSyntax 
+                or BinaryExpressionSyntax 
+                or CastExpressionSyntax 
+                or ConditionalExpressionSyntax 
+                or IsPatternExpressionSyntax 
+                or MakeRefExpressionSyntax 
+                or PrefixUnaryExpressionSyntax 
+                or QueryExpressionSyntax 
+                or RefExpressionSyntax => ParenthesizedExpression ( expressionSyntax ),
+                _ => expressionSyntax,
+            };
         }
     }
 
