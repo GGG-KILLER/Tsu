@@ -18,7 +18,7 @@ jobs:
     - name: Setup .NET 5
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100-rc.1
+        dotnet-version: 5.0.100-rc.2
     - name: Install dependencies
       run: dotnet restore
     - name: Build
@@ -36,7 +36,7 @@ jobs:
     - name: Setup .NET 5
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100-rc.1
+        dotnet-version: 5.0.100-rc.2
     - name: Install dependencies
       run: dotnet restore
     - name: Build
@@ -44,11 +44,7 @@ jobs:
     - name: Generate NuGet packages
       run: dotnet pack --configuration Release --output ./packages --no-restore --include-symbols -p:SymbolPackageFormat=snupkg
     - name: Publish packages
-      run: dotnet nuget push ./packages/ --source https://www.myget.org/F/ggg-killer/api/v2/package --symbol-source https://www.myget.org/F/ggg-killer/api/v3/index.json --api-key ${{ secrets.MYGET_API_KEY }} --symbol-api-key ${{ secrets.MYGET_API_KEY }} --skip-duplicate
-#    - name: Publish packages
-#      run: find ./packages/ -type f -name "*.nupkg" -exec dotnet nuget push {} --source https://www.myget.org/F/ggg-killer/api/v2/package --symbol-source https://www.myget.org/F/ggg-killer/api/v3/index.json --api-key ${{ secrets.MYGET_API_KEY }} --symbol-api-key ${{ secrets.MYGET_API_KEY }} --skip-duplicate \;
-#    - name: Publish package symbols
-#      run: find ./packages/ -type f -name "*.snupkg" -exec dotnet nuget push {} --source https://www.myget.org/F/ggg-killer/api/v2/package --symbol-source https://www.myget.org/F/ggg-killer/api/v3/index.json --api-key ${{ secrets.MYGET_API_KEY }} --symbol-api-key ${{ secrets.MYGET_API_KEY }} --skip-duplicate \;
+      run: dotnet nuget push ./packages/ --source https://www.myget.org/F/ggg-killer/api/v3/index.json --api-key ${{ secrets.MYGET_API_KEY }} --skip-duplicate
 
   train:
     name: Intellicode Train
@@ -62,7 +58,7 @@ jobs:
     - name: Setup .NET 5
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100-rc.1
+        dotnet-version: 5.0.100-rc.2
     - name: Install dependencies
       run: dotnet restore
     - name: Build
