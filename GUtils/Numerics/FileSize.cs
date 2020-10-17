@@ -77,54 +77,120 @@ namespace GUtils.Numerics
         /// the suffix to be used on display.
         /// </summary>
         /// <param name="size">The size (in bytes) to be formatted.</param>
-        /// <returns>A tuple containing the scaled size and the suffix.</returns>
-        public static (Double size, String suffix) GetFormatPair ( Int64 size )
+        /// <param name="scaledSize">The scaled down size.</param>
+        /// <param name="suffix">The suffix.</param>
+        public static void GetFormatPair ( Int64 size, out Double scaledSize, out String suffix )
         {
             var abs = Math.Abs ( size );
             if ( abs == 0 )
-                return (size, "B");
+            {
+                scaledSize = size;
+                suffix = "B";
+                return;
+            }
 
             if ( abs >= EiB )
-                return (size / ( Double ) EiB, nameof ( EiB ));
+            {
+                scaledSize = size / ( Double ) EiB;
+                suffix = nameof ( EiB );
+                return;
+            }
             else if ( abs >= PiB )
-                return (size / ( Double ) PiB, nameof ( PiB ));
+            {
+                scaledSize = size / ( Double ) PiB;
+                suffix = nameof ( PiB );
+                return;
+            }
             else if ( abs >= TiB )
-                return (size / ( Double ) TiB, nameof ( TiB ));
+            {
+                scaledSize = size / ( Double ) TiB;
+                suffix = nameof ( TiB );
+                return;
+            }
             else if ( abs >= GiB )
-                return (size / ( Double ) GiB, nameof ( GiB ));
+            {
+                scaledSize = size / ( Double ) GiB;
+                suffix = nameof ( GiB );
+                return;
+            }
             else if ( abs >= MiB )
-                return (size / ( Double ) MiB, nameof ( MiB ));
+            {
+                scaledSize = size / ( Double ) MiB;
+                suffix = nameof ( MiB );
+                return;
+            }
             else if ( abs >= KiB )
-                return (size / ( Double ) KiB, nameof ( KiB ));
+            {
+                scaledSize = size / ( Double ) KiB;
+                suffix = nameof ( KiB );
+                return;
+            }
             else
-                return (size, "B");
+            {
+                scaledSize = size;
+                suffix = "B";
+                return;
+            }
         }
 
         /// <summary>
-        /// <inheritdoc cref="GetFormatPair(Int64)" />
+        /// <inheritdoc cref="GetFormatPair(Int64, out Double, out String)" />
         /// </summary>
-        /// <param name="size"><inheritdoc cref="GetFormatPair(Int64)" /></param>
-        /// <returns><inheritdoc cref="GetFormatPair(Int64)" /></returns>
-        public static (Double size, String suffix) GetFormatPair ( Double size )
+        /// <param name="size"><inheritdoc cref="GetFormatPair(Int64, out Double, out String)" /></param>
+        /// <param name="scaledSize"><inheritdoc cref="GetFormatPair(Int64, out Double, out String)" /></param>
+        /// <param name="suffix"><inheritdoc cref="GetFormatPair(Int64, out Double, out String)" /></param>
+        public static void GetFormatPair ( Double size, out Double scaledSize, out String suffix )
         {
             if ( Double.IsInfinity ( size ) || Double.IsNaN ( size ) || size == 0D || size == -0D )
-                return (size, "B");
+            {
+                scaledSize = size;
+                suffix = "B";
+                return;
+            }
 
             var abs = Math.Abs ( size );
             if ( abs >= EiB )
-                return (size / EiB, nameof ( EiB ));
+            {
+                scaledSize = size / EiB;
+                suffix = nameof ( EiB );
+                return;
+            }
             else if ( abs >= PiB )
-                return (size / PiB, nameof ( PiB ));
+            {
+                scaledSize = size / PiB;
+                suffix = nameof ( PiB );
+                return;
+            }
             else if ( abs >= TiB )
-                return (size / TiB, nameof ( TiB ));
+            {
+                scaledSize = size / TiB;
+                suffix = nameof ( TiB );
+                return;
+            }
             else if ( abs >= GiB )
-                return (size / GiB, nameof ( GiB ));
+            {
+                scaledSize = size / GiB;
+                suffix = nameof ( GiB );
+                return;
+            }
             else if ( abs >= MiB )
-                return (size / MiB, nameof ( MiB ));
+            {
+                scaledSize = size / MiB;
+                suffix = nameof ( MiB );
+                return;
+            }
             else if ( abs >= KiB )
-                return (size / KiB, nameof ( KiB ));
+            {
+                scaledSize = size / KiB;
+                suffix = nameof ( KiB );
+                return;
+            }
             else
-                return (size, "B");
+            {
+                scaledSize = size;
+                suffix = "B";
+                return;
+            }
         }
 
         /// <summary>
@@ -134,7 +200,7 @@ namespace GUtils.Numerics
         /// <returns>A formatted string containing the scaled file size and the size suffix.</returns>
         public static String Format ( Int64 size )
         {
-            (var newSize, var suffix) = GetFormatPair ( size );
+            GetFormatPair ( size, out var newSize, out var suffix );
             return $"{newSize:0.##} {suffix}";
         }
 
@@ -145,7 +211,7 @@ namespace GUtils.Numerics
         /// <returns><inheritdoc cref="Format(Int64)" /></returns>
         public static String Format ( Double size )
         {
-            (var newSize, var suffix) = GetFormatPair ( size );
+            GetFormatPair ( size, out var newSize, out var suffix );
             return $"{newSize:0.##} {suffix}";
         }
 
@@ -160,7 +226,7 @@ namespace GUtils.Numerics
         [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "There's already another overload for this." )]
         public static String Format ( Int64 size, String format )
         {
-            (var newSize, var suffix) = GetFormatPair ( size );
+            GetFormatPair ( size, out var newSize, out var suffix );
             return String.Format ( format, newSize, suffix );
         }
 
@@ -173,7 +239,7 @@ namespace GUtils.Numerics
         [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "There's already another overload for this." )]
         public static String Format ( Double size, String format )
         {
-            (var newSize, var suffix) = GetFormatPair ( size );
+            GetFormatPair ( size, out var newSize, out var suffix );
             return String.Format ( format, newSize, suffix );
         }
 
@@ -188,7 +254,7 @@ namespace GUtils.Numerics
         /// <returns><inheritdoc cref="Format(Int64, String)" /></returns>
         public static String Format ( Int64 size, String format, IFormatProvider provider )
         {
-            (var newSize, var suffix) = GetFormatPair ( size );
+            GetFormatPair ( size, out var newSize, out var suffix );
             return String.Format ( provider, format, newSize, suffix );
         }
 
@@ -203,7 +269,7 @@ namespace GUtils.Numerics
         /// <returns><inheritdoc cref="Format(Double, String)" /></returns>
         public static String Format ( Double size, String format, IFormatProvider provider )
         {
-            (var newSize, var suffix) = GetFormatPair ( size );
+            GetFormatPair ( size, out var newSize, out var suffix );
             return String.Format ( provider, format, newSize, suffix );
         }
 
