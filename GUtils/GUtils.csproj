@@ -8,4 +8,31 @@
     <Description>General utilities library. Currently contains Option&lt;T&gt; and Result&lt;TOk, TErr&gt;.</Description>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="Buffers\BitVectorHelpers.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BitVectorHelpers.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Buffers\BitVectorHelpers.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BitVectorHelpers.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Buffers\BitVectorHelpers.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BitVectorHelpers.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>
