@@ -9,17 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Buffers\BitVectorHelpers.cs">
+    <None Include="Buffers\BitVectorHelpers.Generated.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>BitVectorHelpers.tt</DependentUpon>
+      <DependentUpon>BitVectorHelpers.Generated.tt</DependentUpon>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Buffers\BitVectorHelpers.tt">
+    <None Update="Buffers\BitVectorHelpers.Generated.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>BitVectorHelpers.cs</LastGenOutput>
+      <LastGenOutput>BitVectorHelpers.Generated.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
@@ -32,6 +32,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>BitVectorHelpers.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Buffers\BitVectorHelpers.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BitVectorHelpers.Generated.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 

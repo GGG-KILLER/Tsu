@@ -16,6 +16,7 @@
 	};
 #>
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -24,7 +25,8 @@ namespace GUtils.Buffers
     /// <summary>
     /// A class with helpers to deal with Spans and Arrays being used as bit vectors.
     /// </summary>
-    public static class BitVectorHelpers
+    [GeneratedCode ( "BitVectorHelpers.Generated.tt", "1.0" )]
+    public static partial class BitVectorHelpers
     {
 <#
 foreach ( var type in types )
@@ -33,17 +35,17 @@ foreach ( var type in types )
     var lowerTypeName = typeName.ToLower ( );
     var typeSize = Marshal.SizeOf ( type );
 #>
-#region <#=type#>
+        #region <#=typeName#>
 
         /// <summary>
         /// The amount we shift by to convert to/from bits in a <see cref="<#=typeName#>"/>-backed bit vector.
         /// </summary>
-        private const Int32 <#=typeName#>ShiftAmount = <#=Math.Log ( typeSize * 8, 2 )#>;
+        public const Int32 <#=typeName#>ShiftAmount = <#=Math.Log ( typeSize * 8, 2 )#>;
 
         /// <summary>
         /// The bitmask we bitwise and with to get the remainder bit count in a <see cref="<#=typeName#>"/>-backed bit vector.
         /// </summary>
-        private const Int32 <#=typeName#>RemainderMask = 0b<#=Convert.ToString ( typeSize * 8 - 1, 2 )#>;
+        public const Int32 <#=typeName#>RemainderMask = 0b<#=Convert.ToString ( typeSize * 8 - 1, 2 )#>;
 
         /// <summary>
         /// Gets the index and the offset of the provided bit on a <see cref="<#=typeName#>"/>-backed bit vector.
@@ -134,7 +136,7 @@ foreach ( var type in types )
         }
 #endif
 
-#endregion <#=type#>
+        #endregion <#=typeName#>
 
 <#
 }
