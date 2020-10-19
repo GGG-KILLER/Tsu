@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GUtils.StateMachines.Transducers
 {
@@ -13,6 +14,7 @@ namespace GUtils.StateMachines.Transducers
     /// The type of the output the <see cref="Transducer{InputT, OutputT}"/> emits
     /// </typeparam>
     public class TransducerState<TInput, TOutput>
+        where TInput : notnull
     {
         /// <summary>
         /// The transitions this input has
@@ -22,12 +24,13 @@ namespace GUtils.StateMachines.Transducers
         /// <summary>
         /// Whether this is a terminal state (one that has an output related with it)
         /// </summary>
+        [MemberNotNullWhen ( true, nameof ( Output ) )]
         public Boolean IsTerminal { get; set; }
 
         /// <summary>
         /// The output of the state if it is a terminal state
         /// </summary>
-        public TOutput Output { get; set; }
+        public TOutput? Output { get; set; }
 
         /// <summary>
         /// The transitions this input has

@@ -9,6 +9,7 @@ namespace GUtils.StateMachines.Transducers
     /// <typeparam name="TInput">The type of input this transducer accepts</typeparam>
     /// <typeparam name="TOutput">The type of output this transducer emits</typeparam>
     public class Transducer<TInput, TOutput>
+        where TInput : notnull
     {
         /// <summary>
         /// The initial state of the <see cref="Transducer{InputT, OutputT}" />
@@ -85,7 +86,7 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="sequence">The string of inputs</param>
         /// <param name="output">The output of the execution</param>
         /// <returns>The amount of inputs read</returns>
-        public Int32 Execute ( IEnumerable<TInput> sequence, out TOutput output )
+        public Int32 Execute ( IEnumerable<TInput> sequence, out TOutput? output )
         {
             if ( sequence == null )
                 throw new ArgumentNullException ( nameof ( sequence ) );
@@ -94,7 +95,7 @@ namespace GUtils.StateMachines.Transducers
             TransducerState<TInput, TOutput> state = this.InitialState;
             foreach ( TInput value in sequence )
             {
-                if ( !state.TransitionTable.TryGetValue ( value, out TransducerState<TInput, TOutput> tmp ) )
+                if ( !state.TransitionTable.TryGetValue ( value, out TransducerState<TInput, TOutput>? tmp ) )
                     break;
                 state = tmp;
                 consumedInputs++;
