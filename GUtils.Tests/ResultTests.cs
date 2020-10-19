@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using GUtils.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,7 +19,7 @@ namespace GUtils.Tests
                 this.Boxed = boxed;
             }
 
-            public Boolean Equals ( [AllowNull] T other ) => this.Boxed.Equals ( other );
+            public Boolean Equals ( T? other ) => EqualityComparer<T?>.Default.Equals ( this.Boxed, other );
         }
 
         private const String OkValue = "ok";
