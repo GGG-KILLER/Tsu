@@ -8,6 +8,11 @@
     <Description>State machines</Description>
   </PropertyGroup>
 
+  <ItemGroup Condition="('$(TargetFrameworkIdentifier)' == '.NETFramework' AND '$(TargetFrameworkVersion)' &lt; '4.7')
+                        OR ('$(TargetFrameworkIdentifier)' == '.NETStandard' AND '$(TargetFrameworkVersion)' &lt; '2.0')">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\GUtils.Expressions\GUtils.Expressions.csproj" />
   </ItemGroup>
@@ -15,5 +20,6 @@
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
+ 
 
 </Project>
