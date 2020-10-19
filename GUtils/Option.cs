@@ -9,6 +9,7 @@ namespace GUtils
     /// <summary>
     /// The class that contains the constructors for an Option.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Naming", "CA1716:Identifiers should not match keywords", Justification = "It is the name of the type in rust." )]
     public static class Option
     {
         /// <summary>
@@ -34,6 +35,7 @@ namespace GUtils
     /// /> or <see cref="Option.Some{T}(T)" />.
     /// </summary>
     /// <typeparam name="T">The type this option wraps.</typeparam>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Naming", "CA1716:Identifiers should not match keywords", Justification = "It is the name of the type in rust." )]
     [DebuggerDisplay ( "{" + nameof ( GetDebuggerDisplay ) + "(),nq}" )]
     public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
     {
@@ -220,26 +222,24 @@ namespace GUtils
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public Option<T> Xor ( Option<T> other ) =>
-            (this.IsSome, other.IsSome) switch
-            {
-                (true, false ) => this,
-                (false, true ) => other,
-                _ => Option.None<T> ( ),
-            };
+        public Option<T> Xor ( Option<T> other )
+        {
+            if ( this.IsSome && !other.IsSome )
+                return this;
+            else if ( !this.IsSome && other.IsSome )
+                return other;
+            else
+                return Option.None<T> ( );
+        }
 
         #region Object
 
-#pragma warning disable CS8604 // Possible null reference argument. (We ensure null only passes when it's safe)
-
         /// <inheritdoc />
-        public override Boolean Equals ( Object obj ) =>
+        public override Boolean Equals ( Object? obj ) =>
             ( obj is Option<T> option && this.Equals ( option ) )
             // `default(T) is null` is used here to check if T is a reference type.
             // `typeof(T).IsClass` cannot be turned into a constant by the JIT: https://sharplab.io/#v2:EYLgHgbALANALiAhgZwLYB8ACAGABJgRgDoAlAVwDs4BLVAUyIGEB7VAB2oBs6AnAZV4A3agGM6yANwBYAFCzMAZnwAmXI1wBvWbh24A2gFk6cABbMAJgEl2nABRHTF6204B5NjWYVkRAIIBzfx5xZGpBOksKTmoKGP8ASgBdbV1FXGBmZk5cAwIAHgAVAD5beM0U3VSAdlxzOgAzRDJOOFsCsupkXApmzmkZSoBfCtwRw2MzKxt7Cacbd09vP0Dg5FDwyOjYigTkgdSlDKyc5UKSsq19yp1MGrgATzY6Znq2+KJLZEZOFEkR4auo0BaSO2QAGgQCKURpdrtUcvkYnBzv0hiMRiDMuCCMpoYDYXD8DUDKckSj/ujgYcsbgwcoofEYSNKrcEXlCNhyYCAZUMdTjnTcYz8cz4ST2QROaVUboAYMgA=
             || ( ( obj is T || ( default ( T ) is null && obj is null ) ) && this.Equals ( ( T ) obj ) );
-
-#pragma warning restore CS8604 // Possible null reference argument. (We ensure null only passes when it's safe)
 
         /// <inheritdoc />
         public override Int32 GetHashCode ( )
@@ -247,7 +247,7 @@ namespace GUtils
             var hashCode = -254034551;
             hashCode = hashCode * -1521134295 + this.IsSome.GetHashCode ( );
             if ( this.IsSome )
-                hashCode = hashCode * -1521134295 + EqualityComparer<T>.Default.GetHashCode ( this._some );
+                hashCode = hashCode * -1521134295 + EqualityComparer<T?>.Default.GetHashCode ( this._some );
             return hashCode;
         }
 
@@ -269,8 +269,8 @@ namespace GUtils
         /// <see langword="true" /> if the current object contains a value and that value is equal
         /// to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.
         /// </returns>
-        public Boolean Equals ( T other ) =>
-            this.IsSome && EqualityComparer<T>.Default.Equals ( this._some, other );
+        public Boolean Equals ( T? other ) =>
+            this.IsSome && EqualityComparer<T?>.Default.Equals ( this._some, other );
 
         #endregion IEquatable<T>
 
@@ -346,6 +346,7 @@ namespace GUtils
         /// Converts a value to a <see cref="Option.Some{T}(T)" /> option.
         /// </summary>
         /// <param name="value">The value to be wrapped.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Static method Option.Some<T>(T) exists." )]
         public static implicit operator Option<T> ( T value ) =>
             new Option<T> ( value );
 
