@@ -13,8 +13,8 @@
   <PropertyGroup>
     <!-- ValueTuple flag -->
     <DefineConstants Condition="('$(TargetFrameworkIdentifier)' == '.NETFramework' AND '$(TargetFrameworkVersion)' >= '4.7')
-                     OR '$(TargetFrameworkIdentifier)' == '.NETCoreApp'
-                     OR '$(TargetFrameworkIdentifier)' == '.NETStandard'">$(DefineConstants);HAS_VALUETUPLE</DefineConstants>
+                     OR ('$(TargetFrameworkIdentifier)' == '.NETStandard' AND '$(TargetFrameworkVersion)' >= '2.0')
+                     OR '$(TargetFrameworkIdentifier)' == '.NETCoreApp'">$(DefineConstants);HAS_VALUETUPLE</DefineConstants>
 
     <!-- Span<T>/Memory<T> flag -->
     <DefineConstants Condition="('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And '$(TargetFrameworkVersion)' >= '2.1')
