@@ -291,11 +291,11 @@ namespace GUtils
             hashCode = hashCode * -1521134295 + this.IsOk.GetHashCode ( );
             if ( this.IsOk )
             {
-                hashCode = hashCode * -1521134295 + EqualityComparer<TOk>.Default.GetHashCode ( this._ok );
+                hashCode = hashCode * -1521134295 + EqualityComparer<TOk?>.Default.GetHashCode ( this._ok );
             }
             else
             {
-                hashCode = hashCode * -1521134295 + EqualityComparer<TErr>.Default.GetHashCode ( this._err );
+                hashCode = hashCode * -1521134295 + EqualityComparer<TErr?>.Default.GetHashCode ( this._err );
             }
             return hashCode;
         }
@@ -324,6 +324,7 @@ namespace GUtils
         /// Converts an <paramref name="ok" /> value to a result.
         /// </summary>
         /// <param name="ok"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Result.Ok<TOk, TErr>(TOk) exists." )]
         public static explicit operator Result<TOk, TErr> ( TOk ok ) =>
             new Result<TOk, TErr> ( true, ok, default! );
 
@@ -331,6 +332,7 @@ namespace GUtils
         /// Converts an <paramref name="err" /> value to a result.
         /// </summary>
         /// <param name="err"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Result.Err<TOk, TErr>(TErr) exists." )]
         public static explicit operator Result<TOk, TErr> ( TErr err ) =>
             new Result<TOk, TErr> ( false, default!, err );
 
