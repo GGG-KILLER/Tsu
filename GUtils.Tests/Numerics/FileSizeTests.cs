@@ -21,7 +21,7 @@ namespace GUtils.Tests.Numerics
         [DataRow ( 7L * FileSize.EiB, 7L, "EiB" )]
         public void GetFormatPairInt64_ReturnsCorrectValues ( Int64 size, Int64 expectedScaled, String expectedSuffix )
         {
-            (var scaled, var suffix) = FileSize.GetFormatPair ( size );
+            FileSize.GetFormatPair ( size, out var scaled, out var suffix );
             Assert.AreEqual ( expectedScaled, scaled );
             Assert.AreEqual ( expectedSuffix, suffix );
         }
@@ -45,7 +45,7 @@ namespace GUtils.Tests.Numerics
         [DataRow ( 500d * FileSize.EiB, 500, "EiB" )]
         public void GetFormatPairDouble_ReturnsCorrectValues ( Double size, Double expectedScaled, String expectedSuffix )
         {
-            (var scaled, var suffix) = FileSize.GetFormatPair ( size );
+            FileSize.GetFormatPair ( size, out var scaled, out var suffix );
             Assert.AreEqual ( expectedScaled, scaled );
             Assert.AreEqual ( expectedSuffix, suffix );
         }

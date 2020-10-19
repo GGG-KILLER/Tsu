@@ -11,7 +11,7 @@ namespace GUtils.Numerics.Tests
     public class SITests
     {
         [DataTestMethod]
-        [DataRow(1, "")]
+        [DataRow ( 1, "" )]
         [DataRow ( SI.Yotta, "Y" )]
         [DataRow ( SI.Zetta, "Z" )]
         [DataRow ( SI.Exa, "E" )]
@@ -30,9 +30,9 @@ namespace GUtils.Numerics.Tests
         [DataRow ( SI.Yocto, "y" )]
         public void GetFormatPair_ReturnsCorrectValues ( Double scale, String expectedSuffix )
         {
-            foreach(var expectedScaled in new[] { 1, 1.5, 250, 500, 750, 900 } )
+            foreach ( var expectedScaled in new[] { 1, 1.5, 250, 500, 750, 900 } )
             {
-                (var gottenScaled, var gottenSuffix) = SI.GetFormatPair ( expectedScaled * scale );
+                SI.GetFormatPair ( expectedScaled * scale, out var gottenScaled, out var gottenSuffix );
                 Assert.AreEqual ( expectedScaled, gottenScaled, 0.0001, $"Expected {expectedScaled}{expectedSuffix} but got {gottenScaled}{gottenSuffix} (different numbers)" );
                 Assert.AreEqual ( expectedSuffix, gottenSuffix, $"Expected {expectedScaled}{expectedSuffix} but got {gottenScaled}{gottenSuffix} (different suffixes)" );
             }
