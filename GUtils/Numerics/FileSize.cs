@@ -196,7 +196,7 @@ namespace GUtils.Numerics
         /// <summary>
         /// Formats the provided file size in a human readable format (in bibytes).
         /// </summary>
-        /// <param name="size"><inheritdoc cref="GetFormatPair(Int64)" /></param>
+        /// <param name="size"><inheritdoc cref="GetFormatPair(Int64, out Double, out String)" /></param>
         /// <returns>A formatted string containing the scaled file size and the size suffix.</returns>
         public static String Format ( Int64 size )
         {
