@@ -17,15 +17,15 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
+using System.Runtime.Serialization;
 
 namespace GUtils.CLI.Commands.Errors
 {
     /// <summary>
     /// Thrown when a command's definition is invalid
     /// </summary>
+    [Serializable]
     public class CommandDefinitionException : Exception
     {
         /// <summary>
@@ -52,6 +52,26 @@ namespace GUtils.CLI.Commands.Errors
         public CommandDefinitionException ( MethodInfo method, String message, Exception innerException ) : base ( message, innerException )
         {
             this.Method = method;
+        }
+
+        /// <summary>
+        /// Initializes this <see cref="CommandDefinitionException"/>
+        /// </summary>
+        /// <param name="serializationInfo"></param>
+        /// <param name="streamingContext"></param>
+        protected CommandDefinitionException ( SerializationInfo serializationInfo, StreamingContext streamingContext )
+        {
+            if ( serializationInfo is null )
+                throw new ArgumentNullException ( nameof ( serializationInfo ) );
+
+            this.Method = ( MethodInfo ) serializationInfo.GetValue ( "CommandMethod", typeof ( MethodInfo ) );
+        }
+
+        /// <inheritdoc/>
+        public override void GetObjectData ( SerializationInfo info, StreamingContext context )
+        {
+            base.GetObjectData ( info, context );
+            info.AddValue ( "CommandMethod", this.Method );
         }
     }
 }

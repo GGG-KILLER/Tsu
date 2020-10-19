@@ -17,14 +17,14 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.Serialization;
 
 namespace GUtils.CLI.Commands.Errors
 {
     /// <summary>
     /// Indicates a part of the input line cannot be parsed
     /// </summary>
+    [Serializable]
     public class InputLineParseException : Exception
     {
         /// <summary>
@@ -75,6 +75,26 @@ namespace GUtils.CLI.Commands.Errors
         public InputLineParseException ( String message, Int32 offset, Exception innerException ) : base ( message, innerException )
         {
             this.Offset = offset;
+        }
+
+        /// <summary>
+        /// Initializes this <see cref="InputLineParseException"/>
+        /// </summary>
+        /// <param name="serializationInfo"></param>
+        /// <param name="streamingContext"></param>
+        protected InputLineParseException ( SerializationInfo serializationInfo, StreamingContext streamingContext )
+        {
+            if ( serializationInfo is null )
+                throw new ArgumentNullException ( nameof ( serializationInfo ) );
+
+            this.Offset = serializationInfo.GetInt32 ( "ErrorOffset" );
+        }
+
+        /// <inheritdoc/>
+        public override void GetObjectData ( SerializationInfo info, StreamingContext context )
+        {
+            base.GetObjectData ( info, context );
+            info.AddValue ( "ErrorOffset", this.Offset );
         }
     }
 }

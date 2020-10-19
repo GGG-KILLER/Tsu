@@ -17,14 +17,14 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.Serialization;
 
 namespace GUtils.CLI.Commands.Errors
 {
     /// <summary>
     /// Indicates an error happened while executing the command's method
     /// </summary>
+    [Serializable]
     public class CommandInvocationException : Exception
     {
         /// <summary>
@@ -74,6 +74,26 @@ namespace GUtils.CLI.Commands.Errors
         public CommandInvocationException ( String command, String message, Exception innerException ) : base ( message, innerException )
         {
             this.Command = command;
+        }
+
+        /// <summary>
+        /// Initializes this <see cref="CommandInvocationException"/>
+        /// </summary>
+        /// <param name="serializationInfo"></param>
+        /// <param name="streamingContext"></param>
+        protected CommandInvocationException ( SerializationInfo serializationInfo, StreamingContext streamingContext )
+        {
+            if ( serializationInfo is null )
+                throw new ArgumentNullException ( nameof ( serializationInfo ) );
+
+            this.Command = serializationInfo.GetString ( "CommandName" );
+        }
+
+        /// <inheritdoc/>
+        public override void GetObjectData ( SerializationInfo info, StreamingContext context )
+        {
+            base.GetObjectData ( info, context );
+            info.AddValue ( "CommandName", this.Command );
         }
     }
 }
