@@ -73,13 +73,12 @@ namespace GUtils.Expressions
         {
             if ( methodCall is null )
                 throw new ArgumentNullException ( nameof ( methodCall ) );
-
             if ( args is null )
                 throw new ArgumentNullException ( nameof ( args ) );
+            if ( methodCall.Body is not MethodCallExpression methodCallExpr )
+                throw new ArgumentException ( "Provided expression is not a method call.", nameof ( instance ) );
 
-            var methodCallExpr = methodCall.Body as MethodCallExpression;
             ParameterInfo[] @params = methodCallExpr.Method.GetParameters ( );
-
             return methodCallExpr.Update ( instance, GetParametersExpressions ( @params, args ) );
         }
 
@@ -94,11 +93,11 @@ namespace GUtils.Expressions
         {
             if ( constructor is null )
                 throw new ArgumentNullException ( nameof ( constructor ) );
-
             if ( args is null )
                 throw new ArgumentNullException ( nameof ( args ) );
+            if ( constructor.Body is not NewExpression constructorExpr )
+                throw new ArgumentException ( "Provided expression is not a instantiation expression.", nameof ( constructor ) );
 
-            var constructorExpr = constructor.Body as NewExpression;
             ParameterInfo[] @params = constructorExpr.Constructor.GetParameters ( );
             return constructorExpr.Update ( GetParametersExpressions ( @params, args ) );
         }
