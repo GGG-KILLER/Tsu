@@ -36,7 +36,7 @@ namespace GUtils.CLI.Tests.Commands
             Enum02
         }
 
-        private static Object Value;
+        private static Object? Value;
 
         public static void DoSomething01 ( UInt32 u32 ) => Value = u32;
 
@@ -87,14 +87,13 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( nameof ( DoSomething09 ), "enum01;enum01", "Enum01.Enum01" )]
         [DataRow ( nameof ( DoSomething09 ), "enum01;enum02;enum01", "Enum01.Enum02.Enum01" )]
         [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "Inputs are known" )]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1307:Specify StringComparison", Justification = "Unnecessary" )]
         public void CompiledCommandShouldRun ( String methodName, String inputString, Object expectedVal )
         {
             MethodInfo method = typeof ( CommandCompilerTests ).GetMethod ( methodName );
             Action<String, String[]> comp = CommandCompiler.Compile ( method, null );
 
             Value = null;
-            comp ( String.Empty, inputString.Contains ( ';' )
+            comp ( String.Empty, inputString.Contains ( ";" )
                 ? inputString.Split ( ';' )
                 : ( inputString.Length < 1 ? Array.Empty<String> ( ) : new[] { inputString } ) );
             Assert.AreEqual ( expectedVal, Value );
