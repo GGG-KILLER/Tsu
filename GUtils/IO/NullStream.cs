@@ -75,13 +75,15 @@ namespace GUtils.IO
         /// <param name="offset"></param>
         /// <param name="origin"></param>
         /// <returns></returns>
-        public override Int64 Seek ( Int64 offset, SeekOrigin origin ) => throw new NotSupportedException ( "This stream does not support seeking." );
+        public override Int64 Seek ( Int64 offset, SeekOrigin origin ) =>
+            throw new NotSupportedException ( "This stream does not support seeking." );
 
         /// <summary>
         /// Does nothing
         /// </summary>
         /// <param name="value"></param>
-        public override void SetLength ( Int64 value ) => throw new NotSupportedException ( "This stream does not support setting it's length." );
+        public override void SetLength ( Int64 value ) =>
+            throw new NotSupportedException ( "This stream does not support setting it's length." );
 
         /// <summary>
         /// Does nothing
@@ -99,7 +101,8 @@ namespace GUtils.IO
         /// <param name="offset"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public override Int32 Read ( Byte[] buffer, Int32 offset, Int32 count ) => throw new NotSupportedException ( "This stream does not support reading." );
+        public override Int32 Read ( Byte[] buffer, Int32 offset, Int32 count ) =>
+            throw new NotSupportedException ( "This stream does not support reading." );
 
         /// <summary>
         /// Does nothing
@@ -109,13 +112,15 @@ namespace GUtils.IO
         /// <param name="count"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override Task<Int32> ReadAsync ( Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken ) => throw new NotSupportedException ( "This stream does not support reading." );
+        public override Task<Int32> ReadAsync ( Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken ) =>
+            throw new NotSupportedException ( "This stream does not support reading." );
 
         /// <summary>
         /// Does nothing
         /// </summary>
         /// <returns></returns>
-        public override Int32 ReadByte ( ) => throw new NotSupportedException ( "This stream does not support reading." );
+        public override Int32 ReadByte ( ) =>
+            throw new NotSupportedException ( "This stream does not support reading." );
 
         /// <summary>
         /// Does nothing
@@ -126,14 +131,16 @@ namespace GUtils.IO
         /// <param name="callback"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public override IAsyncResult BeginRead ( Byte[] buffer, Int32 offset, Int32 count, AsyncCallback callback, Object state ) => throw new NotSupportedException ( "This stream does not support reading." );
+        public override IAsyncResult BeginRead ( Byte[] buffer, Int32 offset, Int32 count, AsyncCallback callback, Object state ) =>
+            throw new NotSupportedException ( "This stream does not support reading." );
 
         /// <summary>
         /// Does nothing
         /// </summary>
         /// <param name="asyncResult"></param>
         /// <returns></returns>
-        public override Int32 EndRead ( IAsyncResult asyncResult ) => throw new NotSupportedException ( "This stream does not support reading." );
+        public override Int32 EndRead ( IAsyncResult asyncResult ) =>
+            throw new NotSupportedException ( "This stream does not support reading." );
 
         /// <summary>
         /// Does nothing
@@ -142,7 +149,8 @@ namespace GUtils.IO
         /// <param name="bufferSize"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override Task CopyToAsync ( Stream destination, Int32 bufferSize, CancellationToken cancellationToken ) => throw new NotSupportedException ( "This stream does not support reading." );
+        public override Task CopyToAsync ( Stream destination, Int32 bufferSize, CancellationToken cancellationToken ) =>
+            throw new NotSupportedException ( "This stream does not support reading." );
 
         #endregion Reading
 
