@@ -21,28 +21,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GUtils.Numerics
+namespace GUtils.Buffers
 {
     /// <summary>
     /// A variable length bit vector
     /// </summary>
     public class VariableLengthBitVector : IEquatable<VariableLengthBitVector>
     {
-        /// <summary>
-        /// The amount of bits that fit on one container.
-        /// </summary>
-        private const Int32 ElementBitCount = sizeof ( Byte ) * 8;
-
-        /// <summary>
-        /// The amount we must shift by to convert to/from bits.
-        /// </summary>
-        private const Int32 ShiftAmount = 3;
-
-        /// <summary>
-        /// The mask for getting the remainder of bits.
-        /// </summary>
-        private const Int32 RemainderMask = ( 1 << ElementBitCount ) - 1;
-
         /// <summary>
         /// The containers that back this bit vector
         /// </summary>
@@ -56,7 +41,7 @@ namespace GUtils.Numerics
         /// <summary>
         /// The amount of bits that this bit vector contains
         /// </summary>
-        public Int32 Bits => this.Length >> ShiftAmount;
+        public Int32 Bits => this.Length >> BitVectorHelpers.ByteShiftAmount;
 
         /// <summary>
         /// Initializes this <see cref="VariableLengthBitVector"/>
@@ -75,8 +60,8 @@ namespace GUtils.Numerics
             if ( bits < 0 )
                 throw new ArgumentOutOfRangeException ( nameof ( bits ) );
 
-            var size = bits >> ShiftAmount;
-            if ( ( bits & RemainderMask ) != 0 )
+            var size = bits >> BitVectorHelpers.ByteShiftAmount;
+            if ( ( bits & BitVectorHelpers.ByteRemainderMask ) != 0 )
                 size++;
             this.containers = new Byte[size];
         }
@@ -113,34 +98,28 @@ namespace GUtils.Numerics
             Array.Clear ( this.containers, 0, this.containers.Length );
 
         /// <summary>
-        /// Accesses a bit in this vector
+        /// Accesses a bit in this vector.
         /// </summary>
-        /// <param name="offset">The 0-based offset</param>
+        /// <param name="bitIndex">The 0-based bit index</param>
         /// <returns></returns>
-        public Boolean this[Int32 offset]
+        public Boolean this[Int32 bitIndex]
         {
             set
             {
-                var index = offset >> ShiftAmount;
-                offset &= RemainderMask;
-                this.EnsureBitContainer ( index );
-                var mask = 1 << offset;
-                if ( value )
-                {
-                    this.containers[index] |= ( Byte ) mask;
-                }
-                else
-                {
-                    this.containers[index] &= ( Byte ) ~mask;
-                }
+                this.EnsureBitContainer ( bitIndex >> BitVectorHelpers.ByteShiftAmount );
+#if HAS_SPAN
+                BitVectorHelpers.SetByteVectorBitValue ( ( Span<Byte> ) this.containers, bitIndex, value );
+#else
+                BitVectorHelpers.SetByteVectorBitValue ( this.containers, bitIndex, value );
+#endif
             }
-            get
-            {
-                var index = offset >> ShiftAmount;
-                offset &= RemainderMask;
-                var mask = 1U << offset;
-                return ( this.containers[index] & mask ) != 0;
-            }
+            get =>
+#if HAS_SPAN
+                BitVectorHelpers.GetByteVectorBitValue ( ( ReadOnlySpan<Byte> ) this.containers, bitIndex );
+#else
+                BitVectorHelpers.GetByteVectorBitValue ( this.containers, bitIndex );
+#endif
+
         }
 
         #region IEquatable<VariableLengthBitVector>
@@ -156,7 +135,9 @@ namespace GUtils.Numerics
 
         /// <inheritdoc/>
         public override String ToString ( ) =>
-            String.Join ( "", this.containers.Select ( n => Convert.ToString ( n, 2 ).PadLeft ( ElementBitCount, '0' ) ).Reverse ( ) );
+            String.Join ( "", this.containers.Select ( n => Convert.ToString ( n, 2 )
+                                                                            .PadLeft ( 8, '0' ) )
+                                                      .Reverse ( ) );
 
         /// <inheritdoc/>
         public override Boolean Equals ( Object? obj ) =>
