@@ -3,6 +3,10 @@
   <Import Project="../TestProject.props"/>
 
   <ItemGroup>
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GUtils.Parsing.BBCode\GUtils.Parsing.BBCode.csproj" />
   </ItemGroup>
 
