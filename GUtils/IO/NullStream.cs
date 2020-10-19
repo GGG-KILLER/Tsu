@@ -131,7 +131,7 @@ namespace GUtils.IO
         /// <param name="callback"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public override IAsyncResult BeginRead ( Byte[] buffer, Int32 offset, Int32 count, AsyncCallback callback, Object state ) =>
+        public override IAsyncResult BeginRead ( Byte[] buffer, Int32 offset, Int32 count, AsyncCallback? callback, Object? state ) =>
             throw new NotSupportedException ( "This stream does not support reading." );
 
         /// <summary>
@@ -165,7 +165,8 @@ namespace GUtils.IO
         /// <param name="callback"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public override IAsyncResult BeginWrite ( Byte[] buffer, Int32 offset, Int32 count, AsyncCallback callback, Object state ) => Task.CompletedTask;
+        public override IAsyncResult BeginWrite ( Byte[] buffer, Int32 offset, Int32 count, AsyncCallback? callback, Object? state ) =>
+            Task.CompletedTask;
 
         /// <summary>
         /// Does nothing
@@ -193,7 +194,8 @@ namespace GUtils.IO
         /// <param name="count"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override Task WriteAsync ( Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken ) => Task.CompletedTask;
+        public override Task WriteAsync ( Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken ) =>
+            Task.CompletedTask;
 
         /// <summary>
         /// Does nothing
@@ -215,7 +217,8 @@ namespace GUtils.IO
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override Task FlushAsync ( CancellationToken cancellationToken ) => Task.CompletedTask;
+        public override Task FlushAsync ( CancellationToken cancellationToken ) =>
+            Task.CompletedTask;
 
         #endregion Writing
 
@@ -226,7 +229,7 @@ namespace GUtils.IO
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override Boolean Equals ( Object obj ) => obj is NullStream;
+        public override Boolean Equals ( Object? obj ) => obj is NullStream;
 
         /// <summary>
         /// The default hash function
