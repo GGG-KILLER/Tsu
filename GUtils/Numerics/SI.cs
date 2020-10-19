@@ -101,50 +101,128 @@ namespace GUtils.Numerics
         /// <summary>
         /// Returns the pair of objects used in suffixing a SI number
         /// </summary>
-        /// <param name="number"></param>
+        /// <param name="number">The number to scale down and get the suffix of.</param>
+        /// <param name="scaledNumber">The scaled down number.</param>
+        /// <param name="suffix">The suffix of the scaled down number.</param>
         /// <returns></returns>
-        public static (Double, String) GetFormatPair ( Double number )
+        public static void GetFormatPair ( Double number, out Double scaledNumber, out String suffix )
         {
             if ( Double.IsInfinity ( number ) || Double.IsNaN ( number ) || number == 0D || number == -0D )
-                return (number, "");
+            {
+                scaledNumber = number;
+                suffix = "";
+                return;
+            }
 
             // Fast path for non-scaled numbers
             if ( 1 <= number && number < Kilo )
-                return (number, "");
+            {
+                scaledNumber = number;
+                suffix = "";
+                return;
+            }
             if ( number >= Yotta )
-                return (number / Yotta, "Y");
+            {
+                scaledNumber = number / Yotta;
+                suffix = "Y";
+                return;
+            }
             else if ( number >= Zetta )
-                return (number / Zetta, "Z");
+            {
+                scaledNumber = number / Zetta;
+                suffix = "Z";
+                return;
+            }
             else if ( number >= Exa )
-                return (number / Exa, "E");
+            {
+                scaledNumber = number / Exa;
+                suffix = "E";
+                return;
+            }
             else if ( number >= Peta )
-                return (number / Peta, "P");
+            {
+                scaledNumber = number / Peta;
+                suffix = "P";
+                return;
+            }
             else if ( number >= Tera )
-                return (number / Tera, "T");
+            {
+                scaledNumber = number / Tera;
+                suffix = "T";
+                return;
+            }
             else if ( number >= Giga )
-                return (number / Giga, "G");
+            {
+                scaledNumber = number / Giga;
+                suffix = "G";
+                return;
+            }
             else if ( number >= Mega )
-                return (number / Mega, "M");
+            {
+                scaledNumber = number / Mega;
+                suffix = "M";
+                return;
+            }
             else if ( number >= Kilo )
-                return (number / Kilo, "k");
+            {
+                scaledNumber = number / Kilo;
+                suffix = "k";
+                return;
+            }
             else if ( number >= Milli )
-                return (number / Milli, "m");
+            {
+                scaledNumber = number / Milli;
+                suffix = "m";
+                return;
+            }
             else if ( number >= Micro )
-                return (number / Micro, "μ");
+            {
+                scaledNumber = number / Micro;
+                suffix = "μ";
+                return;
+            }
             else if ( number >= Nano )
-                return (number / Nano, "n");
+            {
+                scaledNumber = number / Nano;
+                suffix = "n";
+                return;
+            }
             else if ( number >= Pico )
-                return (number / Pico, "p");
+            {
+                scaledNumber = number / Pico;
+                suffix = "p";
+                return;
+            }
             else if ( number >= Femto )
-                return (number / Femto, "f");
+            {
+                scaledNumber = number / Femto;
+                suffix = "f";
+                return;
+            }
             else if ( number >= Atto )
-                return (number / Atto, "a");
+            {
+                scaledNumber = number / Atto;
+                suffix = "a";
+                return;
+            }
             else if ( number >= Zepto )
-                return (number / Zepto, "z");
+            {
+                scaledNumber = number / Zepto;
+                suffix = "z";
+                return;
+            }
             else if ( number >= Yocto )
-                return (number / Yocto, "y");
+            {
+                scaledNumber = number / Yocto;
+                suffix = "y";
+                return;
+            }
             else
-                return (number, "");
+            {
+                scaledNumber = number;
+                suffix = "";
+                return;
+            }
         }
 
         /// <summary>
@@ -154,7 +232,7 @@ namespace GUtils.Numerics
         /// <returns>The formatted string with the reduced number and the SI prefix.</returns>
         public static String Format ( Double number )
         {
-            (var scaled, var suffix) = GetFormatPair ( number );
+            GetFormatPair ( number, out var scaled, out var suffix );
             return $"{scaled:0.##} {suffix}";
         }
 
@@ -170,7 +248,7 @@ namespace GUtils.Numerics
         [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "There's already another overload for this." )]
         public static String Format ( Double number, String format )
         {
-            (var scaled, var suffix) = GetFormatPair ( number );
+            GetFormatPair ( number, out var scaled, out var suffix );
             return String.Format ( format, scaled, suffix );
         }
 
@@ -185,7 +263,7 @@ namespace GUtils.Numerics
         /// <returns><inheritdoc cref="Format(Double, String)" /></returns>
         public static String Format ( Double number, String format, IFormatProvider provider )
         {
-            (var scaled, var suffix) = GetFormatPair ( number );
+            GetFormatPair ( number, out var scaled, out var suffix );
             return String.Format ( provider, format, scaled, suffix );
         }
 
