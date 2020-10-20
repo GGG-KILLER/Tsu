@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -79,13 +80,20 @@ namespace GUtils.CLI.Commands.Help
         /// <param name="command"></param>
         /// <param name="parentCommand"></param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable for some target frameworks." )]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Style", "IDE0057:Use range operator", Justification = "Not available on all target frameworks." )]
         protected Boolean TryGetCommand ( String input, out Command command, IVerbCommand parentCommand = null )
         {
             if ( String.IsNullOrEmpty ( input ) )
                 throw new ArgumentException ( $"'{nameof ( input )}' cannot be null or empty", nameof ( input ) );
 
             BaseCommandManager commandManager = parentCommand?.CommandManager ?? this.Manager;
-            var spaceIdx = input.IndexOf ( ' ' );
+
+#if NETSTANDARD2_1 || NETCOREAPP2_1 || NETCOREAPP3_1 || NET5_0
+            var spaceIdx = input.IndexOf ( ' ', StringComparison.Ordinal );
+#else
+            var spaceIdx = CultureInfo.InvariantCulture.CompareInfo.IndexOf ( input, ' ', CompareOptions.Ordinal );
+#endif
             var commandName = spaceIdx != -1 ? input.Substring ( 0, spaceIdx ) : input;
             if ( commandManager.CommandDictionary.TryGetValue ( commandName, out command ) )
             {
