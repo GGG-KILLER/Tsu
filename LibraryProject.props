@@ -20,7 +20,6 @@
     <RepositoryType>git</RepositoryType>
 
     <PackageProjectUrl>https://github.com/GGG-KILLER/GUtils.NET</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/GGG-KILLER/GParse/blob/master/LICENSE</PackageLicenseUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 
