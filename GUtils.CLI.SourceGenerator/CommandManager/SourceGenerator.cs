@@ -9,10 +9,10 @@ namespace GUtils.CLI.SourceGenerator.CommandManager
     [Generator]
     public class SourceGenerator : ISourceGenerator
     {
-        public void Initialize ( InitializationContext context ) =>
+        public void Initialize ( GeneratorInitializationContext context ) =>
             context.RegisterForSyntaxNotifications ( ( ) => new SyntaxReceiver ( ) );
 
-        public void Execute ( SourceGeneratorContext context )
+        public void Execute ( GeneratorExecutionContext context )
         {
             var commonSymbols = new CommonSymbols ( context.Compilation );
             var commandManagetAttributeCode = SourceText.From ( CodeConstants.CommandManagerAttribute.Code, Encoding.UTF8 );
