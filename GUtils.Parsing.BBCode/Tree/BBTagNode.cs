@@ -27,6 +27,8 @@ namespace GUtils.Parsing.BBCode.Tree
     /// </summary>
     public class BBTagNode : BBNode
     {
+        private readonly List<BBNode> _children;
+
         /// <summary>
         /// The tag's name
         /// </summary>
@@ -35,14 +37,12 @@ namespace GUtils.Parsing.BBCode.Tree
         /// <summary>
         /// The value associated with this tag
         /// </summary>
-        public String Value { get; }
+        public String? Value { get; }
 
         /// <summary>
         /// Whether this is a self-closing tag
         /// </summary>
         public Boolean SelfClosing { get; }
-
-        private readonly List<BBNode> _children;
 
         /// <summary>
         /// This tag's children
@@ -55,7 +55,7 @@ namespace GUtils.Parsing.BBCode.Tree
         /// <param name="selfClosing"></param>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        public BBTagNode ( Boolean selfClosing, String name, String value )
+        public BBTagNode ( Boolean selfClosing, String name, String? value )
         {
             if ( String.IsNullOrWhiteSpace ( name ) )
                 throw new ArgumentException ( "Name of tag cannot be null or composed only of whitespaces", nameof ( name ) );
@@ -91,7 +91,7 @@ namespace GUtils.Parsing.BBCode.Tree
                 if ( this.Value is null )
                     return $"[{this.Name}]{concatenatedChildren}[/{this.Name}]";
                 else
-                    return $"[{this.Name}={this.Value}]{concatenatedChildren}[{this.Name}]";
+                    return $"[{this.Name}={this.Value}]{concatenatedChildren}[/{this.Name}]";
             }
         }
 
