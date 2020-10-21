@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using GUtils.CLI.Commands.Errors;
@@ -162,7 +163,11 @@ namespace GUtils.CLI.Commands
                 return;
 
             line = line.Trim ( );
-            var spaceIdx = line.IndexOf ( ' ' );
+#if NETSTANDARD2_1 || NETCOREAPP2_1 || NETCOREAPP3_1 || NET5_0
+            var spaceIdx = line.IndexOf ( ' ', StringComparison.Ordinal );
+#else
+            var spaceIdx = CultureInfo.InvariantCulture.CompareInfo.IndexOf ( line, ' ', CompareOptions.Ordinal );
+#endif
             var cmdName = spaceIdx != -1 ? line.Substring ( 0, spaceIdx ) : line;
             if ( !this.CommandLookupTable.TryGetValue ( cmdName, out Command tmpCmd ) )
                 throw new NonExistentCommandException ( cmdName );
