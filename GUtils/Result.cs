@@ -291,11 +291,19 @@ namespace GUtils
             hashCode = hashCode * -1521134295 + this.IsOk.GetHashCode ( );
             if ( this.IsOk )
             {
+#pragma warning disable IDE0079 // Remove unnecessary suppression (required for some target frameworks)
+#pragma warning disable CS8607 // A possible null value may not be used for a type marked with [NotNull] or [DisallowNull] (GetHashCode supports nulls)
                 hashCode = hashCode * -1521134295 + EqualityComparer<TOk?>.Default.GetHashCode ( this._ok );
+#pragma warning restore CS8607 // A possible null value may not be used for a type marked with [NotNull] or [DisallowNull] (GetHashCode supports nulls)
+#pragma warning restore IDE0079 // Remove unnecessary suppression (required for some target frameworks)
             }
             else
             {
+#pragma warning disable IDE0079 // Remove unnecessary suppression (required for some target frameworks)
+#pragma warning disable CS8607 // A possible null value may not be used for a type marked with [NotNull] or [DisallowNull] (GetHashCode supports nulls)
                 hashCode = hashCode * -1521134295 + EqualityComparer<TErr?>.Default.GetHashCode ( this._err );
+#pragma warning restore CS8607 // A possible null value may not be used for a type marked with [NotNull] or [DisallowNull] (GetHashCode supports nulls)
+#pragma warning restore IDE0079 // Remove unnecessary suppression (required for some target frameworks)
             }
             return hashCode;
         }

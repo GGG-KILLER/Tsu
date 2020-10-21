@@ -247,7 +247,11 @@ namespace GUtils
             var hashCode = -254034551;
             hashCode = hashCode * -1521134295 + this.IsSome.GetHashCode ( );
             if ( this.IsSome )
-                hashCode = hashCode * -1521134295 + EqualityComparer<T?>.Default.GetHashCode ( this._some );
+#pragma warning disable IDE0079 // Remove unnecessary suppression (required for some target frameworks)
+#pragma warning disable CS8607 // A possible null value may not be used for a type marked with [NotNull] or [DisallowNull] (GetHashCode supports nulls)
+                hashCode = hashCode * -1521134295 + EqualityComparer<T>.Default.GetHashCode ( this._some );
+#pragma warning restore CS8607 // A possible null value may not be used for a type marked with [NotNull] or [DisallowNull] (GetHashCode supports nulls)
+#pragma warning restore IDE0079 // Remove unnecessary suppression (required for some target frameworks)
             return hashCode;
         }
 
