@@ -82,6 +82,7 @@ namespace GUtils.CLI.Commands.Errors
         /// <param name="serializationInfo"></param>
         /// <param name="streamingContext"></param>
         protected CommandInvocationException ( SerializationInfo serializationInfo, StreamingContext streamingContext )
+            : base ( serializationInfo, streamingContext )
         {
             if ( serializationInfo is null )
                 throw new ArgumentNullException ( nameof ( serializationInfo ) );

@@ -17,12 +17,14 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 using System;
+using System.Runtime.Serialization;
 
 namespace GUtils.CLI.Commands.Errors
 {
     /// <summary>
     /// Thrown when a command is not found by the command manager
     /// </summary>
+    [Serializable]
     public class NonExistentCommandException : CommandInvocationException
     {
         /// <summary>
@@ -46,6 +48,16 @@ namespace GUtils.CLI.Commands.Errors
         /// <param name="command"></param>
         /// <param name="innerException"></param>
         public NonExistentCommandException ( String command, Exception innerException ) : base ( command, "Command does not exist.", innerException )
+        {
+        }
+
+        /// <summary>
+        /// Initializes this <see cref="NonExistentCommandException"/>
+        /// </summary>
+        /// <param name="serializationInfo"></param>
+        /// <param name="streamingContext"></param>
+        protected NonExistentCommandException ( SerializationInfo serializationInfo, StreamingContext streamingContext )
+            : base ( serializationInfo, streamingContext )
         {
         }
     }
