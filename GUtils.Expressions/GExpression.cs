@@ -96,7 +96,9 @@ namespace GUtils.Expressions
             if ( args is null )
                 throw new ArgumentNullException ( nameof ( args ) );
             if ( constructor.Body is not NewExpression constructorExpr )
-                throw new ArgumentException ( "Provided expression is not a instantiation expression.", nameof ( constructor ) );
+                throw new ArgumentException ( "Provided expression is not an instantiation expression.", nameof ( constructor ) );
+            if ( constructorExpr.Constructor is not ConstructorInfo )
+                throw new ArgumentException ( "Provided expression is not an 'new' expression.", nameof ( constructor ) );
 
             ParameterInfo[] @params = constructorExpr.Constructor.GetParameters ( );
             return constructorExpr.Update ( GetParametersExpressions ( @params, args ) );
