@@ -45,7 +45,7 @@ namespace GUtils.Net
         /// </summary>
         public Int64 TotalBytes { get; set; }
 
-#region Generated Code
+        #region Generated Code
 
         /// <summary>
         /// </summary>
@@ -90,7 +90,7 @@ namespace GUtils.Net
         /// <returns></returns>
         public static Boolean operator != ( DownloadClientDownloadProgressChangedArgs args1, DownloadClientDownloadProgressChangedArgs args2 ) => !( args1 == args2 );
 
-#endregion Generated Code
+        #endregion Generated Code
     }
 
     /// <summary>
