@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 #nullable enable
 
@@ -9,7 +10,7 @@ namespace GUtils
     /// <summary>
     /// The class that contains the constructors for an Option.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Naming", "CA1716:Identifiers should not match keywords", Justification = "It is the name of the type in rust." )]
+    [SuppressMessage ( "Naming", "CA1716:Identifiers should not match keywords", Justification = "It is the name of the type in rust." )]
     public static class Option
     {
         /// <summary>
@@ -35,7 +36,7 @@ namespace GUtils
     /// /> or <see cref="Option.Some{T}(T)" />.
     /// </summary>
     /// <typeparam name="T">The type this option wraps.</typeparam>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Naming", "CA1716:Identifiers should not match keywords", Justification = "It is the name of the type in rust." )]
+    [SuppressMessage ( "Naming", "CA1716:Identifiers should not match keywords", Justification = "It is the name of the type in rust." )]
     [DebuggerDisplay ( "{" + nameof ( GetDebuggerDisplay ) + "(),nq}" )]
     public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
     {
@@ -350,7 +351,7 @@ namespace GUtils
         /// Converts a value to a <see cref="Option.Some{T}(T)" /> option.
         /// </summary>
         /// <param name="value">The value to be wrapped.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Static method Option.Some<T>(T) exists." )]
+        [SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Static method Option.Some<T>(T) exists." )]
         public static implicit operator Option<T> ( T value ) =>
             new Option<T> ( value );
 

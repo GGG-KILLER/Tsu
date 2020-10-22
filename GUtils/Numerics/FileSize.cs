@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -223,7 +224,7 @@ namespace GUtils.Numerics
         /// The format template. Must contain two format placeholders. Default value is: <c>{0:0.##} {1}</c>
         /// </param>
         /// <returns><inheritdoc cref="Format(Int64)" /></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "There's already another overload for this." )]
+        [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "There's already another overload for this." )]
         public static String Format ( Int64 size, String format )
         {
             GetFormatPair ( size, out var newSize, out var suffix );
@@ -236,7 +237,7 @@ namespace GUtils.Numerics
         /// <param name="size"><inheritdoc cref="Format(Double)" /></param>
         /// <param name="format"><inheritdoc cref="Format(Int64, String)" /></param>
         /// <returns><inheritdoc cref="Format(Double)" /></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "There's already another overload for this." )]
+        [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "There's already another overload for this." )]
         public static String Format ( Double size, String format )
         {
             GetFormatPair ( size, out var newSize, out var suffix );

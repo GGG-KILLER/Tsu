@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GUtils
 {
@@ -332,7 +333,7 @@ namespace GUtils
         /// Converts an <paramref name="ok" /> value to a result.
         /// </summary>
         /// <param name="ok"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Result.Ok<TOk, TErr>(TOk) exists." )]
+        [SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Result.Ok<TOk, TErr>(TOk) exists." )]
         public static explicit operator Result<TOk, TErr> ( TOk ok ) =>
             new Result<TOk, TErr> ( true, ok, default! );
 
@@ -340,7 +341,7 @@ namespace GUtils
         /// Converts an <paramref name="err" /> value to a result.
         /// </summary>
         /// <param name="err"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Result.Err<TOk, TErr>(TErr) exists." )]
+        [SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Result.Err<TOk, TErr>(TErr) exists." )]
         public static explicit operator Result<TOk, TErr> ( TErr err ) =>
             new Result<TOk, TErr> ( false, default!, err );
 
