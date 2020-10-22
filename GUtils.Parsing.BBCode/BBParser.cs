@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,11 +34,11 @@ namespace GUtils.Parsing.BBCode
     /// <remarks>This parser DOES NOT SUPPORT BBCode lists.</remarks>
     public class BBParser : IDisposable
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Usage", "CA2213:Disposable fields should be disposed", Justification = "Is being disposed on Dispose(bool)." )]
+        [SuppressMessage ( "Usage", "CA2213:Disposable fields should be disposed", Justification = "Is being disposed on Dispose(bool)." )]
         private readonly StringReader Reader;
         private readonly IEnumerator<BBToken> Lexer;
         private readonly Stack<BBTagNode> NodeStack;
-        private BBNode[] Parsed;
+        private BBNode[]? Parsed;
 
         /// <summary>
         /// Initializes a new BBCode parser
@@ -46,7 +47,7 @@ namespace GUtils.Parsing.BBCode
         public BBParser ( String code )
         {
             this.Reader = new StringReader ( code );
-            this.Lexer = BBLexer.Lex ( this.Reader ).GetEnumerator ( );
+            this.Lexer = BBLexer.Lex ( this.Reader );
             this.NodeStack = new Stack<BBTagNode> ( );
             this.Parsed = null;
         }
@@ -79,7 +80,7 @@ namespace GUtils.Parsing.BBCode
         private void ParseOpeningTag ( BBToken nameToken )
         {
             var selfClosing = false;
-            String name = nameToken.Value,
+            String? name = nameToken.Value,
                 value = null;
             if ( nameToken.Type != BBTokenType.Text )
                 throw new FormatException ( $"Expected tag name but got {nameToken.Type}." );
@@ -102,8 +103,7 @@ namespace GUtils.Parsing.BBCode
             if ( rbracket?.Type != BBTokenType.RBracket )
                 throw new FormatException ( $"Unfinished tag '{name}'." );
 
-            BBTagNode node;
-            node = new BBTagNode ( selfClosing, name, value );
+            var node = new BBTagNode ( selfClosing, name, value );
             this.NodeStack.Peek ( ).AddChild ( node );
             if ( !selfClosing )
             {
@@ -134,7 +134,9 @@ namespace GUtils.Parsing.BBCode
 
                         case BBTokenType.LBracket:
                             token = this.GetNextToken ( );
-                            if ( token?.Type == BBTokenType.Slash )
+                            if ( token is null )
+                                throw new InvalidOperationException ( "Unfinished tag opening." );
+                            else if ( token.Value.Type == BBTokenType.Slash )
                                 this.ParseClosingTag ( );
                             else
                                 this.ParseOpeningTag ( token.Value );

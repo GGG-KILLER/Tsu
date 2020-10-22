@@ -26,7 +26,7 @@ namespace GUtils.Parsing.BBCode.Lexing
 {
     internal static class BBLexer
     {
-        public static IEnumerable<BBToken> Lex ( TextReader reader )
+        public static IEnumerator<BBToken> Lex ( TextReader reader )
         {
             var inTag = false;
             var inValue = false;
