@@ -18,6 +18,10 @@
  */
 
 using System;
+#if HAS_SPAN
+using System.Buffers;
+#endif
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -41,13 +45,13 @@ namespace GUtils.Net
         /// </summary>
         public Int64 TotalBytes { get; set; }
 
-        #region Generated Code
+#region Generated Code
 
         /// <summary>
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override Boolean Equals ( Object obj ) =>
+        public override Boolean Equals ( Object? obj ) =>
             obj is DownloadClientDownloadProgressChangedArgs args && this.Equals ( args );
 
         /// <summary>
@@ -58,9 +62,12 @@ namespace GUtils.Net
             this.BytesReceived == other.BytesReceived
             && this.TotalBytes == other.TotalBytes;
 
+
         /// <summary>
         /// </summary>
         /// <returns></returns>
+        [SuppressMessage ( "Style", "IDE0070:Use 'System.HashCode'", Justification = "Not available on all target frameworks." )]
+        [SuppressMessage ( "CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable to some target frameworks." )]
         public override Int32 GetHashCode ( )
         {
             var hashCode = 637993755;
@@ -83,7 +90,7 @@ namespace GUtils.Net
         /// <returns></returns>
         public static Boolean operator != ( DownloadClientDownloadProgressChangedArgs args1, DownloadClientDownloadProgressChangedArgs args2 ) => !( args1 == args2 );
 
-        #endregion Generated Code
+#endregion Generated Code
     }
 
     /// <summary>
@@ -192,14 +199,18 @@ namespace GUtils.Net
                 throw new ArgumentNullException ( nameof ( stream ) );
 
             // Get the response for the contents of the file
-            HttpWebResponse response = await this.GetResponseAsync( )
-                                                 .ConfigureAwait( false );
+            HttpWebResponse response = await this.GetResponseAsync ( )
+                                                 .ConfigureAwait ( false );
 
             var size = response.ContentLength;
             this._totalBytes = size;
 
             using Stream webStream = response.GetResponseStream ( );
+#if HAS_SPAN
+            using IMemoryOwner<Byte> bufferOwner = MemoryPool<Byte>.Shared.Rent ( this._bufferSize );
+#else
             var buff = new Byte[this._bufferSize];
+#endif
             while ( size != 0 )
             {
                 Int32 receivedBytes;
@@ -208,17 +219,25 @@ namespace GUtils.Net
                     using var source = new CancellationTokenSource ( timeout );
                     try
                     {
+#if HAS_SPAN
+                        receivedBytes = await webStream.ReadAsync ( bufferOwner.Memory, source.Token )
+#else
                         receivedBytes = await webStream.ReadAsync ( buff, 0, this._bufferSize, source.Token )
+#endif
                                                        .ConfigureAwait ( false );
                     }
                     catch ( TaskCanceledException )
                     {
-                        throw new TimeoutException ( "Reading operation timed out." );
+                        throw new TimeoutException ( "Read operation timed out." );
                     }
                 }
                 else
                 {
+#if HAS_SPAN
+                    receivedBytes = await webStream.ReadAsync ( bufferOwner.Memory )
+#else
                     receivedBytes = await webStream.ReadAsync ( buff, 0, this._bufferSize )
+#endif
                                                    .ConfigureAwait ( false );
                 }
 
@@ -230,8 +249,12 @@ namespace GUtils.Net
                 size -= receivedBytes;
                 this._receivedBytes += receivedBytes;
 
-                // Write from buffer to the stream and flush it
+                // Write from buffer to the stream
+#if HAS_SPAN
+                await stream.WriteAsync ( bufferOwner.Memory.Slice ( 0, receivedBytes ) )
+#else
                 await stream.WriteAsync ( buff, 0, receivedBytes )
+#endif
                             .ConfigureAwait ( false );
 
                 // Then report that progress was made
@@ -243,7 +266,11 @@ namespace GUtils.Net
             }
 
             // Remove possible sensitive information from the buffer
+#if HAS_SPAN
+            bufferOwner.Memory.Span.Clear ( );
+#else
             Array.Clear ( buff, 0, buff.Length );
+#endif
         }
 
         /// <summary>
@@ -253,9 +280,11 @@ namespace GUtils.Net
         private async Task<HttpWebResponse> GetResponseAsync ( )
         {
             HttpWebRequest req = this._uri is null
+#pragma warning disable IDE0079 // Remove unnecessary suppression (warning happens on some target frameworks)
 #pragma warning disable CA2234 // Pass system uri objects instead of strings (it's being done below)
-                ? WebRequest.CreateHttp ( this._url )
+                ? WebRequest.CreateHttp ( this._url! )
 #pragma warning restore CA2234 // Pass system uri objects instead of strings (it's being done below)
+#pragma warning restore IDE0079 // Remove unnecessary suppression (warning happens on some target frameworks)
                 : WebRequest.CreateHttp ( this._uri );
             if ( this.UserAgent != null )
                 req.UserAgent = this.UserAgent;
