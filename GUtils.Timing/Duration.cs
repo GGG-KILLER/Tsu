@@ -17,6 +17,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GUtils.Timing
 {
@@ -55,15 +56,14 @@ namespace GUtils.Timing
         /// </summary>
         public const Double TicksPerNanosecond = TicksPerMicrosecond / 1000D;
 
-
         /// <summary>
         /// Formats the amount of ticks provided into a human
-        /// readable format
+        /// readable format.
         /// </summary>
         /// <param name="ticks"></param>
         /// <param name="format"></param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Unnecessary." )]
+        [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "There's another overload accepting it." )]
         public static String Format ( Int64 ticks, String format = "{0:##00.00}{1}" )
         {
             if ( ticks > TicksPerHour )
@@ -78,6 +78,30 @@ namespace GUtils.Timing
                 return String.Format ( format, ticks / TicksPerMicrosecond, "μs" );
             else
                 return String.Format ( format, ticks / TicksPerNanosecond, "ns" );
+        }
+
+        /// <summary>
+        /// Formats the amount of ticks provided into a human
+        /// readable format.
+        /// </summary>
+        /// <param name="ticks"></param>
+        /// <param name="formatProvider"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static String Format ( Int64 ticks, IFormatProvider formatProvider, String format = "{0:##00.00}{1}" )
+        {
+            if ( ticks > TicksPerHour )
+                return String.Format ( formatProvider, format, ticks / TicksPerHour, "h" );
+            else if ( ticks > TicksPerMinute )
+                return String.Format ( formatProvider, format, ticks / TicksPerMinute, "m" );
+            else if ( ticks > TicksPerSecond )
+                return String.Format ( formatProvider, format, ticks / TicksPerSecond, "s" );
+            else if ( ticks > TicksPerMillisecond )
+                return String.Format ( formatProvider, format, ticks / TicksPerMillisecond, "ms" );
+            else if ( ticks > TicksPerMicrosecond )
+                return String.Format ( formatProvider, format, ticks / TicksPerMicrosecond, "μs" );
+            else
+                return String.Format ( formatProvider, format, ticks / TicksPerNanosecond, "ns" );
         }
     }
 }
