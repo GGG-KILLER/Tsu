@@ -20,52 +20,38 @@ namespace GUtils.Text.Code
 
         #region Write
 
-        /// <summary>
-        /// Writes a value
-        /// </summary>
-        /// <param name="value"></param>
+        /// <inheritdoc/>
         public override void Write ( Object? value ) => this._builder.Append ( value );
 
-        /// <summary>
-        /// Writes a value
-        /// </summary>
-        /// <param name="value"></param>
+        /// <inheritdoc/>
         public override void Write ( String? value ) => this._builder.Append ( value );
 
-        /// <summary>
-        /// Writes a formatted value
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
+        /// <inheritdoc/>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Another overload does that already." )]
         public override void Write ( String format, params Object?[] args ) => this._builder.AppendFormat ( format, args );
+
+        /// <inheritdoc/>
+        public override void Write ( IFormatProvider formatProvider, String format, params Object?[] args ) => this._builder.AppendFormat ( formatProvider, format, args );
 
         #endregion Write
 
         #region WriteLine
 
-        /// <summary>
-        /// Writes an empty line
-        /// </summary>
+        /// <inheritdoc/>
         public override void WriteLine ( ) => this._builder.AppendLine ( );
 
-        /// <summary>
-        /// Writes a value followed by the line terminator
-        /// </summary>
-        /// <param name="value"></param>
+        /// <inheritdoc/>
         public override void WriteLine ( Object? value ) => this._builder.Append ( value ).AppendLine ( );
 
-        /// <summary>
-        /// Writes a value followed by the line terminator
-        /// </summary>
-        /// <param name="value"></param>
+        /// <inheritdoc/>
         public override void WriteLine ( String? value ) => this._builder.AppendLine ( value );
 
-        /// <summary>
-        /// Writes a formatted value followed by the line terminator
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
+        /// <inheritdoc/>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Another overload does that already." )]
         public override void WriteLine ( String format, params Object?[] args ) => this._builder.AppendFormat ( format, args ).AppendLine ( );
+
+        /// <inheritdoc/>
+        public override void WriteLine ( IFormatProvider formatProvider, String format, params Object?[] args ) => this._builder.AppendFormat ( formatProvider, format, args ).AppendLine ( );
 
         #endregion WriteLine
 

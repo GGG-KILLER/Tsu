@@ -46,6 +46,9 @@ namespace GUtils.Text.Code
         /// <inheritdoc />
         public override void Write ( String format, params Object?[] args ) => this._writer.Write ( format, args );
 
+        /// <inheritdoc/>
+        public override void Write ( IFormatProvider formatProvider, String format, params Object?[] args ) => this._writer.Write ( String.Format ( formatProvider, format, args ) );
+
         /// <inheritdoc />
         public override void WriteLine ( ) => this._writer.WriteLine ( );
 
@@ -57,6 +60,9 @@ namespace GUtils.Text.Code
 
         /// <inheritdoc />
         public override void WriteLine ( String format, params Object?[] args ) => this._writer.WriteLine ( format, args );
+
+        /// <inheritdoc/>
+        public override void WriteLine ( IFormatProvider formatProvider, String format, params Object?[] args ) => this._writer.WriteLine ( String.Format ( formatProvider, format, args ) );
 
         #endregion Write(Line)
 

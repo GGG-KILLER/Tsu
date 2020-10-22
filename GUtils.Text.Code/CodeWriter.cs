@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using System.Threading;
 
 namespace GUtils.Text.Code
 {
@@ -12,6 +12,7 @@ namespace GUtils.Text.Code
         /// <summary>
         /// A struct that represents an indentation level.
         /// </summary>
+        [SuppressMessage ( "Design", "CA1034:Nested types should not be visible", Justification = "Only applicable to this type and wouldn't make sense outside of it." )]
         public ref struct IndentationDisposable
         {
             private readonly CodeWriter codeWriter;
@@ -113,6 +114,14 @@ namespace GUtils.Text.Code
         public abstract void Write ( String format, params Object?[] args );
 
         /// <summary>
+        /// Writes a formatted string to the output.
+        /// </summary>
+        /// <param name="formatProvider">The format provider.</param>
+        /// <param name="format">The format string.</param>
+        /// <param name="args">The format arguments.</param>
+        public abstract void Write ( IFormatProvider formatProvider, String format, params Object?[] args );
+
+        /// <summary>
         /// Writes the indentation prefix
         /// </summary>
         public void WriteIndentation ( ) =>
@@ -121,7 +130,7 @@ namespace GUtils.Text.Code
         /// <summary>
         /// Writes a value to the output preceded by indentation.
         /// </summary>
-        /// <param name="value">The value to be written to the output.</param>
+        /// <param name="value"><inheritdoc cref="Write(Object?)"/></param>
         public void WriteIndented ( Object? value )
         {
             this.WriteIndentation ( );
@@ -131,22 +140,37 @@ namespace GUtils.Text.Code
         /// <summary>
         /// Writes a string to the output preceded by indentation.
         /// </summary>
-        /// <param name="value">The string to be written to the output.</param>
+        /// <param name="value"><inheritdoc cref="Write(String?)"/></param>
         public void WriteIndented ( String? value )
         {
             this.WriteIndentation ( );
             this.Write ( value );
         }
 
+
         /// <summary>
         /// Writes a formatted string to the output preceded by indentation.
         /// </summary>
-        /// <param name="format">The format string.</param>
-        /// <param name="args">The format arguments.</param>
+        /// <param name="format"><inheritdoc cref="Write(String, Object?[])"/></param>
+        /// <param name="args"><inheritdoc cref="Write(String, Object?[])"/></param>
+        [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Another overload does this already." )]
         public void WriteIndented ( String format, params Object?[] args )
         {
             this.WriteIndentation ( );
             this.Write ( format, args );
+        }
+
+
+        /// <summary>
+        /// Writes a formatted string to the output preceded by indentation.
+        /// </summary>
+        /// <param name="formatProvider"><inheritdoc cref="Write(IFormatProvider, String, Object?[])"/></param>
+        /// <param name="format"><inheritdoc cref="Write(IFormatProvider, String, Object?[])"/></param>
+        /// <param name="args"><inheritdoc cref="Write(IFormatProvider, String, Object?[])"/></param>
+        public void WriteIndented ( IFormatProvider formatProvider, String format, params Object?[] args )
+        {
+            this.WriteIndentation ( );
+            this.Write ( formatProvider, format, args );
         }
 
         #endregion Write(Indented|Indentation)
@@ -178,6 +202,14 @@ namespace GUtils.Text.Code
         public abstract void WriteLine ( String format, params Object?[] args );
 
         /// <summary>
+        /// Writes a formatted string to the output followed by a line separator.
+        /// </summary>
+        /// <param name="formatProvider">The format provider.</param>
+        /// <param name="format">The format string.</param>
+        /// <param name="args">The format arguments.</param>
+        public abstract void WriteLine ( IFormatProvider formatProvider, String format, params Object?[] args );
+
+        /// <summary>
         /// Writes a value to the output preceded by indentation and followed by a line separator.
         /// </summary>
         /// <param name="value"><inheritdoc cref="WriteLine(Object?)" /></param>
@@ -190,22 +222,37 @@ namespace GUtils.Text.Code
         /// <summary>
         /// Writes a string to the output preceded by indentation and followed by a line separator.
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value"><inheritdoc cref="WriteLine(String?)"/></param>
         public void WriteLineIndented ( String? value )
         {
             this.WriteIndentation ( );
             this.WriteLine ( value );
         }
 
+
         /// <summary>
         /// Writes a formatted string to the output preceded by indentation and followed by a line separator.
         /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
+        /// <param name="format"><inheritdoc cref="WriteLine(String, Object?[])"/></param>
+        /// <param name="args"><inheritdoc cref="WriteLine(String, Object?[])"/></param>
+        [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "Another overload does this already." )]
         public void WriteLineIndented ( String format, params Object?[] args )
         {
             this.WriteIndentation ( );
             this.WriteLine ( format, args );
+        }
+
+
+        /// <summary>
+        /// Writes a formatted string to the output preceded by indentation and followed by a line separator.
+        /// </summary>
+        /// <param name="formatProvider"><inheritdoc cref="WriteLine(IFormatProvider, String, Object?[])"/></param>
+        /// <param name="format"><inheritdoc cref="WriteLine(IFormatProvider, String, Object?[])"/></param>
+        /// <param name="args"><inheritdoc cref="WriteLine(IFormatProvider, String, Object?[])"/></param>
+        public void WriteLineIndented ( IFormatProvider formatProvider, String format, params Object?[] args )
+        {
+            this.WriteIndentation ( );
+            this.WriteLine ( formatProvider, format, args );
         }
 
         #endregion WriteLine(Indented)
