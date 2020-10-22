@@ -17,6 +17,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 using System;
+using System.Diagnostics.CodeAnalysis;
 using GUtils.CLI.Commands;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
@@ -120,14 +121,14 @@ namespace GUtils.CLI.Tests.Commands
                 [HelpDescription ( "All other values" )] params String[] c ) => a + b + c.Length;
 
             [Command ( "second-command-with-help" )]
-            [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>" )]
+            [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>" )]
             public static Boolean DoAbsolutelyNothing02 (
                 [HelpDescription ( "First attribute" )] Int32 a,
                 [JoinRestOfArguments] String b
             ) => a.ToString ( ) == b;
 
             [Command ( "third-command-with-help" )]
-            [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>" )]
+            [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>" )]
             public static Boolean DoAbsolutelyNothing03 (
                 [HelpDescription ( "First attribute" )] Int32 a,
                 [JoinRestOfArguments] String b = null

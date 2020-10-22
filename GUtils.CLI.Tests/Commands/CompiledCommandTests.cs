@@ -17,6 +17,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 using System;
+using System.Diagnostics.CodeAnalysis;
 using GUtils.CLI.Commands;
 using GUtils.CLI.Commands.Errors;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -42,7 +43,7 @@ namespace GUtils.CLI.Tests.Commands
         public static void Error04 ( [JoinRestOfArguments] String a, String b ) => _ = a + b;
 
         [Command ( "f" )]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "Arguments are known" )]
+        [SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "Arguments are known" )]
         public static void Error05 ( String[] a, String b ) => _ = a[0] == b;
 
         [Command ( "g" ), HelpDescription ( "Sucess" )]

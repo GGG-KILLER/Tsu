@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using GUtils.CLI.Commands;
 using GUtils.CLI.Commands.Errors;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -65,13 +66,13 @@ namespace GUtils.CLI.Tests.Commands
 
         #endregion Rest "operator"
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>" )]
+        [SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>" )]
         public void ParseShouldParse ( String input, String rawExpected )
         {
             try
             {
                 var expected = rawExpected.Split ( ';' ); var i = 0;
-                foreach ( String argument in InputLineParser.Parse ( input ) )
+                foreach ( var argument in InputLineParser.Parse ( input ) )
                 {
                     Assert.AreEqual ( expected[i], argument, $"Argument #{i} doesn't match the expected value." );
                     i++;

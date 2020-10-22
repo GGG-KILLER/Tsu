@@ -17,6 +17,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using GUtils.CLI.Commands;
 using GUtils.CLI.Commands.Errors;
@@ -36,7 +37,7 @@ namespace GUtils.CLI.Tests.Commands
             Enum02
         }
 
-        private static Object? Value;
+        private static Object Value;
 
         public static void DoSomething01 ( UInt32 u32 ) => Value = u32;
 
@@ -68,7 +69,7 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( nameof ( DoSomething09 ) )]
         public void ShouldCompile ( String methodName )
         {
-            MethodInfo method = typeof ( CommandCompilerTests ).GetMethod ( methodName );
+            MethodInfo method = typeof ( CommandCompilerTests ).GetMethod ( methodName )!;
             CommandCompiler.Compile ( method, null );
         }
 
@@ -86,7 +87,9 @@ namespace GUtils.CLI.Tests.Commands
         [DataRow ( nameof ( DoSomething09 ), "enum01", "Enum01" )]
         [DataRow ( nameof ( DoSomething09 ), "enum01;enum01", "Enum01.Enum01" )]
         [DataRow ( nameof ( DoSomething09 ), "enum01;enum02;enum01", "Enum01.Enum02.Enum01" )]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "Inputs are known" )]
+        [SuppressMessage ( "Design", "CA1062:Validate arguments of public methods", Justification = "Inputs are known" )]
+        [SuppressMessage ( "Globalization", "CA1307:Specify StringComparison", Justification = "Can't specify it without breaking it on some TFMs." )]
+        [SuppressMessage ( "CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable to some TFMs." )]
         public void CompiledCommandShouldRun ( String methodName, String inputString, Object expectedVal )
         {
             MethodInfo method = typeof ( CommandCompilerTests ).GetMethod ( methodName );
