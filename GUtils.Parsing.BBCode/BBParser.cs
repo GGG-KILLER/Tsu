@@ -47,7 +47,7 @@ namespace GUtils.Parsing.BBCode
         public BBParser ( String code )
         {
             this.Reader = new StringReader ( code );
-            this.Lexer = BBLexer.Lex ( this.Reader );
+            this.Lexer = BBLexer.Lex ( this.Reader ).GetEnumerator ( );
             this.NodeStack = new Stack<BBTagNode> ( );
             this.Parsed = null;
         }
