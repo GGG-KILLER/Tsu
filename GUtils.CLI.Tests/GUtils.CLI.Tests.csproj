@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../TestProject.props"/>
+  <Import Project="../TestProject.props" />
+
+  <PropertyGroup>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
