@@ -11,7 +11,7 @@ namespace GUtils.MVVM
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
         /// <inheritdoc/>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Does the logic for calling <see cref="PropertyChanged"/> if the value has changed (and
