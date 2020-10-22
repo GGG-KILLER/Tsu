@@ -19,20 +19,39 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GUtils.Parsing.BBCode.Lexing
 {
+    /// <summary>
+    /// A BBCode token.
+    /// </summary>
     internal readonly struct BBToken : IEquatable<BBToken>
     {
+        /// <summary>
+        /// The token type.
+        /// </summary>
         public readonly BBTokenType Type;
-        public readonly String Value;
 
+        /// <summary>
+        /// The token's value.
+        /// </summary>
+        public readonly String? Value;
+
+        /// <summary>
+        /// Initializes a new token.
+        /// </summary>
+        /// <param name="tokenType"></param>
         public BBToken ( BBTokenType tokenType )
         {
             this.Type = tokenType;
             this.Value = null;
         }
 
+        /// <summary>
+        /// Initializes a new token.
+        /// </summary>
+        /// <param name="value"></param>
         public BBToken ( String value )
         {
             this.Type = BBTokenType.Text;
@@ -44,20 +63,42 @@ namespace GUtils.Parsing.BBCode.Lexing
 
         #region Generated Code
 
-        public override Boolean Equals ( Object obj ) => obj is BBToken token && this.Equals ( token );
+        /// <inheritdoc/>
+        public override Boolean Equals ( Object? obj ) => obj is BBToken token && this.Equals ( token );
 
+        /// <inheritdoc/>
         public Boolean Equals ( BBToken other ) => this.Type == other.Type && this.Value == other.Value;
 
+        /// <summary>
+        /// Returns the hash code for the token.
+        /// </summary>
+        /// <returns></returns>
+        [SuppressMessage ( "Style", "IDE0070:Use 'System.HashCode'", Justification = "Not available on all target frameworks." )]
+        [SuppressMessage ( "CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable to some target frameworks." )]
         public override Int32 GetHashCode ( )
         {
             var hashCode = 1265339359;
             hashCode = hashCode * -1521134295 + this.Type.GetHashCode ( );
+#pragma warning disable CS8604 // Possible null reference argument.
             hashCode = hashCode * -1521134295 + EqualityComparer<String>.Default.GetHashCode ( this.Value );
+#pragma warning restore CS8604 // Possible null reference argument.
             return hashCode;
         }
 
+        /// <summary>
+        /// Checks whether two tokens are equal.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static Boolean operator == ( BBToken left, BBToken right ) => left.Equals ( right );
 
+        /// <summary>
+        /// Checks whether two tokens are not equal.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static Boolean operator != ( BBToken left, BBToken right ) => !( left == right );
 
         #endregion Generated Code
