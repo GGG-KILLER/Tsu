@@ -129,13 +129,13 @@ namespace GUtils.Parsing.BBCode
                         case BBTokenType.Text:
                             this.NodeStack
                                 .Peek ( )
-                                .AddChild ( new BBTextNode ( token.Value.Value ) );
+                                .AddChild ( new BBTextNode ( token.Value.Value! ) );
                             break;
 
                         case BBTokenType.LBracket:
                             token = this.GetNextToken ( );
                             if ( token is null )
-                                throw new InvalidOperationException ( "Unfinished tag opening." );
+                                throw new FormatException ( "Unfinished tag opening." );
                             else if ( token.Value.Type == BBTokenType.Slash )
                                 this.ParseClosingTag ( );
                             else
