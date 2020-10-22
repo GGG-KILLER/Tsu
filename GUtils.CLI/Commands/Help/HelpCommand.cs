@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -80,8 +81,8 @@ namespace GUtils.CLI.Commands.Help
         /// <param name="command"></param>
         /// <param name="parentCommand"></param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable for some target frameworks." )]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Style", "IDE0057:Use range operator", Justification = "Not available on all target frameworks." )]
+        [SuppressMessage ( "CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable for some target frameworks." )]
+        [SuppressMessage ( "Style", "IDE0057:Use range operator", Justification = "Not available on all target frameworks." )]
         protected Boolean TryGetCommand ( String input, out Command command, IVerbCommand parentCommand = null )
         {
             if ( String.IsNullOrEmpty ( input ) )
