@@ -80,8 +80,8 @@ namespace GUtils.Parsing.BBCode
         private void ParseOpeningTag ( BBToken nameToken )
         {
             var selfClosing = false;
-            String? name = nameToken.Value,
-                value = null;
+            var name = nameToken.Value!;
+            String? value = null;
             if ( nameToken.Type != BBTokenType.Text )
                 throw new FormatException ( $"Expected tag name but got {nameToken.Type}." );
 
