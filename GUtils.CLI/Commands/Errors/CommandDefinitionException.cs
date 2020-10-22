@@ -17,6 +17,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.Serialization;
 
@@ -26,6 +27,7 @@ namespace GUtils.CLI.Commands.Errors
     /// Thrown when a command's definition is invalid
     /// </summary>
     [Serializable]
+    [SuppressMessage ( "Design", "CA1032:Implement standard exception constructors", Justification = "This exception shouldn't be constructed without a command method." )]
     public class CommandDefinitionException : Exception
     {
         /// <summary>
