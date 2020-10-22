@@ -19,6 +19,7 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="transducer">The transducer to compile</param>
         /// <returns></returns>
         public static Expression<Func<IEnumerable<TInput>, (Int32, TOutput)>> GetExpressionTree<TInput, TOutput> ( Transducer<TInput, TOutput> transducer )
+            where TInput : notnull
         {
             if ( transducer is null )
                 throw new ArgumentNullException ( nameof ( transducer ) );
@@ -45,6 +46,7 @@ namespace GUtils.StateMachines.Transducers
         }
 
         private static Expression GetStateExpressionTree<TInput, TOutput> ( TransducerState<TInput, TOutput> state, ParameterExpression enumerator, Int32 depth, LabelTarget returnLabelTarget )
+            where TInput : notnull
         {
             if ( state is null )
                 throw new ArgumentNullException ( nameof ( state ) );
@@ -101,6 +103,7 @@ namespace GUtils.StateMachines.Transducers
         /// <param name="transducer"></param>
         /// <returns></returns>
         public static Func<IEnumerable<TInput>, (Int32, TOutput)> Compile<TInput, TOutput> ( Transducer<TInput, TOutput> transducer )
+            where TInput : notnull
         {
             if ( transducer is null )
                 throw new ArgumentNullException ( nameof ( transducer ) );
