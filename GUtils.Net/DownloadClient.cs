@@ -94,13 +94,13 @@ namespace GUtils.Net
         /// <summary>
         /// The user agent to use when downloading the file
         /// </summary>
-        public String UserAgent { get; set; }
+        public String? UserAgent { get; set; }
 
         private readonly Int32 _bufferSize;
         private Int64 _receivedBytes;
         private Int64 _totalBytes;
-        private readonly String _url;
-        private readonly Uri _uri;
+        private readonly String? _url;
+        private readonly Uri? _uri;
 
         /// <summary>
         /// Creates a new <see cref="DownloadClient"/> that will obtain the file from <paramref
@@ -132,7 +132,7 @@ namespace GUtils.Net
         /// <summary>
         /// Called when progress is made on the download
         /// </summary>
-        public event EventHandler<DownloadClientDownloadProgressChangedArgs> DownloadProgressChanged;
+        public event EventHandler<DownloadClientDownloadProgressChangedArgs>? DownloadProgressChanged;
 
         /// <summary>
         /// Indicates whether this <see cref="DownloadClient"/> is downloading
@@ -188,6 +188,9 @@ namespace GUtils.Net
         /// <returns></returns>
         public async Task DownloadToStreamAsync ( Stream stream, Int32 timeout = 5000 )
         {
+            if ( stream is null )
+                throw new ArgumentNullException ( nameof ( stream ) );
+
             // Get the response for the contents of the file
             HttpWebResponse response = await this.GetResponseAsync( )
                                                  .ConfigureAwait( false );
@@ -250,7 +253,9 @@ namespace GUtils.Net
         private async Task<HttpWebResponse> GetResponseAsync ( )
         {
             HttpWebRequest req = this._uri is null
+#pragma warning disable CA2234 // Pass system uri objects instead of strings (it's being done below)
                 ? WebRequest.CreateHttp ( this._url )
+#pragma warning restore CA2234 // Pass system uri objects instead of strings (it's being done below)
                 : WebRequest.CreateHttp ( this._uri );
             if ( this.UserAgent != null )
                 req.UserAgent = this.UserAgent;
