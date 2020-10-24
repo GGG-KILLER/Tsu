@@ -163,7 +163,7 @@ namespace GUtils.CLI.Commands
                 return;
 
             line = line.Trim ( );
-#if NETSTANDARD2_1 || NETCOREAPP2_1 || NETCOREAPP3_1 || NET5_0
+#if HAS_STRING_STRINGCOMPARISON_OVERLOADS
             var spaceIdx = line.IndexOf ( ' ', StringComparison.Ordinal );
 #else
             var spaceIdx = CultureInfo.InvariantCulture.CompareInfo.IndexOf ( line, ' ', CompareOptions.Ordinal );

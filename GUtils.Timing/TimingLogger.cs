@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace GUtils.Timing
 {
@@ -314,7 +315,13 @@ namespace GUtils.Timing
                 this.HasLineBeenPrefixed = true;
             }
 
-            if ( message.Contains ( "\n" ) )
+            if (
+#if HAS_STRING__CONTAINS_CHAR
+                message.Contains ( '\n', StringComparison.Ordinal )
+#else
+                CultureInfo.InvariantCulture.CompareInfo.IndexOf ( message, '\n', CompareOptions.Ordinal ) >= 0
+#endif
+            )
             {
                 var lines = message.Split ( new[] { "\r\n", "\n" }, StringSplitOptions.None );
                 this.WriteLineInternal ( lines[0] );
@@ -361,7 +368,7 @@ namespace GUtils.Timing
         /// </summary>
         /// <param name="value"></param>
         public void Write ( Object value ) =>
-            this.ProcessWrite ( LogLevel.None, value?.ToString ( ) );
+            this.ProcessWrite ( LogLevel.None, value?.ToString ( ) ?? "" );
 
         /// <summary>
         /// Writes a value to the output
@@ -389,7 +396,7 @@ namespace GUtils.Timing
         /// </summary>
         /// <param name="value"></param>
         public void WriteLine ( Object value ) =>
-            this.ProcessWriteLine ( LogLevel.None, value?.ToString ( ) );
+            this.ProcessWriteLine ( LogLevel.None, value?.ToString ( ) ?? "" );
 
         /// <summary>
         /// Writes a value to the output followed by a new line
