@@ -37,7 +37,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-
     <!-- RuntimeFeature flag -->
     <DefineConstants Condition="('$(TargetFrameworkIdentifier)' == '.NETFramework' And '$(TargetFrameworkVersion)' >= '4.7.1')
                      Or ('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And '$(TargetFrameworkVersion)' >= '2.0')
