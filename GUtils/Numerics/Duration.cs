@@ -19,7 +19,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace GUtils.Timing
+namespace GUtils.Numerics
 {
     /// <summary>
     /// An utility class to help manipulate time as ticks
@@ -57,6 +57,52 @@ namespace GUtils.Timing
         public const Double TicksPerNanosecond = TicksPerMicrosecond / 1000D;
 
         /// <summary>
+        /// Scales the provided value down and gets the duration from the ticks.
+        /// </summary>
+        /// <param name="ticks">The tick count.</param>
+        /// <param name="scaledDuration">The scaled down duration.</param>
+        /// <param name="suffix">The suffix.</param>
+        public static void GetFormatPair ( Int64 ticks, out Double scaledDuration, out String suffix )
+        {
+            if ( ticks > TicksPerHour )
+            {
+                scaledDuration = ticks / TicksPerHour;
+                suffix = "h";
+                return;
+            }
+            else if ( ticks > TicksPerMinute )
+            {
+                scaledDuration = ticks / TicksPerMinute;
+                suffix = "m";
+                return;
+            }
+            else if ( ticks > TicksPerSecond )
+            {
+                scaledDuration = ticks / TicksPerSecond;
+                suffix = "s";
+                return;
+            }
+            else if ( ticks > TicksPerMillisecond )
+            {
+                scaledDuration = ticks / TicksPerMillisecond;
+                suffix = "ms";
+                return;
+            }
+            else if ( ticks > TicksPerMicrosecond )
+            {
+                scaledDuration = ticks / TicksPerMicrosecond;
+                suffix = "μs";
+                return;
+            }
+            else
+            {
+                scaledDuration = ticks / TicksPerNanosecond;
+                suffix = "ns";
+                return;
+            }
+        }
+
+        /// <summary>
         /// Formats the amount of ticks provided into a human
         /// readable format.
         /// </summary>
@@ -66,18 +112,8 @@ namespace GUtils.Timing
         [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "There's another overload accepting it." )]
         public static String Format ( Int64 ticks, String format = "{0:##00.00}{1}" )
         {
-            if ( ticks > TicksPerHour )
-                return String.Format ( format, ticks / TicksPerHour, "h" );
-            else if ( ticks > TicksPerMinute )
-                return String.Format ( format, ticks / TicksPerMinute, "m" );
-            else if ( ticks > TicksPerSecond )
-                return String.Format ( format, ticks / TicksPerSecond, "s" );
-            else if ( ticks > TicksPerMillisecond )
-                return String.Format ( format, ticks / TicksPerMillisecond, "ms" );
-            else if ( ticks > TicksPerMicrosecond )
-                return String.Format ( format, ticks / TicksPerMicrosecond, "μs" );
-            else
-                return String.Format ( format, ticks / TicksPerNanosecond, "ns" );
+            GetFormatPair ( ticks, out var scaledDuration, out var suffix );
+            return String.Format ( format, scaledDuration, suffix );
         }
 
         /// <summary>
@@ -90,18 +126,8 @@ namespace GUtils.Timing
         /// <returns></returns>
         public static String Format ( Int64 ticks, IFormatProvider formatProvider, String format = "{0:##00.00}{1}" )
         {
-            if ( ticks > TicksPerHour )
-                return String.Format ( formatProvider, format, ticks / TicksPerHour, "h" );
-            else if ( ticks > TicksPerMinute )
-                return String.Format ( formatProvider, format, ticks / TicksPerMinute, "m" );
-            else if ( ticks > TicksPerSecond )
-                return String.Format ( formatProvider, format, ticks / TicksPerSecond, "s" );
-            else if ( ticks > TicksPerMillisecond )
-                return String.Format ( formatProvider, format, ticks / TicksPerMillisecond, "ms" );
-            else if ( ticks > TicksPerMicrosecond )
-                return String.Format ( formatProvider, format, ticks / TicksPerMicrosecond, "μs" );
-            else
-                return String.Format ( formatProvider, format, ticks / TicksPerNanosecond, "ns" );
+            GetFormatPair ( ticks, out var scaledDuration, out var suffix );
+            return String.Format ( formatProvider, format, scaledDuration, suffix );
         }
     }
 }

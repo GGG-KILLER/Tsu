@@ -83,6 +83,6 @@ namespace GUtils.Timing
             return line;
         }
 
-        #endregion
+        #endregion Extra Public I/O
     }
 }
