@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../LibraryProject.props" />
+
+  <PropertyGroup>
+    <PackageId>GUtils.Timing.MicroProfiler</PackageId>
+    <Version>1.0.0</Version>
+    <Description>Contains the MicroProfiler class.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="../GUtils/Timing/MicroProfiler.cs"/>
+  </ItemGroup>
+
+</Project>
