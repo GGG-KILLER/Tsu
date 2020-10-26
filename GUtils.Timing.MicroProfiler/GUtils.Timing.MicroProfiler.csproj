@@ -10,6 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="../GUtils/Buffers/BitVectorHelpers.cs"/>
+    <Compile Include="../GUtils/Buffers/BitVectorHelpers.Generated.cs"/>
+    <Compile Include="../GUtils/Buffers/VariableLengthBitVector.cs"/>
     <Compile Include="../GUtils/Numerics/Duration.cs"/>
     <Compile Include="../GUtils/Timing/MicroProfiler.cs"/>
   </ItemGroup>

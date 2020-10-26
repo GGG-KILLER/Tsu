@@ -9,7 +9,12 @@ namespace GUtils.Buffers
     /// A class with helpers to deal with Spans and Arrays being used as bit vectors.
     /// </summary>
     [GeneratedCode ( "BitVectorHelpers.Generated.tt", "1.0" )]
-    public static partial class BitVectorHelpers
+#if IS_MICROPROFILER_PACKAGE
+    internal
+#else
+    public
+#endif
+        static partial class BitVectorHelpers
     {
         #region Byte
 

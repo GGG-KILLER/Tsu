@@ -26,7 +26,12 @@ namespace GUtils.Buffers
     /// <summary>
     /// A variable length bit vector
     /// </summary>
-    public class VariableLengthBitVector : IEquatable<VariableLengthBitVector>
+#if IS_MICROPROFILER_PACKAGE
+    internal
+#else
+    public
+#endif
+        class VariableLengthBitVector : IEquatable<VariableLengthBitVector>
     {
         /// <summary>
         /// The containers that back this bit vector
