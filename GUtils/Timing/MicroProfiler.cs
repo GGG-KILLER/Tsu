@@ -19,8 +19,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Text;
+using GUtils.Buffers;
 using GUtils.Numerics;
 
 namespace GUtils.Timing
@@ -28,9 +28,8 @@ namespace GUtils.Timing
     /// <summary>
     /// A micro profiler. Basically a tree of Stopwatches with associated names.
     /// </summary>
-    [DebuggerDisplay ( "{Name}" )]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Performance", "CA1815:Override equals and operator equals on value types", Justification = "There is no point to checking equality of two microprofilers." )]
-    public readonly struct MicroProfiler : IDisposable
+    [DebuggerDisplay ( "{" + nameof ( GetDebuggerDisplay ) + "(),nq}" )]
+    public sealed class MicroProfiler : IDisposable
     {
         /// <summary>
         /// Instantiates and starts a new <see cref="MicroProfiler" />
@@ -40,9 +39,19 @@ namespace GUtils.Timing
         public static MicroProfiler StartNew ( String name )
         {
             var prof = new MicroProfiler ( name );
-            prof.Stopwatch.Start ( );
+            prof._stopwatch.Start ( );
             return prof;
         }
+
+        /// <summary>
+        /// The list of child profilers.
+        /// </summary>
+        private readonly List<MicroProfiler> _childProfilers;
+
+        /// <summary>
+        /// The stopwatch used for timing of this micro profiler.
+        /// </summary>
+        private readonly Stopwatch _stopwatch;
 
         /// <summary>
         /// The name associated with this microprofiler
@@ -52,17 +61,12 @@ namespace GUtils.Timing
         /// <summary>
         /// The list of child microprofilers
         /// </summary>
-        public List<MicroProfiler> ChildResults { get; }
-
-        /// <summary>
-        /// The stopwatch used for timing of this microprofiler
-        /// </summary>
-        private readonly Stopwatch Stopwatch;
+        public IReadOnlyList<MicroProfiler> ChildProfilers => this._childProfilers;
 
         /// <summary>
         /// The total milliseconds elapsed on this operation
         /// </summary>
-        public Double ElapsedMilliseconds => this.Stopwatch.ElapsedTicks / Duration.TicksPerMillisecond;
+        public Double ElapsedMilliseconds => this._stopwatch.ElapsedTicks / Duration.TicksPerMillisecond;
 
         /// <summary>
         /// Initializes a new MicroProfiler with the given name.
@@ -73,43 +77,42 @@ namespace GUtils.Timing
         public MicroProfiler ( String name )
         {
             this.Name = name ?? throw new ArgumentNullException ( nameof ( name ) );
-            this.ChildResults = new List<MicroProfiler> ( );
-            this.Stopwatch = new Stopwatch ( );
+            this._childProfilers = new List<MicroProfiler> ( );
+            this._stopwatch = new Stopwatch ( );
         }
 
         /// <summary>
         /// Instantiates, starts and adds a new <see cref="MicroProfiler" /> with the provided
-        /// <paramref name="name" /> to the <see cref="ChildResults" />.
+        /// <paramref name="name" /> to the <see cref="ChildProfilers" />.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public MicroProfiler StartChild ( String name )
         {
-            var res = new MicroProfiler ( name );
-            this.ChildResults.Add ( res );
-            res.Stopwatch.Start ( );
+            MicroProfiler res = StartNew ( name );
+            this._childProfilers.Add ( res );
             return res;
         }
 
         /// <summary>
         /// Starts the internal stopwatch
         /// </summary>
-        public void Start ( ) => this.Stopwatch.Start ( );
+        public void Start ( ) => this._stopwatch.Start ( );
 
         /// <summary>
         /// Restarts the internal stopwatch
         /// </summary>
-        public void Restart ( ) => this.Stopwatch.Restart ( );
+        public void Restart ( ) => this._stopwatch.Restart ( );
 
         /// <summary>
         /// Stops the internal stopwatch
         /// </summary>
-        public void Stop ( ) => this.Stopwatch.Stop ( );
+        public void Stop ( ) => this._stopwatch.Stop ( );
 
         /// <summary>
         /// Resets the internal stopwatch
         /// </summary>
-        public void Reset ( ) => this.Stopwatch.Reset ( );
+        public void Reset ( ) => this._stopwatch.Reset ( );
 
         /// <summary>
         /// Writes the tree of timings to the provided <paramref name="builder" />.
@@ -120,8 +123,7 @@ namespace GUtils.Timing
             if ( builder is null )
                 throw new ArgumentNullException ( nameof ( builder ) );
 
-            var x = 0UL;
-            this.WriteTreeString ( builder, 0, ref x );
+            this.WriteTreeString ( builder, 0, new VariableLengthBitVector ( ) );
         }
 
         /// <summary>
@@ -136,37 +138,10 @@ namespace GUtils.Timing
             return sb.ToString ( );
         }
 
-        void IDisposable.Dispose ( ) => this.Stop ( );
+        /// <inheritdoc/>
+        public void Dispose ( ) => this.Stop ( );
 
-        /// <summary>
-        /// Checks if a bit is set in a 64-bit bit vector (implemented as an <see cref="UInt64" />).
-        /// </summary>
-        /// <param name="bitVector"></param>
-        /// <param name="bitIndex"></param>
-        /// <returns></returns>
-        [MethodImpl ( MethodImplOptions.AggressiveInlining )]
-        private static Boolean IsBitSet ( UInt64 bitVector, Int32 bitIndex ) =>
-            ( bitVector & ( 1UL << ( bitIndex - 1 ) ) ) != 0;
-
-        /// <summary>
-        /// Sets a bit in a 64-bit bit vector (implemented as an <see cref="UInt64" />).
-        /// </summary>
-        /// <param name="bitVector"></param>
-        /// <param name="bitIndex"></param>
-        /// <param name="value"></param>
-        [MethodImpl ( MethodImplOptions.AggressiveInlining )]
-        private static void SetBit ( ref UInt64 bitVector, Int32 bitIndex, Boolean value )
-        {
-            var bit = 1UL << ( bitIndex - 1 );
-            if ( value )
-            {
-                bitVector |= bit;
-            }
-            else
-            {
-                bitVector &= ~bit;
-            }
-        }
+        private String GetDebuggerDisplay ( ) => this.ToString ( );
 
         /// <summary>
         /// Recursively writes the tree containing all timings to the provided
@@ -176,36 +151,36 @@ namespace GUtils.Timing
         /// The <see cref="StringBuilder" /> where all output will be written to.
         /// </param>
         /// <param name="depth">How deep we're in the <see cref="MicroProfiler" /> tree.</param>
-        /// <param name="isLastFlagVec">
-        /// This 64-bit bit vector stores whether an item at any given depth was the last children of its
+        /// <param name="isLastBitVector">
+        /// This bit vector stores whether an item at any given depth was the last children of its
         /// parent.
         /// </param>
-        private void WriteTreeString ( StringBuilder builder, Int32 depth, ref UInt64 isLastFlagVec )
+        private void WriteTreeString ( StringBuilder builder, Int32 depth, VariableLengthBitVector isLastBitVector )
         {
             if ( depth > 0 )
             {
-                for ( var i = 1; i < depth; i++ )
+                for ( var i = 0; i < depth - 1; i++ )
                 {
-                    builder.Append ( IsBitSet ( isLastFlagVec, i ) ? ' ' : '│' )
+                    builder.Append ( isLastBitVector[i] ? ' ' : '│' )
                            .Append ( "  " );
                 }
 
-                builder.Append ( IsBitSet ( isLastFlagVec, depth ) ? '└' : '├' )
+                builder.Append ( isLastBitVector[depth - 1] ? '└' : '├' )
                        .Append ( "─ " );
             }
-            builder.AppendLine ( $"{this.Name}: {Duration.Format ( this.Stopwatch.ElapsedTicks )}" );
+            builder.AppendLine ( $"{this.Name}: {Duration.Format ( this._stopwatch.ElapsedTicks )}" );
 
-            depth += 1;
-            SetBit ( ref isLastFlagVec, depth, false );
-            List<MicroProfiler> childResults = this.ChildResults;
+            depth++;
+            isLastBitVector[depth] = false;
+            List<MicroProfiler> childResults = this._childProfilers;
             for ( var i = 0; i < childResults.Count; i++ )
             {
                 if ( i == childResults.Count - 1 )
                 {
-                    SetBit ( ref isLastFlagVec, depth, true );
+                    isLastBitVector[depth] = true;
                 }
 
-                childResults[i].WriteTreeString ( builder, depth, ref isLastFlagVec );
+                childResults[i].WriteTreeString ( builder, depth, isLastBitVector );
             }
         }
     }
