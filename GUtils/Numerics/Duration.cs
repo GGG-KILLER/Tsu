@@ -24,7 +24,12 @@ namespace GUtils.Numerics
     /// <summary>
     /// An utility class to help manipulate time as ticks
     /// </summary>
-    public static class Duration
+#if IS_MICROPROFILER_PACKAGE
+    internal
+#else
+    public
+#endif
+        static class Duration
     {
         /// <summary>
         /// The amount of tikcs in an hour
