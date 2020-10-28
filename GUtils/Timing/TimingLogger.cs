@@ -20,7 +20,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using GUtils.Numerics;
 
 namespace GUtils.Timing
 {
@@ -307,6 +309,8 @@ namespace GUtils.Timing
         /// </summary>
         /// <param name="level"></param>
         /// <param name="message"></param>
+        [SuppressMessage ( "Style", "IDE0056:Use index operator", Justification = "Not available in all target frameworks." )]
+        [SuppressMessage ( "CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable to some target frameworks." )]
         private void ProcessWrite ( LogLevel level, String message )
         {
             if ( !this.HasLineBeenPrefixed )
@@ -387,7 +391,7 @@ namespace GUtils.Timing
         /// </summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "As designed." )]
+        [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "As designed." )]
         public void Write ( String format, params Object[] args ) =>
             this.ProcessWrite ( LogLevel.None, String.Format ( format, args ) );
 
@@ -410,7 +414,7 @@ namespace GUtils.Timing
         /// </summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "As designed." )]
+        [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "As designed." )]
         public void WriteLine ( String format, params Object[] args ) =>
             this.ProcessWriteLine ( LogLevel.None, String.Format ( format, args ) );
 
@@ -437,7 +441,7 @@ namespace GUtils.Timing
         /// <param name="level"></param>
         /// <param name="format"></param>
         /// <param name="args"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "As designed." )]
+        [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "As designed." )]
         public virtual void LogMessage ( LogLevel level, String format, params Object[] args )
         {
             if ( level < this.MinimumLogLevel )
@@ -527,7 +531,9 @@ namespace GUtils.Timing
             return scope;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Globalization", "CA1304:Specify CultureInfo", Justification = "By design." )]
+        [SuppressMessage ( "Globalization", "CA1304:Specify CultureInfo", Justification = "By design." )]
+        [SuppressMessage ( "Style", "IDE0057:Substring can be simplified", Justification = "Not available in all target frameworks." )]
+        [SuppressMessage ( "CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable to some target frameworks." )]
         private static String UnCapitalize ( String text ) =>
             text.Length > 1 ? Char.ToLower ( text[0] ) + text.Substring ( 1 ) : text.ToLower ( );
 
