@@ -76,7 +76,7 @@ namespace GUtils.Timing
         /// Reads an line of input from the console
         /// </summary>
         /// <returns></returns>
-        public String ReadLine ( )
+        public String? ReadLine ( )
         {
             var line = Console.ReadLine ( );
             this.HasLineBeenPrefixed = false;
