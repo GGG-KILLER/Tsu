@@ -11,7 +11,7 @@ namespace GUtils.Testing
     public class DelegateInvocationCounter<T>
         where T : Delegate
     {
-        private Int32 _invocationCount = 0;
+        private Int32 _invocationCount;
 
         /// <summary>
         /// The number of times <see cref="WrappedDelegate" /> was invoked.
