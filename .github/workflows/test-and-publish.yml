@@ -6,9 +6,7 @@ env:
 
 on:
   push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
 
 jobs:
   build:
@@ -48,7 +46,7 @@ jobs:
     name: NuGet Push
     runs-on: windows-latest
     needs: [build]
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core 2.1
@@ -85,7 +83,7 @@ jobs:
     name: Intellicode Train
     runs-on: windows-latest
     needs: [build]
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
     - uses: actions/checkout@v2
       with:
