@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <PackageId>GUtils.Text.Code</PackageId>
-    <Version>1.1.0</Version>
+    <Version>2.0.0</Version>
     <Description>A library that contains text utilties aimed at source code.</Description>
   </PropertyGroup>
 
