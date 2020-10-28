@@ -135,7 +135,7 @@ namespace GUtils.CLI.SourceGenerator.CommandManager
         }
 
         /// <summary>
-        /// Checks whether the provided symbol is the <see cref="Commands.CommandAttribute" />.
+        /// Checks whether the provided symbol is the <see cref="CommandAttribute" />.
         /// </summary>
         /// <param name="namedTypeSymbol"></param>
         /// <returns></returns>
