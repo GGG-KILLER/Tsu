@@ -9,15 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		GUtils.sln.licenseheader = GUtils.sln.licenseheader
-		LibraryProject.props = LibraryProject.props
 		LICENSE = LICENSE
 		README.md = README.md
-		Shared.Compilation.props = Shared.Compilation.props
-		Shared.Defines.props = Shared.Defines.props
-		Shared.NugetPackage.props = Shared.NugetPackage.props
-		Shared.Packages.props = Shared.Packages.props
-		Shared.Props.props = Shared.Props.props
-		TestProject.props = TestProject.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.CLI", "GUtils.CLI\GUtils.CLI.csproj", "{290C1063-B569-494F-B90F-F6FA8080848D}"
@@ -55,6 +48,17 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmarks", "Benchmarks", "{35524A74-34E6-4866-8309-1BDD1A34FADE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUtils.Timing.MicroProfiler", "GUtils.Timing.MicroProfiler\GUtils.Timing.MicroProfiler.csproj", "{39F4A358-7593-43C6-AC4D-12575D25832A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{88464A7D-1667-4EA0-A724-FE7306CEDBA1}"
+	ProjectSection(SolutionItems) = preProject
+		build\LibraryProject.props = build\LibraryProject.props
+		build\Shared.Compilation.props = build\Shared.Compilation.props
+		build\Shared.Defines.props = build\Shared.Defines.props
+		build\Shared.NugetPackage.props = build\Shared.NugetPackage.props
+		build\Shared.Packages.props = build\Shared.Packages.props
+		build\Shared.Props.props = build\Shared.Props.props
+		build\TestProject.props = build\TestProject.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -136,6 +140,7 @@ Global
 		{22CA35FB-52F1-414B-AEDF-24A446A94BFA} = {55138AAF-7418-4E62-AB3B-BF2CF73A8156}
 		{B1A64207-286C-4743-BEA4-A8FDC98998BE} = {55138AAF-7418-4E62-AB3B-BF2CF73A8156}
 		{A68C3D54-4460-4901-97AE-AB9ACEB2F4EA} = {35524A74-34E6-4866-8309-1BDD1A34FADE}
+		{88464A7D-1667-4EA0-A724-FE7306CEDBA1} = {EE807DE1-3E39-4E21-9EBD-1BEEDFC56A9C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2935DA65-CFF2-4F42-A80B-0E23EBB88B1B}

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../TestProject.props"/>
+  <Import Project="../build/TestProject.props"/>
 
   <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />

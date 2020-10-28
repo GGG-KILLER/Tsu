@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../TestProject.props"/>
+  <Import Project="../build/TestProject.props"/>
 
   <ItemGroup>
     <ProjectReference Include="..\GUtils.Testing\GUtils.Testing.csproj" />

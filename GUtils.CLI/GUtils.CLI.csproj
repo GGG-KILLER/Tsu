@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../LibraryProject.props" />
+  <Import Project="../build/LibraryProject.props" />
 
   <PropertyGroup>
     <PackageId>GUtils.CLI</PackageId>
