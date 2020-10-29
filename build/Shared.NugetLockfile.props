@@ -1,0 +1,8 @@
+<Project>
+
+  <PropertyGroup>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <NuGetLockFilePath>packages.lock.json</NuGetLockFilePath>
+  </PropertyGroup>
+  
+</Project>

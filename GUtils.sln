@@ -54,6 +54,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{88464A7D
 		build\LibraryProject.props = build\LibraryProject.props
 		build\Shared.Compilation.props = build\Shared.Compilation.props
 		build\Shared.Defines.props = build\Shared.Defines.props
+		build\Shared.NugetLockfile.props = build\Shared.NugetLockfile.props
 		build\Shared.NugetPackage.props = build\Shared.NugetPackage.props
 		build\Shared.Packages.props = build\Shared.Packages.props
 		build\Shared.Props.props = build\Shared.Props.props

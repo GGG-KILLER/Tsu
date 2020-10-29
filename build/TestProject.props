@@ -8,8 +8,9 @@
     <TargetFrameworks>$(TargetFrameworks);netcoreapp3.1;net5.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <NoWarn>CA17107</NoWarn>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
+
+  <Import Project="Shared.NugetLockfile.props" />
   
   <Import Project="Shared.Compilation.props" />
   
