@@ -1,0 +1,188 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" encoding="utf-8" #>
+<#
+    // The max type params in the BCL (in Func<...> at least)
+    const Int32 maxTypeParams = 16;
+
+    IEnumerable<String> getseq ( Int32 count, String prefix = "a" ) =>
+        Enumerable.Range ( 1, count ).Select ( n => $"{prefix}{n}" );
+
+    IEnumerable<String> gettparams ( Int32 count ) => getseq ( count, "T" );
+#>
+/*
+ * Copyright © 2019 GGG KILLER <gggkiller2@gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the “Software”), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+ * the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+using System;
+using System.Reflection;
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+
+namespace Tsu.Expressions
+{
+    /// <summary>
+    ///	Static class full of utilities for creating expression trees
+    /// </summary>
+    public static partial class GExpression
+    {
+        #region MethodCall (Generated Code)
+
+        /// <summary>
+        /// Creates a method call expression
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="instance"></param>
+        /// <param name="name"></param>
+        public static MethodCallExpression MethodCall ( Type type, Expression instance, String name )
+        {
+            if ( type is null )
+                throw new ArgumentNullException ( nameof ( type ) );
+
+            if ( String.IsNullOrWhiteSpace ( name ) )
+                throw new ArgumentException ( "The name of the method cannot be null, empty or whitespaces.", nameof ( name ) );
+
+            return Expression.Call ( instance, type.GetMethod ( name ) );
+        }
+
+        /// <summary>
+        /// Creates a method call expression
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="name"></param>
+        /// <typeparam name="TInstance"></typeparam>
+        public static MethodCallExpression MethodCall<TInstance> ( Expression instance, String name ) =>
+            MethodCall ( typeof ( TInstance ), instance, name );
+
+<#
+for ( var i = 1; i < maxTypeParams + 1; i++ )
+{
+    var tparams = gettparams ( i );
+#>
+        /// <summary>
+        /// Creates a method call expression
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="instance"></param>
+        /// <param name="name"></param>
+        /// <param name="args"></param>
+        public static MethodCallExpression MethodCall<<#=String.Join ( ", ", tparams )#>> ( Type type, Expression instance, String name, params Object[] args )
+        {
+            if ( type is null )
+                throw new ArgumentNullException ( nameof ( type ) );
+
+            if ( String.IsNullOrWhiteSpace ( name ) )
+                throw new ArgumentException ( "The method name cannot be null, empty or whitespaces.", nameof ( name ) );
+
+            if ( args is null )
+                throw new ArgumentNullException ( nameof ( args ) );
+
+            MethodInfo method = type.GetMethod ( name, new[]
+            {
+<#foreach ( var tparam in tparams ) {#>
+                typeof ( <#=tparam#> ),
+<#}#>
+            } );
+            ParameterInfo[] @params = method.GetParameters ( );
+
+            return Expression.Call ( instance, method, GetParametersExpressions ( @params, args ) );
+        }
+
+        /// <summary>
+        /// Creates a method call expression
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="name"></param>
+        /// <param name="args"></param>
+        public static MethodCallExpression MethodCall<TInstance, <#=String.Join ( ", ", tparams )#>> ( Expression instance, String name, params Expression[] args ) =>
+            MethodCall<<#=String.Join ( ", ", tparams )#>> ( typeof ( TInstance ), instance, name, args );
+
+<#}#>
+        #endregion MethodCall (Generated Code)
+<#/*--------------------------------------------------------------------------------------------------------------*/#>
+
+        #region New (Generated Code)
+
+        /// <summary>
+        /// Returns a <see cref="NewExpression" /> of <typeparamref name="TInstance" />
+        /// </summary>
+        public static NewExpression New<TInstance> ( ) =>
+            Expression.New ( typeof ( TInstance ) );
+
+<#
+for ( var i = 1; i < maxTypeParams + 1; i++ )
+{
+    var tparams = gettparams ( i );
+#>
+
+        /// <summary>
+        /// Returns a <see cref="NewExpression" /> of <typeparamref name="TInstance" />
+        /// </summary>
+        /// <param name="args"></param>
+        public static NewExpression New<TInstance, <#=String.Join ( ", ", tparams )#>> ( params Object[] args )
+        {
+            if ( args is null )
+                throw new ArgumentNullException ( nameof ( args ) );
+
+            ConstructorInfo constructor = typeof ( TInstance ).GetConstructor ( new[]
+            {
+<#foreach ( var tparam in tparams ) {#>
+                typeof ( <#=tparam#> ),
+<#}#>
+            } );
+            var @params = constructor.GetParameters ( );
+
+            return Expression.New ( constructor, GetParametersExpressions ( @params, args ) );
+        }
+<#
+}
+#>
+
+        #endregion New (Generated Code)
+<#/*--------------------------------------------------------------------------------------------------------------*/#>
+
+        #region Throw (Generated Code)
+
+        /// <summary>
+        /// Returns a throw expression of type <typeparamref name="TInstance" />
+        /// </summary>
+        public static UnaryExpression Throw<TInstance> ( ) where TInstance : Exception =>
+            Expression.Throw ( New<TInstance> ( ), typeof ( TInstance ) );
+
+<#
+for ( var i = 1; i < maxTypeParams + 1; i++ )
+{
+    var tparams = gettparams ( i );
+#>
+
+        /// <summary>
+        /// Returns a throw expression of type <typeparamref name="TInstance" />
+        /// </summary>
+        /// <param name="args"></param>
+        public static UnaryExpression Throw<TInstance, <#=String.Join ( ", ", tparams )#>> ( params Object[] args ) where TInstance : Exception =>
+            Expression.Throw ( New<TInstance, <#=String.Join ( ", ", tparams )#>> ( args ), typeof ( TInstance ) );
+<#
+}
+#>
+
+        #endregion Throw (Generated Code)
+    }
+}

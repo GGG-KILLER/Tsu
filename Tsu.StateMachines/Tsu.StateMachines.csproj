@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../build/LibraryProject.props" />
+
+  <PropertyGroup>
+    <PackageId>Tsu.StateMachines</PackageId>
+    <Version>3.0.0</Version>
+    <Description>State machines</Description>
+  </PropertyGroup>
+
+  <ItemGroup Condition="('$(TargetFrameworkIdentifier)' == '.NETFramework' AND '$(TargetFrameworkVersion)' &lt; '4.7')&#xD;&#xA;                        OR ('$(TargetFrameworkIdentifier)' == '.NETStandard' AND '$(TargetFrameworkVersion)' &lt; '2.0')">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Tsu.Expressions\Tsu.Expressions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+ 
+
+</Project>

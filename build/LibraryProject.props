@@ -20,10 +20,10 @@
     <Copyright>GGG KILLER © 2020</Copyright>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-    <RepositoryUrl>https://github.com/GGG-KILLER/GUtils.NET</RepositoryUrl>
+    <RepositoryUrl>https://github.com/GGG-KILLER/Tsu</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
 
-    <PackageProjectUrl>https://github.com/GGG-KILLER/GUtils.NET</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/GGG-KILLER/Tsu</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 

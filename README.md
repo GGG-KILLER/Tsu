@@ -1,18 +1,18 @@
-# GUtils.NET
+# Tsu (formerly GUtils)
 A general utilities library I made from things I use frequently in all of my projects.
 
 |          Project            |                                                                                  MyGet                                                                                   |
 | --------------------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| GUtils                      | [![Version](https://img.shields.io/myget/ggg-killer/v/GUtils.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/GUtils)                                           |
-| GUtils.CLI                  | [![Version](https://img.shields.io/myget/ggg-killer/v/GUtils.CLI.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/GUtils.CLI)                                   |
-| GUtils.Expressions          | [![Version](https://img.shields.io/myget/ggg-killer/v/GUtils.Expressions.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/GUtils.Expressions)                   |
-| GUtils.MVVM                 | [![Version](https://img.shields.io/myget/ggg-killer/v/GUtils.MVVM.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/GUtils.MVVM)                                 |
-| GUtils.Parsing.BBCode       | [![Version](https://img.shields.io/myget/ggg-killer/v/GUtils.Parsing.BBCode.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/GUtils.Parsing.BBCode)             |
-| GUtils.StateMachines        | [![Version](https://img.shields.io/myget/ggg-killer/v/GUtils.StateMachines.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/GUtils.StateMachines)               |
-| GUtils.Testing              | [![Version](https://img.shields.io/myget/ggg-killer/v/GUtils.Testing.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/GUtils.Testing)                           |
-| GUtils.Text.Code            | [![Version](https://img.shields.io/myget/ggg-killer/v/GUtils.Text.Code.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/GUtils.Text.Code)                       |
-| GUtils.Timing.MicroProfiler | [![Version](https://img.shields.io/myget/ggg-killer/v/GUtils.Timing.MicroProfiler.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/GUtils.Timing.MicroProfiler) |
-| GUtils.Windows              | [![Version](https://img.shields.io/myget/ggg-killer/v/GUtils.Windows.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/GUtils.Windows)                           |
+| Tsu                      | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu)                                           |
+| Tsu.CLI                  | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.CLI.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.CLI)                                   |
+| Tsu.Expressions          | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.Expressions.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.Expressions)                   |
+| Tsu.MVVM                 | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.MVVM.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.MVVM)                                 |
+| Tsu.Parsing.BBCode       | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.Parsing.BBCode.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.Parsing.BBCode)             |
+| Tsu.StateMachines        | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.StateMachines.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.StateMachines)               |
+| Tsu.Testing              | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.Testing.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.Testing)                           |
+| Tsu.Text.Code            | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.Text.Code.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.Text.Code)                       |
+| Tsu.Timing.MicroProfiler | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.Timing.MicroProfiler.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.Timing.MicroProfiler) |
+| Tsu.Windows              | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.Windows.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.Windows)                           |
 
 # Features
 -- TODO --

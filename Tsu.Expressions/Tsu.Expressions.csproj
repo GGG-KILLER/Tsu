@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../build/LibraryProject.props" />
+
+  <PropertyGroup>
+    <PackageId>Tsu.Expressions</PackageId>
+    <Version>3.0.0</Version>
+    <Description>An expression trees utilities library.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="GExpression.Generated.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GExpression.Generated.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="GExpression.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GExpression.Generated.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

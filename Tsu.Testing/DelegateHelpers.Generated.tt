@@ -1,0 +1,127 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" encoding="utf-8" #>
+<#
+    // The max type params in the BCL (in Func<...> at least)
+    const Int32 maxTypeParams = 16;
+
+    IEnumerable<String> getseq ( Int32 count, String prefix = "a" ) =>
+        Enumerable.Range ( 1, count ).Select ( n => $"{prefix}{n}" );
+
+    IEnumerable<String> gettparams ( Int32 count ) => getseq ( count, "T" );
+#>
+/*
+ * Copyright © 2020 GGG KILLER <gggkiller2@gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the “Software”), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+ * the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+using System;
+
+namespace Tsu.Testing
+{
+    /// <summary>
+    /// A class that contains helpers for dealing with delegates.
+    /// </summary>
+    public static partial class DelegateHelpers
+    {
+        /// <summary>
+        /// Wraps the provided delegate into a <see cref="DelegateInvocationCounter{T}"/>.
+        /// </summary>
+        /// <param name="delegate"></param>
+        /// <returns></returns>
+        public static DelegateInvocationCounter<Action> TrackInvocationCount ( Action @delegate )
+        {
+            var counter = new DelegateInvocationCounter<Action> ( );
+            counter.WrappedDelegate = ( ) =>
+            {
+                counter.Increment ( );
+                @delegate ( );
+            };
+            return counter;
+        }
+<#
+for ( var i = 1; i < maxTypeParams + 1; i++ )
+{
+    var tparams = gettparams ( i );
+    var tparamsGenerics = String.Join ( ", ", tparams );
+    var args = getseq ( i, "arg" );
+    var tparamsArgs = tparams.Zip ( args, ( tparam, arg ) => $"{tparam} {arg}" );
+#>
+
+        /// <summary>
+        /// Wraps the provided delegate into a <see cref="DelegateInvocationCounter{T}"/>.
+        /// </summary>
+        /// <param name="delegate"></param>
+        /// <returns></returns>
+        public static DelegateInvocationCounter<Action<<#=tparamsGenerics#>>> TrackInvocationCount<<#=tparamsGenerics#>> ( Action<<#=tparamsGenerics#>> @delegate )
+        {
+            var counter = new DelegateInvocationCounter<Action<<#=tparamsGenerics#>>> ( );
+            counter.WrappedDelegate = ( <#=String.Join ( ", ", args )#> ) =>
+            {
+                counter.Increment ( );
+                @delegate ( <#=String.Join ( ", ", args )#> );
+            };
+            return counter;
+        }
+<#}#>
+
+        /// <summary>
+        /// Wraps the provided delegate into a <see cref="DelegateInvocationCounter{T}"/>.
+        /// </summary>
+        /// <param name="delegate"></param>
+        /// <returns></returns>
+        public static DelegateInvocationCounter<Func<TReturn>> TrackInvocationCount<TReturn> ( Func<TReturn> @delegate )
+        {
+            var counter = new DelegateInvocationCounter<Func<TReturn>> ( );
+            counter.WrappedDelegate = ( ) =>
+            {
+                counter.Increment ( );
+                return @delegate ( );
+            };
+            return counter;
+        }
+<#
+for ( var i = 1; i < maxTypeParams + 1; i++ )
+{
+    var tparams = gettparams ( i );
+    var tparamsGenerics = String.Join ( ", ", tparams );
+    var args = getseq ( i, "arg" );
+    var tparamsArgs = tparams.Zip ( args, ( tparam, arg ) => $"{tparam} {arg}" );
+#>
+
+        /// <summary>
+        /// Wraps the provided delegate into a <see cref="DelegateInvocationCounter{T}"/>.
+        /// </summary>
+        /// <param name="delegate"></param>
+        /// <returns></returns>
+        public static DelegateInvocationCounter<Func<<#=tparamsGenerics#>, TReturn>> TrackInvocationCount<<#=tparamsGenerics#>, TReturn> ( Func<<#=tparamsGenerics#>, TReturn> @delegate )
+        {
+            var counter = new DelegateInvocationCounter<Func<<#=tparamsGenerics#>, TReturn>> ( );
+            counter.WrappedDelegate = ( <#=String.Join ( ", ", args )#> ) =>
+            {
+                counter.Increment ( );
+                return @delegate ( <#=String.Join ( ", ", args )#> );
+            };
+            return counter;
+        }
+<#}#>
+    }
+}
