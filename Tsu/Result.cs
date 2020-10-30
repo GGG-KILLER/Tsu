@@ -269,6 +269,7 @@ namespace Tsu
 
         #region Object
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression (Valid for some target frameworks)
 #pragma warning disable CS8604 // Possible null reference argument. (We ensure null passes only when it's safe)
 
         /// <inheritdoc />
@@ -284,6 +285,7 @@ namespace Tsu
                    && EqualityComparer<TErr>.Default.Equals ( ( TErr ) obj, this._err ) );
 
 #pragma warning restore CS8604 // Possible null reference argument. (We ensure null passes only when it's safe)
+#pragma warning restore IDE0079 // Remove unnecessary suppression (Valid for some target frameworks)
 
         /// <inheritdoc />
         public override Int32 GetHashCode ( )
