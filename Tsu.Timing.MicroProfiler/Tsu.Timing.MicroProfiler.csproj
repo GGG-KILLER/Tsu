@@ -4,17 +4,14 @@
 
   <PropertyGroup>
     <PackageId>Tsu.Timing.MicroProfiler</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Description>Contains the MicroProfiler class.</Description>
     <DefineConstants>$(DefineConstants);IS_MICROPROFILER_PACKAGE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="../Tsu/Buffers/BitVectorHelpers.cs"/>
-    <Compile Include="../Tsu/Buffers/BitVectorHelpers.Generated.cs"/>
-    <Compile Include="../Tsu/Buffers/VariableLengthBitVector.cs"/>
-    <Compile Include="../Tsu/Numerics/Duration.cs"/>
-    <Compile Include="../Tsu/Timing/MicroProfiler.cs"/>
+    <Compile Include="../Tsu/Numerics/Duration.cs" />
+    <Compile Include="../Tsu/Timing/MicroProfiler.cs" />
   </ItemGroup>
 
 </Project>

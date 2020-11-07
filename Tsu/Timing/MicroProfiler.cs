@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Tsu.Buffers;
 using Tsu.Numerics;
 
 namespace Tsu.Timing
@@ -123,7 +122,7 @@ namespace Tsu.Timing
             if ( builder is null )
                 throw new ArgumentNullException ( nameof ( builder ) );
 
-            this.WriteTreeString ( builder, 0, new VariableLengthBitVector ( ) );
+            this.WriteTreeString ( builder, "", true, true );
         }
 
         /// <summary>
@@ -150,37 +149,24 @@ namespace Tsu.Timing
         /// <param name="builder">
         /// The <see cref="StringBuilder" /> where all output will be written to.
         /// </param>
-        /// <param name="depth">How deep we're in the <see cref="MicroProfiler" /> tree.</param>
-        /// <param name="isLastBitVector">
-        /// This bit vector stores whether an item at any given depth was the last children of its
-        /// parent.
+        /// <param name="indent">The indentation up to this level.</param>
+        /// <param name="isLast">
+        /// Whether this is the last compiler in it's parent node.
         /// </param>
-        private void WriteTreeString ( StringBuilder builder, Int32 depth, VariableLengthBitVector isLastBitVector )
+        /// <param name="isRoot">Whether this is the root microprofiler.</param>
+        private void WriteTreeString ( StringBuilder builder, String indent = "", Boolean isLast = true, Boolean isRoot = false )
         {
-            if ( depth > 0 )
-            {
-                for ( var i = 0; i < depth - 1; i++ )
-                {
-                    builder.Append ( isLastBitVector[i] ? ' ' : '│' )
-                           .Append ( "  " );
-                }
-
-                builder.Append ( isLastBitVector[depth - 1] ? '└' : '├' )
-                       .Append ( "─ " );
-            }
+            builder.Append ( indent );
+            if ( !isRoot )
+                builder.Append ( isLast ? "└─ " : "├─ " );
             builder.AppendLine ( $"{this.Name}: {Duration.Format ( this._stopwatch.ElapsedTicks )}" );
 
-            depth++;
-            isLastBitVector[depth] = false;
+            if ( !isRoot )
+                indent += isLast ? "   " : "|  ";
             List<MicroProfiler> childResults = this._childProfilers;
             for ( var i = 0; i < childResults.Count; i++ )
             {
-                if ( i == childResults.Count - 1 )
-                {
-                    isLastBitVector[depth] = true;
-                }
-
-                childResults[i].WriteTreeString ( builder, depth, isLastBitVector );
+                childResults[i].WriteTreeString ( builder, indent, i == childResults.Count - 1 );
             }
         }
     }
