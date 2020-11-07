@@ -64,7 +64,7 @@ jobs:
     - name: Publish packages
       run: |
         Get-ChildItem -Path ./packages/ -Filter *.nupkg -File -Name | ForEach-Object {
-          dotnet nuget push ./packages/$_ --source https://www.myget.org/F/ggg-killer/api/v3/index.json --api-key ${{ secrets.MYGET_API_KEY }} --skip-duplicate 
+          dotnet nuget push ./packages/$_ --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate 
         }
       shell: pwsh
   train:
