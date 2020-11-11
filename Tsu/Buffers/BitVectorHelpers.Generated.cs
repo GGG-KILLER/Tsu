@@ -9,12 +9,7 @@ namespace Tsu.Buffers
     /// A class with helpers to deal with Spans and Arrays being used as bit vectors.
     /// </summary>
     [GeneratedCode ( "BitVectorHelpers.Generated.tt", "1.0" )]
-#if IS_MICROPROFILER_PACKAGE
-    internal
-#else
-    public
-#endif
-        static partial class BitVectorHelpers
+    public static partial class BitVectorHelpers
     {
         #region Byte
 
