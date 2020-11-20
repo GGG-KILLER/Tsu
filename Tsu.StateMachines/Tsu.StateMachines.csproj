@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <PackageId>Tsu.StateMachines</PackageId>
-    <Version>3.0.0</Version>
+    <Version>3.0.1</Version>
     <Description>State machines</Description>
   </PropertyGroup>
 

@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <PackageId>Tsu.Timing.MicroProfiler</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Description>Contains the MicroProfiler class.</Description>
     <DefineConstants>$(DefineConstants);IS_MICROPROFILER_PACKAGE</DefineConstants>
   </PropertyGroup>
