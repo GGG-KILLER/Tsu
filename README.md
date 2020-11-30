@@ -1,21 +1,21 @@
 # Tsu (formerly GUtils)
 A general utilities library I made from things I use frequently in all of my projects.
 
-|          Project            |                                                                                  MyGet                                                                                   |
+|          Project            |                                                                                  NuGet                                                                                   |
 | --------------------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| Tsu                      | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu)                                           |
-| Tsu.CLI                  | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.CLI.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.CLI)                                   |
-| Tsu.Expressions          | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.Expressions.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.Expressions)                   |
-| Tsu.MVVM                 | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.MVVM.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.MVVM)                                 |
-| Tsu.Parsing.BBCode       | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.Parsing.BBCode.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.Parsing.BBCode)             |
-| Tsu.StateMachines        | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.StateMachines.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.StateMachines)               |
-| Tsu.Testing              | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.Testing.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.Testing)                           |
-| Tsu.Text.Code            | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.Text.Code.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.Text.Code)                       |
-| Tsu.Timing.MicroProfiler | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.Timing.MicroProfiler.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.Timing.MicroProfiler) |
-| Tsu.Windows              | [![Version](https://img.shields.io/myget/ggg-killer/v/Tsu.Windows.svg)](https://www.myget.org/feed/ggg-killer/package/nuget/Tsu.Windows)                           |
+| Tsu                         | [![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Tsu.svg)](https://www.nuget.org/packages/Tsu/)                                                            |
+| Tsu.CLI                     | [![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Tsu.CLI.svg)](https://www.nuget.org/packages/Tsu.CLI/)                                                    |
+| Tsu.Expressions             | [![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Tsu.Expressions.svg)](https://www.nuget.org/packages/Tsu.Expressions/)                                    |
+| Tsu.MVVM                    | [![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Tsu.MVVM.svg)](https://www.nuget.org/packages/Tsu.MVVM/)                                                  |
+| Tsu.Parsing.BBCode          | [![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Tsu.Parsing.BBCode.svg)](https://www.nuget.org/packages/Tsu.Parsing.BBCode/)                              |
+| Tsu.StateMachines           | [![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Tsu.StateMachines.svg)](https://www.nuget.org/packages/Tsu.StateMachines/)                                |
+| Tsu.Testing                 | [![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Tsu.Testing.svg)](https://www.nuget.org/packages/Tsu.Testing/)                                            |
+| Tsu.Text.Code               | [![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Tsu.Text.Code.svg)](https://www.nuget.org/packages/Tsu.Text.Code/)                                        |
+| Tsu.Timing.MicroProfiler    | [![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Tsu.Timing.MicroProfiler.svg)](https://www.nuget.org/packages/Tsu.Timing.MicroProfiler/)                  |
+| Tsu.Windows                 | [![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Tsu.Windows.svg)](https://www.nuget.org/packages/Tsu.Windows/)                                            |
 
 # Features
 -- TODO --
 
 # License
-MIT Licence: https://gggkiller.mit-license.org/
+MIT Licence
