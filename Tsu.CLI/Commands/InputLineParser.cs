@@ -1,21 +1,19 @@
-/*
- * Copyright © 2019 GGG KILLER <gggkiller2@gmail.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
- * and associated documentation files (the “Software”), to deal in the Software without
- * restriction, including without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
- * the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
- * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+// Copyright © 2016 GGG KILLER <gggkiller2@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the “Software”), to deal in the Software without
+// restriction, including without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
@@ -30,63 +28,63 @@ namespace Tsu.CLI.Commands
     /// </summary>
     public class InputLineParser
     {
-        [MethodImpl ( MethodImplOptions.AggressiveInlining )]
-        private static Boolean IsInRange ( Char start, Char value, Char end ) =>
-            ( UInt32 ) ( value - start ) <= ( end - start );
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsInRange(char start, char value, char end) =>
+            (uint) (value - start) <= (end - start);
 
-        private readonly String Input;
-        private Int32 Offset;
+        private readonly string Input;
+        private int Offset;
 
-        private InputLineParser ( String input )
+        private InputLineParser(string input)
         {
-            this.Input = input;
-            this.Offset = 0;
+            Input = input;
+            Offset = 0;
         }
 
-        private String ParseQuotedString ( Char separator )
+        private string ParseQuotedString(char separator)
         {
-            var start = this.Offset;
-            this.Offset++;
+            var start = Offset;
+            Offset++;
 
-            var builder = new StringBuilder ( );
+            var builder = new StringBuilder();
 
-            while ( this.Offset < this.Input.Length && this.Input[this.Offset] != separator )
-                builder.Append ( this.ParseCharacter ( ) );
+            while (Offset < Input.Length && Input[Offset] != separator)
+                builder.Append(ParseCharacter());
 
-            if ( this.Offset == this.Input.Length || this.Input[this.Offset] != separator )
-                throw new InputLineParseException ( "Unfinished quoted string literal.", start );
+            if (Offset == Input.Length || Input[Offset] != separator)
+                throw new InputLineParseException("Unfinished quoted string literal.", start);
 
             // skip '<separator>'
-            this.Offset++;
+            Offset++;
 
-            return builder.ToString ( );
+            return builder.ToString();
         }
 
-        private Char ParseCharacter ( )
+        private char ParseCharacter()
         {
-            if ( this.Input[this.Offset] == '\\' )
+            if (Input[Offset] == '\\')
             {
-                this.Offset++;
-                if ( this.Offset == this.Input.Length )
-                    throw new InputLineParseException ( "Unfinished escape.", this.Offset - 1 );
+                Offset++;
+                if (Offset == Input.Length)
+                    throw new InputLineParseException("Unfinished escape.", Offset - 1);
 
-                switch ( this.Input[this.Offset++] )
+                switch (Input[Offset++])
                 {
                     case 'a':
                         return '\a';
 
                     case 'b':
                     {
-                        if ( this.Input[this.Offset] != '0' && this.Input[this.Offset] != '1' )
+                        if (Input[Offset] != '0' && Input[Offset] != '1')
                             return '\b';
 
-                        var idx = this.Offset;
-                        while ( this.Input[idx] == '0' || this.Input[idx] == '1' )
+                        var idx = Offset;
+                        while (Input[idx] == '0' || Input[idx] == '1')
                             idx++;
 
-                        var num = this.Input.Substring ( this.Offset, idx - this.Offset );
-                        this.Offset = idx;
-                        return ( Char ) Convert.ToUInt32 ( num, 2 );
+                        var num = Input.Substring(Offset, idx - Offset);
+                        Offset = idx;
+                        return (char) Convert.ToUInt32(num, 2);
                     }
 
                     case 'f':
@@ -97,15 +95,15 @@ namespace Tsu.CLI.Commands
 
                     case 'o':
                     {
-                        var idx = this.Offset;
-                        while ( IsInRange ( '0', this.Input[idx], '8' ) )
+                        var idx = Offset;
+                        while (IsInRange('0', Input[idx], '8'))
                             idx++;
-                        if ( this.Offset == idx )
-                            throw new InputLineParseException ( "Invalid octal escape.", this.Offset - 2 );
+                        if (Offset == idx)
+                            throw new InputLineParseException("Invalid octal escape.", Offset - 2);
 
-                        var num = this.Input.Substring ( this.Offset, idx - this.Offset );
-                        this.Offset = idx;
-                        return ( Char ) Convert.ToUInt32 ( num, 8 );
+                        var num = Input.Substring(Offset, idx - Offset);
+                        Offset = idx;
+                        return (char) Convert.ToUInt32(num, 8);
                     }
 
                     case 'r':
@@ -119,21 +117,21 @@ namespace Tsu.CLI.Commands
 
                     case 'x':
                     {
-                        var idx = this.Offset;
-                        while ( idx < this.Input.Length
-                                && ( IsInRange ( '0', this.Input[idx], '9' )
-                                     || IsInRange ( 'a', this.Input[idx], 'f' )
-                                     || IsInRange ( 'A', this.Input[idx], 'F' ) ) )
+                        var idx = Offset;
+                        while (idx < Input.Length
+                               && (IsInRange('0', Input[idx], '9')
+                                   || IsInRange('a', Input[idx], 'f')
+                                   || IsInRange('A', Input[idx], 'F')))
                         {
                             idx++;
                         }
 
-                        if ( this.Offset == idx )
-                            throw new InputLineParseException ( "Invalid hexadecimal escape.", this.Offset - 2 );
+                        if (Offset == idx)
+                            throw new InputLineParseException("Invalid hexadecimal escape.", Offset - 2);
 
-                        var num = this.Input.Substring ( this.Offset, idx - this.Offset );
-                        this.Offset = idx;
-                        return ( Char ) Convert.ToUInt32 ( num, 16 );
+                        var num = Input.Substring(Offset, idx - Offset);
+                        Offset = idx;
+                        return (char) Convert.ToUInt32(num, 16);
                     }
 
                     case ' ':
@@ -148,100 +146,100 @@ namespace Tsu.CLI.Commands
                     case '\\':
                         return '\\';
 
-                    case Char ch when IsInRange ( '0', ch, '9' ):
+                    case char ch when IsInRange('0', ch, '9'):
                     {
                         // We ended up consuming one of the digits on this one
-                        this.Offset--;
-                        var idx = this.Offset;
-                        while ( IsInRange ( '0', this.Input[idx], '9' ) )
+                        Offset--;
+                        var idx = Offset;
+                        while (IsInRange('0', Input[idx], '9'))
                             idx++;
-                        if ( this.Offset == idx )
-                            throw new InputLineParseException ( "Invalid decimal escape.", this.Offset - 2 );
+                        if (Offset == idx)
+                            throw new InputLineParseException("Invalid decimal escape.", Offset - 2);
 
-                        var num = this.Input.Substring ( this.Offset, idx - this.Offset );
-                        this.Offset = idx;
-                        return ( Char ) Convert.ToUInt32 ( num, 10 );
+                        var num = Input.Substring(Offset, idx - Offset);
+                        Offset = idx;
+                        return (char) Convert.ToUInt32(num, 10);
                     }
 
                     default:
-                        throw new InputLineParseException ( "Invalid character escape", this.Offset - 1 );
+                        throw new InputLineParseException("Invalid character escape", Offset - 1);
                 }
             }
-            else if ( this.Offset < this.Input.Length )
+            else if (Offset < Input.Length)
             {
-                return this.Input[this.Offset++];
+                return Input[Offset++];
             }
             else
             {
-                throw new InputLineParseException ( "Expected char but got EOF", this.Offset );
+                throw new InputLineParseException("Expected char but got EOF", Offset);
             }
         }
 
-        private String ParseSpaceSeparatedSection ( )
+        private string ParseSpaceSeparatedSection()
         {
-            var builder = new StringBuilder ( );
+            var builder = new StringBuilder();
 
-            while ( this.Offset < this.Input.Length
-            && !Char.IsWhiteSpace ( this.Input[this.Offset] ) )
+            while (Offset < Input.Length
+            && !char.IsWhiteSpace(Input[Offset]))
             {
-                builder.Append ( this.ParseCharacter ( ) );
+                builder.Append(ParseCharacter());
             }
 
-            return builder.ToString ( );
+            return builder.ToString();
         }
 
-        private void ConsumeWhitespaces ( )
+        private void ConsumeWhitespaces()
         {
-            while ( this.Offset < this.Input.Length
-                    && Char.IsWhiteSpace ( this.Input[this.Offset] ) )
+            while (Offset < Input.Length
+                   && char.IsWhiteSpace(Input[Offset]))
             {
-                this.Offset++;
+                Offset++;
             }
         }
 
-        private IEnumerable<String> Parse ( )
+        private IEnumerable<string> Parse()
         {
-            while ( this.Offset < this.Input.Length )
+            while (Offset < Input.Length)
             {
-                switch ( this.Input[this.Offset] )
+                switch (Input[Offset])
                 {
                     // Skip all whitespaces outside of quotes
-                    case Char ch when Char.IsWhiteSpace ( ch ):
-                        this.ConsumeWhitespaces ( );
+                    case char ch when char.IsWhiteSpace(ch):
+                        ConsumeWhitespaces();
                         break;
 
                     // Parse quoted strings
-                    case Char ch when ch == '\'' || ch == '"':
-                        yield return this.ParseQuotedString ( ch );
+                    case char ch when ch == '\'' || ch == '"':
+                        yield return ParseQuotedString(ch);
                         break;
 
                     // (raw)Rest """operator""" (r:)
                     case 'r':
 
                         // Raw rest
-                        if ( this.Input[this.Offset + 1] == 'r'
-                            && this.Input[this.Offset + 2] == ':' )
+                        if (Input[Offset + 1] == 'r'
+                            && Input[Offset + 2] == ':')
                         {
                             // Move from 'r' while skipping 'r' and ':'
-                            this.Offset += 3;
+                            Offset += 3;
 
-                            yield return this.Input.Substring ( this.Offset );
-                            this.Offset = this.Input.Length;
+                            yield return Input.Substring(Offset);
+                            Offset = Input.Length;
                             break;
                         }
-                        else if ( this.Input[this.Offset + 1] == ':' )
+                        else if (Input[Offset + 1] == ':')
                         {
                             // Move from 'r' while skipping ':'
-                            this.Offset += 2;
+                            Offset += 2;
 
-                            var builder = new StringBuilder ( );
-                            while ( this.Offset < this.Input.Length )
-                                builder.Append ( this.ParseCharacter ( ) );
-                            this.Offset = this.Input.Length;
+                            var builder = new StringBuilder();
+                            while (Offset < Input.Length)
+                                builder.Append(ParseCharacter());
+                            Offset = Input.Length;
 
                             // We do not return non-explicit empty strings under any circumstances
-                            if ( builder.Length > 0 )
-                                yield return builder.ToString ( );
+                            if (builder.Length > 0)
+                                yield return builder.ToString();
                             break;
                         }
                         else
@@ -251,7 +249,7 @@ namespace Tsu.CLI.Commands
 
                     // Normal space-separated string
                     default:
-                        yield return this.ParseSpaceSeparatedSection ( );
+                        yield return ParseSpaceSeparatedSection();
                         break;
                 }
             }
@@ -262,7 +260,7 @@ namespace Tsu.CLI.Commands
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        public static IEnumerable<String> Parse ( String line ) =>
-            new InputLineParser ( line ).Parse ( );
+        public static IEnumerable<string> Parse(string line) =>
+            new InputLineParser(line).Parse();
     }
 }

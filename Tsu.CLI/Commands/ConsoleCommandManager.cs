@@ -1,21 +1,20 @@
-﻿/*
- * Copyright © 2019 GGG KILLER <gggkiller2@gmail.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
- * and associated documentation files (the “Software”), to deal in the Software without
- * restriction, including without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
- * the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
- * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+﻿// Copyright © 2016 GGG KILLER <gggkiller2@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the “Software”), to deal in the Software without
+// restriction, including without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -32,17 +31,17 @@ namespace Tsu.CLI.Commands
         /// <summary>
         /// The prompt to print before asking the user for a command
         /// </summary>
-        public String Prompt { get; set; } = "> ";
+        public string Prompt { get; set; } = "> ";
 
         /// <summary>
         /// Whether the loop of this <see cref="ConsoleCommandManager" /> is being executed
         /// </summary>
-        public Boolean IsRunning { get; private set; }
+        public bool IsRunning { get; private set; }
 
         /// <summary>
         /// Whether exit commands were registered with
         /// </summary>
-        public Boolean HasExitCommand { get; private set; }
+        public bool HasExitCommand { get; private set; }
 
         /// <summary>
         /// <para>
@@ -54,7 +53,7 @@ namespace Tsu.CLI.Commands
         /// <summary>
         /// Initializes a console command manager
         /// </summary>
-        public ConsoleCommandManager ( ) : base ( )
+        public ConsoleCommandManager() : base()
         {
         }
 
@@ -65,29 +64,29 @@ namespace Tsu.CLI.Commands
         /// </summary>
         /// <param name="verb"></param>
         /// <returns>The <see cref="CompiledCommandManager" /> created for the verb</returns>
-        public override CompiledCommandManager AddVerb ( String verb )
+        public override CompiledCommandManager AddVerb(string verb)
         {
-            if ( String.IsNullOrWhiteSpace ( verb ) )
-                throw new ArgumentException ( "Verb cannot be null, empty or contain any whitespaces.", nameof ( verb ) );
-            if ( verb.Any ( Char.IsWhiteSpace ) )
-                throw new ArgumentException ( "Verb cannot have whitespaces.", nameof ( verb ) );
-            if ( this.CommandDictionary.ContainsKey ( verb ) )
-                throw new InvalidOperationException ( "A command with this name already exists." );
+            if (string.IsNullOrWhiteSpace(verb))
+                throw new ArgumentException("Verb cannot be null, empty or contain any whitespaces.", nameof(verb));
+            if (verb.Any(char.IsWhiteSpace))
+                throw new ArgumentException("Verb cannot have whitespaces.", nameof(verb));
+            if (CommandDictionary.ContainsKey(verb))
+                throw new InvalidOperationException("A command with this name already exists.");
 
             // Verb creation
-            var verbCommandManager = new ConsoleCommandManager ( );
-            var verbInst = new Verb ( verbCommandManager );
+            var verbCommandManager = new ConsoleCommandManager();
+            var verbInst = new Verb(verbCommandManager);
 
             // Command registering
-            var command = new VerbCompiledCommand (
+            var command = new VerbCompiledCommand(
                 verbCommandManager,
-                typeof ( Verb ).GetMethod ( nameof ( Verb.RunCommand ), BindingFlags.Instance | BindingFlags.Public ),
+                typeof(Verb).GetMethod(nameof(Verb.RunCommand), BindingFlags.Instance | BindingFlags.Public),
                 verbInst,
                 new[] { verb },
                 isRaw: true
             );
-            this.CommandList.Add ( command );
-            this.CommandLookupTable[verb] = command;
+            CommandList.Add(command);
+            CommandLookupTable[verb] = command;
 
             return verbInst.Manager;
         }
@@ -97,8 +96,8 @@ namespace Tsu.CLI.Commands
         /// <summary>
         /// Adds the <see cref="ConsoleHelpCommand" /> to this command manager
         /// </summary>
-        public void AddHelpCommand ( ) =>
-            this.AddHelpCommand ( new ConsoleHelpCommand ( this ) );
+        public void AddHelpCommand() =>
+            AddHelpCommand(new ConsoleHelpCommand(this));
 
         #region Command Loop
 
@@ -106,29 +105,29 @@ namespace Tsu.CLI.Commands
         /// Registers a command to end the command loop with the provided names
         /// </summary>
         /// <param name="names">All possible names for the exit command</param>
-        public void AddStopCommand ( params String[] names )
+        public void AddStopCommand(params string[] names)
         {
-            if ( names == null )
-                throw new ArgumentNullException ( nameof ( names ) );
-            if ( names.Length < 1 )
-                throw new ArgumentException ( "No names provided.", nameof ( names ) );
+            if (names == null)
+                throw new ArgumentNullException(nameof(names));
+            if (names.Length < 1)
+                throw new ArgumentException("No names provided.", nameof(names));
 
-            var exitCommand = new CompiledCommand (
-                typeof ( ConsoleCommandManager ).GetMethod ( nameof ( Stop ) ),
+            var exitCommand = new CompiledCommand(
+                typeof(ConsoleCommandManager).GetMethod(nameof(Stop)),
                 this,
                 names,
-                "Exits this command loop." );
-            this.CommandList.Add ( exitCommand );
-            foreach ( var name in names )
-                this.CommandLookupTable[name] = exitCommand;
-            this.HasExitCommand = true;
+                "Exits this command loop.");
+            CommandList.Add(exitCommand);
+            foreach (var name in names)
+                CommandLookupTable[name] = exitCommand;
+            HasExitCommand = true;
         }
 
-        private static void PrintError ( String line )
+        private static void PrintError(string line)
         {
-            ConsoleColor fgc = Console.ForegroundColor;
+            var fgc = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine ( line );
+            Console.WriteLine(line);
             Console.ForegroundColor = fgc;
         }
 
@@ -148,38 +147,38 @@ namespace Tsu.CLI.Commands
         /// event.
         /// </para>
         /// </remarks>
-        public void Start ( )
+        public void Start()
         {
-            if ( this.IsRunning )
-                throw new InvalidOperationException ( "Loop is already running" );
+            if (IsRunning)
+                throw new InvalidOperationException("Loop is already running");
 
-            this.IsRunning = true;
-            while ( this.IsRunning )
+            IsRunning = true;
+            while (IsRunning)
             {
-                String line = null;
+                string line = null;
                 try
                 {
-                    Console.Write ( this.Prompt );
-                    this.Execute ( line = Console.ReadLine ( ) );
+                    Console.Write(Prompt);
+                    Execute(line = Console.ReadLine());
                 }
-                catch ( Errors.NonExistentCommandException nce )
+                catch (Errors.NonExistentCommandException nce)
                 {
-                    PrintError ( $"Command '{nce.Command}' does not exist." );
+                    PrintError($"Command '{nce.Command}' does not exist.");
                 }
-                catch ( Errors.CommandInvocationException cie )
+                catch (Errors.CommandInvocationException cie)
                 {
-                    PrintError ( $"Error while executing command '{cie.Command}': {cie.Message}" );
-                    Debug.WriteLine ( cie );
+                    PrintError($"Error while executing command '{cie.Command}': {cie.Message}");
+                    Debug.WriteLine(cie);
                 }
-                catch ( Errors.InputLineParseException ipe )
+                catch (Errors.InputLineParseException ipe)
                 {
-                    PrintError ( $@"Error while parsing input: {ipe.Message}
+                    PrintError($@"Error while parsing input: {ipe.Message}
 {line}
-{new String ( ' ', ipe.Offset )}^" );
+{new string(' ', ipe.Offset)}^");
                 }
-                catch ( Exception ex ) when ( this.CommandExecutionErrored != null )
+                catch (Exception ex) when (CommandExecutionErrored != null)
                 {
-                    this.CommandExecutionErrored?.Invoke ( this, ex );
+                    CommandExecutionErrored?.Invoke(this, ex);
                 }
             }
         }
@@ -187,12 +186,12 @@ namespace Tsu.CLI.Commands
         /// <summary>
         /// Stops the command loop execution
         /// </summary>
-        public void Stop ( )
+        public void Stop()
         {
-            if ( !this.IsRunning )
-                throw new InvalidOperationException ( "Loop is not running" );
+            if (!IsRunning)
+                throw new InvalidOperationException("Loop is not running");
 
-            this.IsRunning = false;
+            IsRunning = false;
         }
 
         #endregion Command Loop
