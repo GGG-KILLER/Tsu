@@ -164,7 +164,6 @@ namespace Tsu.Text.Code
             Write(value);
         }
 
-
         /// <summary>
         /// Writes a formatted string to the output preceded by indentation.
         /// </summary>
@@ -176,7 +175,6 @@ namespace Tsu.Text.Code
             WriteIndentation();
             Write(format, args);
         }
-
 
         /// <summary>
         /// Writes a formatted string to the output preceded by indentation.
@@ -246,7 +244,6 @@ namespace Tsu.Text.Code
             WriteLine(value);
         }
 
-
         /// <summary>
         /// Writes a formatted string to the output preceded by indentation and followed by a line separator.
         /// </summary>
@@ -258,7 +255,6 @@ namespace Tsu.Text.Code
             WriteIndentation();
             WriteLine(format, args);
         }
-
 
         /// <summary>
         /// Writes a formatted string to the output preceded by indentation and followed by a line separator.

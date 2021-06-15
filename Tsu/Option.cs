@@ -382,7 +382,6 @@ namespace Tsu
         /// </returns>
         public static bool operator !=(Option<T> left, T right) => !(left == right);
 
-
         /// <summary>
         /// Checks whether this <see cref="Option{T}"/> is Some(T).
         /// </summary>
@@ -405,7 +404,6 @@ namespace Tsu
         [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "Static method Option.Some<T>(T) exists.")]
         public static implicit operator Option<T>(T value) =>
             new Option<T>(value);
-
 
         /// <summary>
         /// Attempts to obtain the <see cref="Value"/> from an <see cref="Option{T}"/>.

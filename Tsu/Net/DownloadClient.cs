@@ -60,7 +60,6 @@ namespace Tsu.Net
             BytesReceived == other.BytesReceived
             && TotalBytes == other.TotalBytes;
 
-
         /// <summary>
         /// </summary>
         /// <returns></returns>

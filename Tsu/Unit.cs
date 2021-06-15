@@ -48,7 +48,6 @@ namespace Tsu
         /// <inheritdoc/>
         public override string ToString() => "()";
 
-
         /// <summary>
         /// Checks if one <see cref="Unit"/> equals other <see cref="Unit"/>.
         /// Always true because <see cref="Unit"/> can only assume 1 value.
