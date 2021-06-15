@@ -36,6 +36,10 @@ namespace Tsu
     /// /> or <see cref="Option.Some{T}(T)" />.
     /// </summary>
     /// <typeparam name="T">The type this option wraps.</typeparam>
+    /// <remarks>
+    /// This type implements <see cref="operator true(Option{T})"/> and <see cref="operator false(Option{T})"/> so you
+    /// can use it directly in a condition to check if it is Some(T).
+    /// </remarks>
     [SuppressMessage ( "Naming", "CA1716:Identifiers should not match keywords", Justification = "It is the name of the type in rust." )]
     [DebuggerDisplay ( "{" + nameof ( GetDebuggerDisplay ) + "(),nq}" )]
     public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
@@ -82,6 +86,20 @@ namespace Tsu
         {
             this.IsSome = true;
             this._some = value;
+        }
+
+        /// <summary>
+        /// Attempts to get the value from this option.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>
+        /// <see langword="true"/> if this option is Some(T);
+        /// <para><see langword="false"/> if this option is None.</para>
+        /// </returns>
+        public Boolean TryGetValue ( out T value )
+        {
+            value = this._some;
+            return this.IsSome;
         }
 
         /// <summary>
@@ -240,7 +258,7 @@ namespace Tsu
             ( obj is Option<T> option && this.Equals ( option ) )
             // `default(T) is null` is used here to check if T is a reference type.
             // `typeof(T).IsClass` cannot be turned into a constant by the JIT: https://sharplab.io/#v2:EYLgHgbALANALiAhgZwLYB8ACAGABJgRgDoAlAVwDs4BLVAUyIGEB7VAB2oBs6AnAZV4A3agGM6yANwBYAFCzMAZnwAmXI1wBvWbh24A2gFk6cABbMAJgEl2nABRHTF6204B5NjWYVkRAIIBzfx5xZGpBOksKTmoKGP8ASgBdbV1FXGBmZk5cAwIAHgAVAD5beM0U3VSAdlxzOgAzRDJOOFsCsupkXApmzmkZSoBfCtwRw2MzKxt7Cacbd09vP0Dg5FDwyOjYigTkgdSlDKyc5UKSsq19yp1MGrgATzY6Znq2+KJLZEZOFEkR4auo0BaSO2QAGgQCKURpdrtUcvkYnBzv0hiMRiDMuCCMpoYDYXD8DUDKckSj/ujgYcsbgwcoofEYSNKrcEXlCNhyYCAZUMdTjnTcYz8cz4ST2QROaVUboAYMgA=
-            || ( ( obj is T || ( default ( T ) is null && obj is null ) ) && this.Equals ( ( T ) obj ) );
+            || ( ( obj is T || ( default ( T ) is null && obj is null ) ) && this.Equals ( ( T? ) obj ) );
 
         /// <inheritdoc />
         public override Int32 GetHashCode ( )
@@ -347,6 +365,22 @@ namespace Tsu
         /// </returns>
         public static Boolean operator != ( Option<T> left, T right ) => !( left == right );
 
+
+        /// <summary>
+        /// Checks whether this <see cref="Option{T}"/> is Some(T).
+        /// </summary>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        [SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Users can check IsSome." )]
+        public static Boolean operator true ( Option<T> option ) => option.IsSome;
+
+        /// <summary>
+        /// Checks whether this <see cref="Option{T}"/> is None.
+        /// </summary>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        public static Boolean operator false ( Option<T> option ) => option.IsNone;
+
         /// <summary>
         /// Converts a value to a <see cref="Option.Some{T}(T)" /> option.
         /// </summary>
@@ -354,6 +388,15 @@ namespace Tsu
         [SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Static method Option.Some<T>(T) exists." )]
         public static implicit operator Option<T> ( T value ) =>
             new Option<T> ( value );
+
+
+        /// <summary>
+        /// Attempts to obtain the <see cref="Value"/> from an <see cref="Option{T}"/>.
+        /// </summary>
+        /// <param name="option"></param>
+        [SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "This is just a shortcut to the Value property." )]
+        public static explicit operator T ( Option<T> option ) =>
+            option.Value;
 
         #endregion Operators
 
