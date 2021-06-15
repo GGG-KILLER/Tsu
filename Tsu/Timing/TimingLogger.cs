@@ -1,21 +1,19 @@
-﻿/*
- * Copyright © 2019 GGG KILLER <gggkiller2@gmail.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
- * and associated documentation files (the “Software”), to deal in the Software without
- * restriction, including without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
- * the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
- * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+﻿// Copyright © 2016 GGG KILLER <gggkiller2@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the “Software”), to deal in the Software without
+// restriction, including without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
@@ -75,7 +73,7 @@ namespace Tsu.Timing
             /// <summary>
             /// The user provided name of the scope
             /// </summary>
-            public String Name { get; }
+            public string Name { get; }
 
             /// <summary>
             /// The <see cref="Elapsed"/> at which this scope was entered
@@ -85,7 +83,7 @@ namespace Tsu.Timing
             /// <summary>
             /// Whether the amount of time elapsed on this scope should be printed at the end.
             /// </summary>
-            public Boolean ShouldPrintElapsedTime { get; }
+            public bool ShouldPrintElapsedTime { get; }
 
             /// <summary>
             /// Initializes a scope
@@ -94,22 +92,22 @@ namespace Tsu.Timing
             /// <param name="name"></param>
             /// <param name="startedAt"></param>
             /// <param name="shouldPrintElapsedTime"></param>
-            public Scope ( TimingLogger owner, String name, TimeSpan startedAt, Boolean shouldPrintElapsedTime )
+            public Scope(TimingLogger owner, string name, TimeSpan startedAt, bool shouldPrintElapsedTime)
             {
-                this._owner = owner;
-                this.Name = name;
-                this.StartedAt = startedAt;
-                this.ShouldPrintElapsedTime = shouldPrintElapsedTime;
+                _owner = owner;
+                Name = name;
+                StartedAt = startedAt;
+                ShouldPrintElapsedTime = shouldPrintElapsedTime;
             }
 
-            private Boolean disposed;
+            private bool disposed;
 
-            void IDisposable.Dispose ( )
+            void IDisposable.Dispose()
             {
-                if ( !this.disposed )
+                if (!disposed)
                 {
-                    this._owner.EndScope ( this );
-                    this.disposed = true;
+                    _owner.EndScope(this);
+                    disposed = true;
                 }
             }
         }
@@ -124,7 +122,7 @@ namespace Tsu.Timing
             /// <summary>
             /// The user provided name of the scope
             /// </summary>
-            public String Name { get; }
+            public string Name { get; }
 
             /// <summary>
             /// The <see cref="Elapsed"/> at which this scope was entered
@@ -134,7 +132,7 @@ namespace Tsu.Timing
             /// <summary>
             /// Whether the amount of time elapsed on this scope should be printed at the end.
             /// </summary>
-            public Boolean ShouldPrintElapsedTime { get; }
+            public bool ShouldPrintElapsedTime { get; }
 
             /// <summary>
             /// Initializes a scope
@@ -143,22 +141,22 @@ namespace Tsu.Timing
             /// <param name="name"></param>
             /// <param name="startedAt"></param>
             /// <param name="shouldPrintElapsedTime"></param>
-            public Operation ( TimingLogger owner, String name, TimeSpan startedAt, Boolean shouldPrintElapsedTime )
+            public Operation(TimingLogger owner, string name, TimeSpan startedAt, bool shouldPrintElapsedTime)
             {
-                this._owner = owner;
-                this.Name = name;
-                this.StartedAt = startedAt;
-                this.ShouldPrintElapsedTime = shouldPrintElapsedTime;
+                _owner = owner;
+                Name = name;
+                StartedAt = startedAt;
+                ShouldPrintElapsedTime = shouldPrintElapsedTime;
             }
 
-            private Boolean disposed;
+            private bool disposed;
 
-            void IDisposable.Dispose ( )
+            void IDisposable.Dispose()
             {
-                if ( !this.disposed )
+                if (!disposed)
                 {
-                    this._owner.EndOperation ( this );
-                    this.disposed = true;
+                    _owner.EndOperation(this);
+                    disposed = true;
                 }
             }
         }
@@ -169,7 +167,7 @@ namespace Tsu.Timing
         /// <summary>
         /// Whether the current line has already been prefixed
         /// </summary>
-        protected Boolean HasLineBeenPrefixed { get; set; }
+        protected bool HasLineBeenPrefixed { get; set; }
 
         #region Logging Level Colors
 
@@ -219,22 +217,22 @@ namespace Tsu.Timing
         /// </code>
         /// prefixes according to the message's <see cref="LogLevel"/>
         /// </summary>
-        public Boolean PrintLevelPrefixes { get; set; }
+        public bool PrintLevelPrefixes { get; set; }
 
         /// <summary>
         /// The amount of time elapsed since this logger started
         /// </summary>
-        public TimeSpan Elapsed => this.stopwatch.Elapsed;
+        public TimeSpan Elapsed => stopwatch.Elapsed;
 
         /// <summary>
         /// Initializes a TimingLogger
         /// </summary>
-        protected TimingLogger ( )
+        protected TimingLogger()
         {
-            this.stopwatch = Stopwatch.StartNew ( );
-            this.scopes = new Stack<Scope> ( );
-            this.MinimumLogLevel = LogLevel.Debug;
-            this.PrintLevelPrefixes = true;
+            stopwatch = Stopwatch.StartNew();
+            scopes = new Stack<Scope>();
+            MinimumLogLevel = LogLevel.Debug;
+            PrintLevelPrefixes = true;
         }
 
         #region I/O
@@ -243,27 +241,27 @@ namespace Tsu.Timing
         /// Writes a value to the output
         /// </summary>
         /// <param name="str"></param>
-        protected abstract void WriteInternal ( String str );
+        protected abstract void WriteInternal(string str);
 
         /// <summary>
         /// Writes a value to the output with a given color
         /// </summary>
         /// <param name="str"></param>
         /// <param name="color"></param>
-        protected abstract void WriteInternal ( String str, ConsoleColor color );
+        protected abstract void WriteInternal(string str, ConsoleColor color);
 
         /// <summary>
         /// Writes a value to the output followed by a line break
         /// </summary>
         /// <param name="line"></param>
-        protected abstract void WriteLineInternal ( String line );
+        protected abstract void WriteLineInternal(string line);
 
         /// <summary>
         /// Writes a value to the output followed by a line break with a given color
         /// </summary>
         /// <param name="line"></param>
         /// <param name="color"></param>
-        protected abstract void WriteLineInternal ( String line, ConsoleColor color );
+        protected abstract void WriteLineInternal(string line, ConsoleColor color);
 
         #endregion I/O
 
@@ -273,35 +271,35 @@ namespace Tsu.Timing
         /// Writes the elapsed time and the <see cref="LogLevel"/> prefix, if enabled through <see cref="PrintLevelPrefixes"/>
         /// </summary>
         /// <param name="level"></param>
-        protected virtual void WriteLinePrefix ( LogLevel level )
+        protected virtual void WriteLinePrefix(LogLevel level)
         {
-            this.WriteInternal ( $"[{this.Elapsed:hh\\:mm\\:ss\\.ffffff}]{new String ( ' ', this.scopes.Count * 4 )}" );
-            if ( !this.PrintLevelPrefixes || level < LogLevel.Debug || level > LogLevel.Error )
+            WriteInternal($"[{Elapsed:hh\\:mm\\:ss\\.ffffff}]{new string(' ', scopes.Count * 4)}");
+            if (!PrintLevelPrefixes || level < LogLevel.Debug || level > LogLevel.Error)
                 return;
 
-            this.WriteInternal ( "[" );
-            switch ( level )
+            WriteInternal("[");
+            switch (level)
             {
                 case LogLevel.Debug:
-                    this.WriteInternal ( "DBUG", this.DebugColor );
+                    WriteInternal("DBUG", DebugColor);
                     break;
 
                 case LogLevel.Information:
-                    this.WriteInternal ( "INFO", this.InformationColor );
+                    WriteInternal("INFO", InformationColor);
                     break;
 
                 case LogLevel.Warning:
-                    this.WriteInternal ( "WARN", this.WarningColor );
+                    WriteInternal("WARN", WarningColor);
                     break;
 
                 case LogLevel.Error:
-                    this.WriteInternal ( "FAIL", this.ErrorColor );
+                    WriteInternal("FAIL", ErrorColor);
                     break;
 
                 default:
                     break;
             }
-            this.WriteInternal ( "]" );
+            WriteInternal("]");
         }
 
         /// <summary>
@@ -309,42 +307,42 @@ namespace Tsu.Timing
         /// </summary>
         /// <param name="level"></param>
         /// <param name="message"></param>
-        [SuppressMessage ( "Style", "IDE0056:Use index operator", Justification = "Not available in all target frameworks." )]
-        [SuppressMessage ( "CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable to some target frameworks." )]
-        private void ProcessWrite ( LogLevel level, String message )
+        [SuppressMessage("Style", "IDE0056:Use index operator", Justification = "Not available in all target frameworks.")]
+        [SuppressMessage("CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable to some target frameworks.")]
+        private void ProcessWrite(LogLevel level, string message)
         {
-            if ( !this.HasLineBeenPrefixed )
+            if (!HasLineBeenPrefixed)
             {
-                this.WriteLinePrefix ( level );
-                this.HasLineBeenPrefixed = true;
+                WriteLinePrefix(level);
+                HasLineBeenPrefixed = true;
             }
 
             if (
 #if HAS_STRING__CONTAINS_CHAR
-                message.Contains ( '\n', StringComparison.Ordinal )
+                message.Contains('\n', StringComparison.Ordinal)
 #else
-                CultureInfo.InvariantCulture.CompareInfo.IndexOf ( message, '\n', CompareOptions.Ordinal ) >= 0
+                CultureInfo.InvariantCulture.CompareInfo.IndexOf(message, '\n', CompareOptions.Ordinal) >= 0
 #endif
             )
             {
-                var lines = message.Split ( new[] { "\r\n", "\n" }, StringSplitOptions.None );
-                this.WriteLineInternal ( lines[0] );
-                for ( var i = 1; i < lines.Length - 1; i++ )
+                var lines = message.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                WriteLineInternal(lines[0]);
+                for (var i = 1; i < lines.Length - 1; i++)
                 {
-                    this.WriteLinePrefix ( level );
-                    this.WriteLineInternal ( lines[i] );
+                    WriteLinePrefix(level);
+                    WriteLineInternal(lines[i]);
                 }
 
-                if ( lines.Length > 1 && !String.IsNullOrEmpty ( lines[lines.Length - 1] ) )
+                if (lines.Length > 1 && !string.IsNullOrEmpty(lines[lines.Length - 1]))
                 {
                     var lastLine = lines[lines.Length - 1];
-                    this.WriteLinePrefix ( level );
-                    this.WriteInternal ( lastLine );
+                    WriteLinePrefix(level);
+                    WriteInternal(lastLine);
                 }
             }
             else
             {
-                this.WriteInternal ( message );
+                WriteInternal(message);
             }
         }
 
@@ -353,14 +351,14 @@ namespace Tsu.Timing
         /// </summary>
         /// <param name="level"></param>
         /// <param name="message"></param>
-        protected virtual void ProcessWriteLine ( LogLevel level, String message )
+        protected virtual void ProcessWriteLine(LogLevel level, string message)
         {
-            if ( message is null )
-                throw new ArgumentNullException ( nameof ( message ) );
+            if (message is null)
+                throw new ArgumentNullException(nameof(message));
 
-            this.ProcessWrite ( level, message );
-            this.WriteLineInternal ( "" );
-            this.HasLineBeenPrefixed = false;
+            ProcessWrite(level, message);
+            WriteLineInternal("");
+            HasLineBeenPrefixed = false;
         }
 
         #endregion Input message processing
@@ -371,19 +369,19 @@ namespace Tsu.Timing
         /// Writes a value to the output
         /// </summary>
         /// <param name="value"></param>
-        public void Write ( Object value ) =>
-            this.ProcessWrite ( LogLevel.None, value?.ToString ( ) ?? "" );
+        public void Write(object value) =>
+            ProcessWrite(LogLevel.None, value?.ToString() ?? "");
 
         /// <summary>
         /// Writes a value to the output
         /// </summary>
         /// <param name="value"></param>
-        public void Write ( String value )
+        public void Write(string value)
         {
-            if ( value is null )
-                throw new ArgumentNullException ( nameof ( value ) );
+            if (value is null)
+                throw new ArgumentNullException(nameof(value));
 
-            this.ProcessWrite ( LogLevel.None, value );
+            ProcessWrite(LogLevel.None, value);
         }
 
         /// <summary>
@@ -391,32 +389,32 @@ namespace Tsu.Timing
         /// </summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
-        [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "As designed." )]
-        public void Write ( String format, params Object[] args ) =>
-            this.ProcessWrite ( LogLevel.None, String.Format ( format, args ) );
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "As designed.")]
+        public void Write(string format, params object[] args) =>
+            ProcessWrite(LogLevel.None, string.Format(format, args));
 
         /// <summary>
         /// Writes a value to the output followed by a new line
         /// </summary>
         /// <param name="value"></param>
-        public void WriteLine ( Object value ) =>
-            this.ProcessWriteLine ( LogLevel.None, value?.ToString ( ) ?? "" );
+        public void WriteLine(object value) =>
+            ProcessWriteLine(LogLevel.None, value?.ToString() ?? "");
 
         /// <summary>
         /// Writes a value to the output followed by a new line
         /// </summary>
         /// <param name="value"></param>
-        public void WriteLine ( String value ) =>
-            this.ProcessWriteLine ( LogLevel.None, value );
+        public void WriteLine(string value) =>
+            ProcessWriteLine(LogLevel.None, value);
 
         /// <summary>
         /// Writes a value to the output followed by a new line
         /// </summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
-        [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "As designed." )]
-        public void WriteLine ( String format, params Object[] args ) =>
-            this.ProcessWriteLine ( LogLevel.None, String.Format ( format, args ) );
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "As designed.")]
+        public void WriteLine(string format, params object[] args) =>
+            ProcessWriteLine(LogLevel.None, string.Format(format, args));
 
         #endregion Public Simple I/O
 
@@ -427,12 +425,12 @@ namespace Tsu.Timing
         /// </summary>
         /// <param name="level"></param>
         /// <param name="message"></param>
-        public virtual void LogMessage ( LogLevel level, String message )
+        public virtual void LogMessage(LogLevel level, string message)
         {
-            if ( level < this.MinimumLogLevel )
+            if (level < MinimumLogLevel)
                 return;
 
-            this.ProcessWriteLine ( level, message );
+            ProcessWriteLine(level, message);
         }
 
         /// <summary>
@@ -441,74 +439,74 @@ namespace Tsu.Timing
         /// <param name="level"></param>
         /// <param name="format"></param>
         /// <param name="args"></param>
-        [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "As designed." )]
-        public virtual void LogMessage ( LogLevel level, String format, params Object[] args )
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "As designed.")]
+        public virtual void LogMessage(LogLevel level, string format, params object[] args)
         {
-            if ( level < this.MinimumLogLevel )
+            if (level < MinimumLogLevel)
                 return;
 
-            this.ProcessWriteLine ( level, String.Format ( format, args ) );
+            ProcessWriteLine(level, string.Format(format, args));
         }
 
         /// <summary>
         /// Logs a debug message to the output
         /// </summary>
         /// <param name="message"></param>
-        public void LogDebug ( String message ) =>
-            this.LogMessage ( LogLevel.Debug, message );
+        public void LogDebug(string message) =>
+            LogMessage(LogLevel.Debug, message);
 
         /// <summary>
         /// Logs a debug message to the output
         /// </summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
-        public void LogDebug ( String format, params Object[] args ) =>
-            this.LogMessage ( LogLevel.Debug, format, args );
+        public void LogDebug(string format, params object[] args) =>
+            LogMessage(LogLevel.Debug, format, args);
 
         /// <summary>
         /// Logs an information message to the output
         /// </summary>
         /// <param name="message"></param>
-        public void LogInformation ( String message ) =>
-            this.LogMessage ( LogLevel.Information, message );
+        public void LogInformation(string message) =>
+            LogMessage(LogLevel.Information, message);
 
         /// <summary>
         /// Logs an information message to the output
         /// </summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
-        public void LogInformation ( String format, params Object[] args ) =>
-            this.LogMessage ( LogLevel.Information, format, args );
+        public void LogInformation(string format, params object[] args) =>
+            LogMessage(LogLevel.Information, format, args);
 
         /// <summary>
         /// Logs a warning message to the outout
         /// </summary>
         /// <param name="message"></param>
-        public void LogWarning ( String message ) =>
-            this.LogMessage ( LogLevel.Warning, message );
+        public void LogWarning(string message) =>
+            LogMessage(LogLevel.Warning, message);
 
         /// <summary>
         /// Logs a warning message to the outout
         /// </summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
-        public void LogWarning ( String format, params Object[] args ) =>
-            this.LogMessage ( LogLevel.Warning, format, args );
+        public void LogWarning(string format, params object[] args) =>
+            LogMessage(LogLevel.Warning, format, args);
 
         /// <summary>
         /// Logs an error message to the output
         /// </summary>
         /// <param name="message"></param>
-        public void LogError ( String message ) =>
-            this.LogMessage ( LogLevel.Error, message );
+        public void LogError(string message) =>
+            LogMessage(LogLevel.Error, message);
 
         /// <summary>
         /// Logs an error message to the output
         /// </summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
-        public void LogError ( String format, params Object[] args ) =>
-            this.LogMessage ( LogLevel.Error, format, args );
+        public void LogError(string format, params object[] args) =>
+            LogMessage(LogLevel.Error, format, args);
 
         #endregion Message Logging
 
@@ -522,34 +520,34 @@ namespace Tsu.Timing
         /// Whether the elapsed time on this scope should be printed at it's disposal
         /// </param>
         /// <returns></returns>
-        public IDisposable BeginScope ( String name, Boolean shouldPrintElapsedTime = true )
+        public IDisposable BeginScope(string name, bool shouldPrintElapsedTime = true)
         {
-            this.WriteLine ( $"{name}..." );
-            this.WriteLine ( "{" );
-            var scope = new Scope ( this, name, this.Elapsed, shouldPrintElapsedTime );
-            this.scopes.Push ( scope );
+            WriteLine($"{name}...");
+            WriteLine("{");
+            var scope = new Scope(this, name, Elapsed, shouldPrintElapsedTime);
+            scopes.Push(scope);
             return scope;
         }
 
-        [SuppressMessage ( "Globalization", "CA1304:Specify CultureInfo", Justification = "By design." )]
-        [SuppressMessage ( "Style", "IDE0057:Substring can be simplified", Justification = "Not available in all target frameworks." )]
-        [SuppressMessage ( "CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable to some target frameworks." )]
-        private static String UnCapitalize ( String text ) =>
-            text.Length > 1 ? Char.ToLower ( text[0] ) + text.Substring ( 1 ) : text.ToLower ( );
+        [SuppressMessage("Globalization", "CA1304:Specify CultureInfo", Justification = "By design.")]
+        [SuppressMessage("Style", "IDE0057:Substring can be simplified", Justification = "Not available in all target frameworks.")]
+        [SuppressMessage("CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable to some target frameworks.")]
+        private static string UnCapitalize(string text) =>
+            text.Length > 1 ? char.ToLower(text[0]) + text.Substring(1) : text.ToLower();
 
-        private void EndScope ( Scope scope )
+        private void EndScope(Scope scope)
         {
-            if ( this.scopes.Count < 1 )
-                throw new InvalidOperationException ( "No scopes to end." );
+            if (scopes.Count < 1)
+                throw new InvalidOperationException("No scopes to end.");
 
-            if ( !this.scopes.Peek ( ).Equals ( scope ) )
-                throw new InvalidOperationException ( "Attempt to end outer scope without ending inner scope(s)." );
+            if (!scopes.Peek().Equals(scope))
+                throw new InvalidOperationException("Attempt to end outer scope without ending inner scope(s).");
 
-            if ( scope.ShouldPrintElapsedTime )
-                this.WriteLine ( $"Elapsed {Duration.Format ( ( this.Elapsed - scope.StartedAt ).Ticks )} in {UnCapitalize ( scope.Name )}." );
+            if (scope.ShouldPrintElapsedTime)
+                WriteLine($"Elapsed {Duration.Format((Elapsed - scope.StartedAt).Ticks)} in {UnCapitalize(scope.Name)}.");
 
-            this.scopes.Pop ( );
-            this.WriteLine ( "}" );
+            scopes.Pop();
+            WriteLine("}");
         }
 
         #endregion Scope Management
@@ -558,23 +556,23 @@ namespace Tsu.Timing
 
         /// <summary>
         /// Begins an operation that won't have any logging inside it. For operations that will
-        /// oputput logs, use <see cref="BeginScope(String, Boolean)"/>.
+        /// oputput logs, use <see cref="BeginScope(string, bool)"/>.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="shouldPrintElapsedTime"></param>
         /// <returns></returns>
-        public IDisposable BeginOperation ( String name, Boolean shouldPrintElapsedTime = true )
+        public IDisposable BeginOperation(string name, bool shouldPrintElapsedTime = true)
         {
-            this.Write ( $"{name}..." );
-            return new Operation ( this, name, this.Elapsed, shouldPrintElapsedTime );
+            Write($"{name}...");
+            return new Operation(this, name, Elapsed, shouldPrintElapsedTime);
         }
 
-        private void EndOperation ( Operation operation )
+        private void EndOperation(Operation operation)
         {
-            if ( operation.ShouldPrintElapsedTime )
-                this.WriteLine ( $" done. ({Duration.Format ( ( this.Elapsed - operation.StartedAt ).Ticks )})" );
+            if (operation.ShouldPrintElapsedTime)
+                WriteLine($" done. ({Duration.Format((Elapsed - operation.StartedAt).Ticks)})");
             else
-                this.WriteLine ( $" done." );
+                WriteLine($" done.");
         }
 
         #endregion Operation Management

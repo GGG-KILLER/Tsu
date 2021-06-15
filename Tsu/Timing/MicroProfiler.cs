@@ -1,21 +1,20 @@
-﻿/*
- * Copyright © 2019 GGG KILLER <gggkiller2@gmail.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
- * and associated documentation files (the “Software”), to deal in the Software without
- * restriction, including without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
- * the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
- * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+﻿// Copyright © 2016 GGG KILLER <gggkiller2@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the “Software”), to deal in the Software without
+// restriction, including without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,7 +26,7 @@ namespace Tsu.Timing
     /// <summary>
     /// A micro profiler. Basically a tree of Stopwatches with associated names.
     /// </summary>
-    [DebuggerDisplay ( "{" + nameof ( GetDebuggerDisplay ) + "(),nq}" )]
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public sealed class MicroProfiler : IDisposable
     {
         /// <summary>
@@ -35,10 +34,10 @@ namespace Tsu.Timing
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static MicroProfiler StartNew ( String name )
+        public static MicroProfiler StartNew(string name)
         {
-            var prof = new MicroProfiler ( name );
-            prof._stopwatch.Start ( );
+            var prof = new MicroProfiler(name);
+            prof._stopwatch.Start();
             return prof;
         }
 
@@ -55,17 +54,17 @@ namespace Tsu.Timing
         /// <summary>
         /// The name associated with this microprofiler
         /// </summary>
-        public String Name { get; }
+        public string Name { get; }
 
         /// <summary>
         /// The list of child microprofilers
         /// </summary>
-        public IReadOnlyList<MicroProfiler> ChildProfilers => this._childProfilers;
+        public IReadOnlyList<MicroProfiler> ChildProfilers => _childProfilers;
 
         /// <summary>
         /// The total milliseconds elapsed on this operation
         /// </summary>
-        public Double ElapsedMilliseconds => this._stopwatch.ElapsedTicks / Duration.TicksPerMillisecond;
+        public double ElapsedMilliseconds => _stopwatch.ElapsedTicks / Duration.TicksPerMillisecond;
 
         /// <summary>
         /// Initializes a new MicroProfiler with the given name.
@@ -73,11 +72,11 @@ namespace Tsu.Timing
         /// Does NOT start the internal stopwatch.
         /// </summary>
         /// <param name="name"></param>
-        public MicroProfiler ( String name )
+        public MicroProfiler(string name)
         {
-            this.Name = name ?? throw new ArgumentNullException ( nameof ( name ) );
-            this._childProfilers = new List<MicroProfiler> ( );
-            this._stopwatch = new Stopwatch ( );
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            _childProfilers = new List<MicroProfiler>();
+            _stopwatch = new Stopwatch();
         }
 
         /// <summary>
@@ -86,43 +85,43 @@ namespace Tsu.Timing
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public MicroProfiler StartChild ( String name )
+        public MicroProfiler StartChild(string name)
         {
-            MicroProfiler res = StartNew ( name );
-            this._childProfilers.Add ( res );
+            var res = StartNew(name);
+            _childProfilers.Add(res);
             return res;
         }
 
         /// <summary>
         /// Starts the internal stopwatch
         /// </summary>
-        public void Start ( ) => this._stopwatch.Start ( );
+        public void Start() => _stopwatch.Start();
 
         /// <summary>
         /// Restarts the internal stopwatch
         /// </summary>
-        public void Restart ( ) => this._stopwatch.Restart ( );
+        public void Restart() => _stopwatch.Restart();
 
         /// <summary>
         /// Stops the internal stopwatch
         /// </summary>
-        public void Stop ( ) => this._stopwatch.Stop ( );
+        public void Stop() => _stopwatch.Stop();
 
         /// <summary>
         /// Resets the internal stopwatch
         /// </summary>
-        public void Reset ( ) => this._stopwatch.Reset ( );
+        public void Reset() => _stopwatch.Reset();
 
         /// <summary>
         /// Writes the tree of timings to the provided <paramref name="builder" />.
         /// </summary>
         /// <param name="builder"></param>
-        public void WriteTreeString ( StringBuilder builder )
+        public void WriteTreeString(StringBuilder builder)
         {
-            if ( builder is null )
-                throw new ArgumentNullException ( nameof ( builder ) );
+            if (builder is null)
+                throw new ArgumentNullException(nameof(builder));
 
-            this.WriteTreeString ( builder, "", true, true );
+            WriteTreeString(builder, "", true, true);
         }
 
         /// <summary>
@@ -130,17 +129,17 @@ namespace Tsu.Timing
         /// </summary>
         /// <remarks>Uses the followign unicode characters: │, ├, ─ and └</remarks>
         /// <returns></returns>
-        public override String ToString ( )
+        public override string ToString()
         {
-            var sb = new StringBuilder ( );
-            this.WriteTreeString ( sb );
-            return sb.ToString ( );
+            var sb = new StringBuilder();
+            WriteTreeString(sb);
+            return sb.ToString();
         }
 
         /// <inheritdoc/>
-        public void Dispose ( ) => this.Stop ( );
+        public void Dispose() => Stop();
 
-        private String GetDebuggerDisplay ( ) => this.ToString ( );
+        private string GetDebuggerDisplay() => ToString();
 
         /// <summary>
         /// Recursively writes the tree containing all timings to the provided
@@ -154,19 +153,19 @@ namespace Tsu.Timing
         /// Whether this is the last compiler in it's parent node.
         /// </param>
         /// <param name="isRoot">Whether this is the root microprofiler.</param>
-        private void WriteTreeString ( StringBuilder builder, String indent = "", Boolean isLast = true, Boolean isRoot = false )
+        private void WriteTreeString(StringBuilder builder, string indent = "", bool isLast = true, bool isRoot = false)
         {
-            builder.Append ( indent );
-            if ( !isRoot )
-                builder.Append ( isLast ? "└─ " : "├─ " );
-            builder.AppendLine ( $"{this.Name}: {Duration.Format ( this._stopwatch.ElapsedTicks )}" );
+            builder.Append(indent);
+            if (!isRoot)
+                builder.Append(isLast ? "└─ " : "├─ ");
+            builder.AppendLine($"{Name}: {Duration.Format(_stopwatch.ElapsedTicks)}");
 
-            if ( !isRoot )
+            if (!isRoot)
                 indent += isLast ? "   " : "|  ";
-            List<MicroProfiler> childResults = this._childProfilers;
-            for ( var i = 0; i < childResults.Count; i++ )
+            var childResults = _childProfilers;
+            for (var i = 0; i < childResults.Count; i++)
             {
-                childResults[i].WriteTreeString ( builder, indent, i == childResults.Count - 1 );
+                childResults[i].WriteTreeString(builder, indent, i == childResults.Count - 1);
             }
         }
     }

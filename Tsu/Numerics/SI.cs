@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright © 2016 GGG KILLER <gggkiller2@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the “Software”), to deal in the Software without
+// restriction, including without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -14,89 +31,89 @@ namespace Tsu.Numerics
         /// <summary>
         /// The regular expression used for parsing floating point file sizes. Accepts 0.0, 0.0B and 0.0KiB
         /// </summary>
-        private static readonly Regex _floatParseRegex = new Regex ( @"^\s*(?<number>-?(?:\d+\.\d+|\d+|\.\d+))\s*(?<suffix>y|z|a|f|p|n|u|μ|m||k|M|G|T|P|E|Z|Y)\w*\s*$",
-                                                                     RegexOptions.Compiled | RegexOptions.CultureInvariant,
-                                                                     TimeSpan.FromMilliseconds ( 250 ) );
+        private static readonly Regex _floatParseRegex = new Regex(@"^\s*(?<number>-?(?:\d+\.\d+|\d+|\.\d+))\s*(?<suffix>y|z|a|f|p|n|u|μ|m||k|M|G|T|P|E|Z|Y)\w*\s*$",
+                                                                   RegexOptions.Compiled | RegexOptions.CultureInvariant,
+                                                                   TimeSpan.FromMilliseconds(250));
 
         /// <summary>
         /// A yotta (Y)
         /// </summary>
-        public const Double Yotta = Zetta * 1000;
+        public const double Yotta = Zetta * 1000;
 
         /// <summary>
         /// A zetta (Z)
         /// </summary>
-        public const Double Zetta = Exa * 1000;
+        public const double Zetta = Exa * 1000;
 
         /// <summary>
         /// An exa (E)
         /// </summary>
-        public const Double Exa = Peta * 1000;
+        public const double Exa = Peta * 1000;
 
         /// <summary>
         /// A peta (P)
         /// </summary>
-        public const Double Peta = Tera * 1000;
+        public const double Peta = Tera * 1000;
 
         /// <summary>
         /// A tera (T)
         /// </summary>
-        public const Double Tera = Giga * 1000;
+        public const double Tera = Giga * 1000;
 
         /// <summary>
         /// A giga (G)
         /// </summary>
-        public const Double Giga = Mega * 1000;
+        public const double Giga = Mega * 1000;
 
         /// <summary>
         /// A mega (M)
         /// </summary>
-        public const Double Mega = Kilo * 1000;
+        public const double Mega = Kilo * 1000;
 
         /// <summary>
         /// A kilo (k)
         /// </summary>
-        public const Double Kilo = 1000;
+        public const double Kilo = 1000;
 
         /// <summary>
         /// A milli (m)
         /// </summary>
-        public const Double Milli = 0.001;
+        public const double Milli = 0.001;
 
         /// <summary>
         /// A micro (μ)
         /// </summary>
-        public const Double Micro = Milli * 0.001;
+        public const double Micro = Milli * 0.001;
 
         /// <summary>
         /// A nano (n)
         /// </summary>
-        public const Double Nano = Micro * 0.001;
+        public const double Nano = Micro * 0.001;
 
         /// <summary>
         /// A pico (p)
         /// </summary>
-        public const Double Pico = Nano * 0.001;
+        public const double Pico = Nano * 0.001;
 
         /// <summary>
         /// A femto (f)
         /// </summary>
-        public const Double Femto = Pico * 0.001;
+        public const double Femto = Pico * 0.001;
 
         /// <summary>
         /// An atto (a)
         /// </summary>
-        public const Double Atto = Femto * 0.001;
+        public const double Atto = Femto * 0.001;
 
         /// <summary>
         /// A zepto (z)
         /// </summary>
-        public const Double Zepto = Atto * 0.001;
+        public const double Zepto = Atto * 0.001;
 
         /// <summary>
         /// A yocto (y)
         /// </summary>
-        public const Double Yocto = Zepto * 0.001;
+        public const double Yocto = Zepto * 0.001;
 
         /// <summary>
         /// Returns the pair of objects used in suffixing a SI number
@@ -105,9 +122,9 @@ namespace Tsu.Numerics
         /// <param name="scaledNumber">The scaled down number.</param>
         /// <param name="suffix">The suffix of the scaled down number.</param>
         /// <returns></returns>
-        public static void GetFormatPair ( Double number, out Double scaledNumber, out String suffix )
+        public static void GetFormatPair(double number, out double scaledNumber, out string suffix)
         {
-            if ( Double.IsInfinity ( number ) || Double.IsNaN ( number ) || number == 0D || number == -0D )
+            if (double.IsInfinity(number) || double.IsNaN(number) || number == 0D || number == -0D)
             {
                 scaledNumber = number;
                 suffix = "";
@@ -115,103 +132,103 @@ namespace Tsu.Numerics
             }
 
             // Fast path for non-scaled numbers
-            if ( 1 <= number && number < Kilo )
+            if (1 <= number && number < Kilo)
             {
                 scaledNumber = number;
                 suffix = "";
                 return;
             }
-            if ( number >= Yotta )
+            if (number >= Yotta)
             {
                 scaledNumber = number / Yotta;
                 suffix = "Y";
                 return;
             }
-            else if ( number >= Zetta )
+            else if (number >= Zetta)
             {
                 scaledNumber = number / Zetta;
                 suffix = "Z";
                 return;
             }
-            else if ( number >= Exa )
+            else if (number >= Exa)
             {
                 scaledNumber = number / Exa;
                 suffix = "E";
                 return;
             }
-            else if ( number >= Peta )
+            else if (number >= Peta)
             {
                 scaledNumber = number / Peta;
                 suffix = "P";
                 return;
             }
-            else if ( number >= Tera )
+            else if (number >= Tera)
             {
                 scaledNumber = number / Tera;
                 suffix = "T";
                 return;
             }
-            else if ( number >= Giga )
+            else if (number >= Giga)
             {
                 scaledNumber = number / Giga;
                 suffix = "G";
                 return;
             }
-            else if ( number >= Mega )
+            else if (number >= Mega)
             {
                 scaledNumber = number / Mega;
                 suffix = "M";
                 return;
             }
-            else if ( number >= Kilo )
+            else if (number >= Kilo)
             {
                 scaledNumber = number / Kilo;
                 suffix = "k";
                 return;
             }
-            else if ( number >= Milli )
+            else if (number >= Milli)
             {
                 scaledNumber = number / Milli;
                 suffix = "m";
                 return;
             }
-            else if ( number >= Micro )
+            else if (number >= Micro)
             {
                 scaledNumber = number / Micro;
                 suffix = "μ";
                 return;
             }
-            else if ( number >= Nano )
+            else if (number >= Nano)
             {
                 scaledNumber = number / Nano;
                 suffix = "n";
                 return;
             }
-            else if ( number >= Pico )
+            else if (number >= Pico)
             {
                 scaledNumber = number / Pico;
                 suffix = "p";
                 return;
             }
-            else if ( number >= Femto )
+            else if (number >= Femto)
             {
                 scaledNumber = number / Femto;
                 suffix = "f";
                 return;
             }
-            else if ( number >= Atto )
+            else if (number >= Atto)
             {
                 scaledNumber = number / Atto;
                 suffix = "a";
                 return;
             }
-            else if ( number >= Zepto )
+            else if (number >= Zepto)
             {
                 scaledNumber = number / Zepto;
                 suffix = "z";
                 return;
             }
-            else if ( number >= Yocto )
+            else if (number >= Yocto)
             {
                 scaledNumber = number / Yocto;
                 suffix = "y";
@@ -230,41 +247,41 @@ namespace Tsu.Numerics
         /// </summary>
         /// <param name="number">The number to be formatted.</param>
         /// <returns>The formatted string with the reduced number and the SI prefix.</returns>
-        public static String Format ( Double number )
+        public static string Format(double number)
         {
-            GetFormatPair ( number, out var scaled, out var suffix );
+            GetFormatPair(number, out var scaled, out var suffix);
             return $"{scaled:0.##} {suffix}";
         }
 
         /// <summary>
-        /// <inheritdoc cref="Format(Double)" /> The default format is <c>{0:0.##} {1}</c>.
+        /// <inheritdoc cref="Format(double)" /> The default format is <c>{0:0.##} {1}</c>.
         /// </summary>
-        /// <param name="number"><inheritdoc cref="Format(Double)" /></param>
+        /// <param name="number"><inheritdoc cref="Format(double)" /></param>
         /// <param name="format">
         /// The format string. Must contain two format placeholders. The default value is
         /// <c>{0:0.##} {1}</c>.
         /// </param>
-        /// <returns><inheritdoc cref="Format(Double)" /></returns>
-        [SuppressMessage ( "Globalization", "CA1305:Specify IFormatProvider", Justification = "There's already another overload for this." )]
-        public static String Format ( Double number, String format )
+        /// <returns><inheritdoc cref="Format(double)" /></returns>
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "There's already another overload for this.")]
+        public static string Format(double number, string format)
         {
-            GetFormatPair ( number, out var scaled, out var suffix );
-            return String.Format ( format, scaled, suffix );
+            GetFormatPair(number, out var scaled, out var suffix);
+            return string.Format(format, scaled, suffix);
         }
 
         /// <summary>
-        /// <inheritdoc cref="Format(Double, String)" />
+        /// <inheritdoc cref="Format(double, string)" />
         /// </summary>
-        /// <param name="number"><inheritdoc cref="Format(Double, String)" /></param>
-        /// <param name="format"><inheritdoc cref="Format(Double, String)" /></param>
+        /// <param name="number"><inheritdoc cref="Format(double, string)" /></param>
+        /// <param name="format"><inheritdoc cref="Format(double, string)" /></param>
         /// <param name="provider">
-        /// <inheritdoc cref="String.Format(IFormatProvider, String, Object, Object)" />
+        /// <inheritdoc cref="string.Format(IFormatProvider, string, object, object)" />
         /// </param>
-        /// <returns><inheritdoc cref="Format(Double, String)" /></returns>
-        public static String Format ( Double number, String format, IFormatProvider provider )
+        /// <returns><inheritdoc cref="Format(double, string)" /></returns>
+        public static string Format(double number, string format, IFormatProvider provider)
         {
-            GetFormatPair ( number, out var scaled, out var suffix );
-            return String.Format ( provider, format, scaled, suffix );
+            GetFormatPair(number, out var scaled, out var suffix);
+            return string.Format(provider, format, scaled, suffix);
         }
 
         /// <summary>
@@ -274,22 +291,22 @@ namespace Tsu.Numerics
         /// <param name="input">The input string.</param>
         /// <param name="number">The number that the input string represents.</param>
         /// <returns>The number that the input string represents.</returns>
-        public static Boolean TryParse ( String input, out Double number )
+        public static bool TryParse(string input, out double number)
         {
-            Match match = _floatParseRegex.Match ( input );
-            if ( !match.Success )
+            var match = _floatParseRegex.Match(input);
+            if (!match.Success)
             {
                 number = default;
                 return false;
             }
 
-            if ( !Double.TryParse ( match.Groups["number"].Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var parsed ) )
+            if (!double.TryParse(match.Groups["number"].Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var parsed))
             {
                 number = default;
                 return false;
             }
 
-            switch ( match.Groups["suffix"].Value )
+            switch (match.Groups["suffix"].Value)
             {
                 case "y":
                     number = parsed * Yocto;
@@ -367,17 +384,17 @@ namespace Tsu.Numerics
         }
 
         /// <summary>
-        /// <inheritdoc cref="TryParse(String, out Double)" />
+        /// <inheritdoc cref="TryParse(string, out double)" />
         /// </summary>
-        /// <param name="input"><inheritdoc cref="TryParse(String, out Double)" /></param>
+        /// <param name="input"><inheritdoc cref="TryParse(string, out double)" /></param>
         /// <returns>
-        /// <inheritdoc cref="TryParse(String, out Double)" path="/param[@name='number']" />
+        /// <inheritdoc cref="TryParse(string, out double)" path="/param[@name='number']" />
         /// </returns>
-        public static Double Parse ( String input )
+        public static double Parse(string input)
         {
-            if ( TryParse ( input, out var number ) )
+            if (TryParse(input, out var number))
                 return number;
-            throw new FormatException ( "The input string was in an unknown format." );
+            throw new FormatException("The input string was in an unknown format.");
         }
     }
 }

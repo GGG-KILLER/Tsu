@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright © 2016 GGG KILLER <gggkiller2@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the “Software”), to deal in the Software without
+// restriction, including without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -17,8 +34,8 @@ namespace Tsu
         /// <typeparam name="TErr"></typeparam>
         /// <param name="ok"></param>
         /// <returns></returns>
-        public static Result<TOk, TErr> Ok<TOk, TErr> ( TOk ok ) =>
-            new Result<TOk, TErr> ( true, ok, default! );
+        public static Result<TOk, TErr> Ok<TOk, TErr>(TOk ok) =>
+            new Result<TOk, TErr>(true, ok, default!);
 
         /// <summary>
         /// Creates an unsuccessful result
@@ -27,8 +44,8 @@ namespace Tsu
         /// <typeparam name="TErr"></typeparam>
         /// <param name="error"></param>
         /// <returns></returns>
-        public static Result<TOk, TErr> Err<TOk, TErr> ( TErr error ) =>
-            new Result<TOk, TErr> ( false, default!, error );
+        public static Result<TOk, TErr> Err<TOk, TErr>(TErr error) =>
+            new Result<TOk, TErr>(false, default!, error);
     }
 
     /// <summary>
@@ -36,7 +53,7 @@ namespace Tsu
     /// </summary>
     /// <typeparam name="TOk"></typeparam>
     /// <typeparam name="TErr"></typeparam>
-    [DebuggerDisplay ( "{" + nameof ( GetDebuggerDisplay ) + "(),nq}" )]
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public readonly struct Result<TOk, TErr> : IEquatable<Result<TOk, TErr>>
     {
         private readonly TOk _ok;
@@ -45,32 +62,32 @@ namespace Tsu
         /// <summary>
         /// Whether this result is Ok.
         /// </summary>
-        public Boolean IsOk { get; }
+        public bool IsOk { get; }
 
         /// <summary>
         /// Whether this result is an Error.
         /// </summary>
         // This is implemented as a calculated propery because, otherwise, by calling the default
         // constructor, or using the default operator, we'd get a Result that both isn't Ok nor Err.
-        public Boolean IsErr => !this.IsOk;
+        public bool IsErr => !IsOk;
 
         /// <summary>
         /// The result of the operation if it was successful.
         /// </summary>
         public Option<TOk> Ok =>
-            this.IsOk ? Option.Some ( this._ok ) : Option.None<TOk> ( );
+            IsOk ? Option.Some(_ok) : Option.None<TOk>();
 
         /// <summary>
         /// The error of the operation if it errored.
         /// </summary>
         public Option<TErr> Err =>
-            this.IsErr ? Option.Some ( this._err ) : Option.None<TErr> ( );
+            IsErr ? Option.Some(_err) : Option.None<TErr>();
 
-        internal Result ( Boolean isOk, TOk ok, TErr err )
+        internal Result(bool isOk, TOk ok, TErr err)
         {
-            this.IsOk = isOk;
-            this._ok = ok;
-            this._err = err;
+            IsOk = isOk;
+            _ok = ok;
+            _err = err;
         }
 
         /// <summary>
@@ -82,12 +99,12 @@ namespace Tsu
         /// The value to be compared to the containing value if it's an Ok result.
         /// </param>
         /// <returns></returns>
-        public Boolean Contains<TOther> ( TOther value ) where TOther : IEquatable<TOk> =>
-            this.IsOk && ( value?.Equals ( this._ok ) is true
-                           || ( default ( TOk ) is null
-                                && default ( TOther ) is null
-                                && value is null
-                                && this._ok is null ) );
+        public bool Contains<TOther>(TOther value) where TOther : IEquatable<TOk> =>
+            IsOk && (value?.Equals(_ok) is true
+                     || (default(TOk) is null
+                         && default(TOther) is null
+                         && value is null
+                         && _ok is null));
 
         /// <summary>
         /// Returns <see langword="true" /> if this is an Err result and the contained Err value is
@@ -98,12 +115,12 @@ namespace Tsu
         /// The value to be compared to the containing Err value if it's an Err result.
         /// </param>
         /// <returns></returns>
-        public Boolean ContainsErr<TOther> ( TOther value ) where TOther : IEquatable<TErr> =>
-            this.IsErr && ( value?.Equals ( this._err ) is true
-                            || ( default ( TErr ) is null
-                                 && default ( TOther ) is null
-                                 && value is null
-                                 && this._err is null ) );
+        public bool ContainsErr<TOther>(TOther value) where TOther : IEquatable<TErr> =>
+            IsErr && (value?.Equals(_err) is true
+                      || (default(TErr) is null
+                          && default(TOther) is null
+                          && value is null
+                          && _err is null));
 
         /// <summary>
         /// Maps a <c>Result&lt; <typeparamref name="TOk" />, <typeparamref name="TErr" />&gt;</c>
@@ -116,12 +133,12 @@ namespace Tsu
         /// </typeparam>
         /// <param name="op">The function that maps the result if this Result contains one.</param>
         /// <returns>A Result with the mapped result if it contains one. Returns Err otherwise.</returns>
-        public Result<TMappedOk, TErr> Map<TMappedOk> ( Func<TOk, TMappedOk> op )
+        public Result<TMappedOk, TErr> Map<TMappedOk>(Func<TOk, TMappedOk> op)
         {
-            if ( op is null )
-                throw new ArgumentNullException ( nameof ( op ) );
+            if (op is null)
+                throw new ArgumentNullException(nameof(op));
 
-            return this.IsOk ? Result.Ok<TMappedOk, TErr> ( op ( this._ok ) ) : Result.Err<TMappedOk, TErr> ( this._err );
+            return IsOk ? Result.Ok<TMappedOk, TErr>(op(_ok)) : Result.Err<TMappedOk, TErr>(_err);
         }
 
         /// <summary>
@@ -134,12 +151,12 @@ namespace Tsu
         /// <param name="fallback"></param>
         /// <param name="op"></param>
         /// <returns></returns>
-        public TMappedOk MapOr<TMappedOk> ( TMappedOk fallback, Func<TOk, TMappedOk> op )
+        public TMappedOk MapOr<TMappedOk>(TMappedOk fallback, Func<TOk, TMappedOk> op)
         {
-            if ( op is null )
-                throw new ArgumentNullException ( nameof ( op ) );
+            if (op is null)
+                throw new ArgumentNullException(nameof(op));
 
-            return this.IsOk ? op ( this._ok ) : fallback;
+            return IsOk ? op(_ok) : fallback;
         }
 
         /// <summary>
@@ -154,14 +171,14 @@ namespace Tsu
         /// </param>
         /// <param name="op">The function to call with the value contained by this Result (if any).</param>
         /// <returns></returns>
-        public TMappedOk MapOrElse<TMappedOk> ( Func<TMappedOk> fallbackFunc, Func<TOk, TMappedOk> op )
+        public TMappedOk MapOrElse<TMappedOk>(Func<TMappedOk> fallbackFunc, Func<TOk, TMappedOk> op)
         {
-            if ( fallbackFunc is null )
-                throw new ArgumentNullException ( nameof ( fallbackFunc ) );
-            if ( op is null )
-                throw new ArgumentNullException ( nameof ( op ) );
+            if (fallbackFunc is null)
+                throw new ArgumentNullException(nameof(fallbackFunc));
+            if (op is null)
+                throw new ArgumentNullException(nameof(op));
 
-            return this.IsOk ? op ( this._ok ) : fallbackFunc ( );
+            return IsOk ? op(_ok) : fallbackFunc();
         }
 
         /// <summary>
@@ -172,12 +189,12 @@ namespace Tsu
         /// <typeparam name="TMappedErr"></typeparam>
         /// <param name="op"></param>
         /// <returns></returns>
-        public Result<TOk, TMappedErr> MapErr<TMappedErr> ( Func<TErr, TMappedErr> op )
+        public Result<TOk, TMappedErr> MapErr<TMappedErr>(Func<TErr, TMappedErr> op)
         {
-            if ( op is null )
-                throw new ArgumentNullException ( nameof ( op ) );
+            if (op is null)
+                throw new ArgumentNullException(nameof(op));
 
-            return this.IsErr ? Result.Err<TOk, TMappedErr> ( op ( this._err ) ) : Result.Ok<TOk, TMappedErr> ( this._ok );
+            return IsErr ? Result.Err<TOk, TMappedErr>(op(_err)) : Result.Ok<TOk, TMappedErr>(_ok);
         }
 
         /// <summary>
@@ -187,8 +204,8 @@ namespace Tsu
         /// <typeparam name="TOtherOk"></typeparam>
         /// <param name="res">The result to be retured if this is an Ok result.</param>
         /// <returns></returns>
-        public Result<TOtherOk, TErr> And<TOtherOk> ( Result<TOtherOk, TErr> res ) =>
-            this.IsOk ? res : Result.Err<TOtherOk, TErr> ( this._err );
+        public Result<TOtherOk, TErr> And<TOtherOk>(Result<TOtherOk, TErr> res) =>
+            IsOk ? res : Result.Err<TOtherOk, TErr>(_err);
 
         /// <summary>
         /// Returns the result of invoking <paramref name="op" /> with this ok value if this result
@@ -199,12 +216,12 @@ namespace Tsu
         /// The delegate to be invoked with the Ok value of this result if it's an Ok result.
         /// </param>
         /// <returns></returns>
-        public Result<TMappedOk, TErr> AndThen<TMappedOk> ( Func<TOk, Result<TMappedOk, TErr>> op )
+        public Result<TMappedOk, TErr> AndThen<TMappedOk>(Func<TOk, Result<TMappedOk, TErr>> op)
         {
-            if ( op is null )
-                throw new ArgumentNullException ( nameof ( op ) );
+            if (op is null)
+                throw new ArgumentNullException(nameof(op));
 
-            return this.IsOk ? op ( this._ok ) : Result.Err<TMappedOk, TErr> ( this._err );
+            return IsOk ? op(_ok) : Result.Err<TMappedOk, TErr>(_err);
         }
 
         /// <summary>
@@ -213,8 +230,8 @@ namespace Tsu
         /// <typeparam name="TOtherErr"></typeparam>
         /// <param name="res">The result to be returned if this is an Err result.</param>
         /// <returns></returns>
-        public Result<TOk, TOtherErr> Or<TOtherErr> ( Result<TOk, TOtherErr> res ) =>
-            this.IsErr ? res : Result.Ok<TOk, TOtherErr> ( this._ok );
+        public Result<TOk, TOtherErr> Or<TOtherErr>(Result<TOk, TOtherErr> res) =>
+            IsErr ? res : Result.Ok<TOk, TOtherErr>(_ok);
 
         /// <summary>
         /// Returns this result if it's an Ok result. Otherwise returns the result of invoking
@@ -225,12 +242,12 @@ namespace Tsu
         /// The function to be invoked with the Err value of this result if it's an Err result.
         /// </param>
         /// <returns></returns>
-        public Result<TOk, TMappedErr> OrThen<TMappedErr> ( Func<TErr, Result<TOk, TMappedErr>> op )
+        public Result<TOk, TMappedErr> OrThen<TMappedErr>(Func<TErr, Result<TOk, TMappedErr>> op)
         {
-            if ( op is null )
-                throw new ArgumentNullException ( nameof ( op ) );
+            if (op is null)
+                throw new ArgumentNullException(nameof(op));
 
-            return this.IsErr ? op ( this._err ) : Result.Ok<TOk, TMappedErr> ( this._ok );
+            return IsErr ? op(_err) : Result.Ok<TOk, TMappedErr>(_ok);
         }
 
         /// <summary>
@@ -239,19 +256,19 @@ namespace Tsu
         /// </summary>
         /// <param name="fallback">The result to be retured if this is an Err result.</param>
         /// <returns></returns>
-        public TOk UnwrapOr ( TOk fallback ) =>
-            this.IsOk ? this._ok : fallback;
+        public TOk UnwrapOr(TOk fallback) =>
+            IsOk ? _ok : fallback;
 
         /// <summary>
         /// </summary>
         /// <param name="fallbackFunc"></param>
         /// <returns></returns>
-        public TOk UnwrapOrElse ( Func<TOk> fallbackFunc )
+        public TOk UnwrapOrElse(Func<TOk> fallbackFunc)
         {
-            if ( fallbackFunc is null )
-                throw new ArgumentNullException ( nameof ( fallbackFunc ) );
+            if (fallbackFunc is null)
+                throw new ArgumentNullException(nameof(fallbackFunc));
 
-            return this.IsOk ? this._ok : fallbackFunc ( );
+            return IsOk ? _ok : fallbackFunc();
         }
 
         #region IEquatable<T>
@@ -261,9 +278,9 @@ namespace Tsu
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public Boolean Equals ( Result<TOk, TErr> other ) =>
-            ( this.IsOk && other.IsOk && EqualityComparer<TOk>.Default.Equals ( this._ok, other._ok ) )
-            || ( this.IsErr && other.IsErr && EqualityComparer<TErr>.Default.Equals ( this._err, other._err ) );
+        public bool Equals(Result<TOk, TErr> other) =>
+            (IsOk && other.IsOk && EqualityComparer<TOk>.Default.Equals(_ok, other._ok))
+            || (IsErr && other.IsErr && EqualityComparer<TErr>.Default.Equals(_err, other._err));
 
         #endregion IEquatable<T>
 
@@ -273,30 +290,30 @@ namespace Tsu
 #pragma warning disable CS8604 // Possible null reference argument. (We ensure null passes only when it's safe)
 
         /// <inheritdoc />
-        public override Boolean Equals ( Object? obj ) =>
-            ( obj is Result<TOk, TErr> result && this.Equals ( result ) )
-              // `default(T) is null` is used here to check if T is a reference type.
-              // `typeof(T).IsClass` cannot be turned into a constant by the JIT: https://sharplab.io/#v2:EYLgHgbALANALiAhgZwLYB8ACAGABJgRgDoAlAVwDs4BLVAUyIGEB7VAB2oBs6AnAZV4A3agGM6yANwBYAFCzMAZnwAmXI1wBvWbh24A2gFk6cABbMAJgEl2nABRHTF6204B5NjWYVkRAIIBzfx5xZGpBOksKTmoKGP8ASgBdbV1FXGBmZk5cAwIAHgAVAD5beM0U3VSAdlxzOgAzRDJOOFsCsupkXApmzmkZSoBfCtwRw2MzKxt7Cacbd09vP0Dg5FDwyOjYigTkgdSlDKyc5UKSsq19yp1MGrgATzY6Znq2+KJLZEZOFEkR4auo0BaSO2QAGgQCKURpdrtUcvkYnBzv0hiMRiDMuCCMpoYDYXD8DUDKckSj/ujgYcsbgwcoofEYSNKrcEXlCNhyYCAZUMdTjnTcYz8cz4ST2QROaVUboAYMgA=
-              || ( this.IsOk
-                   && ( obj is TOk || ( default ( TOk ) is null && obj is null ) )
-                   && EqualityComparer<TOk>.Default.Equals ( ( TOk? ) obj, this._ok ) )
-              || ( this.IsErr
-                   && ( obj is TErr || ( default ( TErr ) is null && obj is null ) )
-                   && EqualityComparer<TErr>.Default.Equals ( ( TErr? ) obj, this._err ) );
+        public override bool Equals(object? obj) =>
+            (obj is Result<TOk, TErr> result && Equals(result))
+             // `default(T) is null` is used here to check if T is a reference type.
+             // `typeof(T).IsClass` cannot be turned into a constant by the JIT: https://sharplab.io/#v2:EYLgHgbALANALiAhgZwLYB8ACAGABJgRgDoAlAVwDs4BLVAUyIGEB7VAB2oBs6AnAZV4A3agGM6yANwBYAFCzMAZnwAmXI1wBvWbh24A2gFk6cABbMAJgEl2nABRHTF6204B5NjWYVkRAIIBzfx5xZGpBOksKTmoKGP8ASgBdbV1FXGBmZk5cAwIAHgAVAD5beM0U3VSAdlxzOgAzRDJOOFsCsupkXApmzmkZSoBfCtwRw2MzKxt7Cacbd09vP0Dg5FDwyOjYigTkgdSlDKyc5UKSsq19yp1MGrgATzY6Znq2+KJLZEZOFEkR4auo0BaSO2QAGgQCKURpdrtUcvkYnBzv0hiMRiDMuCCMpoYDYXD8DUDKckSj/ujgYcsbgwcoofEYSNKrcEXlCNhyYCAZUMdTjnTcYz8cz4ST2QROaVUboAYMgA=
+             || (IsOk
+                 && (obj is TOk || (default(TOk) is null && obj is null))
+                 && EqualityComparer<TOk>.Default.Equals((TOk?) obj, _ok))
+             || (IsErr
+                 && (obj is TErr || (default(TErr) is null && obj is null))
+                 && EqualityComparer<TErr>.Default.Equals((TErr?) obj, _err));
 
 #pragma warning restore CS8604 // Possible null reference argument. (We ensure null passes only when it's safe)
 #pragma warning restore IDE0079 // Remove unnecessary suppression (Valid for some target frameworks)
 
         /// <inheritdoc />
-        public override Int32 GetHashCode ( )
+        public override int GetHashCode()
         {
             var hashCode = -1322039524;
-            hashCode = hashCode * -1521134295 + this.IsOk.GetHashCode ( );
-            if ( this.IsOk )
+            hashCode = hashCode * -1521134295 + IsOk.GetHashCode();
+            if (IsOk)
             {
 #pragma warning disable IDE0079 // Remove unnecessary suppression (required for some target frameworks)
 #pragma warning disable CS8607 // A possible null value may not be used for a type marked with [NotNull] or [DisallowNull] (GetHashCode supports nulls)
-                hashCode = hashCode * -1521134295 + EqualityComparer<TOk?>.Default.GetHashCode ( this._ok );
+                hashCode = hashCode * -1521134295 + EqualityComparer<TOk?>.Default.GetHashCode(_ok);
 #pragma warning restore CS8607 // A possible null value may not be used for a type marked with [NotNull] or [DisallowNull] (GetHashCode supports nulls)
 #pragma warning restore IDE0079 // Remove unnecessary suppression (required for some target frameworks)
             }
@@ -304,7 +321,7 @@ namespace Tsu
             {
 #pragma warning disable IDE0079 // Remove unnecessary suppression (required for some target frameworks)
 #pragma warning disable CS8607 // A possible null value may not be used for a type marked with [NotNull] or [DisallowNull] (GetHashCode supports nulls)
-                hashCode = hashCode * -1521134295 + EqualityComparer<TErr?>.Default.GetHashCode ( this._err );
+                hashCode = hashCode * -1521134295 + EqualityComparer<TErr?>.Default.GetHashCode(_err);
 #pragma warning restore CS8607 // A possible null value may not be used for a type marked with [NotNull] or [DisallowNull] (GetHashCode supports nulls)
 #pragma warning restore IDE0079 // Remove unnecessary suppression (required for some target frameworks)
             }
@@ -321,7 +338,7 @@ namespace Tsu
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Boolean operator == ( Result<TOk, TErr> left, Result<TOk, TErr> right ) => left.Equals ( right );
+        public static bool operator ==(Result<TOk, TErr> left, Result<TOk, TErr> right) => left.Equals(right);
 
         /// <summary>
         /// Checks structural difference between two <see cref="Result{TOk, TErr}" /> s.
@@ -329,28 +346,28 @@ namespace Tsu
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Boolean operator != ( Result<TOk, TErr> left, Result<TOk, TErr> right ) => !( left == right );
+        public static bool operator !=(Result<TOk, TErr> left, Result<TOk, TErr> right) => !(left == right);
 
         /// <summary>
         /// Converts an <paramref name="ok" /> value to a result.
         /// </summary>
         /// <param name="ok"></param>
-        [SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Result.Ok<TOk, TErr>(TOk) exists." )]
-        public static explicit operator Result<TOk, TErr> ( TOk ok ) =>
-            new Result<TOk, TErr> ( true, ok, default! );
+        [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "Result.Ok<TOk, TErr>(TOk) exists.")]
+        public static explicit operator Result<TOk, TErr>(TOk ok) =>
+            new Result<TOk, TErr>(true, ok, default!);
 
         /// <summary>
         /// Converts an <paramref name="err" /> value to a result.
         /// </summary>
         /// <param name="err"></param>
-        [SuppressMessage ( "Usage", "CA2225:Operator overloads have named alternates", Justification = "Result.Err<TOk, TErr>(TErr) exists." )]
-        public static explicit operator Result<TOk, TErr> ( TErr err ) =>
-            new Result<TOk, TErr> ( false, default!, err );
+        [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "Result.Err<TOk, TErr>(TErr) exists.")]
+        public static explicit operator Result<TOk, TErr>(TErr err) =>
+            new Result<TOk, TErr>(false, default!, err);
 
         #endregion Operators
 
-        private String GetDebuggerDisplay ( ) =>
-            this.IsOk ? $"Ok({this._ok})" : $"Err({this._err})";
+        private string GetDebuggerDisplay() =>
+            IsOk ? $"Ok({_ok})" : $"Err({_err})";
     }
 
     /// <summary>
@@ -373,23 +390,23 @@ namespace Tsu
         /// <typeparam name="TErr"></typeparam>
         /// <param name="self"></param>
         /// <returns></returns>
-        public static Option<Result<TOk, TErr>> Transpose<TOk, TErr> ( this Result<Option<TOk>, TErr> self )
+        public static Option<Result<TOk, TErr>> Transpose<TOk, TErr>(this Result<Option<TOk>, TErr> self)
         {
             return self switch
             {
                 { IsOk: true, Ok: { Value: var nestedOption } } => nestedOption switch
                 {
                     // Ok(None) -> None
-                    { IsNone: true } => Option.None<Result<TOk, TErr>> ( ),
+                    { IsNone: true } => Option.None<Result<TOk, TErr>>(),
                     // Ok(Some(_)) -> Some(Ok(_))
-                    { IsSome: true, Value: var value } => Option.Some ( Result.Ok<TOk, TErr> ( value ) ),
+                    { IsSome: true, Value: var value } => Option.Some(Result.Ok<TOk, TErr>(value)),
                     // Branch shouldn't be reached
-                    _ => throw new Exception ( "This branch shouldn't be reached." ),
+                    _ => throw new Exception("This branch shouldn't be reached."),
                 },
                 // Err(_) -> Some(Err(_))
-                { IsErr: true, Err: { Value: var value } } => Option.Some ( Result.Err<TOk, TErr> ( value ) ),
+                { IsErr: true, Err: { Value: var value } } => Option.Some(Result.Err<TOk, TErr>(value)),
                 // Branch shouldn't be reached
-                _ => throw new Exception ( "This branch shouldn't be reached." ),
+                _ => throw new Exception("This branch shouldn't be reached."),
             };
         }
     }

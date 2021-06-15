@@ -1,21 +1,20 @@
-/*
- * Copyright © 2019 GGG KILLER <gggkiller2@gmail.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
- * and associated documentation files (the “Software”), to deal in the Software without
- * restriction, including without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
- * the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
- * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+// Copyright © 2016 GGG KILLER <gggkiller2@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the “Software”), to deal in the Software without
+// restriction, including without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 using System;
 using System.IO;
 using System.Threading;
@@ -31,42 +30,42 @@ namespace Tsu.IO
         /// <summary>
         /// Does nothing
         /// </summary>
-        public NullStream ( )
+        public NullStream()
         {
         }
 
         /// <summary>
         /// Does nothing
         /// </summary>
-        public override Boolean CanRead => false;
+        public override bool CanRead => false;
 
         /// <summary>
         /// Does nothing
         /// </summary>
-        public override Boolean CanSeek => false;
+        public override bool CanSeek => false;
 
         /// <summary>
         /// Does nothing
         /// </summary>
-        public override Boolean CanTimeout => false;
+        public override bool CanTimeout => false;
 
         /// <summary>
         /// Does nothing
         /// </summary>
-        public override Boolean CanWrite => true;
+        public override bool CanWrite => true;
 
         /// <summary>
         /// Does nothing
         /// </summary>
-        public override Int64 Length => 0;
+        public override long Length => 0;
 
         /// <summary>
         /// Does nothing
         /// </summary>
-        public override Int64 Position
+        public override long Position
         {
-            get => throw new NotSupportedException ( "This stream does not support seek." );
-            set => throw new NotSupportedException ( "This stream does not support seek." );
+            get => throw new NotSupportedException("This stream does not support seek.");
+            set => throw new NotSupportedException("This stream does not support seek.");
         }
 
         /// <summary>
@@ -75,20 +74,20 @@ namespace Tsu.IO
         /// <param name="offset"></param>
         /// <param name="origin"></param>
         /// <returns></returns>
-        public override Int64 Seek ( Int64 offset, SeekOrigin origin ) =>
-            throw new NotSupportedException ( "This stream does not support seeking." );
+        public override long Seek(long offset, SeekOrigin origin) =>
+            throw new NotSupportedException("This stream does not support seeking.");
 
         /// <summary>
         /// Does nothing
         /// </summary>
         /// <param name="value"></param>
-        public override void SetLength ( Int64 value ) =>
-            throw new NotSupportedException ( "This stream does not support setting it's length." );
+        public override void SetLength(long value) =>
+            throw new NotSupportedException("This stream does not support setting it's length.");
 
         /// <summary>
         /// Does nothing
         /// </summary>
-        public override void Close ( )
+        public override void Close()
         {
         }
 
@@ -101,8 +100,8 @@ namespace Tsu.IO
         /// <param name="offset"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public override Int32 Read ( Byte[] buffer, Int32 offset, Int32 count ) =>
-            throw new NotSupportedException ( "This stream does not support reading." );
+        public override int Read(byte[] buffer, int offset, int count) =>
+            throw new NotSupportedException("This stream does not support reading.");
 
         /// <summary>
         /// Does nothing
@@ -112,15 +111,15 @@ namespace Tsu.IO
         /// <param name="count"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override Task<Int32> ReadAsync ( Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken ) =>
-            throw new NotSupportedException ( "This stream does not support reading." );
+        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
+            throw new NotSupportedException("This stream does not support reading.");
 
         /// <summary>
         /// Does nothing
         /// </summary>
         /// <returns></returns>
-        public override Int32 ReadByte ( ) =>
-            throw new NotSupportedException ( "This stream does not support reading." );
+        public override int ReadByte() =>
+            throw new NotSupportedException("This stream does not support reading.");
 
         /// <summary>
         /// Does nothing
@@ -131,16 +130,16 @@ namespace Tsu.IO
         /// <param name="callback"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public override IAsyncResult BeginRead ( Byte[] buffer, Int32 offset, Int32 count, AsyncCallback? callback, Object? state ) =>
-            throw new NotSupportedException ( "This stream does not support reading." );
+        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state) =>
+            throw new NotSupportedException("This stream does not support reading.");
 
         /// <summary>
         /// Does nothing
         /// </summary>
         /// <param name="asyncResult"></param>
         /// <returns></returns>
-        public override Int32 EndRead ( IAsyncResult asyncResult ) =>
-            throw new NotSupportedException ( "This stream does not support reading." );
+        public override int EndRead(IAsyncResult asyncResult) =>
+            throw new NotSupportedException("This stream does not support reading.");
 
         /// <summary>
         /// Does nothing
@@ -149,8 +148,8 @@ namespace Tsu.IO
         /// <param name="bufferSize"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override Task CopyToAsync ( Stream destination, Int32 bufferSize, CancellationToken cancellationToken ) =>
-            throw new NotSupportedException ( "This stream does not support reading." );
+        public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken) =>
+            throw new NotSupportedException("This stream does not support reading.");
 
         #endregion Reading
 
@@ -165,14 +164,14 @@ namespace Tsu.IO
         /// <param name="callback"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public override IAsyncResult BeginWrite ( Byte[] buffer, Int32 offset, Int32 count, AsyncCallback? callback, Object? state ) =>
+        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state) =>
             Task.CompletedTask;
 
         /// <summary>
         /// Does nothing
         /// </summary>
         /// <param name="asyncResult"></param>
-        public override void EndWrite ( IAsyncResult asyncResult )
+        public override void EndWrite(IAsyncResult asyncResult)
         {
         }
 
@@ -182,7 +181,7 @@ namespace Tsu.IO
         /// <param name="buffer"></param>
         /// <param name="offset"></param>
         /// <param name="count"></param>
-        public override void Write ( Byte[] buffer, Int32 offset, Int32 count )
+        public override void Write(byte[] buffer, int offset, int count)
         {
         }
 
@@ -194,21 +193,21 @@ namespace Tsu.IO
         /// <param name="count"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override Task WriteAsync ( Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken ) =>
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
             Task.CompletedTask;
 
         /// <summary>
         /// Does nothing
         /// </summary>
         /// <param name="value"></param>
-        public override void WriteByte ( Byte value )
+        public override void WriteByte(byte value)
         {
         }
 
         /// <summary>
         /// Does nothing
         /// </summary>
-        public override void Flush ( )
+        public override void Flush()
         {
         }
 
@@ -217,7 +216,7 @@ namespace Tsu.IO
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override Task FlushAsync ( CancellationToken cancellationToken ) =>
+        public override Task FlushAsync(CancellationToken cancellationToken) =>
             Task.CompletedTask;
 
         #endregion Writing
@@ -229,19 +228,19 @@ namespace Tsu.IO
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override Boolean Equals ( Object? obj ) => obj is NullStream;
+        public override bool Equals(object? obj) => obj is NullStream;
 
         /// <summary>
         /// The default hash function
         /// </summary>
         /// <returns></returns>
-        public override Int32 GetHashCode ( ) => base.GetHashCode ( );
+        public override int GetHashCode() => base.GetHashCode();
 
         /// <summary>
         /// Prints the string representation of a <see cref="NullStream" />
         /// </summary>
         /// <returns></returns>
-        public override String ToString ( ) => "/dev/null stream";
+        public override string ToString() => "/dev/null stream";
 
         #endregion Object
     }
