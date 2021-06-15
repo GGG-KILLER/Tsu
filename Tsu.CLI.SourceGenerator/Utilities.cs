@@ -1,12 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright © 2016 GGG KILLER <gggkiller2@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the “Software”), to deal in the Software without
+// restriction, including without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
-using Tsu.CLI.SourceGenerator.CommandManager;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Tsu.CLI.SourceGenerator.CommandManager;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Tsu.CLI.SourceGenerator
@@ -20,12 +36,12 @@ namespace Tsu.CLI.SourceGenerator
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static Boolean IsValidCommandName ( String name )
+        public static bool IsValidCommandName(string name)
         {
-            return String.IsNullOrWhiteSpace ( name )
-                || name.Any ( ch => ( '0' <= ch && ch <= '9' )
-                                    || ( 'a' <= ch && ch <= 'z' )
-                                    || ( 'A' <= ch && ch <= 'Z' ) );
+            return string.IsNullOrWhiteSpace(name)
+                || name.Any(ch => ('0' <= ch && ch <= '9')
+                                  || ('a' <= ch && ch <= 'z')
+                                  || ('A' <= ch && ch <= 'Z'));
         }
 
         /// <summary>
@@ -34,33 +50,33 @@ namespace Tsu.CLI.SourceGenerator
         /// </summary>
         /// <param name="obj">The input object.</param>
         /// <returns></returns>
-        public static ExpressionSyntax GetExpressionSyntax ( Object obj ) =>
+        public static ExpressionSyntax GetExpressionSyntax(object obj) =>
             obj switch
             {
-                Char value => LiteralExpression ( SyntaxKind.CharacterLiteralExpression, Literal ( value ) ),
-                String value => LiteralExpression ( SyntaxKind.StringLiteralExpression, Literal ( value ) ),
+                char value => LiteralExpression(SyntaxKind.CharacterLiteralExpression, Literal(value)),
+                string value => LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(value)),
 
-                Single value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
-                Double value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+                float value => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value)),
+                double value => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value)),
 
-                Decimal value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+                decimal value => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value)),
 
-                SByte value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
-                Byte value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+                sbyte value => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value)),
+                byte value => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value)),
 
-                Int16 value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
-                UInt16 value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+                short value => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value)),
+                ushort value => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value)),
 
-                Int32 value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
-                UInt32 value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+                int value => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value)),
+                uint value => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value)),
 
-                Int64 value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
-                UInt64 value => LiteralExpression ( SyntaxKind.NumericLiteralExpression, Literal ( value ) ),
+                long value => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value)),
+                ulong value => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value)),
 
                 ExpressionSyntax expression => expression,
-                ExprSyntaxDynObj syntaxObject => ( ExpressionSyntax ) ( dynamic ) syntaxObject,
+                ExprSyntaxDynObj syntaxObject => (ExpressionSyntax) (dynamic) syntaxObject,
 
-                _ => throw new InvalidOperationException ( "Cannot convert this object to an expression." ),
+                _ => throw new InvalidOperationException("Cannot convert this object to an expression."),
             };
 
         /// <summary>
@@ -71,20 +87,20 @@ namespace Tsu.CLI.SourceGenerator
         /// <param name="name"></param>
         /// <param name="paramsTypes"></param>
         /// <returns></returns>
-        public static IMethodSymbol? GetMethodSymbol ( ITypeSymbol typeSymbol, String name, Boolean isStatic, params Object[] paramsTypes )
+        public static IMethodSymbol? GetMethodSymbol(ITypeSymbol typeSymbol, string name, bool isStatic, params object[] paramsTypes)
         {
-            return typeSymbol.GetMembers ( name )
-                             .OfType<IMethodSymbol> ( )
-                             .SingleOrDefault ( method => method.IsStatic == isStatic
-                                 && method.Parameters.Length == paramsTypes.Length
-                                 && method.Parameters.Zip ( paramsTypes, ( paramSymbol, paramType ) => validateParam ( paramSymbol, paramType ) ).All ( x => x ) );
+            return typeSymbol.GetMembers(name)
+                             .OfType<IMethodSymbol>()
+                             .SingleOrDefault(method => method.IsStatic == isStatic
+                               && method.Parameters.Length == paramsTypes.Length
+                               && method.Parameters.Zip(paramsTypes, (paramSymbol, paramType) => validateParam(paramSymbol, paramType)).All(x => x));
 
-            static Boolean validateParam ( IParameterSymbol parameterSymbol, Object expected ) =>
+            static bool validateParam(IParameterSymbol parameterSymbol, object expected) =>
                 expected switch
                 {
-                    ITypeSymbol typeSymbol => SymbolEqualityComparer.Default.Equals ( parameterSymbol.Type, typeSymbol ),
+                    ITypeSymbol typeSymbol => SymbolEqualityComparer.Default.Equals(parameterSymbol.Type, typeSymbol),
                     SpecialType specialType => parameterSymbol.Type.SpecialType == specialType,
-                    _ => throw new InvalidOperationException ( "Parameter types must be ITypeSymbols or SpecialTypes" )
+                    _ => throw new InvalidOperationException("Parameter types must be ITypeSymbols or SpecialTypes")
                 };
         }
 
@@ -93,12 +109,12 @@ namespace Tsu.CLI.SourceGenerator
         /// </summary>
         /// <param name="namedTypeSymbol"></param>
         /// <returns></returns>
-        public static TypeSyntax GetTypeSyntax ( INamedTypeSymbol namedTypeSymbol )
+        public static TypeSyntax GetTypeSyntax(INamedTypeSymbol namedTypeSymbol)
         {
-            if ( namedTypeSymbol is null )
-                throw new ArgumentNullException ( nameof ( namedTypeSymbol ) );
+            if (namedTypeSymbol is null)
+                throw new ArgumentNullException(nameof(namedTypeSymbol));
 
-            return ParseTypeName ( namedTypeSymbol.ToDisplayString ( SymbolDisplayFormat.MinimallyQualifiedFormat ) );
+            return ParseTypeName(namedTypeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
         }
 
         /// <summary>
@@ -113,21 +129,21 @@ namespace Tsu.CLI.SourceGenerator
         /// <param name="instance"></param>
         /// <param name="methodSymbol"></param>
         /// <returns></returns>
-        public static MemberAccessExpressionSyntax GetMemberAccessExpression ( ExpressionSyntax instance, IMethodSymbol methodSymbol )
+        public static MemberAccessExpressionSyntax GetMemberAccessExpression(ExpressionSyntax instance, IMethodSymbol methodSymbol)
         {
-            if ( instance is null )
-                throw new ArgumentNullException ( nameof ( instance ) );
-            if ( methodSymbol is null )
-                throw new ArgumentNullException ( nameof ( methodSymbol ) );
-            if ( methodSymbol.IsStatic )
-                throw new ArgumentException ( "Method is static.", nameof ( methodSymbol ) );
-            if ( methodSymbol.MethodKind != MethodKind.Ordinary )
-                throw new ArgumentException ( "Method is not an ordinary method.", nameof ( methodSymbol ) );
+            if (instance is null)
+                throw new ArgumentNullException(nameof(instance));
+            if (methodSymbol is null)
+                throw new ArgumentNullException(nameof(methodSymbol));
+            if (methodSymbol.IsStatic)
+                throw new ArgumentException("Method is static.", nameof(methodSymbol));
+            if (methodSymbol.MethodKind != MethodKind.Ordinary)
+                throw new ArgumentException("Method is not an ordinary method.", nameof(methodSymbol));
 
-            return MemberAccessExpression (
+            return MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
                 instance,
-                IdentifierName ( methodSymbol.Name )
+                IdentifierName(methodSymbol.Name)
             );
         }
 
@@ -137,19 +153,19 @@ namespace Tsu.CLI.SourceGenerator
         /// </summary>
         /// <param name="methodSymbol"></param>
         /// <returns></returns>
-        public static MemberAccessExpressionSyntax GetMemberAccessExpression ( IMethodSymbol methodSymbol )
+        public static MemberAccessExpressionSyntax GetMemberAccessExpression(IMethodSymbol methodSymbol)
         {
-            if ( methodSymbol is null )
-                throw new ArgumentNullException ( nameof ( methodSymbol ) );
-            if ( !methodSymbol.IsStatic )
-                throw new ArgumentException ( "Method is not static.", nameof ( methodSymbol ) );
-            if ( methodSymbol.MethodKind != MethodKind.Ordinary )
-                throw new ArgumentException ( "Method is not an ordinary method.", nameof ( methodSymbol ) );
+            if (methodSymbol is null)
+                throw new ArgumentNullException(nameof(methodSymbol));
+            if (!methodSymbol.IsStatic)
+                throw new ArgumentException("Method is not static.", nameof(methodSymbol));
+            if (methodSymbol.MethodKind != MethodKind.Ordinary)
+                throw new ArgumentException("Method is not an ordinary method.", nameof(methodSymbol));
 
-            return MemberAccessExpression (
+            return MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
-                GetTypeSyntax ( methodSymbol.ContainingType ),
-                IdentifierName ( methodSymbol.Name ) );
+                GetTypeSyntax(methodSymbol.ContainingType),
+                IdentifierName(methodSymbol.Name));
         }
 
         /// <summary>
@@ -157,25 +173,25 @@ namespace Tsu.CLI.SourceGenerator
         /// </summary>
         /// <param name="typeSymbol"></param>
         /// <returns></returns>
-        public static Boolean CanConvertToFromString ( INamedTypeSymbol typeSymbol )
+        public static bool CanConvertToFromString(INamedTypeSymbol typeSymbol)
         {
             // Strings don't require conversion.
-            if ( typeSymbol.SpecialType == SpecialType.System_String )
+            if (typeSymbol.SpecialType == SpecialType.System_String)
                 return true;
 
             // Is Enum
-            if ( typeSymbol.TypeKind == TypeKind.Enum )
+            if (typeSymbol.TypeKind == TypeKind.Enum)
                 return true;
 
             // Has a constructor that accepts a single string
-            if ( typeSymbol.Constructors.Any ( ctor =>
-                ctor.Parameters.Length == 1 && ctor.Parameters[0].Type.SpecialType == SpecialType.System_String ) )
+            if (typeSymbol.Constructors.Any(ctor =>
+             ctor.Parameters.Length == 1 && ctor.Parameters[0].Type.SpecialType == SpecialType.System_String))
             {
                 return true;
             }
 
             // Has a static Parse method that accepts a single string
-            return GetMethodSymbol ( typeSymbol, "Parse", true, SpecialType.System_String ) is not null;
+            return GetMethodSymbol(typeSymbol, "Parse", true, SpecialType.System_String) is not null;
         }
 
         /// <summary>
@@ -184,48 +200,48 @@ namespace Tsu.CLI.SourceGenerator
         /// <param name="typeSymbol"></param>
         /// <param name="inputNode"></param>
         /// <returns></returns>
-        public static SyntaxNode GetConversionFromStringNode ( CommonSymbols commonSymbols, INamedTypeSymbol typeSymbol, SyntaxNode inputNode )
+        public static SyntaxNode GetConversionFromStringNode(CommonSymbols commonSymbols, INamedTypeSymbol typeSymbol, SyntaxNode inputNode)
         {
-            if ( typeSymbol.SpecialType == SpecialType.System_String )
+            if (typeSymbol.SpecialType == SpecialType.System_String)
                 return inputNode;
 
-            if ( typeSymbol.TypeKind == TypeKind.Enum )
+            if (typeSymbol.TypeKind == TypeKind.Enum)
             {
-                return InvocationExpression (
-                    GetMemberAccessExpression ( commonSymbols.System_Enum__ParseTypeString ),
-                    ArgumentList (
-                        SeparatedList ( new[]
+                return InvocationExpression(
+                    GetMemberAccessExpression(commonSymbols.System_Enum__ParseTypeString),
+                    ArgumentList(
+                        SeparatedList(new[]
                         {
                             GetTypeSyntax ( typeSymbol ),
                             inputNode
-                        } ) ) );
+                        })));
             }
 
-            if ( GetMethodSymbol ( typeSymbol, "Parse", true, SpecialType.System_String ) is IMethodSymbol parseMethodSymbol )
+            if (GetMethodSymbol(typeSymbol, "Parse", true, SpecialType.System_String) is IMethodSymbol parseMethodSymbol)
             {
-                return InvocationExpression (
-                    GetMemberAccessExpression ( parseMethodSymbol ),
-                    ArgumentList (
-                        SeparatedList ( new[]
+                return InvocationExpression(
+                    GetMemberAccessExpression(parseMethodSymbol),
+                    ArgumentList(
+                        SeparatedList(new[]
                         {
                             inputNode
-                        } ) ) );
+                        })));
             }
 
-            if ( typeSymbol.Constructors.Any ( ctor =>
-                  ctor.Parameters.Length == 1 && ctor.Parameters[0].Type.SpecialType == SpecialType.System_String ) )
+            if (typeSymbol.Constructors.Any(ctor =>
+               ctor.Parameters.Length == 1 && ctor.Parameters[0].Type.SpecialType == SpecialType.System_String))
             {
-                return ObjectCreationExpression (
-                    ParseTypeName (
-                        typeSymbol.ToDisplayString ( SymbolDisplayFormat.MinimallyQualifiedFormat ) ),
-                    ArgumentList ( SeparatedList ( new[]
+                return ObjectCreationExpression(
+                    ParseTypeName(
+                        typeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)),
+                    ArgumentList(SeparatedList(new[]
                     {
                         inputNode
-                    } ) ),
-                    null );
+                    })),
+                    null);
             }
 
-            throw new InvalidOperationException ( $"Cannot convert a string to the type '{typeSymbol.ToDisplayString ( SymbolDisplayFormat.CSharpErrorMessageFormat )}'." );
+            throw new InvalidOperationException($"Cannot convert a string to the type '{typeSymbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)}'.");
         }
 
         /// <summary>
@@ -234,31 +250,31 @@ namespace Tsu.CLI.SourceGenerator
         /// <typeparam name="T"></typeparam>
         /// <param name="attributeData"></param>
         /// <returns></returns>
-        public static T AttributeFromAttributeData<T> ( AttributeData attributeData )
+        public static T AttributeFromAttributeData<T>(AttributeData attributeData)
             where T : Attribute
         {
-            Type type = typeof ( T );
+            var type = typeof(T);
 
-            if ( attributeData.AttributeClass?.Name is not null && attributeData.AttributeClass?.Name != type.Name )
+            if (attributeData.AttributeClass?.Name is not null && attributeData.AttributeClass?.Name != type.Name)
             {
-                throw new InvalidOperationException ( "The attribute data type name does not match the attribute type name." );
+                throw new InvalidOperationException("The attribute data type name does not match the attribute type name.");
             }
 
             // Build the instance
-            var args = attributeData.ConstructorArguments.Select ( constVal => constVal.Value ).ToArray ( );
-            var inst = Activator.CreateInstance ( type, args );
+            var args = attributeData.ConstructorArguments.Select(constVal => constVal.Value).ToArray();
+            var inst = Activator.CreateInstance(type, args);
 
             // Set the property values from the named arguments
-            foreach ( KeyValuePair<String, TypedConstant> namedArgument in attributeData.NamedArguments )
+            foreach (var namedArgument in attributeData.NamedArguments)
             {
-                PropertyInfo? prop = type.GetProperty ( namedArgument.Key, BindingFlags.Public | BindingFlags.Instance );
-                if ( prop is { } )
+                var prop = type.GetProperty(namedArgument.Key, BindingFlags.Public | BindingFlags.Instance);
+                if (prop is { })
                 {
-                    prop.SetValue ( inst, namedArgument.Value );
+                    prop.SetValue(inst, namedArgument.Value);
                 }
             }
 
-            return ( T ) inst;
+            return (T) inst;
         }
 
         /// <summary>
@@ -268,12 +284,12 @@ namespace Tsu.CLI.SourceGenerator
         /// <param name="attributes"></param>
         /// <param name="typeSymbol"></param>
         /// <returns></returns>
-        public static T? TryGetAttribute<T> ( ImmutableArray<AttributeData> attributes, INamedTypeSymbol typeSymbol )
+        public static T? TryGetAttribute<T>(ImmutableArray<AttributeData> attributes, INamedTypeSymbol typeSymbol)
             where T : Attribute
         {
-            if ( attributes.FirstOrDefault ( attribute => SymbolEqualityComparer.Default.Equals ( attribute.AttributeClass, typeSymbol ) ) is AttributeData attribute )
+            if (attributes.FirstOrDefault(attribute => SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, typeSymbol)) is AttributeData attribute)
             {
-                return AttributeFromAttributeData<T> ( attribute );
+                return AttributeFromAttributeData<T>(attribute);
             }
             return null;
         }

@@ -1,12 +1,29 @@
-﻿using System;
+﻿// Copyright © 2016 GGG KILLER <gggkiller2@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the “Software”), to deal in the Software without
+// restriction, including without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
-using Tsu.CLI.Commands;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Tsu.CLI.Commands;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Tsu.CLI.SourceGenerator.CommandManager
@@ -21,24 +38,24 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
         /// <param name="attributeSyntax"></param>
         /// <param name="verb"></param>
         /// <returns></returns>
-        public static Result<CommandClass, Diagnostic> Create (
+        public static Result<CommandClass, Diagnostic> Create(
             CommandManagerClass commandManager,
             INamedTypeSymbol classSymbol,
             AttributeSyntax attributeSyntax,
-            String? verb = null )
+            string? verb = null)
         {
-            if ( verb is not null && String.IsNullOrWhiteSpace ( verb ) )
+            if (verb is not null && string.IsNullOrWhiteSpace(verb))
             {
-                return Result.Err<CommandClass, Diagnostic> ( Diagnostic.Create (
+                return Result.Err<CommandClass, Diagnostic>(Diagnostic.Create(
                     DiagnosticDescriptors.InvalidVerbPassedToCommandManagerAttribute,
-                    attributeSyntax.GetLocation ( ) ) );
+                    attributeSyntax.GetLocation()));
             }
 
-            return Result.Ok<CommandClass, Diagnostic> ( new CommandClass (
+            return Result.Ok<CommandClass, Diagnostic>(new CommandClass(
                 commandManager,
                 classSymbol,
                 attributeSyntax,
-                verb ) );
+                verb));
         }
 
         /// <summary>
@@ -59,10 +76,10 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
         /// <summary>
         /// The command class verb.
         /// </summary>
-        public String? Verb { get; }
+        public string? Verb { get; }
 
         /// <inheritdoc cref="CommandManagerClass.CommonSymbols" />
-        public CommonSymbols CommonSymbols => this.CommandManager.CommonSymbols;
+        public CommonSymbols CommonSymbols => CommandManager.CommonSymbols;
 
         /// <summary>
         /// Initializes a new command class
@@ -71,16 +88,16 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
         /// <param name="classSymbol"></param>
         /// <param name="attributeSyntax"></param>
         /// <param name="verb"></param>
-        private CommandClass (
+        private CommandClass(
             CommandManagerClass commandManager,
             INamedTypeSymbol classSymbol,
             AttributeSyntax attributeSyntax,
-            String? verb = null )
+            string? verb = null)
         {
-            this.CommandManager = commandManager ?? throw new ArgumentNullException ( nameof ( commandManager ) );
-            this.ClassSymbol = classSymbol ?? throw new ArgumentNullException ( nameof ( classSymbol ) );
-            this.AttributeSyntax = attributeSyntax ?? throw new ArgumentNullException ( nameof ( attributeSyntax ) );
-            this.Verb = verb;
+            CommandManager = commandManager ?? throw new ArgumentNullException(nameof(commandManager));
+            ClassSymbol = classSymbol ?? throw new ArgumentNullException(nameof(classSymbol));
+            AttributeSyntax = attributeSyntax ?? throw new ArgumentNullException(nameof(attributeSyntax));
+            Verb = verb;
         }
 
         /// <summary>
@@ -88,101 +105,99 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Result<ImmutableDictionary<String, CommandMethod>, Diagnostic> GetCommandMethods ( CancellationToken cancellationToken = default )
+        public Result<ImmutableDictionary<string, CommandMethod>, Diagnostic> GetCommandMethods(CancellationToken cancellationToken = default)
         {
-            ImmutableDictionary<String, CommandMethod>.Builder dictionaryBuilder =
-                ImmutableDictionary.CreateBuilder<String, CommandMethod> ( );
+            var dictionaryBuilder =
+                ImmutableDictionary.CreateBuilder<string, CommandMethod>();
 
-            foreach ( IMethodSymbol methodSymbol in this.ClassSymbol
-                                                        .GetMembers ( )
-                                                        .OfType<IMethodSymbol> ( )
-                                                        .Where ( method => method.GetAttributes ( )
-                                                                                 .Any ( attr => this.CommandManager.IsCommandAttributeSymbol ( attr.AttributeClass! ) ) ) )
+            foreach (var methodSymbol in ClassSymbol.GetMembers()
+                                                    .OfType<IMethodSymbol>()
+                                                    .Where(method => method.GetAttributes()
+                                                                           .Any(attr => CommandManager.IsCommandAttributeSymbol(attr.AttributeClass!))))
             {
-                cancellationToken.ThrowIfCancellationRequested ( );
-                foreach ( AttributeData attrData in methodSymbol.GetAttributes ( )
-                                                                .Where ( attr => this.CommandManager.IsCommandAttributeSymbol ( attr.AttributeClass! ) ) )
+                cancellationToken.ThrowIfCancellationRequested();
+                foreach (var attrData in methodSymbol.GetAttributes()
+                                                     .Where(attr => CommandManager.IsCommandAttributeSymbol(attr.AttributeClass!)))
                 {
-                    cancellationToken.ThrowIfCancellationRequested ( );
-                    CommandAttribute attr = Utilities.AttributeFromAttributeData<CommandAttribute> ( attrData );
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var attr = Utilities.AttributeFromAttributeData<CommandAttribute>(attrData);
 
-                    if ( Utilities.IsValidCommandName ( attr.Name ) )
+                    if (Utilities.IsValidCommandName(attr.Name))
                     {
-                        return Result.Err<ImmutableDictionary<String, CommandMethod>, Diagnostic> ( Diagnostic.Create (
+                        return Result.Err<ImmutableDictionary<string, CommandMethod>, Diagnostic>(Diagnostic.Create(
                             DiagnosticDescriptors.InvalidNamePassedToCommandAttribute,
-                            this.AttributeSyntax.GetLocation ( ),
-                            methodSymbol.ToDisplayString ( SymbolDisplayFormat.CSharpErrorMessageFormat ) ) );
+                            AttributeSyntax.GetLocation(),
+                            methodSymbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)));
                     }
 
-                    if ( !dictionaryBuilder.ContainsKey ( attr.Name )
-                         || attr.Overwrite )
+                    if (!dictionaryBuilder.ContainsKey(attr.Name)
+                        || attr.Overwrite)
                     {
-                        Result<CommandMethod, Diagnostic> commandMethod = CommandMethod.Create ( attr, this, methodSymbol );
-                        if ( commandMethod.IsErr )
-                            return Result.Err<ImmutableDictionary<String, CommandMethod>, Diagnostic> ( commandMethod.Err.Value );
+                        var commandMethod = CommandMethod.Create(attr, this, methodSymbol);
+                        if (commandMethod.IsErr)
+                            return Result.Err<ImmutableDictionary<string, CommandMethod>, Diagnostic>(commandMethod.Err.Value);
                         else
                             dictionaryBuilder[attr.Name] = commandMethod.Ok.Value;
                     }
                 }
             }
 
-            return Result.Ok<ImmutableDictionary<String, CommandMethod>, Diagnostic> ( dictionaryBuilder.ToImmutable ( ) );
+            return Result.Ok<ImmutableDictionary<string, CommandMethod>, Diagnostic>(dictionaryBuilder.ToImmutable());
         }
 
         /// <inheritdoc />
-        public Result<BlockSyntax, Diagnostic> ToSyntaxNode ( IdentifierNameSyntax inputIdentifier, IdentifierNameSyntax spaceIndexIdentifier )
+        public Result<BlockSyntax, Diagnostic> ToSyntaxNode(IdentifierNameSyntax inputIdentifier, IdentifierNameSyntax spaceIndexIdentifier)
         {
-            return this.GetCommandMethods ( )
-                       .AndThen ( commands =>
-            {
-                IdentifierNameSyntax secondSpaceIndexIdentifier = IdentifierName ( spaceIndexIdentifier.Identifier.ValueText + "2" ),
-                    subCommandNameIdentifier = IdentifierName ( "subCommandName" );
+            return GetCommandMethods().AndThen(commands =>
+          {
+              IdentifierNameSyntax secondSpaceIndexIdentifier = IdentifierName(spaceIndexIdentifier.Identifier.ValueText + "2"),
+                  subCommandNameIdentifier = IdentifierName("subCommandName");
 
-                var commandsSwitchSections = new List<SwitchSectionSyntax> ( commands.Count );
-                foreach ( KeyValuePair<String, CommandMethod> command in commands )
-                {
-                    Result<BlockSyntax, Diagnostic> block = command.Value.ToSyntaxNode ( inputIdentifier, secondSpaceIndexIdentifier );
-                    if ( block.IsErr )
-                        return block;
+              var commandsSwitchSections = new List<SwitchSectionSyntax>(commands.Count);
+              foreach (var command in commands)
+              {
+                  var block = command.Value.ToSyntaxNode(inputIdentifier, secondSpaceIndexIdentifier);
+                  if (block.IsErr)
+                      return block;
 
-                    commandsSwitchSections.Add ( SwitchSection (
-                        List ( new SwitchLabelSyntax[]
-                        {
+                  commandsSwitchSections.Add(SwitchSection(
+                      List(new SwitchLabelSyntax[]
+                      {
                             CaseSwitchLabel (
                                 LiteralExpression (
                                     SyntaxKind.StringLiteralExpression,
                                     Literal ( command.Key )
                                 )
                             )
-                        } ),
-                        List ( new StatementSyntax[]
-                        {
+                      }),
+                      List(new StatementSyntax[]
+                      {
                             block.Ok.Value,
                             BreakStatement ( )
-                        } )
-                    ) );
-                }
+                      })
+                  ));
+              }
 
-                return ( Result<BlockSyntax, Diagnostic> ) Block ( new StatementSyntax[]
-                {
+              return (Result<BlockSyntax, Diagnostic>) Block(new StatementSyntax[]
+              {
                     /* Int32 secondSpaceIndex = input.IndexOf ( ' ', spaceIndex ) */
-                    LocalDeclarationStatement (
+                    LocalDeclarationStatement(
                         /* Int32 secondSpaceIndex = input.IndexOf ( ' ', spaceIndex + 1 ) */
-                        VariableDeclaration (
+                        VariableDeclaration(
                             /* Int32 */
-                            Utilities.GetTypeSyntax ( this.CommandManager.CommonSymbols.System_Int32 ),
+                            Utilities.GetTypeSyntax(CommandManager.CommonSymbols.System_Int32),
                             /* secondSpaceIndex = input.IndexOf ( ' ', spaceIndex + 1 ) */
-                            SeparatedList ( new[]
+                            SeparatedList(new[]
                             {
                                 /* secondSpaceIndex = input.IndexOf ( ' ', spaceIndex + 1 ) */
-                                VariableDeclarator (
+                                VariableDeclarator(
                                     secondSpaceIndexIdentifier.Identifier,
                                     null,
                                     /* = input.IndexOf ( ' ', spaceIndex + 1 ) */
-                                    EqualsValueClause (
-                                        ( ExpressionSyntax )
-                                        inputIdentifier.AsDynamic ( )
-                                                       .IndexOf ( ' ', spaceIndexIdentifier.AsDynamic ( ) + 1 )
+                                    EqualsValueClause(
+                                        (ExpressionSyntax)
+                                        inputIdentifier.AsDynamic()
+                                                       .IndexOf(' ', spaceIndexIdentifier.AsDynamic() + 1)
                                     )
                                     /* /= input.IndexOf ( ' ', spaceIndex ) */
                                 )
@@ -193,42 +208,42 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
                     ),
                     /* /Int32 secondSpaceIndex = input.IndexOf ( ' ', spaceIndex ) */
                     /* String subCommandName = secondSpaceIndex != -1 ? input.Substring ( spaceIndex + 1, secondSpaceIndex ) : input; */
-                    LocalDeclarationStatement (
-                        VariableDeclaration (
+                    LocalDeclarationStatement(
+                        VariableDeclaration(
                             /* String */
-                            Utilities.GetTypeSyntax ( this.CommandManager.CommonSymbols.System_String ),
+                            Utilities.GetTypeSyntax(CommandManager.CommonSymbols.System_String),
                             /* subCommandName = secondSpaceIndex != -1 ? input.Substring ( spaceIndex + 1, secondSpaceIndex ) : input; */
-                            SeparatedList ( new []
+                            SeparatedList(new[]
                             {
                                 /* subCommandName = secondSpaceIndex != -1 ? input.Substring ( spaceIndex + 1, secondSpaceIndex ) : input */
-                                VariableDeclarator (
+                                VariableDeclarator(
                                     subCommandNameIdentifier.Identifier,
                                     null,
-                                    EqualsValueClause (
+                                    EqualsValueClause(
                                         /* secondSpaceIndex != -1 ? input.Substring ( spaceIndex + 1, secondSpaceIndex ) : input */
-                                        ConditionalExpression (
-                                            ( ExpressionSyntax )
-                                            ( secondSpaceIndexIdentifier.AsDynamic ( ) != -1 ),
-                                            ( ExpressionSyntax )
-                                            inputIdentifier.AsDynamic ( )
-                                                           .Substring ( spaceIndexIdentifier.AsDynamic ( ) + 1,
-                                                                        secondSpaceIndexIdentifier),
+                                        ConditionalExpression(
+                                            (ExpressionSyntax)
+                                            (secondSpaceIndexIdentifier.AsDynamic() != -1),
+                                            (ExpressionSyntax)
+                                            inputIdentifier.AsDynamic()
+                                                           .Substring(spaceIndexIdentifier.AsDynamic() + 1,
+                                                                      secondSpaceIndexIdentifier),
                                             inputIdentifier
                                         )
                                         /* /secondSpaceIndex != -1 ? input.Substring ( spaceIndex + 1, secondSpaceIndex ) : input */
                                     )
                                 )
                                 /* /subCommandName = secondSpaceIndex != -1 ? input.Substring ( spaceIndex + 1, secondSpaceIndex ) : input */
-                            } )
+                            })
                         )
                     ),
                     /* /String subCommandName = secondSpaceIndex != -1 ? input.Substring ( spaceIndex + 1, secondSpaceIndex ) : input; */
-                    SwitchStatement (
+                    SwitchStatement(
                         subCommandNameIdentifier,
-                        List ( commandsSwitchSections )
+                        List(commandsSwitchSections)
                     ),
-                } );
-            } );
+              });
+          });
         }
     }
 }
