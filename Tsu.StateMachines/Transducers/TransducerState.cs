@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright © 2016 GGG KILLER <gggkiller2@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the “Software”), to deal in the Software without
+// restriction, including without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -19,13 +36,13 @@ namespace Tsu.StateMachines.Transducers
         /// <summary>
         /// The transitions this input has
         /// </summary>
-        protected internal Dictionary<TInput, TransducerState<TInput, TOutput>> InternalTransitionTable { get; } = new Dictionary<TInput, TransducerState<TInput, TOutput>> ( );
+        protected internal Dictionary<TInput, TransducerState<TInput, TOutput>> InternalTransitionTable { get; } = new Dictionary<TInput, TransducerState<TInput, TOutput>>();
 
         /// <summary>
         /// Whether this is a terminal state (one that has an output related with it)
         /// </summary>
-        [MemberNotNullWhen ( true, nameof ( Output ) )]
-        public Boolean IsTerminal { get; set; }
+        [MemberNotNullWhen(true, nameof(Output))]
+        public bool IsTerminal { get; set; }
 
         /// <summary>
         /// The output of the state if it is a terminal state
@@ -35,24 +52,24 @@ namespace Tsu.StateMachines.Transducers
         /// <summary>
         /// The transitions this input has
         /// </summary>
-        public IReadOnlyDictionary<TInput, TransducerState<TInput, TOutput>> TransitionTable => this.InternalTransitionTable;
+        public IReadOnlyDictionary<TInput, TransducerState<TInput, TOutput>> TransitionTable => InternalTransitionTable;
 
         /// <summary>
         /// Creates a new non-terminal state
         /// </summary>
-        public TransducerState ( )
+        public TransducerState()
         {
-            this.IsTerminal = false;
+            IsTerminal = false;
         }
 
         /// <summary>
         /// Creates a new terminal state with the ouput
         /// </summary>
         /// <param name="output"></param>
-        public TransducerState ( TOutput output )
+        public TransducerState(TOutput output)
         {
-            this.IsTerminal = true;
-            this.Output = output;
+            IsTerminal = true;
+            Output = output;
         }
 
         /// <summary>
@@ -60,10 +77,10 @@ namespace Tsu.StateMachines.Transducers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> GetState ( TInput input ) =>
-            this.InternalTransitionTable.ContainsKey ( input )
-                ? this.InternalTransitionTable[input]
-                : this.InternalTransitionTable[input] = new TransducerState<TInput, TOutput> ( );
+        public TransducerState<TInput, TOutput> GetState(TInput input) =>
+            InternalTransitionTable.ContainsKey(input)
+                ? InternalTransitionTable[input]
+                : InternalTransitionTable[input] = new TransducerState<TInput, TOutput>();
 
         /// <summary>
         /// Retrieves a state from the state graph with this node as a starting point
@@ -71,17 +88,17 @@ namespace Tsu.StateMachines.Transducers
         /// <param name="sequence">The string of inputs that would lead to the desired state</param>
         /// <param name="startingIndex">The index at which to start reading the inputs from</param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> GetState ( TInput[] sequence, Int32 startingIndex = 0 )
+        public TransducerState<TInput, TOutput> GetState(TInput[] sequence, int startingIndex = 0)
         {
-            if ( sequence is null )
-                throw new ArgumentNullException ( nameof ( sequence ) );
+            if (sequence is null)
+                throw new ArgumentNullException(nameof(sequence));
 
-            if ( startingIndex < 0 || startingIndex >= sequence.Length )
-                throw new ArgumentOutOfRangeException ( nameof ( startingIndex ) );
+            if (startingIndex < 0 || startingIndex >= sequence.Length)
+                throw new ArgumentOutOfRangeException(nameof(startingIndex));
 
             return startingIndex < sequence.Length - 1
-                ? this.GetState ( sequence[startingIndex] ).GetState ( sequence, startingIndex + 1 )
-                : this.GetState ( sequence[startingIndex] );
+                ? GetState(sequence[startingIndex]).GetState(sequence, startingIndex + 1)
+                : GetState(sequence[startingIndex]);
         }
 
         /// <summary>
@@ -90,22 +107,22 @@ namespace Tsu.StateMachines.Transducers
         /// <param name="input"></param>
         /// <param name="output"></param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> SetStateOutput ( TInput input, TOutput output )
+        public TransducerState<TInput, TOutput> SetStateOutput(TInput input, TOutput output)
         {
-            if ( this.InternalTransitionTable.ContainsKey ( input ) )
+            if (InternalTransitionTable.ContainsKey(input))
             {
-                TransducerState<TInput, TOutput> state = this.InternalTransitionTable[input];
+                var state = InternalTransitionTable[input];
 
                 // Create a new state with all transitions of the previous state
-                var newState = new TransducerState<TInput, TOutput> ( output );
-                foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in state.InternalTransitionTable )
+                var newState = new TransducerState<TInput, TOutput>(output);
+                foreach (var kv in state.InternalTransitionTable)
                     newState.InternalTransitionTable[kv.Key] = kv.Value;
 
-                return this.InternalTransitionTable[input] = newState;
+                return InternalTransitionTable[input] = newState;
             }
             else
             {
-                return this.InternalTransitionTable[input] = new TransducerState<TInput, TOutput> ( output );
+                return InternalTransitionTable[input] = new TransducerState<TInput, TOutput>(output);
             }
         }
 
@@ -116,17 +133,17 @@ namespace Tsu.StateMachines.Transducers
         /// <param name="output">The output the desired state will have</param>
         /// <param name="startingIndex">The index at which to start reading the inputs from</param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> SetStateOutput ( TInput[] sequence, TOutput output, Int32 startingIndex = 0 )
+        public TransducerState<TInput, TOutput> SetStateOutput(TInput[] sequence, TOutput output, int startingIndex = 0)
         {
-            if ( sequence is null )
-                throw new ArgumentNullException ( nameof ( sequence ) );
+            if (sequence is null)
+                throw new ArgumentNullException(nameof(sequence));
 
-            if ( startingIndex < 0 )
-                throw new ArgumentOutOfRangeException ( nameof ( sequence ) );
+            if (startingIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(sequence));
 
             return startingIndex < sequence.Length - 1
-                ? this.GetState ( sequence[startingIndex] ).GetState ( sequence, startingIndex + 1 )
-                : this.SetStateOutput ( sequence[startingIndex], output );
+                ? GetState(sequence[startingIndex]).GetState(sequence, startingIndex + 1)
+                : SetStateOutput(sequence[startingIndex], output);
         }
 
         /// <summary>
@@ -135,9 +152,9 @@ namespace Tsu.StateMachines.Transducers
         /// <param name="input">The input that will trigger the transition</param>
         /// <param name="output">The output that will be returned in this state</param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> OnInput ( TInput input, TOutput output )
+        public TransducerState<TInput, TOutput> OnInput(TInput input, TOutput output)
         {
-            this.SetStateOutput ( input, output );
+            SetStateOutput(input, output);
             return this;
         }
 
@@ -147,12 +164,12 @@ namespace Tsu.StateMachines.Transducers
         /// <param name="input">The input that will trigger the transition</param>
         /// <param name="action">The action to configure the transitions of the new state</param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> OnInput ( TInput input, Action<TransducerState<TInput, TOutput>> action )
+        public TransducerState<TInput, TOutput> OnInput(TInput input, Action<TransducerState<TInput, TOutput>> action)
         {
-            if ( action == null )
-                throw new ArgumentNullException ( nameof ( action ) );
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
 
-            action ( this.GetState ( input ) );
+            action(GetState(input));
             return this;
         }
 
@@ -163,12 +180,12 @@ namespace Tsu.StateMachines.Transducers
         /// <param name="output">The output that will be returned on this state</param>
         /// <param name="action"></param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> OnInput ( TInput input, TOutput output, Action<TransducerState<TInput, TOutput>> action )
+        public TransducerState<TInput, TOutput> OnInput(TInput input, TOutput output, Action<TransducerState<TInput, TOutput>> action)
         {
-            if ( action == null )
-                throw new ArgumentNullException ( nameof ( action ) );
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
 
-            action ( this.SetStateOutput ( input, output ) );
+            action(SetStateOutput(input, output));
             return this;
         }
 
@@ -181,21 +198,21 @@ namespace Tsu.StateMachines.Transducers
         /// </param>
         /// <param name="startIndex">The index to start adding transitions from the <paramref name="sequence"/></param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> OnInput ( TInput[] sequence, Action<TransducerState<TInput, TOutput>> action, Int32 startIndex = 0 )
+        public TransducerState<TInput, TOutput> OnInput(TInput[] sequence, Action<TransducerState<TInput, TOutput>> action, int startIndex = 0)
         {
-            if ( sequence is null )
-                throw new ArgumentNullException ( nameof ( sequence ) );
+            if (sequence is null)
+                throw new ArgumentNullException(nameof(sequence));
 
-            if ( action == null )
-                throw new ArgumentNullException ( nameof ( action ) );
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
 
-            if ( startIndex < 0 || startIndex >= sequence.Length )
-                throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
+            if (startIndex < 0 || startIndex >= sequence.Length)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), "Index was outside the bounds of the string.");
 
-            if ( startIndex < sequence.Length - 1 )
-                this.OnInput ( sequence[startIndex], state => state.OnInput ( sequence, action, startIndex + 1 ) );
+            if (startIndex < sequence.Length - 1)
+                OnInput(sequence[startIndex], state => state.OnInput(sequence, action, startIndex + 1));
             else
-                this.OnInput ( sequence[startIndex], action );
+                OnInput(sequence[startIndex], action);
             return this;
         }
 
@@ -206,18 +223,18 @@ namespace Tsu.StateMachines.Transducers
         /// <param name="output">The output of the terminal state</param>
         /// <param name="startIndex">The index to start adding transitions from the <paramref name="sequence"/></param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> OnInput ( TInput[] sequence, TOutput output, Int32 startIndex = 0 )
+        public TransducerState<TInput, TOutput> OnInput(TInput[] sequence, TOutput output, int startIndex = 0)
         {
-            if ( sequence is null )
-                throw new ArgumentNullException ( nameof ( sequence ) );
+            if (sequence is null)
+                throw new ArgumentNullException(nameof(sequence));
 
-            if ( startIndex < 0 || startIndex >= sequence.Length )
-                throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
+            if (startIndex < 0 || startIndex >= sequence.Length)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), "Index was outside the bounds of the string.");
 
-            if ( startIndex < sequence.Length - 1 )
-                this.OnInput ( sequence[startIndex], state => state.OnInput ( sequence, output, startIndex + 1 ) );
+            if (startIndex < sequence.Length - 1)
+                OnInput(sequence[startIndex], state => state.OnInput(sequence, output, startIndex + 1));
             else
-                this.OnInput ( sequence[startIndex], output );
+                OnInput(sequence[startIndex], output);
 
             return this;
         }
@@ -232,21 +249,21 @@ namespace Tsu.StateMachines.Transducers
         /// </param>
         /// <param name="startIndex">The index to start adding transitions from the <paramref name="sequence"/></param>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> OnInput ( TInput[] sequence, TOutput output, Action<TransducerState<TInput, TOutput>> action, Int32 startIndex = 0 )
+        public TransducerState<TInput, TOutput> OnInput(TInput[] sequence, TOutput output, Action<TransducerState<TInput, TOutput>> action, int startIndex = 0)
         {
-            if ( sequence is null )
-                throw new ArgumentNullException ( nameof ( sequence ) );
+            if (sequence is null)
+                throw new ArgumentNullException(nameof(sequence));
 
-            if ( action is null )
-                throw new ArgumentNullException ( nameof ( action ) );
+            if (action is null)
+                throw new ArgumentNullException(nameof(action));
 
-            if ( startIndex < 0 || startIndex >= sequence.Length )
-                throw new ArgumentOutOfRangeException ( nameof ( startIndex ), "Index was outside the bounds of the string." );
+            if (startIndex < 0 || startIndex >= sequence.Length)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), "Index was outside the bounds of the string.");
 
-            if ( startIndex < sequence.Length - 1 )
-                this.OnInput ( sequence[startIndex], state => state.OnInput ( sequence, output, action, startIndex + 1 ) );
+            if (startIndex < sequence.Length - 1)
+                OnInput(sequence[startIndex], state => state.OnInput(sequence, output, action, startIndex + 1));
             else
-                this.OnInput ( sequence[startIndex], output, action );
+                OnInput(sequence[startIndex], output, action);
 
             return this;
         }
@@ -255,10 +272,10 @@ namespace Tsu.StateMachines.Transducers
         /// Creates a shallow copy of this state
         /// </summary>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> ShallowCopy ( )
+        public TransducerState<TInput, TOutput> ShallowCopy()
         {
-            TransducerState<TInput, TOutput> state = this.IsTerminal ? new TransducerState<TInput, TOutput> ( this.Output ) : new TransducerState<TInput, TOutput> ( );
-            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.InternalTransitionTable )
+            var state = IsTerminal ? new TransducerState<TInput, TOutput>(Output) : new TransducerState<TInput, TOutput>();
+            foreach (var kv in InternalTransitionTable)
                 state.InternalTransitionTable[kv.Key] = kv.Value;
             return state;
         }
@@ -267,11 +284,11 @@ namespace Tsu.StateMachines.Transducers
         /// Creates a deep copy of this state
         /// </summary>
         /// <returns></returns>
-        public TransducerState<TInput, TOutput> DeepCopy ( )
+        public TransducerState<TInput, TOutput> DeepCopy()
         {
-            TransducerState<TInput, TOutput> state = this.IsTerminal ? new TransducerState<TInput, TOutput> ( this.Output ) : new TransducerState<TInput, TOutput> ( );
-            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.InternalTransitionTable )
-                state.InternalTransitionTable[kv.Key] = kv.Value.DeepCopy ( );
+            var state = IsTerminal ? new TransducerState<TInput, TOutput>(Output) : new TransducerState<TInput, TOutput>();
+            foreach (var kv in InternalTransitionTable)
+                state.InternalTransitionTable[kv.Key] = kv.Value.DeepCopy();
             return state;
         }
     }

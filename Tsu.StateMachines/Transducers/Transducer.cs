@@ -1,4 +1,21 @@
-﻿using System;
+﻿// Copyright © 2016 GGG KILLER <gggkiller2@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the “Software”), to deal in the Software without
+// restriction, including without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
 using System.Collections.Generic;
 
 namespace Tsu.StateMachines.Transducers
@@ -19,18 +36,18 @@ namespace Tsu.StateMachines.Transducers
         /// <summary>
         /// Initializes a transducer with a non-terminal <see cref="InitialState" />
         /// </summary>
-        public Transducer ( )
+        public Transducer()
         {
-            this.InitialState = new TransducerState<TInput, TOutput> ( );
+            InitialState = new TransducerState<TInput, TOutput>();
         }
 
         /// <summary>
         /// Initializes a transducer with a terminal <see cref="InitialState" />
         /// </summary>
         /// <param name="output"></param>
-        public Transducer ( TOutput output )
+        public Transducer(TOutput output)
         {
-            this.InitialState = new TransducerState<TInput, TOutput> ( output );
+            InitialState = new TransducerState<TInput, TOutput>(output);
         }
 
         /// <summary>
@@ -38,11 +55,11 @@ namespace Tsu.StateMachines.Transducers
         /// </summary>
         /// <param name="output"></param>
         /// <returns></returns>
-        public Transducer<TInput, TOutput> WithDefaultOutput ( TOutput output )
+        public Transducer<TInput, TOutput> WithDefaultOutput(TOutput output)
         {
-            var transducer = new Transducer<TInput,TOutput> ( output );
-            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.InitialState.InternalTransitionTable )
-                transducer.InitialState.InternalTransitionTable[kv.Key] = kv.Value.DeepCopy ( );
+            var transducer = new Transducer<TInput, TOutput>(output);
+            foreach (var kv in InitialState.InternalTransitionTable)
+                transducer.InitialState.InternalTransitionTable[kv.Key] = kv.Value.DeepCopy();
             return transducer;
         }
 
@@ -50,32 +67,32 @@ namespace Tsu.StateMachines.Transducers
         /// Creates a deep copy of this transducer without an output for the <see cref="InitialState" />
         /// </summary>
         /// <returns></returns>
-        public Transducer<TInput, TOutput> WithoutDefaultOutput ( )
+        public Transducer<TInput, TOutput> WithoutDefaultOutput()
         {
-            var transducer = new Transducer<TInput,TOutput> ( );
-            foreach ( KeyValuePair<TInput, TransducerState<TInput, TOutput>> kv in this.InitialState.InternalTransitionTable )
-                transducer.InitialState.InternalTransitionTable[kv.Key] = kv.Value.DeepCopy ( );
+            var transducer = new Transducer<TInput, TOutput>();
+            foreach (var kv in InitialState.InternalTransitionTable)
+                transducer.InitialState.InternalTransitionTable[kv.Key] = kv.Value.DeepCopy();
             return transducer;
         }
 
         #region Copiable
 
-        private Transducer ( Boolean isShallowCopy, Transducer<TInput, TOutput> transducer )
+        private Transducer(bool isShallowCopy, Transducer<TInput, TOutput> transducer)
         {
-            this.InitialState = isShallowCopy ? transducer.InitialState.ShallowCopy ( ) : transducer.InitialState.DeepCopy ( );
+            InitialState = isShallowCopy ? transducer.InitialState.ShallowCopy() : transducer.InitialState.DeepCopy();
         }
 
         /// <summary>
         /// Creates a shallow copy of this transducer
         /// </summary>
         /// <returns></returns>
-        public Transducer<TInput, TOutput> ShallowCopy ( ) => new Transducer<TInput, TOutput> ( true, this );
+        public Transducer<TInput, TOutput> ShallowCopy() => new Transducer<TInput, TOutput>(true, this);
 
         /// <summary>
         /// Creates a deep copy of this transducer
         /// </summary>
         /// <returns></returns>
-        public Transducer<TInput, TOutput> DeepCopy ( ) => new Transducer<TInput, TOutput> ( false, this );
+        public Transducer<TInput, TOutput> DeepCopy() => new Transducer<TInput, TOutput>(false, this);
 
         #endregion Copiable
 
@@ -86,22 +103,22 @@ namespace Tsu.StateMachines.Transducers
         /// <param name="sequence">The string of inputs</param>
         /// <param name="output">The output of the execution</param>
         /// <returns>The amount of inputs read</returns>
-        public Int32 Execute ( IEnumerable<TInput> sequence, out TOutput? output )
+        public int Execute(IEnumerable<TInput> sequence, out TOutput? output)
         {
-            if ( sequence == null )
-                throw new ArgumentNullException ( nameof ( sequence ) );
+            if (sequence == null)
+                throw new ArgumentNullException(nameof(sequence));
 
             var consumedInputs = 0;
-            TransducerState<TInput, TOutput> state = this.InitialState;
-            foreach ( TInput value in sequence )
+            var state = InitialState;
+            foreach (var value in sequence)
             {
-                if ( !state.TransitionTable.TryGetValue ( value, out TransducerState<TInput, TOutput>? tmp ) )
+                if (!state.TransitionTable.TryGetValue(value, out var tmp))
                     break;
                 state = tmp;
                 consumedInputs++;
             }
 
-            if ( state.IsTerminal )
+            if (state.IsTerminal)
             {
                 output = state.Output;
                 return consumedInputs;
