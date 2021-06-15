@@ -279,10 +279,10 @@ namespace Tsu
               // `typeof(T).IsClass` cannot be turned into a constant by the JIT: https://sharplab.io/#v2:EYLgHgbALANALiAhgZwLYB8ACAGABJgRgDoAlAVwDs4BLVAUyIGEB7VAB2oBs6AnAZV4A3agGM6yANwBYAFCzMAZnwAmXI1wBvWbh24A2gFk6cABbMAJgEl2nABRHTF6204B5NjWYVkRAIIBzfx5xZGpBOksKTmoKGP8ASgBdbV1FXGBmZk5cAwIAHgAVAD5beM0U3VSAdlxzOgAzRDJOOFsCsupkXApmzmkZSoBfCtwRw2MzKxt7Cacbd09vP0Dg5FDwyOjYigTkgdSlDKyc5UKSsq19yp1MGrgATzY6Znq2+KJLZEZOFEkR4auo0BaSO2QAGgQCKURpdrtUcvkYnBzv0hiMRiDMuCCMpoYDYXD8DUDKckSj/ujgYcsbgwcoofEYSNKrcEXlCNhyYCAZUMdTjnTcYz8cz4ST2QROaVUboAYMgA=
               || ( this.IsOk
                    && ( obj is TOk || ( default ( TOk ) is null && obj is null ) )
-                   && EqualityComparer<TOk>.Default.Equals ( ( TOk ) obj, this._ok ) )
+                   && EqualityComparer<TOk>.Default.Equals ( ( TOk? ) obj, this._ok ) )
               || ( this.IsErr
                    && ( obj is TErr || ( default ( TErr ) is null && obj is null ) )
-                   && EqualityComparer<TErr>.Default.Equals ( ( TErr ) obj, this._err ) );
+                   && EqualityComparer<TErr>.Default.Equals ( ( TErr? ) obj, this._err ) );
 
 #pragma warning restore CS8604 // Possible null reference argument. (We ensure null passes only when it's safe)
 #pragma warning restore IDE0079 // Remove unnecessary suppression (Valid for some target frameworks)
