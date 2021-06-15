@@ -32,22 +32,22 @@ namespace Tsu.Text.Code
         [SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "Only applicable to this type and wouldn't make sense outside of it.")]
         public ref struct IndentationDisposable
         {
-            private readonly CodeWriter codeWriter;
-            private bool disposed;
+            private readonly CodeWriter _codeWriter;
+            private bool _disposed;
 
             internal IndentationDisposable(CodeWriter codeWriter)
             {
-                this.codeWriter = codeWriter;
-                disposed = false;
+                this._codeWriter = codeWriter;
+                _disposed = false;
             }
 
             /// <inheritdoc />
             public void Dispose()
             {
-                if (!disposed)
+                if (!_disposed)
                 {
-                    codeWriter.Outdent();
-                    disposed = true;
+                    _codeWriter.Outdent();
+                    _disposed = true;
                 }
             }
         }

@@ -33,10 +33,10 @@ namespace Tsu.Parsing.BBCode
     public class BBParser : IDisposable
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Is being disposed on Dispose(bool).")]
-        private readonly StringReader Reader;
-        private readonly IEnumerator<BBToken> Lexer;
-        private readonly Stack<BBTagNode> NodeStack;
-        private BBNode[]? Parsed;
+        private readonly StringReader _reader;
+        private readonly IEnumerator<BBToken> _lexer;
+        private readonly Stack<BBTagNode> _nodeStack;
+        private BBNode[]? _parsed;
 
         /// <summary>
         /// Initializes a new BBCode parser
@@ -44,17 +44,17 @@ namespace Tsu.Parsing.BBCode
         /// <param name="code"></param>
         public BBParser(string code)
         {
-            Reader = new StringReader(code);
-            Lexer = BBLexer.Lex(Reader).GetEnumerator();
-            NodeStack = new Stack<BBTagNode>();
-            Parsed = null;
+            _reader = new StringReader(code);
+            _lexer = BBLexer.Lex(_reader).GetEnumerator();
+            _nodeStack = new Stack<BBTagNode>();
+            _parsed = null;
         }
 
         private BBToken? GetNextToken()
         {
-            if (Lexer.MoveNext())
+            if (_lexer.MoveNext())
             {
-                return Lexer.Current;
+                return _lexer.Current;
             }
 
             return null;
@@ -66,10 +66,10 @@ namespace Tsu.Parsing.BBCode
             if (name?.Type != BBTokenType.Text)
                 throw new FormatException("Expected tag name after the slash.");
 
-            var topName = NodeStack.Peek().Name;
+            var topName = _nodeStack.Peek().Name;
             if (topName != name.Value.Value)
                 throw new FormatException($"Closing tag for '{name.Value}' found but last opened tag was a '{topName}' tag.");
-            NodeStack.Pop();
+            _nodeStack.Pop();
 
             if (GetNextToken()?.Type != BBTokenType.RBracket)
                 throw new FormatException($"Unfinished closing tag '[/{name.Value}'.");
@@ -102,10 +102,10 @@ namespace Tsu.Parsing.BBCode
                 throw new FormatException($"Unfinished tag '{name}'.");
 
             var node = new BBTagNode(selfClosing, name, value);
-            NodeStack.Peek().AddChild(node);
+            _nodeStack.Peek().AddChild(node);
             if (!selfClosing)
             {
-                NodeStack.Push(node);
+                _nodeStack.Push(node);
             }
         }
 
@@ -116,16 +116,16 @@ namespace Tsu.Parsing.BBCode
         /// <exception cref="FormatException">Thrown when invalid BBCode is fed to the parser</exception>
         public BBNode[] Parse()
         {
-            if (Parsed == null)
+            if (_parsed == null)
             {
-                NodeStack.Push(new BBTagNode(false, "root", null));
-                while (Reader.Peek() != -1)
+                _nodeStack.Push(new BBTagNode(false, "root", null));
+                while (_reader.Peek() != -1)
                 {
                     var token = GetNextToken();
                     switch (token?.Type)
                     {
                         case BBTokenType.Text:
-                            NodeStack
+                            _nodeStack
                                 .Peek()
                                 .AddChild(new BBTextNode(token.Value.Value!));
                             break;
@@ -145,12 +145,12 @@ namespace Tsu.Parsing.BBCode
                     }
                 }
 
-                if (NodeStack.Count > 1)
-                    throw new FormatException($"Unclosed tag '{NodeStack.Peek().Name}'.");
-                Parsed = NodeStack.Pop().Children.ToArray();
+                if (_nodeStack.Count > 1)
+                    throw new FormatException($"Unclosed tag '{_nodeStack.Peek().Name}'.");
+                _parsed = _nodeStack.Pop().Children.ToArray();
             }
 
-            return Parsed;
+            return _parsed;
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Tsu.Parsing.BBCode
 
         #region IDisposable Support
 
-        private bool disposedValue; // To detect redundant calls
+        private bool _disposedValue; // To detect redundant calls
 
         /// <summary>
         /// <inheritdoc/>
@@ -208,16 +208,16 @@ namespace Tsu.Parsing.BBCode
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
-                    Reader.Dispose();
-                    Lexer.Dispose();
+                    _reader.Dispose();
+                    _lexer.Dispose();
                 }
 
-                Parsed = null;
-                disposedValue = true;
+                _parsed = null;
+                _disposedValue = true;
             }
         }
 

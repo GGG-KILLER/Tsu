@@ -39,8 +39,10 @@ namespace Tsu.Tests
             public bool Equals(T? other) => EqualityComparer<T?>.Default.Equals(Boxed, other);
         }
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Const.")]
         private const string OkValue = "ok";
 
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Const.")]
         private const int ErrValue = -1;
 
         private static Result<string, int> Ok => Result.Ok<string, int>(OkValue);

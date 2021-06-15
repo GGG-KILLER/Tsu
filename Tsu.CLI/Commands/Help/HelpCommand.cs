@@ -29,8 +29,8 @@ namespace Tsu.CLI.Commands.Help
     /// </summary>
     public abstract class HelpCommand
     {
-        private readonly BaseCommandManager Manager;
-        private readonly Dictionary<Command, string[]> Cache;
+        private readonly BaseCommandManager _manager;
+        private readonly Dictionary<Command, string[]> _cache;
 
         /// <summary>
         /// Initializes the default help command class
@@ -38,8 +38,8 @@ namespace Tsu.CLI.Commands.Help
         /// <param name="manager"></param>
         protected HelpCommand(BaseCommandManager manager)
         {
-            Manager = manager;
-            Cache = new Dictionary<Command, string[]>();
+            _manager = manager;
+            _cache = new Dictionary<Command, string[]>();
         }
 
         #region I/O
@@ -86,7 +86,7 @@ namespace Tsu.CLI.Commands.Help
             if (string.IsNullOrEmpty(input))
                 throw new ArgumentException($"'{nameof(input)}' cannot be null or empty", nameof(input));
 
-            var commandManager = parentCommand?.CommandManager ?? Manager;
+            var commandManager = parentCommand?.CommandManager ?? _manager;
 
 #if HAS_STRING_STRINGCOMPARISON_OVERLOADS
             var spaceIdx = input.IndexOf(' ', StringComparison.Ordinal);
@@ -140,7 +140,7 @@ namespace Tsu.CLI.Commands.Help
             if (command is null)
                 throw new ArgumentNullException(nameof(command));
 
-            if (!Cache.ContainsKey(command))
+            if (!_cache.ContainsKey(command))
             {
                 var list = new List<string>
                 {
@@ -175,10 +175,10 @@ namespace Tsu.CLI.Commands.Help
                         list.Add($"        {example}");
                 }
 
-                Cache[command] = list.ToArray();
+                _cache[command] = list.ToArray();
             }
 
-            return Cache[command];
+            return _cache[command];
         }
 
         #endregion Helpers
@@ -222,7 +222,7 @@ namespace Tsu.CLI.Commands.Help
             else
             {
                 WriteLine("Showing help for all commands:");
-                foreach (var command in Manager.Commands)
+                foreach (var command in _manager.Commands)
                 {
                     foreach (var line in GetHelpLines(command))
                         WriteLine("    " + line);

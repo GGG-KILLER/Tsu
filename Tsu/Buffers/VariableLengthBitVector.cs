@@ -29,12 +29,12 @@ namespace Tsu.Buffers
         /// <summary>
         /// The containers that back this bit vector
         /// </summary>
-        private byte[] containers;
+        private byte[] _containers;
 
         /// <summary>
         /// The length of the inner array of this bit vector
         /// </summary>
-        public int Length => containers.Length;
+        public int Length => _containers.Length;
 
         /// <summary>
         /// The amount of bits that this bit vector contains
@@ -46,7 +46,7 @@ namespace Tsu.Buffers
         /// </summary>
         public VariableLengthBitVector()
         {
-            containers = new byte[1];
+            _containers = new byte[1];
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Tsu.Buffers
             var size = bits >> BitVectorHelpers.ByteShiftAmount;
             if ((bits & BitVectorHelpers.ByteRemainderMask) != 0)
                 size++;
-            containers = new byte[size];
+            _containers = new byte[size];
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Tsu.Buffers
             if (bitVector is null)
                 throw new ArgumentNullException(nameof(bitVector));
 
-            containers = (byte[]) bitVector.containers.Clone();
+            _containers = (byte[]) bitVector._containers.Clone();
         }
 
         /// <summary>
@@ -83,9 +83,9 @@ namespace Tsu.Buffers
         /// <param name="index">The index being accessed</param>
         private void EnsureBitContainer(int index)
         {
-            if (index >= containers.Length)
+            if (index >= _containers.Length)
             {
-                Array.Resize(ref containers, index + 1);
+                Array.Resize(ref _containers, index + 1);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Tsu.Buffers
         /// Clears this variable length bit vector
         /// </summary>
         public void Clear() =>
-            Array.Clear(containers, 0, containers.Length);
+            Array.Clear(_containers, 0, _containers.Length);
 
         /// <summary>
         /// Accesses a bit in this vector.
@@ -106,16 +106,16 @@ namespace Tsu.Buffers
             {
                 EnsureBitContainer(bitIndex >> BitVectorHelpers.ByteShiftAmount);
 #if HAS_SPAN
-                BitVectorHelpers.SetByteVectorBitValue((Span<byte>) containers, bitIndex, value);
+                BitVectorHelpers.SetByteVectorBitValue((Span<byte>) _containers, bitIndex, value);
 #else
-                BitVectorHelpers.SetByteVectorBitValue(containers, bitIndex, value);
+                BitVectorHelpers.SetByteVectorBitValue(_containers, bitIndex, value);
 #endif
             }
             get =>
 #if HAS_SPAN
-                BitVectorHelpers.GetByteVectorBitValue((ReadOnlySpan<byte>) containers, bitIndex);
+                BitVectorHelpers.GetByteVectorBitValue((ReadOnlySpan<byte>) _containers, bitIndex);
 #else
-                BitVectorHelpers.GetByteVectorBitValue(containers, bitIndex);
+                BitVectorHelpers.GetByteVectorBitValue(_containers, bitIndex);
 #endif
 
         }
@@ -125,7 +125,7 @@ namespace Tsu.Buffers
         /// <inheritdoc/>
         public bool Equals(VariableLengthBitVector? other) =>
             other is VariableLengthBitVector
-            && containers.SequenceEqual(other.containers);
+            && _containers.SequenceEqual(other._containers);
 
         #endregion IEquatable<VariableLengthBitVector>
 
@@ -133,7 +133,7 @@ namespace Tsu.Buffers
 
         /// <inheritdoc/>
         public override string ToString() =>
-            string.Join("", containers.Select(n => Convert.ToString(n, 2)
+            string.Join("", _containers.Select(n => Convert.ToString(n, 2)
                                                           .PadLeft(8, '0'))
                                       .Reverse());
 
@@ -145,7 +145,7 @@ namespace Tsu.Buffers
         public override int GetHashCode()
         {
             var hashCode = -1534987273;
-            var containers = this.containers;
+            var containers = this._containers;
             for (var i = 0; i < containers.Length; i++)
             {
                 hashCode = unchecked(hashCode * -1521134295 + containers[i].GetHashCode());

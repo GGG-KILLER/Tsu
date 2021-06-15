@@ -27,7 +27,7 @@ namespace Tsu.Text.Code
     {
         private readonly TextWriter _writer;
         private readonly bool _keepOpen;
-        private bool disposedValue;
+        private bool _disposedValue;
 
         /// <summary>
         /// Initializes a new <see cref="TextWriterCodeWriter" />.
@@ -93,14 +93,14 @@ namespace Tsu.Text.Code
         /// </param>
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing && !_keepOpen)
                 {
                     _writer.Dispose();
                 }
 
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 

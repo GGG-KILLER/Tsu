@@ -265,7 +265,8 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
         /// <summary>
         /// The MethodInfo reference to <see cref="Cast{T}(object)" />.
         /// </summary>
-        private static readonly MethodInfo CastT_Info = typeof(ExprSyntaxDynObj).GetMethod(
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Static field.")]
+        private static readonly MethodInfo s_mi_CastT = typeof(ExprSyntaxDynObj).GetMethod(
             nameof(Cast),
             BindingFlags.Static | BindingFlags.NonPublic,
             Type.DefaultBinder,
@@ -279,7 +280,7 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
         /// <param name="type"></param>
         /// <returns></returns>
         private static object Cast(object @object, Type type) =>
-            CastT_Info.MakeGenericMethod(type).Invoke(null, new[] { @object });
+            s_mi_CastT.MakeGenericMethod(type).Invoke(null, new[] { @object });
 
         /// <summary>
         /// Converts an object a basic type to a <see cref="LiteralExpressionSyntax" /> and returns

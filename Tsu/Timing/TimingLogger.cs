@@ -100,14 +100,14 @@ namespace Tsu.Timing
                 ShouldPrintElapsedTime = shouldPrintElapsedTime;
             }
 
-            private bool disposed;
+            private bool _disposed;
 
             void IDisposable.Dispose()
             {
-                if (!disposed)
+                if (!_disposed)
                 {
                     _owner.EndScope(this);
-                    disposed = true;
+                    _disposed = true;
                 }
             }
         }
@@ -149,20 +149,20 @@ namespace Tsu.Timing
                 ShouldPrintElapsedTime = shouldPrintElapsedTime;
             }
 
-            private bool disposed;
+            private bool _disposed;
 
             void IDisposable.Dispose()
             {
-                if (!disposed)
+                if (!_disposed)
                 {
                     _owner.EndOperation(this);
-                    disposed = true;
+                    _disposed = true;
                 }
             }
         }
 
-        private readonly Stopwatch stopwatch;
-        private readonly Stack<Scope> scopes;
+        private readonly Stopwatch _stopwatch;
+        private readonly Stack<Scope> _scopes;
 
         /// <summary>
         /// Whether the current line has already been prefixed
@@ -222,15 +222,15 @@ namespace Tsu.Timing
         /// <summary>
         /// The amount of time elapsed since this logger started
         /// </summary>
-        public TimeSpan Elapsed => stopwatch.Elapsed;
+        public TimeSpan Elapsed => _stopwatch.Elapsed;
 
         /// <summary>
         /// Initializes a TimingLogger
         /// </summary>
         protected TimingLogger()
         {
-            stopwatch = Stopwatch.StartNew();
-            scopes = new Stack<Scope>();
+            _stopwatch = Stopwatch.StartNew();
+            _scopes = new Stack<Scope>();
             MinimumLogLevel = LogLevel.Debug;
             PrintLevelPrefixes = true;
         }
@@ -273,7 +273,7 @@ namespace Tsu.Timing
         /// <param name="level"></param>
         protected virtual void WriteLinePrefix(LogLevel level)
         {
-            WriteInternal($"[{Elapsed:hh\\:mm\\:ss\\.ffffff}]{new string(' ', scopes.Count * 4)}");
+            WriteInternal($"[{Elapsed:hh\\:mm\\:ss\\.ffffff}]{new string(' ', _scopes.Count * 4)}");
             if (!PrintLevelPrefixes || level < LogLevel.Debug || level > LogLevel.Error)
                 return;
 
@@ -525,7 +525,7 @@ namespace Tsu.Timing
             WriteLine($"{name}...");
             WriteLine("{");
             var scope = new Scope(this, name, Elapsed, shouldPrintElapsedTime);
-            scopes.Push(scope);
+            _scopes.Push(scope);
             return scope;
         }
 
@@ -537,16 +537,16 @@ namespace Tsu.Timing
 
         private void EndScope(Scope scope)
         {
-            if (scopes.Count < 1)
+            if (_scopes.Count < 1)
                 throw new InvalidOperationException("No scopes to end.");
 
-            if (!scopes.Peek().Equals(scope))
+            if (!_scopes.Peek().Equals(scope))
                 throw new InvalidOperationException("Attempt to end outer scope without ending inner scope(s).");
 
             if (scope.ShouldPrintElapsedTime)
                 WriteLine($"Elapsed {Duration.Format((Elapsed - scope.StartedAt).Ticks)} in {UnCapitalize(scope.Name)}.");
 
-            scopes.Pop();
+            _scopes.Pop();
             WriteLine("}");
         }
 

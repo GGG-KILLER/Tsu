@@ -35,25 +35,26 @@ namespace Tsu.CLI.Tests.Commands
             Enum02
         }
 
-        private static object Value;
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Static field.")]
+        private static object s_value;
 
-        public static void DoSomething01(uint u32) => Value = u32;
+        public static void DoSomething01(uint u32) => s_value = u32;
 
-        public static void DoSomething02(int i32) => Value = i32;
+        public static void DoSomething02(int i32) => s_value = i32;
 
-        public static void DoSomething03(RandomEnum @enum) => Value = @enum;
+        public static void DoSomething03(RandomEnum @enum) => s_value = @enum;
 
-        public static void DoSomething04(double f64) => Value = f64;
+        public static void DoSomething04(double f64) => s_value = f64;
 
-        public static void DoSomething05(float f32) => Value = f32;
+        public static void DoSomething05(float f32) => s_value = f32;
 
-        public static void DoSomething06(string first, [JoinRestOfArguments] string rest) => Value = first + "." + rest;
+        public static void DoSomething06(string first, [JoinRestOfArguments] string rest) => s_value = first + "." + rest;
 
-        public static void DoSomething07(params string[] args) => Value = string.Join(".", args);
+        public static void DoSomething07(params string[] args) => s_value = string.Join(".", args);
 
-        public static void DoSomething08(double? opt = null) => Value = opt;
+        public static void DoSomething08(double? opt = null) => s_value = opt;
 
-        public static void DoSomething09(params RandomEnum[] enums) => Value = string.Join(".", enums);
+        public static void DoSomething09(params RandomEnum[] enums) => s_value = string.Join(".", enums);
 
         [DataTestMethod]
         [DataRow(nameof(DoSomething01))]
@@ -93,11 +94,11 @@ namespace Tsu.CLI.Tests.Commands
             var method = typeof(CommandCompilerTests).GetMethod(methodName);
             var comp = CommandCompiler.Compile(method, null);
 
-            Value = null;
+            s_value = null;
             comp(string.Empty, inputString.Contains(";")
                 ? inputString.Split(';')
                 : (inputString.Length < 1 ? Array.Empty<string>() : new[] { inputString }));
-            Assert.AreEqual(expectedVal, Value);
+            Assert.AreEqual(expectedVal, s_value);
         }
 
         [DataTestMethod]

@@ -16,6 +16,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 using Tsu.CLI.Commands.Errors;
@@ -27,18 +28,21 @@ namespace Tsu.CLI.Commands
 {
     internal static class CommandCompiler
     {
-        private static readonly MethodInfo MI_Enum_Parse = typeof(Enum).GetMethod("Parse", new[] {
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Static readonly field.")]
+        private static readonly MethodInfo s_mi_Enum_Parse = typeof(Enum).GetMethod("Parse", new[] {
             typeof(Type),
             typeof(string),
             typeof(bool)
         });
 
-        private static readonly MethodInfo MI_Convert_ChangeType = typeof(Convert).GetMethod("ChangeType", new[] {
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Static readonly field.")]
+        private static readonly MethodInfo s_mi_Convert_ChangeType = typeof(Convert).GetMethod("ChangeType", new[] {
             typeof(object),
             typeof(Type)
         });
 
-        private static readonly MethodInfo MI_String_Join = typeof(string).GetMethod("Join", new[]
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Static readonly field.")]
+        private static readonly MethodInfo s_mi_String_Join = typeof(string).GetMethod("Join", new[]
         {
             typeof(string),
             typeof(string[]),
@@ -57,10 +61,10 @@ namespace Tsu.CLI.Commands
             // Use .Parse static method if it exists, otherwise use the Convert.ChangeType method
             var parseMethod = type.GetMethod("Parse", new[] { typeof(string) });
             return Expression.Convert(type.IsEnum
-                ? Expression.Call(null, MI_Enum_Parse, Expression.Constant(type), arg, Expression.Constant(true))
+                ? Expression.Call(null, s_mi_Enum_Parse, Expression.Constant(type), arg, Expression.Constant(true))
                 : parseMethod != null && parseMethod.IsStatic
                     ? Expression.Call(null, parseMethod, arg)
-                    : Expression.Call(null, MI_Convert_ChangeType, arg, Expression.Constant(type)), type);
+                    : Expression.Call(null, s_mi_Convert_ChangeType, arg, Expression.Constant(type)), type);
         }
 
         private static Expression GetThrowExpression<T>(Type retType, params object[] unformattedArgs)
@@ -155,7 +159,7 @@ namespace Tsu.CLI.Commands
                 /* [JoinRestOfArguments] */
                 if (param.IsDefined(typeof(JoinRestOfArgumentsAttribute), true))
                 {
-                    argument = Expression.Call(null, MI_String_Join, Expression.Constant(""), arguments, idxExpression, Expression.Subtract(argumentsLength, idxExpression));
+                    argument = Expression.Call(null, s_mi_String_Join, Expression.Constant(""), arguments, idxExpression, Expression.Subtract(argumentsLength, idxExpression));
                 }
                 /* params */
                 else if (param.IsDefined(typeof(ParamArrayAttribute), true))

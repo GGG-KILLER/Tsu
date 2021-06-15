@@ -68,19 +68,19 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
             return false;
         }
 
-        private readonly List<ClassDeclarationSyntax> classes = new List<ClassDeclarationSyntax>();
+        private readonly List<ClassDeclarationSyntax> _classes = new List<ClassDeclarationSyntax>();
 
         /// <summary>
         /// The classes that contain the command manager attribute.
         /// </summary>
-        public IEnumerable<ClassDeclarationSyntax> CommandManagerClasses => classes.AsReadOnly();
+        public IEnumerable<ClassDeclarationSyntax> CommandManagerClasses => _classes.AsReadOnly();
 
         /// <inheritdoc />
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {
             if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax && ContainsClassAttribute(classDeclarationSyntax))
             {
-                classes.Add(classDeclarationSyntax);
+                _classes.Add(classDeclarationSyntax);
             }
         }
     }

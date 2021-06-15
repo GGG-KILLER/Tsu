@@ -32,58 +32,58 @@ namespace Tsu.CLI.Commands
         private static bool IsInRange(char start, char value, char end) =>
             (uint) (value - start) <= (end - start);
 
-        private readonly string Input;
-        private int Offset;
+        private readonly string _input;
+        private int _offset;
 
         private InputLineParser(string input)
         {
-            Input = input;
-            Offset = 0;
+            _input = input;
+            _offset = 0;
         }
 
         private string ParseQuotedString(char separator)
         {
-            var start = Offset;
-            Offset++;
+            var start = _offset;
+            _offset++;
 
             var builder = new StringBuilder();
 
-            while (Offset < Input.Length && Input[Offset] != separator)
+            while (_offset < _input.Length && _input[_offset] != separator)
                 builder.Append(ParseCharacter());
 
-            if (Offset == Input.Length || Input[Offset] != separator)
+            if (_offset == _input.Length || _input[_offset] != separator)
                 throw new InputLineParseException("Unfinished quoted string literal.", start);
 
             // skip '<separator>'
-            Offset++;
+            _offset++;
 
             return builder.ToString();
         }
 
         private char ParseCharacter()
         {
-            if (Input[Offset] == '\\')
+            if (_input[_offset] == '\\')
             {
-                Offset++;
-                if (Offset == Input.Length)
-                    throw new InputLineParseException("Unfinished escape.", Offset - 1);
+                _offset++;
+                if (_offset == _input.Length)
+                    throw new InputLineParseException("Unfinished escape.", _offset - 1);
 
-                switch (Input[Offset++])
+                switch (_input[_offset++])
                 {
                     case 'a':
                         return '\a';
 
                     case 'b':
                     {
-                        if (Input[Offset] != '0' && Input[Offset] != '1')
+                        if (_input[_offset] != '0' && _input[_offset] != '1')
                             return '\b';
 
-                        var idx = Offset;
-                        while (Input[idx] == '0' || Input[idx] == '1')
+                        var idx = _offset;
+                        while (_input[idx] == '0' || _input[idx] == '1')
                             idx++;
 
-                        var num = Input.Substring(Offset, idx - Offset);
-                        Offset = idx;
+                        var num = _input.Substring(_offset, idx - _offset);
+                        _offset = idx;
                         return (char) Convert.ToUInt32(num, 2);
                     }
 
@@ -95,14 +95,14 @@ namespace Tsu.CLI.Commands
 
                     case 'o':
                     {
-                        var idx = Offset;
-                        while (IsInRange('0', Input[idx], '8'))
+                        var idx = _offset;
+                        while (IsInRange('0', _input[idx], '8'))
                             idx++;
-                        if (Offset == idx)
-                            throw new InputLineParseException("Invalid octal escape.", Offset - 2);
+                        if (_offset == idx)
+                            throw new InputLineParseException("Invalid octal escape.", _offset - 2);
 
-                        var num = Input.Substring(Offset, idx - Offset);
-                        Offset = idx;
+                        var num = _input.Substring(_offset, idx - _offset);
+                        _offset = idx;
                         return (char) Convert.ToUInt32(num, 8);
                     }
 
@@ -117,20 +117,20 @@ namespace Tsu.CLI.Commands
 
                     case 'x':
                     {
-                        var idx = Offset;
-                        while (idx < Input.Length
-                               && (IsInRange('0', Input[idx], '9')
-                                   || IsInRange('a', Input[idx], 'f')
-                                   || IsInRange('A', Input[idx], 'F')))
+                        var idx = _offset;
+                        while (idx < _input.Length
+                               && (IsInRange('0', _input[idx], '9')
+                                   || IsInRange('a', _input[idx], 'f')
+                                   || IsInRange('A', _input[idx], 'F')))
                         {
                             idx++;
                         }
 
-                        if (Offset == idx)
-                            throw new InputLineParseException("Invalid hexadecimal escape.", Offset - 2);
+                        if (_offset == idx)
+                            throw new InputLineParseException("Invalid hexadecimal escape.", _offset - 2);
 
-                        var num = Input.Substring(Offset, idx - Offset);
-                        Offset = idx;
+                        var num = _input.Substring(_offset, idx - _offset);
+                        _offset = idx;
                         return (char) Convert.ToUInt32(num, 16);
                     }
 
@@ -149,29 +149,29 @@ namespace Tsu.CLI.Commands
                     case char ch when IsInRange('0', ch, '9'):
                     {
                         // We ended up consuming one of the digits on this one
-                        Offset--;
-                        var idx = Offset;
-                        while (IsInRange('0', Input[idx], '9'))
+                        _offset--;
+                        var idx = _offset;
+                        while (IsInRange('0', _input[idx], '9'))
                             idx++;
-                        if (Offset == idx)
-                            throw new InputLineParseException("Invalid decimal escape.", Offset - 2);
+                        if (_offset == idx)
+                            throw new InputLineParseException("Invalid decimal escape.", _offset - 2);
 
-                        var num = Input.Substring(Offset, idx - Offset);
-                        Offset = idx;
+                        var num = _input.Substring(_offset, idx - _offset);
+                        _offset = idx;
                         return (char) Convert.ToUInt32(num, 10);
                     }
 
                     default:
-                        throw new InputLineParseException("Invalid character escape", Offset - 1);
+                        throw new InputLineParseException("Invalid character escape", _offset - 1);
                 }
             }
-            else if (Offset < Input.Length)
+            else if (_offset < _input.Length)
             {
-                return Input[Offset++];
+                return _input[_offset++];
             }
             else
             {
-                throw new InputLineParseException("Expected char but got EOF", Offset);
+                throw new InputLineParseException("Expected char but got EOF", _offset);
             }
         }
 
@@ -179,8 +179,8 @@ namespace Tsu.CLI.Commands
         {
             var builder = new StringBuilder();
 
-            while (Offset < Input.Length
-            && !char.IsWhiteSpace(Input[Offset]))
+            while (_offset < _input.Length
+            && !char.IsWhiteSpace(_input[_offset]))
             {
                 builder.Append(ParseCharacter());
             }
@@ -190,18 +190,18 @@ namespace Tsu.CLI.Commands
 
         private void ConsumeWhitespaces()
         {
-            while (Offset < Input.Length
-                   && char.IsWhiteSpace(Input[Offset]))
+            while (_offset < _input.Length
+                   && char.IsWhiteSpace(_input[_offset]))
             {
-                Offset++;
+                _offset++;
             }
         }
 
         private IEnumerable<string> Parse()
         {
-            while (Offset < Input.Length)
+            while (_offset < _input.Length)
             {
-                switch (Input[Offset])
+                switch (_input[_offset])
                 {
                     // Skip all whitespaces outside of quotes
                     case char ch when char.IsWhiteSpace(ch):
@@ -217,25 +217,25 @@ namespace Tsu.CLI.Commands
                     case 'r':
 
                         // Raw rest
-                        if (Input[Offset + 1] == 'r'
-                            && Input[Offset + 2] == ':')
+                        if (_input[_offset + 1] == 'r'
+                            && _input[_offset + 2] == ':')
                         {
                             // Move from 'r' while skipping 'r' and ':'
-                            Offset += 3;
+                            _offset += 3;
 
-                            yield return Input.Substring(Offset);
-                            Offset = Input.Length;
+                            yield return _input.Substring(_offset);
+                            _offset = _input.Length;
                             break;
                         }
-                        else if (Input[Offset + 1] == ':')
+                        else if (_input[_offset + 1] == ':')
                         {
                             // Move from 'r' while skipping ':'
-                            Offset += 2;
+                            _offset += 2;
 
                             var builder = new StringBuilder();
-                            while (Offset < Input.Length)
+                            while (_offset < _input.Length)
                                 builder.Append(ParseCharacter());
-                            Offset = Input.Length;
+                            _offset = _input.Length;
 
                             // We do not return non-explicit empty strings under any circumstances
                             if (builder.Length > 0)
