@@ -39,7 +39,7 @@ namespace Tsu.MVVM
         /// <param name="newValue"></param>
         /// <param name="propertyName"></param>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        protected virtual void SetField<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
+        protected virtual void SetField<T>(ref T field, T newValue, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, newValue))
                 return;
@@ -56,7 +56,7 @@ namespace Tsu.MVVM
         /// auto-filled by the compiler)
         /// </exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
             PropertyChanged?.Invoke(
                 this,
                 new PropertyChangedEventArgs(propertyName ?? throw new ArgumentNullException(nameof(propertyName))));
