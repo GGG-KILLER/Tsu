@@ -132,7 +132,7 @@ namespace Tsu.Numerics
             }
 
             // Fast path for non-scaled numbers
-            if (1 <= number && number < Kilo)
+            if (number is >= 1 and < Kilo)
             {
                 scaledNumber = number;
                 suffix = "";

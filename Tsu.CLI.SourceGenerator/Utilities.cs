@@ -39,9 +39,9 @@ namespace Tsu.CLI.SourceGenerator
         public static bool IsValidCommandName(string name)
         {
             return string.IsNullOrWhiteSpace(name)
-                || name.Any(ch => ('0' <= ch && ch <= '9')
-                                  || ('a' <= ch && ch <= 'z')
-                                  || ('A' <= ch && ch <= 'Z'));
+                || name.Any(ch => ch is (>= '0' and <= '9')
+                                     or (>= 'a' and <= 'z')
+                                     or (>= 'A' and <= 'Z'));
         }
 
         /// <summary>

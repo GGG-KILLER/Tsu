@@ -181,7 +181,7 @@ namespace Tsu.Expressions
                 throw new ArgumentNullException(nameof(fieldAccessor));
 
             var fieldExpr = fieldAccessor.Body as MemberExpression;
-            if (!(fieldExpr?.Member is FieldInfo))
+            if (fieldExpr?.Member is not FieldInfo)
                 throw new ArgumentException("The expression provided does not represent a field get operation.", nameof(fieldAccessor));
             return fieldExpr.Update(instance);
         }
@@ -232,7 +232,7 @@ namespace Tsu.Expressions
                 throw new ArgumentNullException(nameof(propertyAccessor));
 
             var memberExpr = propertyAccessor.Body as MemberExpression;
-            if (!(memberExpr?.Member is PropertyInfo))
+            if (memberExpr?.Member is not PropertyInfo)
                 throw new ArgumentException("The expression provided does not represent a property get operation.", nameof(propertyAccessor));
             return memberExpr.Update(instance);
         }

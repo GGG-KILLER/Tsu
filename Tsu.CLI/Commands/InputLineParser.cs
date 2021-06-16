@@ -75,11 +75,11 @@ namespace Tsu.CLI.Commands
 
                     case 'b':
                     {
-                        if (_input[_offset] != '0' && _input[_offset] != '1')
+                        if (_input[_offset] is not ('0' or '1'))
                             return '\b';
 
                         var idx = _offset;
-                        while (_input[idx] == '0' || _input[idx] == '1')
+                        while (_input[idx] is '0' or '1')
                             idx++;
 
                         var num = _input.Substring(_offset, idx - _offset);
@@ -209,7 +209,7 @@ namespace Tsu.CLI.Commands
                         break;
 
                     // Parse quoted strings
-                    case char ch when ch == '\'' || ch == '"':
+                    case char ch when ch is '\'' or '"':
                         yield return ParseQuotedString(ch);
                         break;
 

@@ -66,7 +66,7 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
                             parameterSymbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat),
                             methodSymbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)));
                     }
-                    else if (!(parameterSymbol.Type is IArrayTypeSymbol arrayTypeSymbol)
+                    else if (parameterSymbol.Type is not IArrayTypeSymbol arrayTypeSymbol
                              || arrayTypeSymbol.Rank != 1
                              || !Utilities.CanConvertToFromString((INamedTypeSymbol) arrayTypeSymbol.ElementType))
                     {

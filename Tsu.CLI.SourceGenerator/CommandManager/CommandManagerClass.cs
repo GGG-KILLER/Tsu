@@ -74,7 +74,7 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
                     Location.Create(classDeclaration.SyntaxTree, classDeclaration.Identifier.Span),
                     classSymbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat)));
             }
-            if (!(classDeclaration.Parent is NamespaceDeclarationSyntax))
+            if (classDeclaration.Parent is not NamespaceDeclarationSyntax)
             {
                 return Result.Err<CommandManagerClass, Diagnostic>(Diagnostic.Create(
                     DiagnosticDescriptors.CommandManagerMustBeInANamespace,
@@ -176,7 +176,7 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
             foreach (var attributeData in CommandManagerAttributeDatas)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (!(attributeData.ApplicationSyntaxReference?.GetSyntax(cancellationToken) is AttributeSyntax attributeSyntax))
+                if (attributeData.ApplicationSyntaxReference?.GetSyntax(cancellationToken) is not AttributeSyntax attributeSyntax)
                 {
                     throw new InvalidOperationException("Attribute doesn't have a syntax associated with it.");
                 }
