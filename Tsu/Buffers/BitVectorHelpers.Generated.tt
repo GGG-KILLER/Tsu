@@ -9,10 +9,10 @@
 <#
 	var types = new[]
 	{
-		typeof ( Byte ),
-		typeof ( UInt16 ),
-		typeof ( UInt32 ),
-		typeof ( UInt64 )
+		typeof(byte),
+		typeof(ushort),
+		typeof(uint),
+		typeof(ulong)
 	};
 #>
 using System;
@@ -25,118 +25,127 @@ namespace Tsu.Buffers
     /// <summary>
     /// A class with helpers to deal with Spans and Arrays being used as bit vectors.
     /// </summary>
-    [GeneratedCode ( "BitVectorHelpers.Generated.tt", "1.0" )]
+    [GeneratedCode("BitVectorHelpers.Generated.tt", "1.0")]
     public static partial class BitVectorHelpers
     {
 <#
-foreach ( var type in types )
+foreach (var type in types)
 {
     var typeName = type.Name;
-    var lowerTypeName = typeName.ToLower ( );
-    var typeSize = Marshal.SizeOf ( type );
+    var lowerTypeName = typeName.ToLower();
+    var typeSize = Marshal.SizeOf(type);
+    string typeKeyword;
+    switch (typeName)
+    {
+        case "Byte": typeKeyword = "byte"; break;
+        case "UInt16": typeKeyword = "ushort"; break;
+        case "UInt32": typeKeyword = "uint"; break;
+        case "UInt64": typeKeyword = "ulong"; break;
+        default: throw new InvalidOperationException();
+    }
 #>
-        #region <#=typeName#>
+        #region <#=typeKeyword#>
 
         /// <summary>
-        /// The amount we shift by to convert to/from bits in a <see cref="<#=typeName#>"/>-backed bit vector.
+        /// The amount we shift by to convert to/from bits in a <see cref="<#=typeKeyword#>"/>-backed bit vector.
         /// </summary>
-        public const Int32 <#=typeName#>ShiftAmount = <#=Math.Log ( typeSize * 8, 2 )#>;
+        public const int <#=typeName#>ShiftAmount = <#=Math.Log(typeSize * 8, 2)#>;
 
         /// <summary>
-        /// The bitmask we bitwise and with to get the remainder bit count in a <see cref="<#=typeName#>"/>-backed bit vector.
+        /// The bitmask we bitwise and with to get the remainder bit count in a <see cref="<#=typeKeyword#>"/>-backed bit vector.
         /// </summary>
-        public const Int32 <#=typeName#>RemainderMask = 0b<#=Convert.ToString ( typeSize * 8 - 1, 2 )#>;
+        public const int <#=typeName#>RemainderMask = 0b<#=Convert.ToString(typeSize * 8 - 1, 2)#>;
 
         /// <summary>
-        /// Gets the index and the offset of the provided bit on a <see cref="<#=typeName#>"/>-backed bit vector.
+        /// Gets the index and the offset of the provided bit on a <see cref="<#=typeKeyword#>"/>-backed bit vector.
         /// </summary>
         /// <param name="bitIndex"></param>
         /// <param name="offset"></param>
         /// <returns></returns>
-        [MethodImpl ( MethodImplOptions.AggressiveInlining )]
-        public static Int32 Get<#=typeName#>VectorIndexAndOffset ( Int32 bitIndex, out Int32 offset )
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Get<#=typeName#>VectorIndexAndOffset(int bitIndex, out int offset)
         {
             offset = bitIndex & <#=typeName#>RemainderMask;
             return bitIndex >> <#=typeName#>ShiftAmount;
         }
 
         /// <summary>
-        /// Gets the value of a bit in a <see cref="<#=typeName#>"/>-backed bit vector.
+        /// Gets the value of a bit in a <see cref="<#=typeKeyword#>"/>-backed bit vector.
         /// </summary>
         /// <param name="<#=lowerTypeName#>s"></param>
         /// <param name="bitIndex"></param>
         /// <returns></returns>
-        [MethodImpl ( MethodImplOptions.AggressiveInlining )]
-        public static Boolean Get<#=typeName#>VectorBitValue ( IReadOnlyList<<#=typeName#>> <#=lowerTypeName#>s, Int32 bitIndex )
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Get<#=typeName#>VectorBitValue(IReadOnlyList<<#=typeKeyword#>> <#=lowerTypeName#>s, int bitIndex)
         {
-            if ( <#=lowerTypeName#>s is null )
-                throw new ArgumentNullException ( nameof ( <#=lowerTypeName#>s ) );
-            if ( bitIndex < 0 )
-                throw new ArgumentOutOfRangeException ( nameof ( bitIndex ) );
+            if (<#=lowerTypeName#>s is null)
+                throw new ArgumentNullException(nameof(<#=lowerTypeName#>s));
+            if (bitIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(bitIndex));
 
-            var index = Get<#=typeName#>VectorIndexAndOffset ( bitIndex, out var offset );
-            return ( <#=lowerTypeName#>s[index] & ( 1U << offset ) ) != 0;
+            var index = Get<#=typeName#>VectorIndexAndOffset(bitIndex, out var offset);
+            return (<#=lowerTypeName#>s[index] & (1U << offset)) != 0;
         }
 
 #if HAS_SPAN
         /// <summary>
-        /// Gets the value of a bit in a <see cref="<#=typeName#>"/>-backed bit vector.
+        /// Gets the value of a bit in a <see cref="<#=typeKeyword#>"/>-backed bit vector.
         /// </summary>
         /// <param name="<#=lowerTypeName#>s"></param>
         /// <param name="bitIndex"></param>
         /// <returns></returns>
-        [MethodImpl ( MethodImplOptions.AggressiveInlining )]
-        public static Boolean Get<#=typeName#>VectorBitValue ( ReadOnlySpan<<#=typeName#>> <#=lowerTypeName#>s, Int32 bitIndex )
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Get<#=typeName#>VectorBitValue(ReadOnlySpan<<#=typeKeyword#>> <#=lowerTypeName#>s, int bitIndex)
         {
-            if ( bitIndex < 0 )
-                throw new ArgumentOutOfRangeException ( nameof ( bitIndex ) );
+            if (bitIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(bitIndex));
 
-            var index = Get<#=typeName#>VectorIndexAndOffset ( bitIndex, out var offset );
-            return ( <#=lowerTypeName#>s[index] & ( 1U << offset ) ) != 0;
+            var index = Get<#=typeName#>VectorIndexAndOffset(bitIndex, out var offset);
+            return (<#=lowerTypeName#>s[index] & (1U << offset)) != 0;
         }
 #endif
 
         /// <summary>
-        /// Sets the value of a bit in a <see cref="<#=typeName#>"/>-backed bit vector.
+        /// Sets the value of a bit in a <see cref="<#=typeKeyword#>"/>-backed bit vector.
         /// </summary>
         /// <param name="<#=lowerTypeName#>s"></param>
         /// <param name="bitIndex"></param>
         /// <param name="value"></param>
         [MethodImpl (MethodImplOptions.AggressiveInlining)]
-        public static void Set<#=typeName#>VectorBitValue ( IList<<#=typeName#>> <#=lowerTypeName#>s, Int32 bitIndex, Boolean value )
+        public static void Set<#=typeName#>VectorBitValue(IList<<#=typeKeyword#>> <#=lowerTypeName#>s, int bitIndex, bool value)
         {
-            if ( <#=lowerTypeName#>s is null )
-                throw new ArgumentNullException ( nameof ( <#=lowerTypeName#>s ) );
-            if ( bitIndex < 0 )
-                throw new ArgumentOutOfRangeException ( nameof ( bitIndex ) );
-            var index = Get<#=typeName#>VectorIndexAndOffset ( bitIndex, out var offset );
-            if ( value )
-                <#=lowerTypeName#>s[index] |= ( <#=typeName#> ) ( 1U << offset );
+            if (<#=lowerTypeName#>s is null)
+                throw new ArgumentNullException(nameof(<#=lowerTypeName#>s));
+            if (bitIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(bitIndex));
+            var index = Get<#=typeName#>VectorIndexAndOffset(bitIndex, out var offset);
+            if (value)
+                <#=lowerTypeName#>s[index] |= (<#=typeKeyword#>) (1U << offset);
             else
-                <#=lowerTypeName#>s[index] &= ( <#=typeName#> ) ~( 1U << offset );
+                <#=lowerTypeName#>s[index] &= (<#=typeKeyword#>) ~(1U << offset);
         }
 
 #if HAS_SPAN
         /// <summary>
-        /// Sets the value of a bit in a <see cref="<#=typeName#>"/>-backed bit vector.
+        /// Sets the value of a bit in a <see cref="<#=typeKeyword#>"/>-backed bit vector.
         /// </summary>
         /// <param name="<#=lowerTypeName#>s"></param>
         /// <param name="bitIndex"></param>
         /// <param name="value"></param>
-        [MethodImpl ( MethodImplOptions.AggressiveInlining )]
-        public static void Set<#=typeName#>VectorBitValue ( Span<<#=typeName#>> <#=lowerTypeName#>s, Int32 bitIndex, Boolean value )
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Set<#=typeName#>VectorBitValue(Span<<#=typeKeyword#>> <#=lowerTypeName#>s, int bitIndex, bool value)
         {
-            if ( bitIndex < 0 )
-                throw new ArgumentOutOfRangeException ( nameof ( bitIndex ) );
-            var index = Get<#=typeName#>VectorIndexAndOffset ( bitIndex, out var offset );
-            if ( value )
-                <#=lowerTypeName#>s[index] |= ( <#=typeName#> ) ( 1U << offset );
+            if (bitIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(bitIndex));
+            var index = Get<#=typeName#>VectorIndexAndOffset(bitIndex, out var offset);
+            if (value)
+                <#=lowerTypeName#>s[index] |= (<#=typeKeyword#>) (1U << offset);
             else
-                <#=lowerTypeName#>s[index] &= ( <#=typeName#> ) ~( 1U << offset );
+                <#=lowerTypeName#>s[index] &= (<#=typeKeyword#>) ~(1U << offset);
         }
 #endif
 
-        #endregion <#=typeName#>
+        #endregion <#=typeKeyword#>
 
 <#
 }
