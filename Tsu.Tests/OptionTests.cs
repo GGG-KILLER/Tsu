@@ -360,5 +360,32 @@ namespace Tsu.Tests
             Assert.AreEqual(optSome1.GetHashCode(), optSome2.GetHashCode());
             Assert.AreEqual(none1.GetHashCode(), none2.GetHashCode());
         }
+
+        [TestMethod]
+        public void TrueOperatorReturnsTheCorrectValue()
+        {
+            var none = Option.None<string>();
+            var some = Option.Some("some");
+
+            if (none) Assert.Fail("true operator returned true for None.");
+
+            if (some) return;
+            Assert.Fail("true operator returned false for Some(T).");
+        }
+
+        [TestMethod]
+        public void FalseOperatorReturnsTheCorrectValue()
+        {
+            var none = Option.None<string>();
+            var some = Option.Some("some");
+
+            if (none) Assert.Fail("true operator returned true for None.");
+            else goto falseop_returned_true_for_none;
+            Assert.Fail("false operator returned false for None.");
+
+        falseop_returned_true_for_none:
+            if (some) return;
+            Assert.Fail("false operator returned");
+        }
     }
 }
