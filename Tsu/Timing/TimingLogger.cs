@@ -273,6 +273,9 @@ namespace Tsu.Timing
         /// <param name="level"></param>
         protected virtual void WriteLinePrefix(LogLevel level)
         {
+            if (HasLineBeenPrefixed)
+                return;
+
             WriteInternal($"[{Elapsed:hh\\:mm\\:ss\\.ffffff}]{new string(' ', _scopes.Count * 4)}");
             if (!PrintLevelPrefixes || level < LogLevel.Debug || level > LogLevel.Error)
                 return;
@@ -300,6 +303,7 @@ namespace Tsu.Timing
                     break;
             }
             WriteInternal("]");
+            HasLineBeenPrefixed = true;
         }
 
         /// <summary>
@@ -311,13 +315,14 @@ namespace Tsu.Timing
         [SuppressMessage("CodeQuality", "IDE0079:Remove unnecessary suppression", Justification = "Applicable to some target frameworks.")]
         private void ProcessWrite(LogLevel level, string message)
         {
-            if (!HasLineBeenPrefixed)
-            {
-                WriteLinePrefix(level);
-                HasLineBeenPrefixed = true;
-            }
+            WriteLinePrefix(level);
 
-            if (
+            if (message is "\r\n" or "\n")
+            {
+                WriteLineInternal("");
+                HasLineBeenPrefixed = false;
+            }
+            else if (
 #if HAS_STRING__CONTAINS_CHAR
                 message.Contains('\n', StringComparison.Ordinal)
 #else
@@ -326,14 +331,18 @@ namespace Tsu.Timing
             )
             {
                 var lines = message.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+
                 WriteLineInternal(lines[0]);
+                HasLineBeenPrefixed = false;
+
                 for (var i = 1; i < lines.Length - 1; i++)
                 {
                     WriteLinePrefix(level);
                     WriteLineInternal(lines[i]);
+                    HasLineBeenPrefixed = false;
                 }
 
-                if (lines.Length > 1 && !string.IsNullOrEmpty(lines[lines.Length - 1]))
+                if (lines.Length > 1)
                 {
                     var lastLine = lines[lines.Length - 1];
                     WriteLinePrefix(level);

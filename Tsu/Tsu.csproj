@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <PackageId>Tsu</PackageId>
-    <Version>2.2.0</Version>
+    <Version>2.2.1</Version>
     <Description>General utilities library. Containing Option&lt;T&gt;, Result&lt;TOk, TErr&gt;, Unit, BitVectorHelpers, FileSize, SI and others.</Description>
   </PropertyGroup>
 
