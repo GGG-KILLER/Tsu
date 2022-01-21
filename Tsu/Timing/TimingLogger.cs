@@ -275,6 +275,7 @@ namespace Tsu.Timing
         {
             if (HasLineBeenPrefixed)
                 return;
+            HasLineBeenPrefixed = true;
 
             WriteInternal($"[{Elapsed:hh\\:mm\\:ss\\.ffffff}]{new string(' ', _scopes.Count * 4)}");
             if (!PrintLevelPrefixes || level < LogLevel.Debug || level > LogLevel.Error)
@@ -303,7 +304,6 @@ namespace Tsu.Timing
                     break;
             }
             WriteInternal("]");
-            HasLineBeenPrefixed = true;
         }
 
         /// <summary>
