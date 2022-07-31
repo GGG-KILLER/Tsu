@@ -10,7 +10,7 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(GTargetFrameworkIdentifier)' != '.NETCoreApp'">
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp'">
     <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
   </ItemGroup>
 
