@@ -46,12 +46,12 @@
   <PropertyGroup>
     <!-- RuntimeFeature flag -->
     <DefineConstants Condition="('$(TargetFrameworkIdentifier)' == '.NETFramework' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '4.7.1')))
-                     Or ('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '2.0')))
-                     Or ('$(TargetFrameworkIdentifier)' == '.NETStandard' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '2.1')))">$(DefineConstants);HAS_RUNTIMEFEATURE</DefineConstants>
+                                Or ('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '2.0')))
+                                Or ('$(TargetFrameworkIdentifier)' == '.NETStandard' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '2.1')))">$(DefineConstants);HAS_RUNTIMEFEATURE</DefineConstants>
 
     <!-- RuntimeFeature.IsDynamicCode* flag -->
     <DefineConstants Condition="('$(TargetFrameworkIdentifier)' == '.NETCoreApp' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '3.0')))
-                     Or ('$(TargetFrameworkIdentifier)' == '.NETStandard' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '2.1')))">$(DefineConstants);HAS_RUNTIMEFEATURE_DYNAMICCODE</DefineConstants>
+                                Or ('$(TargetFrameworkIdentifier)' == '.NETStandard' And $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '2.1')))">$(DefineConstants);HAS_RUNTIMEFEATURE_DYNAMICCODE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
