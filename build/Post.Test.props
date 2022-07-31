@@ -1,20 +1,9 @@
-﻿<Project>
-
-  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-    <TargetFrameworks>net48</TargetFrameworks>
-  </PropertyGroup>
+<Project>
 
   <PropertyGroup>
-    <TargetFrameworks>$(TargetFrameworks);netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <NoWarn>CA17107</NoWarn>
   </PropertyGroup>
-
-  <Import Project="Shared.Compilation.props" />
-
-  <Import Project="Shared.Defines.props" />
-
-  <Import Project="Shared.Packages.props" />
 
   <ItemGroup>
     <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" />

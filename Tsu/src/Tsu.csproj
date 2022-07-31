@@ -1,15 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../build/LibraryProject.props" />
-
   <PropertyGroup>
+    <TsuProjectType>Library</TsuProjectType>
+    <TargetFrameworks>$(LibraryTargetFrameworks)</TargetFrameworks>
+
     <PackageId>Tsu</PackageId>
     <Version>2.2.2</Version>
     <Description>General utilities library. Containing Option&lt;T&gt;, Result&lt;TOk, TErr&gt;, Unit, BitVectorHelpers, FileSize, SI and others.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Buffers\BitVectorHelpers.Generated.cs">
+    <None Include="Buffers/BitVectorHelpers.Generated.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>BitVectorHelpers.Generated.tt</DependentUpon>
@@ -17,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Buffers\BitVectorHelpers.Generated.tt">
+    <None Update="Buffers/BitVectorHelpers.Generated.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BitVectorHelpers.Generated.cs</LastGenOutput>
     </None>
@@ -28,12 +29,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Buffers\BitVectorHelpers.cs">
+    <Compile Update="Buffers/BitVectorHelpers.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>BitVectorHelpers.tt</DependentUpon>
     </Compile>
-    <Compile Update="Buffers\BitVectorHelpers.Generated.cs">
+    <Compile Update="Buffers/BitVectorHelpers.Generated.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>BitVectorHelpers.Generated.tt</DependentUpon>

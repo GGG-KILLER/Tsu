@@ -1,0 +1,5 @@
+<Project DefaultTargets="Build">
+
+  <Import Project="$(RepositoryRootDirectory)build/Post.props" />
+
+</Project>

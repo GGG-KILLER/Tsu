@@ -1,19 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../build/LibraryProject.props" />
-
   <PropertyGroup>
+    <TsuProjectType>Library</TsuProjectType>
+    <TargetFrameworks>$(LibraryTargetFrameworks)</TargetFrameworks>
+
     <PackageId>Tsu.StateMachines</PackageId>
     <Version>3.0.1</Version>
     <Description>State machines</Description>
   </PropertyGroup>
 
-  <ItemGroup Condition="('$(TargetFrameworkIdentifier)' == '.NETFramework' AND '$(TargetFrameworkVersion)' &lt; '4.7')&#xD;&#xA;                        OR ('$(TargetFrameworkIdentifier)' == '.NETStandard' AND '$(TargetFrameworkVersion)' &lt; '2.0')">
+  <ItemGroup Condition="('$(TargetFrameworkIdentifier)' == '.NETFramework' And $([MSBuild]::VersionLessThan($(TargetFrameworkVersion), '4.7')))
+                        Or ('$(TargetFrameworkIdentifier)' == '.NETStandard' And $([MSBuild]::VersionLessThan($(TargetFrameworkVersion), '2.0')))">
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Tsu.Expressions\src\Tsu.Expressions.csproj" />
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.Expressions/src/Tsu.Expressions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

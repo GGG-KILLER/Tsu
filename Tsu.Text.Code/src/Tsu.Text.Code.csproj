@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../build/LibraryProject.props" />
-
   <PropertyGroup>
+    <TsuProjectType>Library</TsuProjectType>
+    <TargetFrameworks>$(LibraryTargetFrameworks)</TargetFrameworks>
+
     <PackageId>Tsu.Text.Code</PackageId>
     <Version>2.0.1</Version>
     <Description>A library that contains text utilties aimed at source code.</Description>

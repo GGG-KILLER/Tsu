@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../build/TestProject.props" />
-
   <PropertyGroup>
+    <TsuProjectType>Test</TsuProjectType>
+    <TargetFrameworks>$(TestTargetFrameworks)</TargetFrameworks>
+
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
@@ -11,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\lib\Tsu.CLI.csproj" />
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.CLI/src/lib/Tsu.CLI.csproj" />
   </ItemGroup>
 
 </Project>

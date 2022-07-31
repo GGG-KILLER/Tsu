@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../build/LibraryProject.props" />
-
   <PropertyGroup>
+    <TsuProjectType>Library</TsuProjectType>
+    <TargetFrameworks>$(LibraryTargetFrameworks)</TargetFrameworks>
+
     <PackageId>Tsu.Timing.MicroProfiler</PackageId>
     <Version>1.1.1</Version>
     <Description>Contains the MicroProfiler class.</Description>
@@ -10,8 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="../Tsu/src/Numerics/Duration.cs" />
-    <Compile Include="../Tsu/src/Timing/MicroProfiler.cs" />
+    <Compile Include="$(RepositoryRootDirectory)Tsu/src/Numerics/Duration.cs" />
+    <Compile Include="$(RepositoryRootDirectory)Tsu/src/Timing/MicroProfiler.cs" />
   </ItemGroup>
 
 </Project>

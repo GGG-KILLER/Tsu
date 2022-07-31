@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TsuProjectType>Console</TsuProjectType>
+
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net48;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
@@ -11,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tsu.CLI\src\lib\Tsu.CLI.csproj" />
-    <ProjectReference Include="..\Tsu\src\Tsu.csproj" />
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.CLI/src/lib/Tsu.CLI.csproj" />
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu/src/Tsu.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,21 +1,21 @@
-﻿<Project>
+<Project>
 
-  <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-    <TargetFrameworks>net48</TargetFrameworks>
+  <PropertyGroup>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>$(TargetFrameworks);netstandard2.0;netstandard2.1;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
     <!-- Treat all non-nullable reference types warnings as errors (as it should be). -->
     <WarningsAsErrors>CS8600;CS8601;CS8602;CS8603;CS8604;CS8605;CS8607;CS8608;CS8609;CS8610;CS8611;CS8612;CS8613;CS8614;CS8615;CS8616;CS8617;CS8618;CS8619;CS8620;CS8621;CS8622;CS8624;CS8625;CS8629;CS8631;CS8633;CS8634;CS8643;CS8644;CS8645;CS8655;CS8667;CS8670;CS8714</WarningsAsErrors>
   </PropertyGroup>
 
-  <Import Project="Shared.Compilation.props" />
-
   <!-- Package props -->
   <PropertyGroup>
     <Authors>GGG KILLER</Authors>
-    <Copyright>GGG KILLER © 2020</Copyright>
+    <Copyright>GGG KILLER © 2022</Copyright>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <RepositoryUrl>https://github.com/GGG-KILLER/Tsu</RepositoryUrl>
@@ -33,16 +33,5 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <Import Project="Shared.Defines.props" />
-
-  <Import Project="Shared.Packages.props" />
 
 </Project>

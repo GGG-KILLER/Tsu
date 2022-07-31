@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../build/LibraryProject.props" />
-
   <PropertyGroup>
+    <TsuProjectType>Library</TsuProjectType>
+    <TargetFrameworks>$(LibraryTargetFrameworks)</TargetFrameworks>
+
     <PackageId>Tsu.Windows</PackageId>
     <Version>3.0.1</Version>
     <Description>A windows-focused utilities library.</Description>

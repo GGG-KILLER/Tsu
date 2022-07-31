@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TsuProjectType>SourceGenerator</TsuProjectType>
+
     <TargetFramework>netstandard2.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
@@ -8,9 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\lib\Tsu.CLI.csproj" />
-    <ProjectReference Include="..\..\..\Tsu.Text.Code\src\Tsu.Text.Code.csproj" />
-    <ProjectReference Include="..\..\..\Tsu\src\Tsu.csproj" />
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.CLI/src/lib/Tsu.CLI.csproj" />
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.Text.Code/src/Tsu.Text.Code.csproj" />
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu/src/Tsu.csproj" />
   </ItemGroup>
 
   <ItemGroup>

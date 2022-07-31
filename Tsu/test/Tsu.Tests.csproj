@@ -1,10 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../build/TestProject.props" />
+  <PropertyGroup>
+    <TsuProjectType>Test</TsuProjectType>
+    <TargetFrameworks>$(TestTargetFrameworks)</TargetFrameworks>
+    <TargetFrameworks>$(TestTargetFrameworks)</TargetFrameworks>
+  </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Tsu.Testing\src\Tsu.Testing.csproj" />
-    <ProjectReference Include="..\src\Tsu.csproj" />
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.Testing/src/Tsu.Testing.csproj" />
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu/src/Tsu.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,16 @@
+<Project DefaultTargets="Build" TreatAsLocalProperty="TsuProjectType">
+
+  <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <LibraryTargetFrameworks>net48</LibraryTargetFrameworks>
+    <TestTargetFrameworks>net48</TestTargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RepositoryRootDirectory>$(MSBuildThisFileDirectory)</RepositoryRootDirectory>
+    <LibraryTargetFrameworks>$(LibraryTargetFrameworks);netstandard2.0;netstandard2.1;netcoreapp3.1;net6.0;net7.0</LibraryTargetFrameworks>
+    <TestTargetFrameworks>$(TestTargetFrameworks);netcoreapp3.1;net6.0;net7.0</TestTargetFrameworks>
+  </PropertyGroup>
+
+  <Import Project="$(RepositoryRootDirectory)build/Pre.props" />
+
+</Project>
