@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TsuProjectType>Test</TsuProjectType>
     <TargetFrameworks>$(TestTargetFrameworks)</TargetFrameworks>
-    <TargetFrameworks>$(TestTargetFrameworks)</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
