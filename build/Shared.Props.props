@@ -4,5 +4,5 @@
     <GTargetFrameworkIdentifier>$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)'))</GTargetFrameworkIdentifier>
     <GTargetFrameworkVersion>$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)'))</GTargetFrameworkVersion>
   </PropertyGroup>
-  
+
 </Project>

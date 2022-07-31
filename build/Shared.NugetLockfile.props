@@ -4,5 +4,5 @@
     <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
     <NuGetLockFilePath>packages.lock.json</NuGetLockFilePath>
   </PropertyGroup>-->
-  
+
 </Project>
