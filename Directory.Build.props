@@ -11,6 +11,6 @@
     <TestTargetFrameworks>$(TestTargetFrameworks);netcoreapp3.1;net6.0;net7.0</TestTargetFrameworks>
   </PropertyGroup>
 
-  <Import Project="$(RepositoryRootDirectory)build/Pre.props" />
+  <Import Project="$(RepositoryRootDirectory)build/Settings.props" />
 
 </Project>

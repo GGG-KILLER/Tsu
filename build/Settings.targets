@@ -6,8 +6,8 @@
     <Error Text="TsuProjectType must be set to either Library, Test, SourceGenerator or Console." />
   </Target>
 
-  <Import Project="$(MSBuildThisFileDirectory)Post.$(TsuProjectType).props"
-          Condition="'$(TsuProjectType)' != '' And '$(TsuProjectType)' != 'Console'" />
+  <Import Project="$(MSBuildThisFileDirectory)Settings.$(TsuProjectType).targets"
+          Condition="'$(TsuProjectType)' != ''" />
 
   <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == ''">
     <TargetFrameworkIdentifier>$([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)'))</TargetFrameworkIdentifier>
