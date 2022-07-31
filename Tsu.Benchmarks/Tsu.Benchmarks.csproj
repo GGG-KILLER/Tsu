@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tsu.CLI\Tsu.CLI.csproj" />
-    <ProjectReference Include="..\Tsu\Tsu.csproj" />
+    <ProjectReference Include="..\Tsu.CLI\src\lib\Tsu.CLI.csproj" />
+    <ProjectReference Include="..\Tsu\src\Tsu.csproj" />
   </ItemGroup>
 
 </Project>

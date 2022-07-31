@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tsu.CLI\Tsu.CLI.csproj" />
-    <ProjectReference Include="..\Tsu.Text.Code\Tsu.Text.Code.csproj" />
-    <ProjectReference Include="..\Tsu\Tsu.csproj" />
+    <ProjectReference Include="..\lib\Tsu.CLI.csproj" />
+    <ProjectReference Include="..\..\..\Tsu.Text.Code\src\Tsu.Text.Code.csproj" />
+    <ProjectReference Include="..\..\..\Tsu\src\Tsu.csproj" />
   </ItemGroup>
 
   <ItemGroup>

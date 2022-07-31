@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../build/TestProject.props" />
+  <Import Project="../../build/TestProject.props" />
 
   <PropertyGroup>
     <Nullable>disable</Nullable>
@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tsu.CLI\Tsu.CLI.csproj" />
+    <ProjectReference Include="..\src\lib\Tsu.CLI.csproj" />
   </ItemGroup>
 
 </Project>

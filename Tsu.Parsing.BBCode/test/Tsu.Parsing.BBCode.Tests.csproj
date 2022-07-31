@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../build/TestProject.props" />
+  <Import Project="../../build/TestProject.props" />
 
   <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tsu.Parsing.BBCode\Tsu.Parsing.BBCode.csproj" />
+    <ProjectReference Include="..\src\Tsu.Parsing.BBCode.csproj" />
   </ItemGroup>
 
 </Project>

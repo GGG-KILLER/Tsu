@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="../Tsu/Numerics/Duration.cs" />
-    <Compile Include="../Tsu/Timing/MicroProfiler.cs" />
+    <Compile Include="../Tsu/src/Numerics/Duration.cs" />
+    <Compile Include="../Tsu/src/Timing/MicroProfiler.cs" />
   </ItemGroup>
 
 </Project>
