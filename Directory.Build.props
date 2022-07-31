@@ -1,4 +1,4 @@
-<Project DefaultTargets="Build" TreatAsLocalProperty="TsuProjectType">
+<Project DefaultTargets="Build" TreatAsLocalProperty="TsuProjectType;TsuTestingLib">
 
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
     <LibraryTargetFrameworks>net48</LibraryTargetFrameworks>
