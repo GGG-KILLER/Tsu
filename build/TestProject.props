@@ -10,8 +10,6 @@
     <NoWarn>CA17107</NoWarn>
   </PropertyGroup>
 
-  <Import Project="Shared.NugetLockfile.props" />
-
   <Import Project="Shared.Compilation.props" />
 
   <Import Project="Shared.Defines.props" />
