@@ -108,6 +108,7 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
 #pragma warning restore CS0618 // Type or member is obsolete
             Tsu_CLI_Commands_RawInputAttribute = getSymbol(typeof(RawInputAttribute));
             System_Type = getSymbol(typeof(Type));
+            System_Int32 = compilation.GetSpecialType(SpecialType.System_Int32);
             System_String = compilation.GetSpecialType(SpecialType.System_String);
             System_String__IsNullOrWhiteSpaceString = getMethodSymbol(System_String, nameof(String.IsNullOrWhiteSpace), true, System_String);
             System_String__Trim = getMethodSymbol(System_String, nameof(String.Trim), false);
@@ -116,7 +117,6 @@ namespace Tsu.CLI.SourceGenerator.CommandManager
             System_String__SubstringInt32Int32 = getMethodSymbol(System_String, nameof(String.Substring), false, System_Int32, System_Int32);
             System_Enum = compilation.GetSpecialType(SpecialType.System_Enum);
             System_Enum__ParseTypeString = getMethodSymbol(System_Enum, "Parse", true, System_Type, System_String);
-            System_Int32 = compilation.GetSpecialType(SpecialType.System_Int32);
 
             INamedTypeSymbol getSymbol(Type type) =>
                 compilation.GetTypeByMetadataName(type.FullName)
