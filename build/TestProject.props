@@ -1,11 +1,11 @@
-<Project>
+﻿<Project>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
     <TargetFrameworks>net461;net48</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>$(TargetFrameworks);netcoreapp3.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>$(TargetFrameworks);netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <NoWarn>CA17107</NoWarn>
   </PropertyGroup>
