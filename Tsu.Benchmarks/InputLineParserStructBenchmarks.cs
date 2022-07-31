@@ -520,7 +520,7 @@ namespace Tsu.Benchmarks
             @"'\b1100011\o157\109\6cx' input",
             @"rr:raw rest input",
             @"r:rest \b1100011\o157\109\6cx input")]
-        public string Input { get; set; }
+        public string Input { get; set; } = null!;
 
         [Benchmark(Baseline = true)]
         public string[] ClassParser() =>
