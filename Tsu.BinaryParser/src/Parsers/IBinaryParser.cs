@@ -46,33 +46,33 @@ public interface IBinaryParser<T>
     /// Serializes the provided object into the stream.
     /// </summary>
     /// <param name="stream">The stream to serialize the object into.</param>
-    /// <param name="endianess">The endianess to use when writing the type.</param>
+    /// <param name="context">The current context for the serializing process.</param>
     /// <param name="value">The value to write onto the stream.</param>
-    void Serialize(Stream stream, Endianess endianess, T value);
+    void Serialize(Stream stream, IBinaryParsingContext context, T value);
 
     /// <summary>
     /// Serializes the provided object into the stream.
     /// </summary>
     /// <param name="stream">The stream to serialize the object into.</param>
-    /// <param name="endianess">The endianess to use when writing the type.</param>
+    /// <param name="context">The current context for the serializing process.</param>
     /// <param name="value">The value to write onto the stream.</param>
     /// <param name="cancellationToken">Cancellation token to stop the parsing.</param>
-    Task SerializeAsync(Stream stream, Endianess endianess, T value, CancellationToken cancellationToken = default);
+    Task SerializeAsync(Stream stream, IBinaryParsingContext context, T value, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deserializes the provided object from the stream.
     /// </summary>
     /// <param name="stream">The stream to read the object from.</param>
-    /// <param name="endianess">The endianess to use when reading the type.</param>
+    /// <param name="context">The current context for the deserializing process.</param>
     /// <returns>The parsed type.</returns>
-    T Deserialize(Stream stream, Endianess endianess);
+    T Deserialize(Stream stream, IBinaryParsingContext context);
 
     /// <summary>
     /// Deserializes the provided object from the stream.
     /// </summary>
     /// <param name="stream">The stream to read the object from.</param>
-    /// <param name="endianess">The endianess to use when reading the type.</param>
+    /// <param name="context">The current context for the deserializing process.</param>
     /// <param name="cancellationToken">Cancellation token to stop the parsing.</param>
     /// <returns>The parsed type.</returns>
-    Task<T> DeserializeAsync(Stream stream, Endianess endianess, CancellationToken cancellationToken = default);
+    Task<T> DeserializeAsync(Stream stream, IBinaryParsingContext context, CancellationToken cancellationToken = default);
 }
