@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TsuProjectType>Test</TsuProjectType>
+    <TsuTestingLib>xUnit</TsuTestingLib>
+
+    <TargetFrameworks>$(TestTargetFrameworks)</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.Testing/src/Tsu.Testing.csproj" />
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu/src/Tsu.csproj" />
+  </ItemGroup>
+
+</Project>
