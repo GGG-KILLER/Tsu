@@ -1,4 +1,4 @@
-// Copyright © 2021 GGG KILLER <gggkiller2@gmail.com>
+﻿// Copyright © 2021 GGG KILLER <gggkiller2@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 // and associated documentation files (the “Software”), to deal in the Software without
@@ -45,7 +45,7 @@ namespace Tsu.BinaryParser
                     break;
                 default:
                     for (var idx = 0; idx < bytes.Length / 2; idx++)
-                        Swap(ref bytes[idx], ref bytes[bytes.Length - idx]);
+                        Swap(ref bytes[idx], ref bytes[bytes.Length - (idx + 1)]);
                     break;
             }
         }
