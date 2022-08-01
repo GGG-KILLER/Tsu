@@ -4,6 +4,8 @@
     <TsuProjectType>Library</TsuProjectType>
     <TargetFrameworks>$(LibraryTargetFrameworks)</TargetFrameworks>
 
+    <LangVersion>preview</LangVersion>
+
     <PackageId>Tsu.BinaryParser</PackageId>
     <Version>0.1.0</Version>
     <Description>Binary file format parser.</Description>
@@ -15,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
 
 </Project>

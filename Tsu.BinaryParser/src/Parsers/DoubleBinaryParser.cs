@@ -29,7 +29,7 @@ public sealed class DoubleBinaryParser : FromBytesBinaryParser<double>
     /// Initializes the builtin <see cref="double"/> parser.
     /// </summary>
     /// <param name="clearBuffers">
-    /// <inheritdoc cref="FromBytesBinaryParser{T}.FromBytesBinaryParser(int, bool)"/>
+    /// <inheritdoc cref="FromBytesBinaryParser{T}.FromBytesBinaryParser(int, bool)" path="/param[@name='clearBuffers']"/>
     /// </param>
     public DoubleBinaryParser(bool clearBuffers) : base(sizeof(double), clearBuffers)
     {

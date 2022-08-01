@@ -29,7 +29,7 @@ public sealed class UInt16BinaryParser : FromBytesBinaryParser<ushort>
     /// Initializes a new builtin <see cref="ushort"/> parser.
     /// </summary>
     /// <param name="clearBuffers">
-    /// <inheritdoc cref="FromBytesBinaryParser{T}.FromBytesBinaryParser(int, bool)"/>
+    /// <inheritdoc cref="FromBytesBinaryParser{T}.FromBytesBinaryParser(int, bool)" path="/param[@name='clearBuffers']"/>
     /// </param>
     public UInt16BinaryParser(bool clearBuffers) : base(sizeof(ushort), clearBuffers)
     {

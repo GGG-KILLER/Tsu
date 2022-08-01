@@ -58,7 +58,7 @@ internal readonly struct ByteBuffer : IDisposable
             throw new EndOfStreamException();
     }
 
-    public async Task FillFromAsync(Stream stream, CancellationToken cancellationToken = default)
+    public async ValueTask FillFromAsync(Stream stream, CancellationToken cancellationToken = default)
     {
 #if HAS_SPAN
         var readBytes = await stream.ReadAsync(_memoryOwner.Memory.Slice(0, Length), cancellationToken);
@@ -77,7 +77,7 @@ internal readonly struct ByteBuffer : IDisposable
         stream.Write(_buffer, 0, Length);
 #endif
 
-    public async Task WriteToAsync(Stream stream, CancellationToken cancellationToken = default) =>
+    public async ValueTask WriteToAsync(Stream stream, CancellationToken cancellationToken = default) =>
 #if HAS_SPAN
         await stream.WriteAsync(Memory, cancellationToken);
 #else
