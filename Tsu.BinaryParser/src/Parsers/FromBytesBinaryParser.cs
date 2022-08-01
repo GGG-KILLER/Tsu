@@ -68,7 +68,7 @@ public abstract class FromBytesBinaryParser<T> : IBinaryParser<T>
     protected abstract void WriteToBytes(Endianess endianess, Span<byte> buffer, T value);
 
     /// <inheritdoc/>
-    public T Deserialize(Stream stream, Endianess endianess)
+    public T Deserialize(Stream stream, IBinaryParsingContext context)
     {
         const int requiredBytes = sizeof(short);
 
@@ -84,26 +84,23 @@ public abstract class FromBytesBinaryParser<T> : IBinaryParser<T>
         var bytes = buffer.Span;
 #endif
 
-        return ReadFromBytes(endianess, bytes);
+        return ReadFromBytes(context.Endianess, bytes);
     }
 
     /// <inheritdoc/>
     public async Task<T> DeserializeAsync(
         Stream stream,
-        Endianess endianess,
+        IBinaryParsingContext context,
         CancellationToken cancellationToken = default)
     {
         using var buffer = ByteBufferPool.Rent(sizeof(short), _clearBuffers);
         await buffer.FillFromAsync(stream, cancellationToken);
-        return ReadFromBytes(endianess, buffer.Span);
+        return ReadFromBytes(context.Endianess, buffer.Span);
     }
 
     /// <inheritdoc/>
-    public void Serialize(Stream stream, Endianess endianess, T value)
+    public void Serialize(Stream stream, IBinaryParsingContext context, T value)
     {
-        if (endianess is not (Endianess.LittleEndian or Endianess.BigEndian))
-            throw new ArgumentException("Invalid endianess provided.", nameof(endianess));
-
 #if HAS_SPAN
         Span<byte> span = stackalloc byte[sizeof(short)];
 #else
@@ -111,7 +108,7 @@ public abstract class FromBytesBinaryParser<T> : IBinaryParser<T>
         var span = buffer.Span;
 #endif
 
-        WriteToBytes(endianess, span, value);
+        WriteToBytes(context.Endianess, span, value);
 
 #if HAS_SPAN
         stream.Write(span);
@@ -123,12 +120,12 @@ public abstract class FromBytesBinaryParser<T> : IBinaryParser<T>
     /// <inheritdoc/>
     public async Task SerializeAsync(
         Stream stream,
-        Endianess endianess,
+        IBinaryParsingContext context,
         T value,
         CancellationToken cancellationToken = default)
     {
         using var buffer = ByteBufferPool.Rent(sizeof(short));
-        WriteToBytes(endianess, buffer.Span, value);
+        WriteToBytes(context.Endianess, buffer.Span, value);
         await buffer.WriteToAsync(stream, cancellationToken);
     }
 }
