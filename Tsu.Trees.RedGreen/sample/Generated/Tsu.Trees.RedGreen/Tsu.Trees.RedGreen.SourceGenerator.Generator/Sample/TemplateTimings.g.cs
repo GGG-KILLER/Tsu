@@ -1,0 +1,34 @@
+﻿// Templates Load: 38.4888ms
+// Tree Init: 24.4209ms
+// Internal/GreenRoot.sbn-cs: 14.0329ms
+// Internal/GreenNodes.sbn-cs: 6.5588ms
+// RedNodes.sbn-cs: 3.1183ms
+// Internal/GreenList.sbn-cs: 1.1872ms
+// Internal/GreenNodeExtensions.sbn-cs: 0.258ms
+// Internal/GreenListBuilder.sbn-cs: 0.1789ms
+// RedBase.sbn-cs: 0.1486ms
+// RedList.sbn-cs: 0.1222ms
+// RedList`1.sbn-cs: 0.1004ms
+// RedListBuilder.sbn-cs: 0.0965ms
+// ChildRedList.sbn-cs: 0.0952ms
+// Internal/GreenList.WithTwoChildren.sbn-cs: 0.0682ms
+// Internal/GreenListBuilder`1.sbn-cs: 0.0606ms
+// Internal/GreenList`1.sbn-cs: 0.0576ms
+// ChildRedList.Reversed.sbn-cs: 0.0563ms
+// Internal/GreenList.WithManyChildren.sbn-cs: 0.0555ms
+// RedList.WithTwoChildren.sbn-cs: 0.046ms
+// ChildRedList.Enumerator.sbn-cs: 0.0453ms
+// RedList.WithThreeChildren.sbn-cs: 0.0423ms
+// Internal/GreenList.WithThreeChildren.sbn-cs: 0.041ms
+// Internal/ChildGreenList.Enumerator.sbn-cs: 0.0408ms
+// Internal/ChildGreenList.sbn-cs: 0.036ms
+// RedList.WithManyChildren.sbn-cs: 0.0351ms
+// Internal/ChildGreenList.Reversed.Enumerator.sbn-cs: 0.0332ms
+// RedWalker.sbn-cs: 0.031ms
+// RedListBuilder`1.sbn-cs: 0.0263ms
+// Internal/GreenWalker.sbn-cs: 0.026ms
+// Internal/ChildGreenList.Reversed.sbn-cs: 0.025ms
+// Internal/GreenList`1.Enumerable.sbn-cs: 0.0201ms
+// RedList`1.Enumerator.sbn-cs: 0.0184ms
+// RedListExtensions.sbn-cs: 0.0168ms
+// Total: 89.5882ms
