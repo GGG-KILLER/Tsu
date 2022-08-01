@@ -6,12 +6,12 @@ namespace Tsu.BinaryParser;
 public enum Endianess
 {
     /// <summary>
-    /// Force little endianess parsing.
+    /// Indicates that the parsers should operate using little endian.
     /// </summary>
     LittleEndian,
 
     /// <summary>
-    /// Force big endianess parsing.
+    /// Indicates that the parsers should operate using big endian.
     /// </summary>
     BigEndian
 }
