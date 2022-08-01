@@ -29,7 +29,7 @@ public sealed class UInt32BinaryParser : FromBytesBinaryParser<uint>
     /// Initializes the builtin <see cref="uint"/> parser.
     /// </summary>
     /// <param name="clearBuffers">
-    /// <inheritdoc cref="FromBytesBinaryParser{T}.FromBytesBinaryParser(int, bool)"/>
+    /// <inheritdoc cref="FromBytesBinaryParser{T}.FromBytesBinaryParser(int, bool)" path="/param[@name='clearBuffers']"/>
     /// </param>
     public UInt32BinaryParser(bool clearBuffers) : base(sizeof(uint), clearBuffers)
     {

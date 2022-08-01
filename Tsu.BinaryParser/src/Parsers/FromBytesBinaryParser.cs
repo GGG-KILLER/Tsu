@@ -88,7 +88,7 @@ public abstract class FromBytesBinaryParser<T> : IBinaryParser<T>
     }
 
     /// <inheritdoc/>
-    public async Task<T> DeserializeAsync(
+    public async ValueTask<T> DeserializeAsync(
         Stream stream,
         IBinaryParsingContext context,
         CancellationToken cancellationToken = default)
@@ -118,7 +118,7 @@ public abstract class FromBytesBinaryParser<T> : IBinaryParser<T>
     }
 
     /// <inheritdoc/>
-    public async Task SerializeAsync(
+    public async ValueTask SerializeAsync(
         Stream stream,
         IBinaryParsingContext context,
         T value,

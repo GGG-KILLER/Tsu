@@ -57,7 +57,7 @@ public interface IBinaryParser<T>
     /// <param name="context">The current context for the serializing process.</param>
     /// <param name="value">The value to write onto the stream.</param>
     /// <param name="cancellationToken">Cancellation token to stop the parsing.</param>
-    Task SerializeAsync(Stream stream, IBinaryParsingContext context, T value, CancellationToken cancellationToken = default);
+    ValueTask SerializeAsync(Stream stream, IBinaryParsingContext context, T value, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deserializes the provided object from the stream.
@@ -74,5 +74,5 @@ public interface IBinaryParser<T>
     /// <param name="context">The current context for the deserializing process.</param>
     /// <param name="cancellationToken">Cancellation token to stop the parsing.</param>
     /// <returns>The parsed type.</returns>
-    Task<T> DeserializeAsync(Stream stream, IBinaryParsingContext context, CancellationToken cancellationToken = default);
+    ValueTask<T> DeserializeAsync(Stream stream, IBinaryParsingContext context, CancellationToken cancellationToken = default);
 }

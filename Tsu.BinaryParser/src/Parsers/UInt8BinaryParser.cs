@@ -36,7 +36,7 @@ public sealed class UInt8BinaryParser : IBinaryParser<byte>
     public bool IsFixedSize => true;
 
     /// <inheritdoc/>
-    public byte Deserialize(Stream stream, Endianess endianess)
+    public byte Deserialize(Stream stream, IBinaryParsingContext context)
     {
         var val = stream.ReadByte();
         if (val == -1)
@@ -45,22 +45,22 @@ public sealed class UInt8BinaryParser : IBinaryParser<byte>
     }
 
     /// <inheritdoc/>
-    public Task<byte> DeserializeAsync(Stream stream, Endianess endianess, CancellationToken cancellationToken = default)
+    public ValueTask<byte> DeserializeAsync(Stream stream, IBinaryParsingContext context, CancellationToken cancellationToken = default)
     {
         var val = stream.ReadByte();
         if (val == -1)
             throw new EndOfStreamException();
-        return Task.FromResult((byte) val);
+        return new ValueTask<byte>((byte) val);
     }
 
     /// <inheritdoc/>
-    public void Serialize(Stream stream, Endianess endianess, byte value) =>
+    public void Serialize(Stream stream, IBinaryParsingContext context, byte value) =>
         stream.WriteByte(value);
 
     /// <inheritdoc/>
-    public Task SerializeAsync(Stream stream, Endianess endianess, byte value, CancellationToken cancellationToken = default)
+    public ValueTask SerializeAsync(Stream stream, IBinaryParsingContext context, byte value, CancellationToken cancellationToken = default)
     {
         stream.WriteByte(value);
-        return Task.CompletedTask;
+        return new ValueTask();
     }
 }
