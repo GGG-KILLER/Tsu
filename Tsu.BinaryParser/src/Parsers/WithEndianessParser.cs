@@ -38,9 +38,9 @@ namespace Tsu.BinaryParser.Parsers
         /// <param name="wrappedParser">The parser being wrapped.</param>
         /// <param name="endianess">The endianess to be forced.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public WithEndianessParser(IBinaryParser<T> wrappedParser!!, Endianess endianess)
+        public WithEndianessParser(IBinaryParser<T> wrappedParser, Endianess endianess)
         {
-            _wrappedParser = wrappedParser;
+            _wrappedParser = wrappedParser ?? throw new ArgumentNullException(nameof(wrappedParser));
             _endianess = endianess;
         }
 

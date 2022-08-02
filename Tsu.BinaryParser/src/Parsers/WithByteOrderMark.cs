@@ -50,10 +50,10 @@ namespace Tsu.BinaryParser
         /// <param name="bigEndianValue">
         /// The value that indicates the following data is in big endian.
         /// </param>
-        public WithByteOrderMark(IBinaryParser<T> wrappedParser!!, IEqualityComparer<T> equalityComparer!!, T littleEndianValue, T bigEndianValue)
+        public WithByteOrderMark(IBinaryParser<T> wrappedParser, IEqualityComparer<T> equalityComparer, T littleEndianValue, T bigEndianValue)
         {
-            _wrappedParser = wrappedParser;
-            _equalityComparer = equalityComparer;
+            _wrappedParser = wrappedParser ?? throw new ArgumentNullException(nameof(wrappedParser));
+            _equalityComparer = equalityComparer ?? throw new ArgumentNullException(nameof(wrappedParser));
             if (_equalityComparer.Equals(littleEndianValue, bigEndianValue))
                 throw new ArgumentException("The little endian and big endian values must be different.", nameof(littleEndianValue));
             _littleEndianValue = littleEndianValue;
@@ -61,7 +61,7 @@ namespace Tsu.BinaryParser
         }
 
         /// <inheritdoc cref="WithByteOrderMark{T}.WithByteOrderMark(IBinaryParser{T}, IEqualityComparer{T}, T, T)"/>
-        public WithByteOrderMark(IBinaryParser<T> wrappedParser!!, T littleEndianValue, T bigEndianValue)
+        public WithByteOrderMark(IBinaryParser<T> wrappedParser, T littleEndianValue, T bigEndianValue)
             : this(wrappedParser, EqualityComparer<T>.Default, littleEndianValue, bigEndianValue)
         {
         }
