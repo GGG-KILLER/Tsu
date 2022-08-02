@@ -1,5 +1,7 @@
 <Project>
 
-  <!-- Nothing currently -->
+  <PropertyGroup>
+    <NoWarn>CA17107;CS1591</NoWarn>
+  </PropertyGroup>
 
 </Project>
