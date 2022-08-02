@@ -54,7 +54,7 @@ namespace Tsu.BinaryParser.Parsers
             byte notNullByte = 1,
             bool acceptEofAsNull = true)
         {
-            _wrappedParser = wrappedParser;
+            _wrappedParser = wrappedParser ?? throw new ArgumentNullException(nameof(wrappedParser));
             _nullByte = nullByte;
             _notNullByte = notNullByte;
             _acceptEofAsNull = acceptEofAsNull;
