@@ -36,6 +36,9 @@ public sealed class UInt8BinaryParser : IBinaryParser<byte>
     public bool IsFixedSize => true;
 
     /// <inheritdoc/>
+    public long CalculateSize(byte value) => sizeof(byte);
+
+    /// <inheritdoc/>
     public byte Deserialize(Stream stream, IBinaryParsingContext context)
     {
         var val = stream.ReadByte();

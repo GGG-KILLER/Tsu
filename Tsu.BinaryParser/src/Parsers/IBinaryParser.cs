@@ -43,6 +43,15 @@ public interface IBinaryParser<T>
     bool IsFixedSize { get; }
 
     /// <summary>
+    /// Calculates the size an object will have when serializing.
+    /// </summary>
+    /// <param name="value">
+    /// The object for which to calculate the size of.
+    /// </param>
+    /// <returns></returns>
+    long CalculateSize(T value);
+
+    /// <summary>
     /// Serializes the provided object into the stream.
     /// </summary>
     /// <param name="stream">The stream to serialize the object into.</param>

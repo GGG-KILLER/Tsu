@@ -63,6 +63,9 @@ namespace Tsu.BinaryParser
         public bool IsFixedSize => _wrappedParser.IsFixedSize;
 
         /// <inheritdoc/>
+        public long CalculateSize(Option<T> value) => 1 + value.MapOr(0, _wrappedParser.CalculateSize);
+
+        /// <inheritdoc/>
         public Option<T> Deserialize(Stream stream, IBinaryParsingContext context)
         {
             var flag = stream.ReadByte();

@@ -68,6 +68,9 @@ namespace Tsu.BinaryParser.Parsers
         public bool IsFixedSize => _wrappedParser.IsFixedSize;
 
         /// <inheritdoc/>
+        public long CalculateSize(T? value) => 1 + (value is null ? 0 : _wrappedParser.CalculateSize(value));
+
+        /// <inheritdoc/>
         public T? Deserialize(Stream stream, IBinaryParsingContext context)
         {
             var flag = stream.ReadByte();
