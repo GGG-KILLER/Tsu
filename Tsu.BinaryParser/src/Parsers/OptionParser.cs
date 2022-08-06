@@ -152,7 +152,7 @@ namespace Tsu.BinaryParser
         /// <inheritdoc cref="OptionParser{T}.OptionParser(IBinaryParser{T}, byte, byte, bool)" path="/param[@name='acceptEofAsNone']"/>
         /// </param>
         /// <returns></returns>
-        public static OptionParser<T> AsOption<T>(
+        public static OptionParser<T> AsOptional<T>(
             this IBinaryParser<T> wrappedParser,
             byte noneByte = 0,
             byte someByte = 1,
