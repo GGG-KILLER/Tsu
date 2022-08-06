@@ -19,6 +19,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Tsu.BinaryParser.Parsers;
 
 namespace Tsu.BinaryParser.Parsers
 {
@@ -134,5 +135,37 @@ namespace Tsu.BinaryParser.Parsers
                 return _wrappedParser.SerializeAsync(stream, context, value, cancellationToken);
             }
         }
+    }
+}
+
+namespace Tsu.BinaryParser
+{
+    public static partial class BinaryParserExtensions
+    {
+        /// <summary>
+        /// Wraps the parser as an <see cref="Option{T}"/> parser.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type which is optional
+        /// </typeparam>
+        /// <param name="wrappedParser">
+        /// <inheritdoc cref="NullableParser{T}.NullableParser(IBinaryParser{T}, byte, byte, bool)" path="/param[@name='wrappedParser']"/>
+        /// </param>
+        /// <param name="noneByte">
+        /// <inheritdoc cref="NullableParser{T}.NullableParser(IBinaryParser{T}, byte, byte, bool)" path="/param[@name='noneByte']"/>
+        /// </param>
+        /// <param name="someByte">
+        /// <inheritdoc cref="NullableParser{T}.NullableParser(IBinaryParser{T}, byte, byte, bool)" path="/param[@name='someByte']"/>
+        /// </param>
+        /// <param name="acceptEofAsNone">
+        /// <inheritdoc cref="NullableParser{T}.NullableParser(IBinaryParser{T}, byte, byte, bool)" path="/param[@name='acceptEofAsNone']"/>
+        /// </param>
+        /// <returns></returns>
+        public static NullableParser<T> AsNullable<T>(
+            this IBinaryParser<T> wrappedParser,
+            byte noneByte = 0,
+            byte someByte = 1,
+            bool acceptEofAsNone = true) =>
+            new NullableParser<T>(wrappedParser, noneByte, someByte, acceptEofAsNone);
     }
 }
