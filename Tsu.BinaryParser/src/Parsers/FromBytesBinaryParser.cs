@@ -51,6 +51,9 @@ public abstract class FromBytesBinaryParser<T> : IBinaryParser<T>
     /// <inheritdoc/>
     public bool IsFixedSize => true;
 
+    /// <inheritdoc/>
+    public long CalculateSize(T value) => _size;
+
     /// <summary>
     /// The method to convert the read bytes to the type.
     /// </summary>

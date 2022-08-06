@@ -46,6 +46,9 @@ namespace Tsu.BinaryParser.Parsers
         public bool IsFixedSize => true;
 
         /// <inheritdoc/>
+        public long CalculateSize(Unit value) => 0;
+
+        /// <inheritdoc/>
         public Unit Deserialize(Stream stream, IBinaryParsingContext context)
         {
             context.Endianess = _endianess;
