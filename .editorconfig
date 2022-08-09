@@ -245,3 +245,10 @@ dotnet_naming_style.camelcase_prefixed_by_underline.capitalization = camel_case
 # Severity settings
 dotnet_diagnostic.CA1303.severity = none
 dotnet_diagnostic.IDE0090.severity = silent
+# (temporary) Fix for null check (it got removed unfortunately, hopefully
+# LDM can fix non-nullable reference types in another way as it should've
+# been implemented into the runtime and type system instead of the current
+# shitty hack we have where null errors ARE A WARNINIG INSTEAD OF ERROR
+# AND WE STILL NEED TO SPECIFY NULL CHECKS MANUALLY BECAUSE THE COMPILER
+# CAN'T EVEN DO THAT FOR US ALREADY)
+dotnet_diagnostic.IDE0190.severity = none
