@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Tsu.BinaryParser;
 
+/// <summary>
+/// Represents a HEAP allocated byte buffer.
+/// <para>For stack allocated ones, use <see cref="Span{T}"/>.</para>
+/// </summary>
 internal readonly struct ByteBuffer : IDisposable
 {
     private readonly bool _clearWhenReturning;
