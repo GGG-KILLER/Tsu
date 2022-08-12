@@ -42,5 +42,11 @@ public sealed class UInt32BinaryParser : FromBytesBinaryParser<uint>
         : BinaryPrimitives.ReadUInt32LittleEndian(buffer);
 
     /// <inheritdoc/>
-    protected override void WriteToBytes(Endianess endianess, Span<byte> buffer, uint value) => throw new NotImplementedException();
+    protected override void WriteToBytes(Endianess endianess, Span<byte> buffer, uint value)
+    {
+        if (endianess == Endianess.BigEndian)
+            BinaryPrimitives.WriteUInt32BigEndian(buffer, value);
+        else
+            BinaryPrimitives.WriteUInt32LittleEndian(buffer, value);
+    }
 }
