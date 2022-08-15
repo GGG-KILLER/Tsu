@@ -55,13 +55,13 @@ namespace Tsu.BinaryParser.Parsers
         public long CalculateSize(T value) => _wrappedParser.CalculateSize(value);
 
         /// <inheritdoc/>
-        public T Deserialize(Stream stream, IBinaryParsingContext context)
+        public T Deserialize(IBinaryReader reader, IBinaryParsingContext context)
         {
             var previousEndianess = context.Endianess;
             try
             {
                 context.Endianess = _endianess;
-                return _wrappedParser.Deserialize(stream, context);
+                return _wrappedParser.Deserialize(reader, context);
             }
             finally
             {
@@ -71,13 +71,13 @@ namespace Tsu.BinaryParser.Parsers
         }
 
         /// <inheritdoc/>
-        public async ValueTask<T> DeserializeAsync(Stream stream, IBinaryParsingContext context, CancellationToken cancellationToken = default)
+        public async ValueTask<T> DeserializeAsync(IBinaryReader reader, IBinaryParsingContext context, CancellationToken cancellationToken = default)
         {
             var previousEndianess = context.Endianess;
             try
             {
                 context.Endianess = _endianess;
-                return await _wrappedParser.DeserializeAsync(stream, context, cancellationToken);
+                return await _wrappedParser.DeserializeAsync(reader, context, cancellationToken);
             }
             finally
             {

@@ -39,22 +39,12 @@ public sealed class UInt8BinaryParser : IBinaryParser<byte>
     public long CalculateSize(byte value) => sizeof(byte);
 
     /// <inheritdoc/>
-    public byte Deserialize(Stream stream, IBinaryParsingContext context)
-    {
-        var val = stream.ReadByte();
-        if (val == -1)
-            throw new EndOfStreamException();
-        return (byte) val;
-    }
+    public byte Deserialize(IBinaryReader reader, IBinaryParsingContext context) =>
+        reader.ReadByte().UnwrapOrElse(() => throw new EndOfStreamException());
 
     /// <inheritdoc/>
-    public ValueTask<byte> DeserializeAsync(Stream stream, IBinaryParsingContext context, CancellationToken cancellationToken = default)
-    {
-        var val = stream.ReadByte();
-        if (val == -1)
-            throw new EndOfStreamException();
-        return new ValueTask<byte>((byte) val);
-    }
+    public ValueTask<byte> DeserializeAsync(IBinaryReader reader, IBinaryParsingContext context, CancellationToken cancellationToken = default) =>
+        new ValueTask<byte>(reader.ReadByte().UnwrapOrElse(() => throw new EndOfStreamException()));
 
     /// <inheritdoc/>
     public void Serialize(Stream stream, IBinaryParsingContext context, byte value) =>

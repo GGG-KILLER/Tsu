@@ -50,29 +50,19 @@ internal readonly struct ByteBuffer : IDisposable
     public void Dispose() => ArrayPool<byte>.Shared.Return(_buffer, _clearWhenReturning);
 #endif
 
-    public void FillFrom(Stream stream)
-    {
+    public void FillFrom(IBinaryReader reader) =>
 #if HAS_SPAN
-        var readBytes = stream.Read(Span);
+        reader.Read(Span);
 #else
-        var readBytes = stream.Read(_buffer, 0, Length);
+        reader.Read(_buffer, Length);
 #endif
 
-        if (readBytes != Length)
-            throw new EndOfStreamException();
-    }
-
-    public async ValueTask FillFromAsync(Stream stream, CancellationToken cancellationToken = default)
-    {
+    public ValueTask FillFromAsync(IBinaryReader reader, CancellationToken cancellationToken = default) =>
 #if HAS_SPAN
-        var readBytes = await stream.ReadAsync(_memoryOwner.Memory.Slice(0, Length), cancellationToken);
+        reader.ReadAsync(_memoryOwner.Memory.Slice(0, Length), cancellationToken);
 #else
-        var readBytes = await stream.ReadAsync(_buffer, 0, Length, cancellationToken);
+        reader.ReadAsync(_buffer, Length, cancellationToken);
 #endif
-
-        if (readBytes != Length)
-            throw new EndOfStreamException();
-    }
 
     public void WriteTo(Stream stream) =>
 #if HAS_SPAN

@@ -77,9 +77,9 @@ namespace Tsu.BinaryParser
         public long CalculateSize(T value) => _wrappedParser.CalculateSize(value);
 
         /// <inheritdoc/>
-        public T Deserialize(Stream stream, IBinaryParsingContext context)
+        public T Deserialize(IBinaryReader reader, IBinaryParsingContext context)
         {
-            var value = _wrappedParser.Deserialize(stream, context);
+            var value = _wrappedParser.Deserialize(reader, context);
             if (_equalityComparer.Equals(value, _littleEndianValue))
             {
                 context.Endianess = Endianess.LittleEndian;
@@ -96,9 +96,9 @@ namespace Tsu.BinaryParser
         }
 
         /// <inheritdoc/>
-        public async ValueTask<T> DeserializeAsync(Stream stream, IBinaryParsingContext context, CancellationToken cancellationToken = default)
+        public async ValueTask<T> DeserializeAsync(IBinaryReader reader, IBinaryParsingContext context, CancellationToken cancellationToken = default)
         {
-            var value = await _wrappedParser.DeserializeAsync(stream, context, cancellationToken);
+            var value = await _wrappedParser.DeserializeAsync(reader, context, cancellationToken);
             if (_equalityComparer.Equals(value, _littleEndianValue))
             {
                 context.Endianess = Endianess.LittleEndian;
