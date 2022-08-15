@@ -39,21 +39,17 @@ public sealed class Int8BinaryParser : IBinaryParser<sbyte>
     public long CalculateSize(sbyte value) => sizeof(sbyte);
 
     /// <inheritdoc/>
-    public sbyte Deserialize(Stream stream, IBinaryParsingContext context)
+    public sbyte Deserialize(IBinaryReader reader, IBinaryParsingContext context)
     {
-        var val = stream.ReadByte();
-        if (val == -1)
-            throw new EndOfStreamException();
+        var val = reader.ReadByte().UnwrapOrElse(() => throw new EndOfStreamException());
         return (sbyte) val;
     }
 
     /// <inheritdoc/>
-    public ValueTask<sbyte> DeserializeAsync(Stream stream, IBinaryParsingContext context, CancellationToken cancellationToken = default)
+    public ValueTask<sbyte> DeserializeAsync(IBinaryReader reader, IBinaryParsingContext context, CancellationToken cancellationToken = default)
     {
-        var val = stream.ReadByte();
-        if (val == -1)
-            throw new EndOfStreamException();
-        return new ValueTask<sbyte>((sbyte)val);
+        var val = reader.ReadByte().UnwrapOrElse(() => throw new EndOfStreamException());
+        return new ValueTask<sbyte>((sbyte) val);
     }
 
     /// <inheritdoc/>

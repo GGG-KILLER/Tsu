@@ -71,19 +71,16 @@ public abstract class FromBytesBinaryParser<T> : IBinaryParser<T>
     protected abstract void WriteToBytes(Endianess endianess, Span<byte> buffer, T value);
 
     /// <inheritdoc/>
-    public T Deserialize(Stream stream, IBinaryParsingContext context)
+    public T Deserialize(IBinaryReader reader, IBinaryParsingContext context)
     {
         const int requiredBytes = sizeof(short);
 
 #if HAS_SPAN
         Span<byte> bytes = stackalloc byte[requiredBytes];
-        var readBytes = stream.Read(bytes);
-
-        if (readBytes != requiredBytes)
-            throw new EndOfStreamException();
+        reader.Read(bytes);
 #else
         using var buffer = ByteBufferPool.Rent(requiredBytes, _clearBuffers);
-        buffer.FillFrom(stream);
+        buffer.FillFrom(reader);
         var bytes = buffer.Span;
 #endif
 
@@ -92,12 +89,12 @@ public abstract class FromBytesBinaryParser<T> : IBinaryParser<T>
 
     /// <inheritdoc/>
     public async ValueTask<T> DeserializeAsync(
-        Stream stream,
+        IBinaryReader reader,
         IBinaryParsingContext context,
         CancellationToken cancellationToken = default)
     {
         using var buffer = ByteBufferPool.Rent(sizeof(short), _clearBuffers);
-        await buffer.FillFromAsync(stream, cancellationToken);
+        await buffer.FillFromAsync(reader, cancellationToken);
         return ReadFromBytes(context.Endianess, buffer.Span);
     }
 

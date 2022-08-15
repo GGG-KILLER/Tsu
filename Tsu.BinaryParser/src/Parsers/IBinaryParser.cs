@@ -71,17 +71,17 @@ public interface IBinaryParser<T>
     /// <summary>
     /// Deserializes the provided object from the stream.
     /// </summary>
-    /// <param name="stream">The stream to read the object from.</param>
+    /// <param name="reader">The reader to read the object from.</param>
     /// <param name="context">The current context for the deserializing process.</param>
     /// <returns>The parsed type.</returns>
-    T Deserialize(Stream stream, IBinaryParsingContext context);
+    T Deserialize(IBinaryReader reader, IBinaryParsingContext context);
 
     /// <summary>
     /// Deserializes the provided object from the stream.
     /// </summary>
-    /// <param name="stream">The stream to read the object from.</param>
+    /// <param name="reader">The reader to read the object from.</param>
     /// <param name="context">The current context for the deserializing process.</param>
     /// <param name="cancellationToken">Cancellation token to stop the parsing.</param>
     /// <returns>The parsed type.</returns>
-    ValueTask<T> DeserializeAsync(Stream stream, IBinaryParsingContext context, CancellationToken cancellationToken = default);
+    ValueTask<T> DeserializeAsync(IBinaryReader reader, IBinaryParsingContext context, CancellationToken cancellationToken = default);
 }

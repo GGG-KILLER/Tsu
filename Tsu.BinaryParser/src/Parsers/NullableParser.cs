@@ -72,14 +72,14 @@ namespace Tsu.BinaryParser.Parsers
         public long CalculateSize(T? value) => 1 + (value is null ? 0 : _wrappedParser.CalculateSize(value));
 
         /// <inheritdoc/>
-        public T? Deserialize(Stream stream, IBinaryParsingContext context)
+        public T? Deserialize(IBinaryReader reader, IBinaryParsingContext context)
         {
-            var flag = stream.ReadByte();
+            var flag = reader.ReadByte();
             if (flag == _notNullByte)
             {
-                return _wrappedParser.Deserialize(stream, context);
+                return _wrappedParser.Deserialize(reader, context);
             }
-            else if (flag == _nullByte || (_acceptEofAsNull && flag == -1))
+            else if (flag.MapOr(_acceptEofAsNull, f => f == _nullByte))
             {
                 return default;
             }
@@ -90,16 +90,17 @@ namespace Tsu.BinaryParser.Parsers
         }
 
         /// <inheritdoc/>
-        public ValueTask<T?> DeserializeAsync(Stream stream, IBinaryParsingContext context, CancellationToken cancellationToken = default)
+        public ValueTask<T?> DeserializeAsync(IBinaryReader reader, IBinaryParsingContext context, CancellationToken cancellationToken = default)
         {
-            var flag = stream.ReadByte();
+            var flag = reader.ReadByte();
             if (flag == _notNullByte)
             {
-                return _wrappedParser.DeserializeAsync(stream, context, cancellationToken)!;
+                return _wrappedParser.DeserializeAsync(reader, context, cancellationToken)!;
             }
-            else if (flag == _nullByte || (_acceptEofAsNull && flag == -1))
+            else if (flag.MapOr(_acceptEofAsNull, f => f == _nullByte))
             {
-                return new ValueTask<T?>(default(T?));
+                // C# is a bit buggy on this
+                return new ValueTask<T?>(null!);
             }
             else
             {

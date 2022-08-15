@@ -49,14 +49,14 @@ namespace Tsu.BinaryParser.Parsers
         public long CalculateSize(Unit value) => 0;
 
         /// <inheritdoc/>
-        public Unit Deserialize(Stream stream, IBinaryParsingContext context)
+        public Unit Deserialize(IBinaryReader reader, IBinaryParsingContext context)
         {
             context.Endianess = _endianess;
             return Unit.Value;
         }
 
         /// <inheritdoc/>
-        public ValueTask<Unit> DeserializeAsync(Stream stream, IBinaryParsingContext context, CancellationToken cancellationToken = default)
+        public ValueTask<Unit> DeserializeAsync(IBinaryReader reader, IBinaryParsingContext context, CancellationToken cancellationToken = default)
         {
             context.Endianess = _endianess;
             return new ValueTask<Unit>(Unit.Value);

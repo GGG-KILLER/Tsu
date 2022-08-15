@@ -17,6 +17,7 @@
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Tsu.BinaryParser.Parsers;
@@ -66,32 +67,42 @@ namespace Tsu.BinaryParser
         public long CalculateSize(Option<T> value) => 1 + value.MapOr(0, _wrappedParser.CalculateSize);
 
         /// <inheritdoc/>
-        public Option<T> Deserialize(Stream stream, IBinaryParsingContext context)
+        public Option<T> Deserialize(IBinaryReader reader, IBinaryParsingContext context)
         {
-            var flag = stream.ReadByte();
-            if (flag is not (-1 or 0))
-            {
-                return _wrappedParser.Deserialize(stream, context);
-            }
-            return Option.None<T>();
-        }
-
-        /// <inheritdoc/>
-        public async ValueTask<Option<T>> DeserializeAsync(Stream stream, IBinaryParsingContext context, CancellationToken cancellationToken = default)
-        {
-            var flag = stream.ReadByte();
+            var flag = reader.ReadByte();
             if (flag == _someByte)
             {
-                return await _wrappedParser.DeserializeAsync(stream, context, cancellationToken);
+                return _wrappedParser.Deserialize(reader, context);
             }
-            else if (flag == _noneByte || (flag == -1 && _acceptEofAsNone))
+            else if (flag.MapOr(_acceptEofAsNone, f => f == _noneByte))
             {
                 return Option.None<T>();
             }
             else
             {
-                throw new FormatException("First byte does not indicate either Some nor None");
+                throw new FormatException("Read value does not indicate neither a null nor non-null value.");
             }
+        }
+
+        /// <inheritdoc/>
+        public ValueTask<Option<T>> DeserializeAsync(IBinaryReader reader, IBinaryParsingContext context, CancellationToken cancellationToken = default)
+        {
+            var flag = reader.ReadByte();
+            if (flag == _someByte)
+            {
+                return Core(reader, context, cancellationToken);
+            }
+            else if (flag.MapOr(_acceptEofAsNone, f => f == _noneByte))
+            {
+                return new ValueTask<Option<T>>(Option.None<T>());
+            }
+            else
+            {
+                throw new FormatException("Read value does not indicate neither a null nor non-null value.");
+            }
+
+            async ValueTask<Option<T>> Core(IBinaryReader reader, IBinaryParsingContext context, CancellationToken cancellationToken) =>
+                Option.Some(await _wrappedParser.DeserializeAsync(reader, context, cancellationToken));
         }
 
         /// <inheritdoc/>
