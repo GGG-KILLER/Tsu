@@ -21,20 +21,16 @@ namespace Tsu.TreeSourceGen.Sample
         {
             if (node is not null)
                 return node.Accept(this, arg1);
-                
-                return default;
-            }
             
-            protected virtual TReturn DefaultVisit(Tsu.TreeSourceGen.Sample.Root node, TArg1 arg1) => default;
-            
-            TReturn VisitBinary(Tsu.TreeSourceGen.Sample.Binary binary, TArg1 arg1) => DefaultVisit(
-            binary, arg1);
-            
-            TReturn VisitConstant(Tsu.TreeSourceGen.Sample.Constant constant, TArg1 arg1) => DefaultVisit(
-            constant, arg1);
-            
-            TReturn VisitFunctionCall(Tsu.TreeSourceGen.Sample.FunctionCall functionCall, TArg1 arg1) => DefaultVisit(
-            functionCall, arg1);
+            return default;
         }
+        
+        protected virtual TReturn DefaultVisit(Tsu.TreeSourceGen.Sample.Root node, TArg1 arg1) => default;
+        
+        public virtual TReturn VisitBinary(Tsu.TreeSourceGen.Sample.Binary binary, TArg1 arg1) => DefaultVisit(binary, arg1);
+        
+        public virtual TReturn VisitConstant(Tsu.TreeSourceGen.Sample.Constant constant, TArg1 arg1) => DefaultVisit(constant, arg1);
+        
+        public virtual TReturn VisitFunctionCall(Tsu.TreeSourceGen.Sample.FunctionCall functionCall, TArg1 arg1) => DefaultVisit(functionCall, arg1);
     }
 }

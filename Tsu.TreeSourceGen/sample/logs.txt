@@ -1,0 +1,12 @@
+Processing Tsu.TreeSourceGen.Sample.Root for [TreeNode]
+  Added.
+Processing Tsu.TreeSourceGen.Sample.Expression for [TreeNode]
+  Discarded. { IsNamedType = True, IsClassKind = True, IsAbstract = True, IsRoot = False }
+Processing Tsu.TreeSourceGen.Sample.Binary for [TreeNode]
+  Added.
+Processing Tsu.TreeSourceGen.Sample.Constant for [TreeNode]
+  Added.
+Processing Tsu.TreeSourceGen.Sample.Statement for [TreeNode]
+  Discarded. { IsNamedType = True, IsClassKind = True, IsAbstract = True, IsRoot = False }
+Processing Tsu.TreeSourceGen.Sample.FunctionCall for [TreeNode]
+  Added.

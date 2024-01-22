@@ -255,6 +255,7 @@ public sealed class Generator : IIncrementalGenerator
                                         writer.Write(idx);
                                     }
                                     writer.WriteLine(");");
+                                    writer.Indent--;
 
                                     if (visitor.Arity > 0)
                                     {
@@ -286,8 +287,9 @@ public sealed class Generator : IIncrementalGenerator
                                 foreach (var node in tree.Nodes)
                                 {
                                     writer.WriteLine();
+                                    writer.Write("public virtual ");
                                     var arg = writer.WriteSignature(node, visitor);
-                                    writer.WriteLine(" => DefaultVisit(");
+                                    writer.Write(" => DefaultVisit(");
                                     writer.Write(arg);
                                     for (var idx = 1; idx < visitor.Arity; idx++)
                                     {
