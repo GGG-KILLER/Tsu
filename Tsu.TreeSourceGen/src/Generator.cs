@@ -141,6 +141,7 @@ public sealed class Generator : IIncrementalGenerator
                                 writer.Write(visitor.Namespace);
                                 writer.Write('.');
                                 writer.Write(string.Join(".", visitor.RootClass.Select(c => c.Name)));
+                                writer.WriteTypeParameterList(visitor.Arity);
                                 writer.Write(' ');
                                 writer.Write("visitor");
                                 for (var idx = 1; idx < visitor.Arity; idx++)
