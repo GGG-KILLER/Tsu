@@ -1,5 +1,9 @@
 <Project>
 
-  <!-- Nothing currently -->
+  <PropertyGroup>
+    <!-- Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
 
 </Project>

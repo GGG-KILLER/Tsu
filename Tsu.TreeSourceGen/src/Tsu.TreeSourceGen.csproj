@@ -8,13 +8,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
 
-    <IsRoslynComponent>true</IsRoslynComponent>
-    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
-
     <Copyright>GGG KILLER © 2024</Copyright>
     <PackageId>Tsu.TreeSourceGen</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Description>A source generator that creates visitors for your trees.</Description>
   </PropertyGroup>
 

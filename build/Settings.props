@@ -15,7 +15,7 @@
   <!-- Package props -->
   <PropertyGroup>
     <Authors>GGG KILLER</Authors>
-    <Copyright>GGG KILLER © 2022</Copyright>
+    <Copyright>GGG KILLER © 2022~2024</Copyright>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <RepositoryUrl>https://github.com/GGG-KILLER/Tsu</RepositoryUrl>
@@ -29,9 +29,6 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <!-- Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
 </Project>
