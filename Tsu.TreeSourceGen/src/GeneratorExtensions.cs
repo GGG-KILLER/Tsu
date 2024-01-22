@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -14,24 +15,34 @@ internal static class GeneratorExtensions
             (node, _) => node.IsKind(SyntaxKind.ClassDeclaration),
             (ctx, _) =>
             {
-
+                Log.WriteLine($"Processing {ctx.TargetSymbol} for [TreeNode]");
                 var attr = ctx.Attributes.SingleOrDefault();
-                if (attr?.ConstructorArguments.Single().Value is not INamedTypeSymbol targetType
-                    || targetType.TypeKind != TypeKind.Class
-                    || targetType.IsAbstract)
+                var firstArg = attr?.ConstructorArguments.Single().Value as INamedTypeSymbol;
+                var nodeSymbol = (INamedTypeSymbol) ctx.TargetSymbol;
+
+                // Only accept symbol arguments
+                if (firstArg is null || firstArg.TypeKind != TypeKind.Class
+                    || (nodeSymbol.IsAbstract && !SymbolEqualityComparer.Default.Equals(firstArg, ctx.TargetSymbol)))
                 {
+                    var b = new StringBuilder("  Discarded. ");
+                    b.Append($"{{ IsNamedType = {firstArg is not null}");
+                    b.Append($", IsClassKind = {firstArg is { TypeKind: TypeKind.Class }}");
+                    b.Append($", IsAbstract = {nodeSymbol is { IsAbstract: true }}");
+                    b.Append($", IsRoot = {SymbolEqualityComparer.Default.Equals(firstArg as INamedTypeSymbol, ctx.TargetSymbol)} }}");
+                    Log.WriteLine(b.ToString());
                     return (null!, null!, null!, null);
                 }
 
                 string? name = null;
-                if (attr.NamedArguments.SingleOrDefault(x => x.Key == "Name").Value.Value is string n
+                if (attr!.NamedArguments.SingleOrDefault(x => x.Key == "Name").Value.Value is string n
                     && !string.IsNullOrWhiteSpace(n))
                 {
                     name = n;
                 }
 
+                Log.WriteLine("  Added.");
                 return (
-                    Root: targetType,
+                    Root: firstArg,
                     ParentClass: ((ClassDeclarationSyntax) ctx.TargetNode).GetContainingTypes(),
                     NodeSymbol: (INamedTypeSymbol) ctx.TargetSymbol,
                     Name: name
@@ -48,7 +59,7 @@ internal static class GeneratorExtensions
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    var treeNodes = group.Select(node => new Node(node.ParentClass, node.NodeSymbol, node.Name));
+                    var treeNodes = group.Select(node => new Node(node.ParentClass, node.NodeSymbol, node.Name)).ToArray();
 
                     var root = treeNodes.Single(n => SymbolEqualityComparer.Default.Equals(n.TypeSymbol, group.Key));
 

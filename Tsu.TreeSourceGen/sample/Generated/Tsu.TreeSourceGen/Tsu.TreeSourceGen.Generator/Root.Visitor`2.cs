@@ -10,17 +10,14 @@ namespace Tsu.TreeSourceGen.Sample
 {
     interface IVisitor<TReturn, TArg1>
     {
-        TReturn VisitExpression(Tsu.TreeSourceGen.Sample.Expression expression, TArg1 arg1)
-        ;
-        TReturn VisitBinary(Tsu.TreeSourceGen.Sample.Binary binary, TArg1 arg1)
-        ;
-        TReturn VisitConstant(Tsu.TreeSourceGen.Sample.Constant constant, TArg1 arg1)
-        ;
+        TReturn VisitBinary(Tsu.TreeSourceGen.Sample.Binary binary, TArg1 arg1);
+        TReturn VisitConstant(Tsu.TreeSourceGen.Sample.Constant constant, TArg1 arg1);
+        TReturn VisitFunctionCall(Tsu.TreeSourceGen.Sample.FunctionCall functionCall, TArg1 arg1);
     }
+    
     partial class Visitor<TReturn, TArg1> : IVisitor<TReturn, TArg1> 
     {
         public virtual TReturn Visit(Tsu.TreeSourceGen.Sample.Root node, TArg1 arg1)
-        
         {
             if (node is not null)
                 return node.Accept(this, arg1);
@@ -28,20 +25,16 @@ namespace Tsu.TreeSourceGen.Sample
                 return default;
             }
             
-            protected virtual TReturn DefaultVisit(Tsu.TreeSourceGen.Sample.Root node, TArg1 arg1)
-             => default;
+            protected virtual TReturn DefaultVisit(Tsu.TreeSourceGen.Sample.Root node, TArg1 arg1) => default;
             
-            TReturn VisitExpression(Tsu.TreeSourceGen.Sample.Expression expression, TArg1 arg1)
-             => DefaultVisit(
-            expression, arg1);
-            
-            TReturn VisitBinary(Tsu.TreeSourceGen.Sample.Binary binary, TArg1 arg1)
-             => DefaultVisit(
+            TReturn VisitBinary(Tsu.TreeSourceGen.Sample.Binary binary, TArg1 arg1) => DefaultVisit(
             binary, arg1);
             
-            TReturn VisitConstant(Tsu.TreeSourceGen.Sample.Constant constant, TArg1 arg1)
-             => DefaultVisit(
+            TReturn VisitConstant(Tsu.TreeSourceGen.Sample.Constant constant, TArg1 arg1) => DefaultVisit(
             constant, arg1);
+            
+            TReturn VisitFunctionCall(Tsu.TreeSourceGen.Sample.FunctionCall functionCall, TArg1 arg1) => DefaultVisit(
+            functionCall, arg1);
         }
     }
 }

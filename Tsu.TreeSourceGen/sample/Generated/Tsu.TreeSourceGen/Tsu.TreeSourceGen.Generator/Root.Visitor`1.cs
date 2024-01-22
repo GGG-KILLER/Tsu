@@ -10,17 +10,14 @@ namespace Tsu.TreeSourceGen.Sample
 {
     interface IVisitor<TReturn>
     {
-        TReturn VisitExpression(Tsu.TreeSourceGen.Sample.Expression expression)
-        ;
-        TReturn VisitBinary(Tsu.TreeSourceGen.Sample.Binary binary)
-        ;
-        TReturn VisitConstant(Tsu.TreeSourceGen.Sample.Constant constant)
-        ;
+        TReturn VisitBinary(Tsu.TreeSourceGen.Sample.Binary binary);
+        TReturn VisitConstant(Tsu.TreeSourceGen.Sample.Constant constant);
+        TReturn VisitFunctionCall(Tsu.TreeSourceGen.Sample.FunctionCall functionCall);
     }
+    
     partial class Visitor<TReturn> : IVisitor<TReturn> 
     {
         public virtual TReturn Visit(Tsu.TreeSourceGen.Sample.Root node)
-        
         {
             if (node is not null)
                 return node.Accept(this);
@@ -28,20 +25,16 @@ namespace Tsu.TreeSourceGen.Sample
                 return default;
             }
             
-            protected virtual TReturn DefaultVisit(Tsu.TreeSourceGen.Sample.Root node)
-             => default;
+            protected virtual TReturn DefaultVisit(Tsu.TreeSourceGen.Sample.Root node) => default;
             
-            TReturn VisitExpression(Tsu.TreeSourceGen.Sample.Expression expression)
-             => DefaultVisit(
-            expression);
-            
-            TReturn VisitBinary(Tsu.TreeSourceGen.Sample.Binary binary)
-             => DefaultVisit(
+            TReturn VisitBinary(Tsu.TreeSourceGen.Sample.Binary binary) => DefaultVisit(
             binary);
             
-            TReturn VisitConstant(Tsu.TreeSourceGen.Sample.Constant constant)
-             => DefaultVisit(
+            TReturn VisitConstant(Tsu.TreeSourceGen.Sample.Constant constant) => DefaultVisit(
             constant);
+            
+            TReturn VisitFunctionCall(Tsu.TreeSourceGen.Sample.FunctionCall functionCall) => DefaultVisit(
+            functionCall);
         }
     }
 }

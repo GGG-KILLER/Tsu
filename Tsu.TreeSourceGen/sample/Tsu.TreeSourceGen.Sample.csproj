@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TsuProjectType>Library</TsuProjectType>
+    <TsuProjectType>Console</TsuProjectType>
     <TargetFrameworks>net6.0</TargetFrameworks>
 
     <ImplicitUsings>enable</ImplicitUsings>

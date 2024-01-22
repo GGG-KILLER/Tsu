@@ -132,10 +132,12 @@ public sealed class Generator : IIncrementalGenerator
                             {
                                 writer.Write("public ");
                                 if (visitor.Arity > 0)
-                                    writer.Write("void ");
-                                else
                                     writer.Write("TReturn ");
-                                writer.Write("Accept(");
+                                else
+                                    writer.Write("void ");
+                                writer.Write("Accept");
+                                writer.WriteTypeParameterList(visitor.Arity);
+                                writer.Write('(');
                                 writer.Write(visitor.Namespace);
                                 writer.Write('.');
                                 writer.Write(string.Join(".", visitor.RootClass.Select(c => c.Name)));
@@ -211,6 +213,8 @@ public sealed class Generator : IIncrementalGenerator
                             writer.Indent--;
                             writer.WriteLine('}');
                         }
+
+                        writer.WriteLine();
 
                         // Write out the base class
                         {
