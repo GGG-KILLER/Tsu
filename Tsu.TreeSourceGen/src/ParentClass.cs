@@ -4,7 +4,7 @@
 
 namespace Tsu.TreeSourceGen;
 
-internal sealed record class ParentClass(string Keyword, string Name, string Constraints, ParentClass? Child) : IEnumerable<ParentClass>
+internal sealed record class ParentClass(string Keyword, string Name, string TypeParams, string Constraints, ParentClass? Child) : IEnumerable<ParentClass>
 {
     public IEnumerator<ParentClass> GetEnumerator()
     {

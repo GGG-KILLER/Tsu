@@ -14,8 +14,11 @@ internal static class GeneratorExtensions
             (node, _) => node.IsKind(SyntaxKind.ClassDeclaration),
             (ctx, _) =>
             {
-                var attr = ctx.Attributes.Single();
-                if (attr.ConstructorArguments.Single().Value is not INamedTypeSymbol targetType || targetType.TypeKind != TypeKind.Class)
+
+                var attr = ctx.Attributes.SingleOrDefault();
+                if (attr?.ConstructorArguments.Single().Value is not INamedTypeSymbol targetType
+                    || targetType.TypeKind != TypeKind.Class
+                    || targetType.IsAbstract)
                 {
                     return (null!, null!, null!, null);
                 }
@@ -38,6 +41,7 @@ internal static class GeneratorExtensions
             .Collect()
             .SelectMany((nodes, cancellationToken) =>
             {
+
                 var groups = nodes.GroupBy(node => node.Root, SymbolEqualityComparer.Default);
                 var builder = ImmutableArray.CreateBuilder<Tree>(groups.Count());
                 foreach (var group in groups)
@@ -50,6 +54,7 @@ internal static class GeneratorExtensions
 
                     builder.Add(new Tree(root, treeNodes.Except([root])));
                 }
+
                 return builder.MoveToImmutable();
             });
     }
@@ -61,8 +66,9 @@ internal static class GeneratorExtensions
             (node, _) => node.IsKind(SyntaxKind.ClassDeclaration),
             (ctx, _) =>
             {
-                var attr = ctx.Attributes.Single();
-                if (attr.ConstructorArguments.Single().Value is not INamedTypeSymbol targetType || targetType.TypeKind != TypeKind.Class)
+
+                var attr = ctx.Attributes.SingleOrDefault();
+                if (attr?.ConstructorArguments.Single().Value is not INamedTypeSymbol targetType || targetType.TypeKind != TypeKind.Class)
                 {
                     return (null!, null!);
                 }
@@ -90,6 +96,7 @@ internal static class GeneratorExtensions
                         (INamedTypeSymbol) group.Key!,
                         group.Select(v => v.Visitor).ToImmutableArray()));
                 }
+
                 return builder.MoveToImmutable();
             });
     }
@@ -101,25 +108,23 @@ internal static class GeneratorExtensions
             {
                 var tree = pair.Left;
                 var visitorSet = pair.Right.SingleOrDefault(s => SymbolEqualityComparer.Default.Equals(tree.Root.TypeSymbol, s.Root));
-
                 return (Tree: tree, Visitors: visitorSet);
             })
             .Where(x => x.Visitors is not null)!;
     }
 
-    public static IncrementalValuesProvider<(Tree Tree, VisitorSet Visitors, VisitorSet Walkers)> MakeWalkerSets(this IncrementalValuesProvider<Tree> trees, IncrementalValueProvider<ImmutableArray<VisitorSet>> visitors, IncrementalValuesProvider<VisitorSet> walkers)
+    public static IncrementalValuesProvider<(Tree Tree, VisitorSet Visitors, VisitorSet Walkers)> MakeWalkerSets(this IncrementalValuesProvider<(Tree Tree, VisitorSet Visitors)> pairs, IncrementalValuesProvider<VisitorSet> walkers)
     {
-        return trees.Combine(visitors)
-            .Combine(walkers.Collect())
-            .Select((x, _) => (Tree: x.Left.Left, Visitors: x.Left.Right, Walkers: x.Right))
+        return pairs.Combine(walkers.Collect())
+            .Select((x, _) => (Tree: x.Left.Tree, Visitors: x.Left.Visitors, Walkers: x.Right))
             .Select((pair, cancellationToken) =>
             {
                 var tree = pair.Tree;
-                var visitorSet = pair.Visitors.SingleOrDefault(s => SymbolEqualityComparer.Default.Equals(tree.Root.TypeSymbol, s.Root));
+                var visitorSet = pair.Visitors;
                 var walkerSet = pair.Walkers.SingleOrDefault(s => SymbolEqualityComparer.Default.Equals(tree.Root.TypeSymbol, s.Root));
 
                 return (Tree: tree, Visitor: visitorSet, Walkers: walkerSet);
             })
-            .Where(x => x.Walkers is not null)!;
+            .Where(x => x.Visitor is not null && x.Walkers is not null)!;
     }
 }

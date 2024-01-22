@@ -34,7 +34,8 @@ internal static class RoslynExtensions
         TypeDeclarationSyntax? parentSyntax = typeSyntax.Parent as TypeDeclarationSyntax;
         var parentClassInfo = new ParentClass(
                 typeSyntax.Keyword.ValueText,
-                typeSyntax.Identifier.ToString() + typeSyntax.TypeParameterList,
+                typeSyntax.Identifier.ToString(),
+                TypeParams: typeSyntax.TypeParameterList?.ToString() ?? string.Empty,
                 typeSyntax.ConstraintClauses.ToString(),
                 null);
 
@@ -44,7 +45,8 @@ internal static class RoslynExtensions
             // Record the parent type keyword (class/struct etc), name, and constraints
             parentClassInfo = new(
                 Keyword: parentSyntax.Keyword.ValueText,
-                Name: parentSyntax.Identifier.ToString() + parentSyntax.TypeParameterList,
+                Name: parentSyntax.Identifier.ToString(),
+                TypeParams: parentSyntax.TypeParameterList?.ToString() ?? string.Empty,
                 Constraints: parentSyntax.ConstraintClauses.ToString(),
                 Child: parentClassInfo); // set the child link (null initially)
 

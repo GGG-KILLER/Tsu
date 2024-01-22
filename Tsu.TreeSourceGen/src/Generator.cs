@@ -1,4 +1,4 @@
-// Copyright © 2024 GGG KILLER <gggkiller2@gmail.com>
+﻿// Copyright © 2024 GGG KILLER <gggkiller2@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 // and associated documentation files (the “Software”), to deal in the Software without
@@ -50,11 +50,12 @@ public sealed class Generator : IIncrementalGenerator
 
         // Make the final pairs
         var visitorPairs = trees.MakeVisitorPairs(visitors);
-        var walkerSets = trees.MakeWalkerSets(visitors, walkers);
+        var walkerSets = visitorPairs.MakeWalkerSets(walkers);
 
         // Validate that the nodes properly inherit from the root.
         context.RegisterSourceOutput(trees, (ctx, tree) =>
         {
+
             foreach (var node in tree.Nodes)
             {
                 var inherits = false;
@@ -72,6 +73,7 @@ public sealed class Generator : IIncrementalGenerator
                         messageArgs: node.TypeSymbol.Name));
                 }
             }
+
         });
 
         // Write out all the code
@@ -94,7 +96,7 @@ public sealed class Generator : IIncrementalGenerator
                 var builder = new StringBuilder();
                 var writer = new VisitorWriter(builder);
 
-                foreach (var visitor in visitors!.Visitors)
+                // Write the file with the nodes' accept methods.
                 {
                     builder.Clear();
 
@@ -107,7 +109,7 @@ public sealed class Generator : IIncrementalGenerator
                         writer.WriteLine(';');
                     }
 
-                    foreach (var node in tree.Nodes)
+                    foreach (var node in new[] { tree.Root }.Concat(tree.Nodes))
                     {
                         writer.WriteLine();
                         writer.Write("namespace ");
@@ -115,8 +117,73 @@ public sealed class Generator : IIncrementalGenerator
                         writer.WriteLine('{');
                         writer.Indent++;
 
+                        writer.WithParents(node.ParentClass, c =>
+                        {
+                            writer.Write("partial ");
+                            writer.Write(c.Keyword);
+                            writer.Write(' ');
+                            writer.Write(c.Name);
+                            writer.Write(' ');
+                            writer.WriteLine(c.Constraints);
+                            writer.WriteLine('{');
+                            writer.Indent++;
+
+                            foreach (var visitor in visitorSet.Visitors)
+                            {
+                                writer.Write("public ");
+                                if (visitor.Arity > 0)
+                                    writer.Write("void ");
+                                else
+                                    writer.Write("TReturn ");
+                                writer.Write("Accept(");
+                                writer.Write(visitor.Namespace);
+                                writer.Write('.');
+                                writer.Write(string.Join(".", visitor.RootClass.Select(c => c.Name)));
+                                writer.Write(' ');
+                                writer.Write("visitor");
+                                for (var idx = 1; idx < visitor.Arity; idx++)
+                                {
+                                    writer.Write(", TArg");
+                                    writer.Write(idx);
+                                    writer.Write(" arg");
+                                    writer.Write(idx);
+                                }
+                                writer.Write(") => visitor.Visit");
+                                writer.Write(node.Name ?? node.TypeSymbol.Name);
+                                writer.Write("(this");
+                                for (var idx = 1; idx < visitor.Arity; idx++)
+                                {
+                                    writer.Write(", arg");
+                                    writer.Write(idx);
+                                }
+                                writer.WriteLine(");");
+                            }
+
+                            writer.Indent--;
+                            writer.WriteLine('}');
+                        });
+
                         writer.Indent--;
                         writer.WriteLine('}');
+                    }
+
+                    int x;
+                    { var code = new HashCode(); foreach (var visitor in visitorSet.Visitors) code.Add(visitor); x = code.ToHashCode(); }
+
+                    ctx.AddSource($"{tree.Root.TypeSymbol.Name}.Visitors{x:X}.g.cs", writer.ToString());
+                }
+
+                foreach (var visitor in visitorSet!.Visitors)
+                {
+                    builder.Clear();
+
+                    writer.WriteFileHeader();
+
+                    foreach (var ns in namespaces)
+                    {
+                        writer.Write("using ");
+                        writer.Write(ns);
+                        writer.WriteLine(';');
                     }
 
                     writer.WriteLine();
@@ -233,7 +300,7 @@ public sealed class Generator : IIncrementalGenerator
                     writer.Indent--;
                     writer.WriteLine('}');
 
-                    ctx.AddSource($"{tree.Root.Name}.{visitor.RootClass.Last().Name}`{visitor.Arity}", writer.ToString());
+                    ctx.AddSource($"{tree.Root.TypeSymbol.Name}.{visitor.RootClass.Last().Name}`{visitor.Arity}", writer.ToString());
                 }
             });
     }
@@ -314,7 +381,7 @@ internal sealed class VisitorWriter(StringBuilder? sb = null)
             Write(" arg");
             Write(idx);
         }
-        WriteLine(')');
+        Write(')');
         return signature.NodeArgName;
     }
 
