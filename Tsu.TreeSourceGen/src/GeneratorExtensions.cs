@@ -15,21 +15,14 @@ internal static class GeneratorExtensions
             (node, _) => node.IsKind(SyntaxKind.ClassDeclaration),
             (ctx, _) =>
             {
-                Log.WriteLine($"Processing {ctx.TargetSymbol} for [TreeNode]");
                 var attr = ctx.Attributes.SingleOrDefault();
-                var firstArg = attr?.ConstructorArguments.Single().Value as INamedTypeSymbol;
                 var nodeSymbol = (INamedTypeSymbol) ctx.TargetSymbol;
 
                 // Only accept symbol arguments
-                if (firstArg is null || firstArg.TypeKind != TypeKind.Class
+                if (attr?.ConstructorArguments.Single().Value is not INamedTypeSymbol firstArg
+                    || firstArg.TypeKind != TypeKind.Class
                     || (nodeSymbol.IsAbstract && !SymbolEqualityComparer.Default.Equals(firstArg, ctx.TargetSymbol)))
                 {
-                    var b = new StringBuilder("  Discarded. ");
-                    b.Append($"{{ IsNamedType = {firstArg is not null}");
-                    b.Append($", IsClassKind = {firstArg is { TypeKind: TypeKind.Class }}");
-                    b.Append($", IsAbstract = {nodeSymbol is { IsAbstract: true }}");
-                    b.Append($", IsRoot = {SymbolEqualityComparer.Default.Equals(firstArg as INamedTypeSymbol, ctx.TargetSymbol)} }}");
-                    Log.WriteLine(b.ToString());
                     return (null!, null!, null!, null);
                 }
 
@@ -40,7 +33,6 @@ internal static class GeneratorExtensions
                     name = n;
                 }
 
-                Log.WriteLine("  Added.");
                 return (
                     Root: firstArg,
                     ParentClass: ((ClassDeclarationSyntax) ctx.TargetNode).GetContainingTypes(),
