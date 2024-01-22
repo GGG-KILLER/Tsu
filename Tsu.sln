@@ -53,6 +53,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tsu.Timing.MicroProfiler", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tsu.Windows", "Tsu.Windows\Tsu.Windows.csproj", "{D673B185-360D-4620-92C2-1F0089C6C4FB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tsu.TreeSourceGen", "Tsu.TreeSourceGen", "{8D4425EC-0DC5-45D0-868F-E8BAEFD0A7C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsu.TreeSourceGen", "Tsu.TreeSourceGen\src\Tsu.TreeSourceGen.csproj", "{4C138EF8-296A-4CD7-8F7E-2D14C91D30F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +127,10 @@ Global
 		{D673B185-360D-4620-92C2-1F0089C6C4FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D673B185-360D-4620-92C2-1F0089C6C4FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D673B185-360D-4620-92C2-1F0089C6C4FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C138EF8-296A-4CD7-8F7E-2D14C91D30F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C138EF8-296A-4CD7-8F7E-2D14C91D30F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C138EF8-296A-4CD7-8F7E-2D14C91D30F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C138EF8-296A-4CD7-8F7E-2D14C91D30F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -143,6 +151,7 @@ Global
 		{9D81E6F2-3512-48AD-8088-9A2F4E2089F6} = {35960E56-949E-4547-B998-343933E70C6D}
 		{D591FE5A-55F9-47F3-B67B-5656CB7F45E5} = {9A94287D-D6A5-4A40-AE4A-171047B283A0}
 		{B5337497-B391-42F8-80D1-7169F3053B77} = {0E4D8A6A-8EBC-431F-935C-5A97D5B96280}
+		{4C138EF8-296A-4CD7-8F7E-2D14C91D30F1} = {8D4425EC-0DC5-45D0-868F-E8BAEFD0A7C6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B8BE0376-954A-4E0C-BBD8-5B5F8E17634C}
