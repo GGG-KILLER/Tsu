@@ -1,12 +1,27 @@
-﻿#pragma warning disable CS1591
+﻿using System.Diagnostics.CodeAnalysis;
+
 namespace Tsu.TreeSourceGen.Sample;
 
 public static class Program
 {
     public static void Main()
     {
-        // IVisitor visitor = null;
-        Console.WriteLine("Hello");
+        Root tree = new FunctionCall("floor", [new Binary('+', new Constant(1), new Constant(1))]);
+        var visitor = new MyVisitor();
+
+        Console.WriteLine(visitor.Visit(tree)); // floor(1 + 1)
+    }
+
+    private class MyVisitor : Visitor<string>
+    {
+        [return: MaybeNull]
+        public override string VisitBinary(Binary binary) => base.Visit(binary.Left) + $" {binary.Op} " + base.Visit(binary.Right);
+
+        [return: MaybeNull]
+        public override string VisitConstant(Constant constant) => constant.Number.ToString();
+
+        [return: MaybeNull]
+        public override string VisitFunctionCall(FunctionCall functionCall) => functionCall.Name + '(' + string.Join(", ", functionCall.Arguments.Select(Visit!)) + ')';
     }
 }
 

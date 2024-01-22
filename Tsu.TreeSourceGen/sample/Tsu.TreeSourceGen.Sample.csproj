@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TsuProjectType>Console</TsuProjectType>
     <TargetFrameworks>net6.0</TargetFrameworks>
+    <OutputType>Exe</OutputType>
 
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
