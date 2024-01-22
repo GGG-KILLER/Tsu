@@ -22,9 +22,9 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: |
-          3.1.x
           6.0.x
           7.0.x
+          8.0.x
         include-prerelease: true
     - name: Install dependencies
       run: dotnet restore
@@ -44,9 +44,9 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: |
-          3.1.x
           6.0.x
           7.0.x
+          8.0.x
         include-prerelease: true
     - name: Install dependencies
       run: dotnet restore
@@ -65,26 +65,27 @@ jobs:
         }
       shell: pwsh
 
-  train:
-    name: Intellicode Train
-    runs-on: windows-latest
-    needs: [build]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0 # We need to fetch the entire Git history in order to verify the authenticity.
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: |
-          3.1.x
-          6.0.x
-          7.0.x
-        include-prerelease: true
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-    - name: Train Intellicode Model
-      uses: microsoft/vs-intellicode@v1
+  # TODO: Fix when I can be bothered to.
+  # train:
+  #   name: Intellicode Train
+  #   runs-on: windows-latest
+  #   needs: [build]
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #     with:
+  #       fetch-depth: 0 # We need to fetch the entire Git history in order to verify the authenticity.
+  #   - name: Setup .NET
+  #     uses: actions/setup-dotnet@v2
+  #     with:
+  #       dotnet-version: |
+  #         6.0.x
+  #         7.0.x
+  #         8.0.x
+  #       include-prerelease: true
+  #   - name: Install dependencies
+  #     run: dotnet restore
+  #   - name: Build
+  #     run: dotnet build --configuration Release --no-restore
+  #   - name: Train Intellicode Model
+  #     uses: microsoft/vs-intellicode@v1
