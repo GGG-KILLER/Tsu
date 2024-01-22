@@ -35,7 +35,7 @@ internal static class CodeConstants
         {
             public Type TreeRoot { get; } = treeRoot;
 
-            public string? Name { get; set; }
+            public string Name { get; set; }
         }
         """;
     }

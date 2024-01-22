@@ -7,5 +7,5 @@ public sealed class TreeNodeAttribute(Type treeRoot) : Attribute
 {
     public Type TreeRoot { get; } = treeRoot;
 
-    public string? Name { get; set; }
+    public string Name { get; set; }
 }
