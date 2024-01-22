@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="$(RepositoryRootDirectory)Tsu.Testing/src/Tsu.Testing.csproj" />
     <ProjectReference Include="$(RepositoryRootDirectory)Tsu/src/Tsu.csproj" />
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.BinaryParser/src/Tsu.BinaryParser.csproj" />
   </ItemGroup>
 
 </Project>

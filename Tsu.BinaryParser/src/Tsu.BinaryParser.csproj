@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TsuProjectType>Library</TsuProjectType>
+    <TargetFrameworks>net7.0</TargetFrameworks>
     <TargetFrameworks>$(LibraryTargetFrameworks)</TargetFrameworks>
 
     <LangVersion>preview</LangVersion>
