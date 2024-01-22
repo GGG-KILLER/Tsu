@@ -109,7 +109,61 @@ public sealed class Generator : IIncrementalGenerator
                         writer.WriteLine(';');
                     }
 
-                    foreach (var node in new[] { tree.Root }.Concat(tree.Nodes))
+                    // Write root
+                    {
+                        var node = tree.Root;
+                        writer.WriteLine();
+                        writer.Write("namespace ");
+                        writer.WriteLine(node.TypeSymbol.GetContainingNamespace());
+                        writer.WriteLine('{');
+                        writer.Indent++;
+
+                        writer.WithParents(node.ParentClass, c =>
+                        {
+                            writer.Write("partial ");
+                            writer.Write(c.Keyword);
+                            writer.Write(' ');
+                            writer.Write(c.Name);
+                            writer.Write(' ');
+                            writer.WriteLine(c.Constraints);
+                            writer.WriteLine('{');
+                            writer.Indent++;
+
+                            foreach (var visitor in visitorSet.Visitors)
+                            {
+                                writer.Write("public abstract ");
+                                if (visitor.Arity > 0)
+                                    writer.Write("TReturn ");
+                                else
+                                    writer.Write("void ");
+                                writer.Write("Accept");
+                                writer.WriteTypeParameterList(visitor.Arity);
+                                writer.Write('(');
+                                writer.Write(visitor.Namespace);
+                                writer.Write('.');
+                                writer.Write(string.Join(".", visitor.RootClass.Select(c => c.Name)));
+                                writer.WriteTypeParameterList(visitor.Arity);
+                                writer.Write(' ');
+                                writer.Write("visitor");
+                                for (var idx = 1; idx < visitor.Arity; idx++)
+                                {
+                                    writer.Write(", TArg");
+                                    writer.Write(idx);
+                                    writer.Write(" arg");
+                                    writer.Write(idx);
+                                }
+                                writer.WriteLine(");");
+                            }
+
+                            writer.Indent--;
+                            writer.WriteLine('}');
+                        });
+
+                        writer.Indent--;
+                        writer.WriteLine('}');
+                    }
+
+                    foreach (var node in tree.Nodes)
                     {
                         writer.WriteLine();
                         writer.Write("namespace ");
@@ -130,7 +184,7 @@ public sealed class Generator : IIncrementalGenerator
 
                             foreach (var visitor in visitorSet.Visitors)
                             {
-                                writer.Write("public ");
+                                writer.Write("public override ");
                                 if (visitor.Arity > 0)
                                     writer.Write("TReturn ");
                                 else
@@ -170,10 +224,7 @@ public sealed class Generator : IIncrementalGenerator
                         writer.WriteLine('}');
                     }
 
-                    int x;
-                    { var code = new HashCode(); foreach (var visitor in visitorSet.Visitors) code.Add(visitor); x = code.ToHashCode(); }
-
-                    ctx.AddSource($"{tree.Root.TypeSymbol.Name}.Visitors{x:X}.g.cs", writer.ToString());
+                    ctx.AddSource($"{tree.Root.TypeSymbol.Name}.Nodes.g.cs", writer.ToString());
                 }
 
                 foreach (var visitor in visitorSet!.Visitors)
