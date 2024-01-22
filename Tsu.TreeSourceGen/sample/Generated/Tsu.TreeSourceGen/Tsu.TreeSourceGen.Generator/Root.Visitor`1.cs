@@ -10,13 +10,17 @@ namespace Tsu.TreeSourceGen.Sample
 {
     interface IVisitor<TReturn>
     {
+        [return: MaybeNull]
         TReturn VisitBinary(Tsu.TreeSourceGen.Sample.Binary binary);
+        [return: MaybeNull]
         TReturn VisitConstant(Tsu.TreeSourceGen.Sample.Constant constant);
+        [return: MaybeNull]
         TReturn VisitFunctionCall(Tsu.TreeSourceGen.Sample.FunctionCall functionCall);
     }
     
     partial class Visitor<TReturn> : IVisitor<TReturn> 
     {
+        [return: MaybeNull]
         public virtual TReturn Visit(Tsu.TreeSourceGen.Sample.Root node)
         {
             if (node is not null)
@@ -25,12 +29,16 @@ namespace Tsu.TreeSourceGen.Sample
             return default;
         }
         
+        [return: MaybeNull]
         protected virtual TReturn DefaultVisit(Tsu.TreeSourceGen.Sample.Root node) => default;
         
+        [return: MaybeNull]
         public virtual TReturn VisitBinary(Tsu.TreeSourceGen.Sample.Binary binary) => DefaultVisit(binary);
         
+        [return: MaybeNull]
         public virtual TReturn VisitConstant(Tsu.TreeSourceGen.Sample.Constant constant) => DefaultVisit(constant);
         
+        [return: MaybeNull]
         public virtual TReturn VisitFunctionCall(Tsu.TreeSourceGen.Sample.FunctionCall functionCall) => DefaultVisit(functionCall);
     }
 }

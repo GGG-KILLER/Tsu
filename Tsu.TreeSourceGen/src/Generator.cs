@@ -104,6 +104,7 @@ public sealed class Generator : IIncrementalGenerator
 
                     foreach (var ns in namespaces)
                     {
+                        ctx.CancellationToken.ThrowIfCancellationRequested();
                         writer.Write("using ");
                         writer.Write(ns);
                         writer.WriteLine(';');
@@ -120,6 +121,7 @@ public sealed class Generator : IIncrementalGenerator
 
                         writer.WithParents(node.ParentClass, c =>
                         {
+                            ctx.CancellationToken.ThrowIfCancellationRequested();
                             writer.Write("partial ");
                             writer.Write(c.Keyword);
                             writer.Write(' ');
@@ -131,6 +133,9 @@ public sealed class Generator : IIncrementalGenerator
 
                             foreach (var visitor in visitorSet.Visitors)
                             {
+                                ctx.CancellationToken.ThrowIfCancellationRequested();
+                                if (visitor.Arity > 0)
+                                    writer.WriteLine("[return: MaybeNull]");
                                 writer.Write("public abstract ");
                                 if (visitor.Arity > 0)
                                     writer.Write("TReturn ");
@@ -147,6 +152,7 @@ public sealed class Generator : IIncrementalGenerator
                                 writer.Write("visitor");
                                 for (var idx = 1; idx < visitor.Arity; idx++)
                                 {
+                                    ctx.CancellationToken.ThrowIfCancellationRequested();
                                     writer.Write(", TArg");
                                     writer.Write(idx);
                                     writer.Write(" arg");
@@ -165,6 +171,7 @@ public sealed class Generator : IIncrementalGenerator
 
                     foreach (var node in tree.Nodes)
                     {
+                        ctx.CancellationToken.ThrowIfCancellationRequested();
                         writer.WriteLine();
                         writer.Write("namespace ");
                         writer.WriteLine(node.TypeSymbol.GetContainingNamespace());
@@ -173,6 +180,7 @@ public sealed class Generator : IIncrementalGenerator
 
                         writer.WithParents(node.ParentClass, c =>
                         {
+                            ctx.CancellationToken.ThrowIfCancellationRequested();
                             writer.Write("partial ");
                             writer.Write(c.Keyword);
                             writer.Write(' ');
@@ -184,6 +192,9 @@ public sealed class Generator : IIncrementalGenerator
 
                             foreach (var visitor in visitorSet.Visitors)
                             {
+                                ctx.CancellationToken.ThrowIfCancellationRequested();
+                                if (visitor.Arity > 0)
+                                    writer.WriteLine("[return: MaybeNull]");
                                 writer.Write("public override ");
                                 if (visitor.Arity > 0)
                                     writer.Write("TReturn ");
@@ -200,6 +211,7 @@ public sealed class Generator : IIncrementalGenerator
                                 writer.Write("visitor");
                                 for (var idx = 1; idx < visitor.Arity; idx++)
                                 {
+                                    ctx.CancellationToken.ThrowIfCancellationRequested();
                                     writer.Write(", TArg");
                                     writer.Write(idx);
                                     writer.Write(" arg");
@@ -210,6 +222,7 @@ public sealed class Generator : IIncrementalGenerator
                                 writer.Write("(this");
                                 for (var idx = 1; idx < visitor.Arity; idx++)
                                 {
+                                    ctx.CancellationToken.ThrowIfCancellationRequested();
                                     writer.Write(", arg");
                                     writer.Write(idx);
                                 }
@@ -229,12 +242,14 @@ public sealed class Generator : IIncrementalGenerator
 
                 foreach (var visitor in visitorSet!.Visitors)
                 {
+                    ctx.CancellationToken.ThrowIfCancellationRequested();
                     builder.Clear();
 
                     writer.WriteFileHeader();
 
                     foreach (var ns in namespaces)
                     {
+                        ctx.CancellationToken.ThrowIfCancellationRequested();
                         writer.Write("using ");
                         writer.Write(ns);
                         writer.WriteLine(';');
@@ -258,6 +273,9 @@ public sealed class Generator : IIncrementalGenerator
 
                             foreach (var node in tree.Nodes)
                             {
+                                ctx.CancellationToken.ThrowIfCancellationRequested();
+                                if (visitor.Arity > 0)
+                                    writer.WriteLine("[return: MaybeNull]");
                                 writer.WriteSignature(node, visitor);
                                 writer.WriteLine(';');
                             }
@@ -285,6 +303,8 @@ public sealed class Generator : IIncrementalGenerator
                             {
                                 // Entry visit method
                                 {
+                                    if (visitor.Arity > 0)
+                                        writer.WriteLine("[return: MaybeNull]");
                                     writer.Write("public virtual ");
                                     var arg = writer.WriteSignature(new VisitorWriter.Signature(tree.Root, visitor) with { MethodName = "Visit", NodeArgName = "node" });
                                     writer.WriteLine();
@@ -322,6 +342,8 @@ public sealed class Generator : IIncrementalGenerator
 
                                 // Default Visit Method
                                 {
+                                    if (visitor.Arity > 0)
+                                        writer.WriteLine("[return: MaybeNull]");
                                     writer.Write("protected virtual ");
                                     writer.WriteSignature(new VisitorWriter.Signature(tree.Root, visitor) with { MethodName = "DefaultVisit", NodeArgName = "node" });
                                     if (visitor.Arity > 0)
@@ -338,7 +360,10 @@ public sealed class Generator : IIncrementalGenerator
 
                                 foreach (var node in tree.Nodes)
                                 {
+                                    ctx.CancellationToken.ThrowIfCancellationRequested();
                                     writer.WriteLine();
+                                    if (visitor.Arity > 0)
+                                        writer.WriteLine("[return: MaybeNull]");
                                     writer.Write("public virtual ");
                                     var arg = writer.WriteSignature(node, visitor);
                                     writer.Write(" => DefaultVisit(");

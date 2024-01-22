@@ -11,8 +11,11 @@ namespace Tsu.TreeSourceGen.Sample
     partial class Root 
     {
         public abstract void Accept(Tsu.TreeSourceGen.Sample.Visitor visitor);
+        [return: MaybeNull]
         public abstract TReturn Accept<TReturn>(Tsu.TreeSourceGen.Sample.Visitor<TReturn> visitor);
+        [return: MaybeNull]
         public abstract TReturn Accept<TReturn, TArg1>(Tsu.TreeSourceGen.Sample.Visitor<TReturn, TArg1> visitor, TArg1 arg1);
+        [return: MaybeNull]
         public abstract TReturn Accept<TReturn, TArg1, TArg2>(Tsu.TreeSourceGen.Sample.Visitor<TReturn, TArg1, TArg2> visitor, TArg1 arg1, TArg2 arg2);
     }
 }
@@ -22,8 +25,11 @@ namespace Tsu.TreeSourceGen.Sample
     partial class Binary 
     {
         public override void Accept(Tsu.TreeSourceGen.Sample.Visitor visitor) => visitor.VisitBinary(this);
+        [return: MaybeNull]
         public override TReturn Accept<TReturn>(Tsu.TreeSourceGen.Sample.Visitor<TReturn> visitor) => visitor.VisitBinary(this);
+        [return: MaybeNull]
         public override TReturn Accept<TReturn, TArg1>(Tsu.TreeSourceGen.Sample.Visitor<TReturn, TArg1> visitor, TArg1 arg1) => visitor.VisitBinary(this, arg1);
+        [return: MaybeNull]
         public override TReturn Accept<TReturn, TArg1, TArg2>(Tsu.TreeSourceGen.Sample.Visitor<TReturn, TArg1, TArg2> visitor, TArg1 arg1, TArg2 arg2) => visitor.VisitBinary(this, arg1, arg2);
     }
 }
@@ -33,8 +39,11 @@ namespace Tsu.TreeSourceGen.Sample
     partial class Constant 
     {
         public override void Accept(Tsu.TreeSourceGen.Sample.Visitor visitor) => visitor.VisitConstant(this);
+        [return: MaybeNull]
         public override TReturn Accept<TReturn>(Tsu.TreeSourceGen.Sample.Visitor<TReturn> visitor) => visitor.VisitConstant(this);
+        [return: MaybeNull]
         public override TReturn Accept<TReturn, TArg1>(Tsu.TreeSourceGen.Sample.Visitor<TReturn, TArg1> visitor, TArg1 arg1) => visitor.VisitConstant(this, arg1);
+        [return: MaybeNull]
         public override TReturn Accept<TReturn, TArg1, TArg2>(Tsu.TreeSourceGen.Sample.Visitor<TReturn, TArg1, TArg2> visitor, TArg1 arg1, TArg2 arg2) => visitor.VisitConstant(this, arg1, arg2);
     }
 }
@@ -44,8 +53,11 @@ namespace Tsu.TreeSourceGen.Sample
     partial class FunctionCall 
     {
         public override void Accept(Tsu.TreeSourceGen.Sample.Visitor visitor) => visitor.VisitFunctionCall(this);
+        [return: MaybeNull]
         public override TReturn Accept<TReturn>(Tsu.TreeSourceGen.Sample.Visitor<TReturn> visitor) => visitor.VisitFunctionCall(this);
+        [return: MaybeNull]
         public override TReturn Accept<TReturn, TArg1>(Tsu.TreeSourceGen.Sample.Visitor<TReturn, TArg1> visitor, TArg1 arg1) => visitor.VisitFunctionCall(this, arg1);
+        [return: MaybeNull]
         public override TReturn Accept<TReturn, TArg1, TArg2>(Tsu.TreeSourceGen.Sample.Visitor<TReturn, TArg1, TArg2> visitor, TArg1 arg1, TArg2 arg2) => visitor.VisitFunctionCall(this, arg1, arg2);
     }
 }
