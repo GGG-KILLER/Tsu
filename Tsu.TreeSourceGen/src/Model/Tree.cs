@@ -19,18 +19,18 @@ using Microsoft.CodeAnalysis;
 
 namespace Tsu.TreeSourceGen;
 
-internal sealed class Tree(INamedTypeSymbol root, IEnumerable<Node> nodes) : IEquatable<Tree?>
+internal sealed class Tree(Node root, IEnumerable<Node> nodes) : IEquatable<Tree?>
 {
-    public INamedTypeSymbol Root { get; } = root;
+    public Node Root { get; } = root;
     public IEnumerable<Node> Nodes { get; } = nodes;
 
     public override bool Equals(object obj) => Equals(obj as Tree);
-    public bool Equals(Tree? other) => SymbolEqualityComparer.Default.Equals(Root, other?.Root) && Nodes.SequenceEqual(other.Nodes);
+    public bool Equals(Tree? other) => Root.Equals(other?.Root) && Nodes.SequenceEqual(other.Nodes);
 
     public override int GetHashCode()
     {
         var hash = new HashCode();
-        hash.Add(Root, SymbolEqualityComparer.Default);
+        hash.Add(Root);
         foreach (var node in Nodes)
             hash.Add(node);
         return hash.ToHashCode();

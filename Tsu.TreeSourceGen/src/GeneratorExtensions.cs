@@ -46,7 +46,9 @@ internal static class GeneratorExtensions
 
                     var treeNodes = group.Select(node => new Node(node.ParentClass, node.NodeSymbol, node.Name));
 
-                    builder.Add(new Tree((INamedTypeSymbol) group.Key!, treeNodes));
+                    var root = treeNodes.Single(n => SymbolEqualityComparer.Default.Equals(n.TypeSymbol, group.Key));
+
+                    builder.Add(new Tree(root, treeNodes.Except([root])));
                 }
                 return builder.MoveToImmutable();
             });
@@ -98,7 +100,7 @@ internal static class GeneratorExtensions
             .Select((pair, cancellationToken) =>
             {
                 var tree = pair.Left;
-                var visitorSet = pair.Right.SingleOrDefault(s => SymbolEqualityComparer.Default.Equals(tree.Root, s.Root));
+                var visitorSet = pair.Right.SingleOrDefault(s => SymbolEqualityComparer.Default.Equals(tree.Root.TypeSymbol, s.Root));
 
                 return (Tree: tree, Visitors: visitorSet);
             })
@@ -113,8 +115,8 @@ internal static class GeneratorExtensions
             .Select((pair, cancellationToken) =>
             {
                 var tree = pair.Tree;
-                var visitorSet = pair.Visitors.SingleOrDefault(s => SymbolEqualityComparer.Default.Equals(tree.Root, s.Root));
-                var walkerSet = pair.Walkers.SingleOrDefault(s => SymbolEqualityComparer.Default.Equals(tree.Root, s.Root));
+                var visitorSet = pair.Visitors.SingleOrDefault(s => SymbolEqualityComparer.Default.Equals(tree.Root.TypeSymbol, s.Root));
+                var walkerSet = pair.Walkers.SingleOrDefault(s => SymbolEqualityComparer.Default.Equals(tree.Root.TypeSymbol, s.Root));
 
                 return (Tree: tree, Visitor: visitorSet, Walkers: walkerSet);
             })

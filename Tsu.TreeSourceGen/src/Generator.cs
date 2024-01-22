@@ -1,4 +1,4 @@
-﻿// Copyright © 2024 GGG KILLER <gggkiller2@gmail.com>
+// Copyright © 2024 GGG KILLER <gggkiller2@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 // and associated documentation files (the “Software”), to deal in the Software without
@@ -60,7 +60,7 @@ public sealed class Generator : IIncrementalGenerator
                 var inherits = false;
                 for (var parent = node.TypeSymbol; parent is not null; parent = parent.BaseType)
                 {
-                    if (SymbolEqualityComparer.Default.Equals(tree.Root, parent))
+                    if (SymbolEqualityComparer.Default.Equals(tree.Root.TypeSymbol, parent))
                         inherits = true;
                 }
 
@@ -87,9 +87,9 @@ public sealed class Generator : IIncrementalGenerator
             (ctx, pair) =>
             {
                 var tree = pair.Tree;
-                var visitors = pair.Visitors;
+                var visitorSet = pair.Visitors;
 
-                var rootNs = tree.Root.GetContainingNamespace();
+                var rootNs = tree.Root.Namespace;
 
                 var builder = new StringBuilder();
                 var writer = new VisitorWriter(builder);
@@ -163,8 +163,9 @@ public sealed class Generator : IIncrementalGenerator
                                 // Entry visit method
                                 {
                                     writer.Write("public virtual ");
-                                    var arg = writer.WriteSignature(rootNs, tree.Root.Name, tree.Root.Name, visitor.Arity);
-                                    writer.Write('{');
+                                    var arg = writer.WriteSignature(new VisitorWriter.Signature(tree.Root, visitor) with { MethodName = "Visit", NodeArgName = "node" });
+                                    writer.WriteLine();
+                                    writer.WriteLine('{');
                                     writer.Indent++;
 
                                     writer.Write("if (");
@@ -190,38 +191,22 @@ public sealed class Generator : IIncrementalGenerator
                                         writer.WriteLine("return default;");
                                     }
                                     writer.Indent--;
-                                    writer.Write('}');
+                                    writer.WriteLine('}');
                                 }
 
                                 writer.WriteLine();
 
                                 // Default Visit Method
                                 {
-                                    writer.Write("public virtual ");
-                                    writer.Write(visitor.Arity > 0 ? "TReturn " : "void ");
-                                    writer.Write("DefaultVisit");
-                                    writer.Write('(');
-
-                                    writer.Write(rootNs);
-                                    writer.Write('.');
-                                    writer.Write(tree.Root.Name);
-                                    writer.Write(' ');
-                                    writer.Write("node");
-                                    for (var idx = 1; idx < visitor.Arity; idx++)
-                                    {
-                                        writer.Write(", ");
-                                        writer.Write("TArg");
-                                        writer.Write(idx);
-                                        writer.Write(" arg");
-                                        writer.Write(idx);
-                                    }
+                                    writer.Write("protected virtual ");
+                                    writer.WriteSignature(new VisitorWriter.Signature(tree.Root, visitor) with { MethodName = "DefaultVisit", NodeArgName = "node" });
                                     if (visitor.Arity > 0)
                                     {
-                                        writer.WriteLine(") => default;");
+                                        writer.WriteLine(" => default;");
                                     }
                                     else
                                     {
-                                        writer.WriteLine(')');
+                                        writer.WriteLine();
                                         writer.WriteLine('{');
                                         writer.WriteLine('}');
                                     }
@@ -248,13 +233,14 @@ public sealed class Generator : IIncrementalGenerator
                     writer.Indent--;
                     writer.WriteLine('}');
 
-                    ctx.AddSource($"{tree.Root.Name}.{visitor.RootClass.Last().Name}`{visitor.Arity}", builder.ToString());
+                    ctx.AddSource($"{tree.Root.Name}.{visitor.RootClass.Last().Name}`{visitor.Arity}", writer.ToString());
                 }
             });
     }
 }
 
-internal sealed class VisitorWriter(StringBuilder sb) : IndentedTextWriter(new StringWriter(sb, CultureInfo.InvariantCulture))
+internal sealed class VisitorWriter(StringBuilder? sb = null)
+    : IndentedTextWriter(new StringWriter(sb ?? new(), CultureInfo.InvariantCulture))
 {
     public void WriteFileHeader()
     {
@@ -276,7 +262,7 @@ internal sealed class VisitorWriter(StringBuilder sb) : IndentedTextWriter(new S
             Write(c.Name);
             Write(' ');
             WriteLine(c.Constraints);
-            WriteLine("{");
+            WriteLine('{');
 
             Indent++;
         }
@@ -286,7 +272,7 @@ internal sealed class VisitorWriter(StringBuilder sb) : IndentedTextWriter(new S
         while (Indent > count)
         {
             Indent--;
-            WriteLine("}");
+            WriteLine('}');
         }
     }
 
@@ -307,22 +293,20 @@ internal sealed class VisitorWriter(StringBuilder sb) : IndentedTextWriter(new S
     }
 
     public string WriteSignature(Node node, Visitor visitor) =>
-        WriteSignature(node.Namespace, node.TypeSymbol.Name, node.Name ?? node.TypeSymbol.Name, visitor.Arity);
+        WriteSignature(new Signature(node, visitor));
 
-    public string WriteSignature(string typeNamespace, string typeName, string nodeName, int arity)
+    public string WriteSignature(Signature signature)
     {
-        Write(arity > 0 ? "TReturn " : "void ");
-        Write("Visit");
-        Write(nodeName);
+        Write(signature.Arity > 0 ? "TReturn " : "void ");
+        Write(signature.MethodName);
         Write('(');
 
-        Write(typeNamespace);
+        Write(signature.TypeNamespace);
         Write('.');
-        Write(typeName);
+        Write(signature.TypeName);
         Write(' ');
-        var nodeArgName = char.ToLower(nodeName[0]) + nodeName.Substring(1);
-        Write(nodeArgName);
-        for (var idx = 1; idx < arity; idx++)
+        Write(signature.NodeArgName);
+        for (var idx = 1; idx < signature.Arity; idx++)
         {
             Write(", ");
             Write("TArg");
@@ -331,6 +315,26 @@ internal sealed class VisitorWriter(StringBuilder sb) : IndentedTextWriter(new S
             Write(idx);
         }
         WriteLine(')');
-        return nodeArgName;
+        return signature.NodeArgName;
+    }
+
+    public override string ToString()
+    {
+        Flush();
+        return ((StringWriter) InnerWriter).ToString();
+    }
+
+    public readonly record struct Signature(string TypeNamespace, string TypeName, string NodeName, int Arity, string MethodName, string NodeArgName)
+    {
+        public Signature(Node node, Visitor visitor)
+            : this(
+                node.Namespace,
+                node.TypeSymbol.Name,
+                node.Name ?? node.TypeSymbol.Name,
+                visitor.Arity,
+                "Visit" + (node.Name ?? node.TypeSymbol.Name),
+                char.ToLower((node.Name ?? node.TypeSymbol.Name)[0]) + (node.Name ?? node.TypeSymbol.Name).Substring(1))
+        {
+        }
     }
 }
