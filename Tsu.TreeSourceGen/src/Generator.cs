@@ -171,7 +171,8 @@ public sealed class Generator : IIncrementalGenerator
                                     writer.Write(arg);
                                     writer.WriteLine(" is not null)");
                                     writer.Indent++;
-                                    writer.Write("return ");
+                                    if (visitor.Arity > 0)
+                                        writer.Write("return ");
                                     writer.Write(arg);
                                     writer.Write(".Accept(");
                                     writer.Write("this");
@@ -183,8 +184,11 @@ public sealed class Generator : IIncrementalGenerator
                                     }
                                     writer.WriteLine(");");
 
-                                    writer.WriteLine();
-                                    writer.WriteLine("return default;");
+                                    if (visitor.Arity > 0)
+                                    {
+                                        writer.WriteLine();
+                                        writer.WriteLine("return default;");
+                                    }
                                     writer.Indent--;
                                     writer.Write('}');
                                 }
@@ -211,7 +215,16 @@ public sealed class Generator : IIncrementalGenerator
                                         writer.Write(" arg");
                                         writer.Write(idx);
                                     }
-                                    writer.WriteLine(") => default;");
+                                    if (visitor.Arity > 0)
+                                    {
+                                        writer.WriteLine(") => default;");
+                                    }
+                                    else
+                                    {
+                                        writer.WriteLine(')');
+                                        writer.WriteLine('{');
+                                        writer.WriteLine('}');
+                                    }
                                 }
 
                                 foreach (var node in tree.Nodes)
