@@ -105,10 +105,11 @@ internal static class GreenTreeWriter
             writer.Write("internal ");
         writer.Write(node.TypeSymbol.Name);
         writer.Write('(');
-        var first = false;
+        var first = true;
         foreach (var component in node.ExtraData)
         {
             if (!first) writer.Write(", ");
+            first = false;
             writer.Write(component.Type.ToCSharpString());
             writer.Write(' ');
             writer.Write(component.Name);
@@ -116,6 +117,7 @@ internal static class GreenTreeWriter
         foreach (var component in node.Children)
         {
             if (!first) writer.Write(", ");
+            first = false;
             writer.Write(component.Type.ToCSharpString());
             writer.Write(' ');
             writer.Write(component.Name);
@@ -128,11 +130,13 @@ internal static class GreenTreeWriter
             foreach (var component in node.ExtraData.Where(x => x.PassToBase))
             {
                 if (!first) writer.Write(", ");
+                first = false;
                 writer.Write(component.Name);
             }
             foreach (var component in node.Children.Where(x => x.PassToBase))
             {
                 if (!first) writer.Write(", ");
+                first = false;
                 writer.Write(component.Name);
             }
             writer.Write(')');
