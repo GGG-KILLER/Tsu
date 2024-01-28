@@ -20,6 +20,8 @@ using Microsoft.CodeAnalysis;
 namespace Tsu.Trees.RedGreen.SourceGenerator.Model;
 
 internal sealed record Tree(
+    INamedTypeSymbol GreenBase,
+    INamedTypeSymbol RedBase,
     Node Root,
     string Suffix,
     INamedTypeSymbol KindEnum,
