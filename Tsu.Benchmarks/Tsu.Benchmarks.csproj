@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.CLI/src/lib/Tsu.CLI.csproj" />
     <ProjectReference Include="$(RepositoryRootDirectory)Tsu/src/Tsu.csproj" />
   </ItemGroup>
 
