@@ -74,11 +74,12 @@ internal static class TreeCreator
             if (visited.Contains(type))
                 continue;
 
-            if (type.BaseType is not null)
-                stack.Push(type.BaseType);
+            INamedTypeSymbol? baseType = null;
+            if (type.BaseType is not null && type.BaseType.SpecialType == SpecialType.None)
+                stack.Push(baseType = type.BaseType);
             visited.Add(type);
             nodes.Add(new NodeInfo(
-                type.BaseType,
+                baseType,
                 type,
                 ImmutableArray<TypedConstant>.Empty
             ));
