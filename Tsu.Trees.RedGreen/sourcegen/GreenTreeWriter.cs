@@ -51,7 +51,7 @@ internal static class GreenTreeWriter
             writer.WriteLine();
 
             writer.Flush();
-            ctx.AddSource($"{tree.Suffix}.Internal.g.cs", SourceText.From(new StringBuilderReader(builder), builder.Length));
+            ctx.AddSource($"{tree.Suffix}.Internal.g.cs", builder.ToSourceText());
         });
     }
 

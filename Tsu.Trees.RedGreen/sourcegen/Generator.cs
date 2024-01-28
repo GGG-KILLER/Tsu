@@ -45,6 +45,8 @@ public sealed class Generator : IIncrementalGenerator
             builder.AppendLine($"// CreateWalker = {tree.CreateWalker}");
             builder.AppendLine($"// CreateRewriter = {tree.CreateRewriter}");
             builder.AppendLine($"// Root = {tree.Root.TypeSymbol.ToCSharpString()}");
+
+            ctx.AddSource($"{tree.GreenBase.Name}.Debug.g.cs", builder.ToSourceText());
         });
 
         context.WriteGreenNodes(trees);
