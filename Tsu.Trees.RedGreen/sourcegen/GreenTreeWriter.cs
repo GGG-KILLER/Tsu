@@ -150,7 +150,7 @@ internal static class GreenTreeWriter
             if (node.Children.Length > byte.MaxValue)
                 writer.WriteLine("this.SlotCount = byte.MaxValue;");
             else
-                writer.WriteLine($"this.SlotCount = {node.Children.Length}");
+                writer.WriteLine($"this.SlotCount = {node.Children.Length};");
         }
 
         foreach (var component in node.ExtraData)
