@@ -87,11 +87,16 @@ internal static class TreeCreator
         return nodes;
     }
 
-    private static Node ProcessNode(NodeInfo node, ILookup<ISymbol?, NodeInfo> nodes, INamedTypeSymbol greenRoot, IEnumerable<Component> parentNodes, IEnumerable<Component> parentExtraData)
+    private static Node ProcessNode(
+        TreeInfo tree,
+        NodeInfo node,
+        ILookup<ISymbol?, NodeInfo> nodes,
+        IEnumerable<Component> parentNodes,
+        IEnumerable<Component> parentExtraData)
     {
         var fields = node.NodeType.GetMembers().OfType<IFieldSymbol>().Where(f => f.IsReadOnly);
-        var nodeChildren = fields.Where(x => x.Type.DerivesFrom(greenRoot)).Select(toComponent);
-        var nodeExtraData = fields.Where(x => !x.Type.DerivesFrom(greenRoot)).Select(toComponent);
+        var nodeChildren = fields.Where(x => x.Type.DerivesFrom(tree.GreenBase)).Select(toComponent);
+        var nodeExtraData = fields.Where(x => !x.Type.DerivesFrom(tree.GreenBase)).Select(toComponent);
 
         var children = parentNodes.Select(x => x with { PassToBase = true })
                                   .Concat(nodeChildren)
@@ -101,9 +106,12 @@ internal static class TreeCreator
                                      .Concat(nodeExtraData)
                                      .ToImmutableArray();
 
+        if (SymbolEqualityComparer.Default.Equals(node.NodeType, tree.GreenBase))
+            extraData = extraData.Add(new Component(tree.KindEnum, "kind", false, false));
+
         return new Node(
             node.NodeType,
-            nodes[node.NodeType].Select(x => ProcessNode(x, nodes, greenRoot, children, extraData))
+            nodes[node.NodeType].Select(x => ProcessNode(tree, x, nodes, children, extraData))
                                 .ToImmutableArray(),
             children,
             extraData);
@@ -121,7 +129,7 @@ internal static class TreeCreator
                 var nodes = ListAllNodes(root, initialNodes.Where(x => x.NodeType.DerivesFrom(root.GreenBase)));
                 var subTrees = nodes.ToLookup(node => node.BaseType, SymbolEqualityComparer.Default);
                 var rootNodeInfo = subTrees[null].Single();
-                var rootNode = ProcessNode(rootNodeInfo, subTrees, root.GreenBase, [], []);
+                var rootNode = ProcessNode(root, rootNodeInfo, subTrees, [], []);
 
                 return new Tree(
                     root.GreenBase,
