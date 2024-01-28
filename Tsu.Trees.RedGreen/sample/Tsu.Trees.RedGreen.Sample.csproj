@@ -8,6 +8,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+
+    <WarningsAsErrors></WarningsAsErrors>
     <NoWarn>CA17107;CS1591</NoWarn>
   </PropertyGroup>
 
@@ -19,17 +21,10 @@
 
   <ItemGroup>
     <ProjectReference Include="$(RepositoryRootDirectory)Tsu.Trees.RedGreen/src/Tsu.Trees.RedGreen.csproj" />
-    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.Trees.RedGreen/sourcegen/Tsu.Trees.RedGreen.SourceGenerator.csproj">
-      <OutputItemType>Analyzer</OutputItemType>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <!-- The generator project currently builds as both a console app and a source generator,
-            depending upon which TFM is built. No matter what the this project builds as,
-            we want to grab the generator.-->
-      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
-    </ProjectReference>
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.Trees.RedGreen/sourcegen/Tsu.Trees.RedGreen.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(DocGen)' != 'true'">
+  <ItemGroup>
     <Folder Include="Generated\" />
 
     <!-- Don't include the output from a previous source generator execution into future runs; the */** trick here ensures that there's
