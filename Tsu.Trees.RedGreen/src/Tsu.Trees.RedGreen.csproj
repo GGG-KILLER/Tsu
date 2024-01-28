@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TsuProjectType>Library</TsuProjectType>
+    <TargetFrameworks>$(LibraryTargetFrameworks)</TargetFrameworks>
+
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <PackageId>Tsu.Trees.RedGreen</PackageId>
+    <Version>0.1.0</Version>
+    <Description>A library that contains text utilties aimed at source code.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Internal/" />
+  </ItemGroup>
+
+</Project>
