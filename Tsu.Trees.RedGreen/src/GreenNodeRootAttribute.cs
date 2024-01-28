@@ -4,22 +4,32 @@ namespace Tsu.Trees.RedGreen;
 /// An attribute that marks the given class as the base class for all nodes in a green node tree.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-public sealed class GreenNodeRootAttribute(string listName, Type redRoot) : Attribute
+public sealed class GreenNodeRootAttribute(Type redBase, string suffix, Type kindEnum) : Attribute
 {
     /// <summary>
-    /// The name of the list type for this green tree.
+    /// The suffix for nodes in this tree.
     /// </summary>
-    public string ListName { get; } = listName;
+    public string Suffix { get; } = suffix;
 
     /// <summary>
     /// The base node type for all nodes in the red tree.
     /// </summary>
-    public Type RedBase { get; } = redRoot;
+    public Type RedBase { get; } = redBase;
 
     /// <summary>
     /// The enum type that contains the definitions for the node kinds.
     /// </summary>
-    public Type? KindEnum { get; set; }
+    public Type KindEnum { get; } = kindEnum;
+
+    /// <summary>
+    /// Whether to create a visitor for this tree.
+    /// </summary>
+    public bool CreateVisitor { get; set; }
+
+    /// <summary>
+    /// Whether to generate a rewriter for this tree.
+    /// </summary>
+    public bool CreateRewriter { get; set; }
 
     // NOTE: Make cache configurable?
     // /// <summary>
