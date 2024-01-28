@@ -10,7 +10,7 @@ internal static class TreeCreator
     public static IncrementalValuesProvider<TreeInfo> GetTreeInfos(this IncrementalGeneratorInitializationContext context)
     {
         return context.SyntaxProvider.ForAttributeWithMetadataName(
-            "Tsu.Trees.RedGreen.GreenNodeRootAttribute",
+            "Tsu.Trees.RedGreen.GreenTreeRootAttribute",
             (x, _) => x is ClassDeclarationSyntax,
             (ctx, _) =>
             {
