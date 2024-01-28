@@ -1,12 +1,10 @@
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Tsu.Trees.RedGreen.SourceGenerator.Model;
 
 namespace Tsu.Trees.RedGreen.SourceGenerator;
 
 internal static class Utils
 {
-    public static bool DerivesFrom(this INamedTypeSymbol symbol, INamedTypeSymbol parent)
+    public static bool DerivesFrom(this ITypeSymbol symbol, INamedTypeSymbol parent)
     {
         if (symbol.BaseType is null)
             return false;
@@ -20,36 +18,21 @@ internal static class Utils
         return false;
     }
 
-    public static List<NodeInfo> ListAllNodes(TreeInfo root, IEnumerable<NodeInfo> knownNodes)
-    {
-        var visited = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
-        var nodes = new List<NodeInfo>(knownNodes.Where(x => x.NodeType.DerivesFrom(root.GreenBase)));
+    public static string ToCamelCase(this string str) =>
+        string.Concat(char.ToLowerInvariant(str[0]), str.Substring(1));
 
-        var stack = new Stack<INamedTypeSymbol>();
-        foreach (var node in nodes)
+    public static string ToPascalCase(this string str) =>
+        string.Concat(char.ToUpperInvariant(str[0]), str.Substring(1));
+
+    public static string ToCSharpString(this Accessibility accessibility) =>
+        accessibility switch
         {
-            if (node.BaseType is not null)
-                stack.Push(node.BaseType);
-            visited.Add(node.NodeType);
-        }
-
-        while (stack.Count > 0)
-        {
-            var type = stack.Pop();
-            if (visited.Contains(type))
-                continue;
-
-            if (type.BaseType is not null)
-                stack.Push(type.BaseType);
-            visited.Add(type);
-            nodes.Add(new NodeInfo(
-                type.BaseType,
-                type,
-                ImmutableArray<TypedConstant>.Empty
-            ));
-        }
-
-        return nodes;
-    }
-
+            Accessibility.Private => "private",
+            Accessibility.ProtectedAndInternal => "private protected",
+            Accessibility.Protected => "protected",
+            Accessibility.Internal => "internal",
+            Accessibility.ProtectedOrInternal => "protected internal",
+            Accessibility.Public => "public",
+            _ => throw new NotImplementedException()
+        };
 }
