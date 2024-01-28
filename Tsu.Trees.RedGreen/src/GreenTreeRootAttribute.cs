@@ -4,7 +4,7 @@ namespace Tsu.Trees.RedGreen;
 /// An attribute that marks the given class as the base class for all nodes in a green node tree.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-public sealed class GreenNodeRootAttribute(Type redBase, string suffix, Type kindEnum) : Attribute
+public sealed class GreenTreeRootAttribute(Type redBase, string suffix, Type kindEnum) : Attribute
 {
     /// <summary>
     /// The suffix for nodes in this tree.
@@ -22,12 +22,17 @@ public sealed class GreenNodeRootAttribute(Type redBase, string suffix, Type kin
     public Type KindEnum { get; } = kindEnum;
 
     /// <summary>
-    /// Whether to create a visitor for this tree.
+    /// Whether to create base visitor implementations for this tree.
     /// </summary>
-    public bool CreateVisitor { get; set; }
+    public bool CreateVisitors { get; set; }
 
     /// <summary>
-    /// Whether to generate a rewriter for this tree.
+    /// Whether to create a base walker implementation for this tree.
+    /// </summary>
+    public bool CreateWalker { get; set; }
+
+    /// <summary>
+    /// Whether to generate a base rewriter implementation for this tree.
     /// </summary>
     public bool CreateRewriter { get; set; }
 
