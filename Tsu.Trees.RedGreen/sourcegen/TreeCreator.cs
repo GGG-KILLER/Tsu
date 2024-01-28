@@ -108,7 +108,8 @@ internal static class TreeCreator
             children,
             extraData);
 
-        static Component toComponent(IFieldSymbol fieldSymbol) => new(fieldSymbol.Type, fieldSymbol.Name, false);
+        static Component toComponent(IFieldSymbol fieldSymbol) =>
+            new(fieldSymbol.Type, fieldSymbol.Name, fieldSymbol.Type.NullableAnnotation == NullableAnnotation.Annotated, false);
     }
 
     public static IncrementalValuesProvider<Tree> BuildTree(IncrementalValuesProvider<TreeInfo> roots, IncrementalValuesProvider<NodeInfo> nodes)
