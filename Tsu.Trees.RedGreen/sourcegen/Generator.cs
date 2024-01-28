@@ -15,7 +15,9 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Text;
 using Microsoft.CodeAnalysis;
+using Tsu.Trees.RedGreen.SourceGenerator.Model;
 
 namespace Tsu.Trees.RedGreen.SourceGenerator;
 
@@ -24,6 +26,8 @@ public sealed class Generator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        D.WriteLine("Initialized");
+
         var roots = context.GetTreeInfos();
         var nodes = context.GetNodeInfos();
 
@@ -45,6 +49,24 @@ public sealed class Generator : IIncrementalGenerator
             builder.AppendLine($"// CreateWalker = {tree.CreateWalker}");
             builder.AppendLine($"// CreateRewriter = {tree.CreateRewriter}");
             builder.AppendLine($"// Root = {tree.Root.TypeSymbol.ToCSharpString()}");
+
+            var queue = new Stack<(int, Node)>();
+            queue.Push((0, tree.Root));
+            while (queue.Count > 0)
+            {
+                var node = queue.Pop();
+
+                var indent = new string(' ', node.Item1 * 4);
+                builder.AppendLine($"// {indent}{node.Item2.TypeSymbol.ToCSharpString()}");
+                builder.AppendLine($"// {indent}    Children:");
+                foreach (var child in node.Item2.Children)
+                    builder.AppendLine($"// {indent}        {child.Type.ToCSharpString()} (Name = {child.Name}, IsOptional = {child.IsOptional}, PassToBase = {child.PassToBase})");
+                builder.AppendLine($"// {indent}    ExtraData:");
+                foreach (var child in node.Item2.ExtraData)
+                    builder.AppendLine($"// {indent}        {child.Type.ToCSharpString()} (Name = {child.Name}, IsOptional = {child.IsOptional}, PassToBase = {child.PassToBase})");
+                foreach (var derived in node.Item2.Descendants)
+                    queue.Push((node.Item1 + 1, derived));
+            }
 
             ctx.AddSource($"{tree.GreenBase.Name}.Debug.g.cs", builder.ToSourceText());
         });
