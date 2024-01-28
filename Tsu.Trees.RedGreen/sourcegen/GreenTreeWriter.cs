@@ -155,6 +155,7 @@ internal static class GreenTreeWriter
 
         foreach (var component in node.ExtraData)
         {
+            if (component.PassToBase) continue;
             writer.Write("this.");
             writer.Write(component.Name);
             writer.Write(" = ");
@@ -163,6 +164,7 @@ internal static class GreenTreeWriter
         }
         foreach (var component in node.Children)
         {
+            if (component.PassToBase) continue;
             writer.Write("this.");
             writer.Write(component.Name);
             writer.Write(" = ");
