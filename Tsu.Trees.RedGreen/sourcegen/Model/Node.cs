@@ -23,8 +23,8 @@ namespace Tsu.Trees.RedGreen.SourceGenerator.Model;
 internal sealed record Node(
     INamedTypeSymbol TypeSymbol,
     ImmutableArray<Node> Descendants,
-    ImmutableArray<Child> Children,
-    ImmutableArray<IParameterSymbol> ExtraData
+    ImmutableArray<Component> Children,
+    ImmutableArray<Component> ExtraData
 )
 {
     public bool Equals(Node? other) =>
@@ -32,7 +32,7 @@ internal sealed record Node(
         && SymbolEqualityComparer.Default.Equals(TypeSymbol, other.TypeSymbol)
         && Descendants.SequenceEqual(other.Descendants)
         && Children.SequenceEqual(other.Children)
-        && ExtraData.SequenceEqual(other.ExtraData, SymbolEqualityComparer.Default.Equals);
+        && ExtraData.SequenceEqual(other.ExtraData);
 
     public override int GetHashCode()
     {
@@ -43,7 +43,7 @@ internal sealed record Node(
         foreach (var child in Children)
             hash.Add(child);
         foreach (var data in ExtraData)
-            hash.Add(data, SymbolEqualityComparer.Default);
+            hash.Add(data);
         return hash.ToHashCode();
     }
 }
