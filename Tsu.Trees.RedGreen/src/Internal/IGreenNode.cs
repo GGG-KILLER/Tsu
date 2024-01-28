@@ -29,7 +29,7 @@ namespace Tsu.Trees.RedGreen.Internal;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public interface IGreenNode<TGreenRoot, TRedRoot, TKind>
     where TGreenRoot : class, IGreenNode<TGreenRoot, TRedRoot, TKind>
-    where TRedRoot : class
+    where TRedRoot : class, IRedNode<TGreenRoot, TRedRoot, TKind>
     where TKind : Enum
 {
     /// <summary>

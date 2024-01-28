@@ -13,7 +13,7 @@ namespace Tsu.Trees.RedGreen.Internal;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class GreenCache<TGreenRoot, TRedRoot, TKind>
     where TGreenRoot : class, IGreenNode<TGreenRoot, TRedRoot, TKind>
-    where TRedRoot : class
+    where TRedRoot : class, IRedNode<TGreenRoot, TRedRoot, TKind>
     where TKind : Enum
 {
         private const int CacheSizeBits = 16;
@@ -89,18 +89,18 @@ public static class GreenCache<TGreenRoot, TRedRoot, TKind>
         /// <summary>
         /// Attempts to get the cached version of the given node from the cache.
         /// </summary>
-        /// <param name="kind"></param>
+        /// <param name="initialHash"></param>
         /// <param name="child1"></param>
         /// <param name="hash"></param>
         /// <returns></returns>
-        public static TGreenRoot? TryGetNode(int kind, TGreenRoot? child1, out int hash)
+        public static TGreenRoot? TryGetNode(int initialHash, TGreenRoot? child1, out int hash)
         {
             if (CanBeCached(child1))
             {
-                int h = hash = GetCacheHash(kind, child1);
+                int h = hash = GetCacheHash(initialHash, child1);
                 int idx = h & CacheMask;
                 var e = s_cache[idx];
-                if (e.hash == h && e.node != null && e.node.IsCacheEquivalent(kind, child1))
+                if (e.hash == h && e.node != null && e.node.IsCacheEquivalent(initialHash, child1))
                 {
                     return e.node;
                 }
@@ -116,19 +116,19 @@ public static class GreenCache<TGreenRoot, TRedRoot, TKind>
         /// <summary>
         /// Attempts to get the cached version of the given node from the cache.
         /// </summary>
-        /// <param name="kind"></param>
+        /// <param name="initialHash"></param>
         /// <param name="child1"></param>
         /// <param name="child2"></param>
         /// <param name="hash"></param>
         /// <returns></returns>
-        public static TGreenRoot? TryGetNode(int kind, TGreenRoot? child1, TGreenRoot? child2, out int hash)
+        public static TGreenRoot? TryGetNode(int initialHash, TGreenRoot? child1, TGreenRoot? child2, out int hash)
         {
             if (CanBeCached(child1, child2))
             {
-                int h = hash = GetCacheHash(kind, child1, child2);
+                int h = hash = GetCacheHash(initialHash, child1, child2);
                 int idx = h & CacheMask;
                 var e = s_cache[idx];
-                if (e.hash == h && e.node != null && e.node.IsCacheEquivalent(kind, child1, child2))
+                if (e.hash == h && e.node != null && e.node.IsCacheEquivalent(initialHash, child1, child2))
                 {
                     return e.node;
                 }
@@ -144,20 +144,20 @@ public static class GreenCache<TGreenRoot, TRedRoot, TKind>
         /// <summary>
         /// Attempts to get the cached version of the given node from the cache.
         /// </summary>
-        /// <param name="kind"></param>
+        /// <param name="initialHash"></param>
         /// <param name="child1"></param>
         /// <param name="child2"></param>
         /// <param name="child3"></param>
         /// <param name="hash"></param>
         /// <returns></returns>
-        public static TGreenRoot? TryGetNode(int kind, TGreenRoot? child1, TGreenRoot? child2, TGreenRoot? child3, out int hash)
+        public static TGreenRoot? TryGetNode(int initialHash, TGreenRoot? child1, TGreenRoot? child2, TGreenRoot? child3, out int hash)
         {
             if (CanBeCached(child1, child2, child3))
             {
-                int h = hash = GetCacheHash(kind, child1, child2, child3);
+                int h = hash = GetCacheHash(initialHash, child1, child2, child3);
                 int idx = h & CacheMask;
                 var e = s_cache[idx];
-                if (e.hash == h && e.node != null && e.node.IsCacheEquivalent(kind, child1, child2, child3))
+                if (e.hash == h && e.node != null && e.node.IsCacheEquivalent(initialHash, child1, child2, child3))
                 {
                     return e.node;
                 }
@@ -170,9 +170,9 @@ public static class GreenCache<TGreenRoot, TRedRoot, TKind>
             return null;
         }
 
-        private static int GetCacheHash(int kind, TGreenRoot? child1)
+        private static int GetCacheHash(int initialHash, TGreenRoot? child1)
         {
-            int code = kind;
+            int code = initialHash;
 
             // the only child is never null
             // https://github.com/dotnet/roslyn/issues/41539
@@ -182,9 +182,9 @@ public static class GreenCache<TGreenRoot, TRedRoot, TKind>
             return code & int.MaxValue;
         }
 
-        private static int GetCacheHash(int kind, TGreenRoot? child1, TGreenRoot? child2)
+        private static int GetCacheHash(int initialHash, TGreenRoot? child1, TGreenRoot? child2)
         {
-            int code = kind;
+            int code = initialHash;
 
             if (child1 != null)
             {
@@ -199,9 +199,9 @@ public static class GreenCache<TGreenRoot, TRedRoot, TKind>
             return code & int.MaxValue;
         }
 
-        private static int GetCacheHash(int kind, TGreenRoot? child1, TGreenRoot? child2, TGreenRoot? child3)
+        private static int GetCacheHash(int initialHash, TGreenRoot? child1, TGreenRoot? child2, TGreenRoot? child3)
         {
-            int code = kind;
+            int code = initialHash;
 
             if (child1 != null)
             {
