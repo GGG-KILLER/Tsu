@@ -26,8 +26,6 @@ public sealed class Generator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        D.WriteLine("Initialized");
-
         var roots = context.GetTreeInfos();
         var nodes = context.GetNodeInfos();
 
