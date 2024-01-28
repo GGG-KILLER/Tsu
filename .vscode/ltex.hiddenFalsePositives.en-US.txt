@@ -1,0 +1,3 @@
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QTsu (formerly GUtils)\nA general utilities' library I made from things I use frequently in all of my projects.\\E$"}
+{"rule":"THE_SUPERLATIVE","sentence":"^\\QMaintenance: Development done and bug fixes will be provided on a best effort basis.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QFeatures\n-- TODO --\\E$"}
