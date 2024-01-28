@@ -35,4 +35,8 @@ internal static class Utils
             Accessibility.Public => "public",
             _ => throw new NotImplementedException()
         };
+
+    public static string ToCSharpString(this ISymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+    public static string ToCSharpString(this INamespaceSymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
 }
