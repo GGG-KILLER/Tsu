@@ -57,7 +57,7 @@ internal static class GreenTreeWriter
 
     public static void WriteGreenRoot(this IndentedTextWriter writer, Tree tree, Node root)
     {
-        writer.WriteLine("partial abstract class ");
+        writer.Write("partial abstract class ");
         writer.Write(root.TypeSymbol.Name);
         writer.Write(" : global::Tsu.Trees.RedGreen.Internal.IGreenNode<");
         writer.Write(tree.GreenBase.ToCSharpString());
