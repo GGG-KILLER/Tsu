@@ -48,8 +48,8 @@ internal static class TreeCreator
                 var kinds = attr.ConstructorArguments.SingleOrDefault().Values;
 
                 return new NodeInfo(
-                    type,
                     type.BaseType!,
+                    type,
                     kinds
                 );
             });
