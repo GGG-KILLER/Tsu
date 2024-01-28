@@ -302,8 +302,3 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 /LICENSE.header.cs
-
-# Other
-.release/
-nuget-pack.ps1
-*Internal*/
