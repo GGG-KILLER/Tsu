@@ -20,8 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.Trees.RedGreen/src/Tsu.Trees.RedGreen.csproj" />
-    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.Trees.RedGreen/sourcegen/Tsu.Trees.RedGreen.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="$(RepositoryRootDirectory)Tsu.Trees.RedGreen/src/Tsu.Trees.RedGreen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

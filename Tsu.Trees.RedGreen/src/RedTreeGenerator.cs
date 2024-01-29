@@ -107,10 +107,7 @@ internal static class RedTreeGenerator
 
     private static void WriteRedRoot(this IndentedTextWriter writer, Tree tree, Node root)
     {
-        writer.WriteLine("abstract partial class {0} : global::Tsu.Trees.RedGreen.IRedNode<{1}, {2}>",
-            tree.RedBase.Name,
-            tree.RedBase.ToCSharpString(),
-            tree.KindEnum.ToCSharpString());
+        writer.WriteLine("abstract partial class {0}", tree.RedBase.Name);
         writer.WriteLine('{');
         writer.Indent++;
         {

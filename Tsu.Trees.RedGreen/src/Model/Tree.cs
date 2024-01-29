@@ -27,5 +27,6 @@ internal sealed record Tree(
     INamedTypeSymbol KindEnum,
     bool CreateVisitors,
     bool CreateWalker,
-    bool CreateRewriter
+    bool CreateRewriter,
+    bool DebugDump
 );

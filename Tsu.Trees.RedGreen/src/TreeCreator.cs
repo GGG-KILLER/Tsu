@@ -22,6 +22,7 @@ internal static class TreeCreator
                 var createVisitors = attr.NamedArguments.SingleOrDefault(x => x.Key == "CreateVisitors").Value.Value is true;
                 var createWalker = attr.NamedArguments.SingleOrDefault(x => x.Key == "CreateWalker").Value.Value is true;
                 var createRewriter = attr.NamedArguments.SingleOrDefault(x => x.Key == "CreateRewriter").Value.Value is true;
+                var debugDump = attr.NamedArguments.SingleOrDefault(x => x.Key == "DebugDump").Value.Value is true;
 
                 return new TreeInfo(
                     (INamedTypeSymbol) ctx.TargetSymbol,
@@ -30,7 +31,8 @@ internal static class TreeCreator
                     suffix,
                     createVisitors,
                     createWalker,
-                    createRewriter
+                    createRewriter,
+                    debugDump
                 );
             });
     }
@@ -144,7 +146,8 @@ internal static class TreeCreator
                     root.KindEnum,
                     root.CreateVisitors,
                     root.CreateWalker,
-                    root.CreateRewriter
+                    root.CreateRewriter,
+                    root.DebugDump
                 );
             });
     }

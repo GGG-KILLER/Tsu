@@ -83,11 +83,7 @@ internal static class GreenTreeGenerator
 
     private static void WriteGreenRoot(this IndentedTextWriter writer, Tree tree, Node root)
     {
-        writer.WriteLine("abstract partial class {0} : global::Tsu.Trees.RedGreen.Internal.IGreenNode<{1}, {2}, {3}>",
-            root.TypeSymbol.Name,
-            tree.GreenBase.ToCSharpString(false),
-            tree.RedBase.ToCSharpString(false),
-            tree.KindEnum.ToCSharpString(false));
+        writer.WriteLine("abstract partial class {0}", root.TypeSymbol.Name);
         writer.WriteLine('{');
         writer.Indent++;
         {

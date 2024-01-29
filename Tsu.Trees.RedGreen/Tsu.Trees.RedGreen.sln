@@ -5,9 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsu.Trees.RedGreen.Sample", "sample\Tsu.Trees.RedGreen.Sample.csproj", "{D00F090D-145E-462E-BE75-F2805ADB572A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsu.Trees.RedGreen.SourceGenerator", "sourcegen\Tsu.Trees.RedGreen.SourceGenerator.csproj", "{A0A6DBE6-9899-42C6-A3EC-90153F844109}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsu.Trees.RedGreen", "src\Tsu.Trees.RedGreen.csproj", "{ABE13963-6F78-47DF-A652-303BD6565A93}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tsu.Trees.RedGreen", "src\Tsu.Trees.RedGreen.csproj", "{A0A6DBE6-9899-42C6-A3EC-90153F844109}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,9 +24,5 @@ Global
 		{A0A6DBE6-9899-42C6-A3EC-90153F844109}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0A6DBE6-9899-42C6-A3EC-90153F844109}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0A6DBE6-9899-42C6-A3EC-90153F844109}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABE13963-6F78-47DF-A652-303BD6565A93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABE13963-6F78-47DF-A652-303BD6565A93}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABE13963-6F78-47DF-A652-303BD6565A93}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABE13963-6F78-47DF-A652-303BD6565A93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

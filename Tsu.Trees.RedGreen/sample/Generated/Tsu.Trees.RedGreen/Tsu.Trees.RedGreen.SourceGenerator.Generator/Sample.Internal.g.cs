@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Tsu.Trees.RedGreen.Sample.Internal
 {
-    abstract partial class GreenNode : global::Tsu.Trees.RedGreen.Internal.IGreenNode<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode, global::Tsu.Trees.RedGreen.Sample.SampleNode, global::Tsu.Trees.RedGreen.Sample.SampleKind>
+    abstract partial class GreenNode
     {
         private readonly global::Tsu.Trees.RedGreen.Sample.SampleKind _kind;
         private byte _slotCount;

@@ -1,4 +1,4 @@
-namespace Tsu.Trees.RedGreen;
+﻿namespace Tsu.Trees.RedGreen;
 
 /// <summary>
 /// Marks this class as a green node.
@@ -8,7 +8,7 @@ namespace Tsu.Trees.RedGreen;
 /// This should be the value on the enum (e.g.: SyntaxKind.ClassDeclarationSyntax)
 /// </param>
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-public sealed class GreenNodeAttribute(params object[] kinds) : Attribute
+internal sealed class GreenNodeAttribute(params object[] kinds) : Attribute
 {
     /// <summary>
     /// This node's Kind.

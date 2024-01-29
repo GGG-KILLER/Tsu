@@ -26,5 +26,6 @@ internal sealed record TreeInfo(
     string Suffix,
     bool CreateVisitors,
     bool CreateWalker,
-    bool CreateRewriter
+    bool CreateRewriter,
+    bool DebugDump
 );

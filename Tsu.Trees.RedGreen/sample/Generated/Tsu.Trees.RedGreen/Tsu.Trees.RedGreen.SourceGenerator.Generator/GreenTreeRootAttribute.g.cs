@@ -1,10 +1,10 @@
-namespace Tsu.Trees.RedGreen;
+﻿namespace Tsu.Trees.RedGreen;
 
 /// <summary>
 /// An attribute that marks the given class as the base class for all nodes in a green node tree.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-public sealed class GreenTreeRootAttribute(Type redBase, string suffix, Type kindEnum) : Attribute
+internal sealed class GreenTreeRootAttribute(Type redBase, string suffix, Type kindEnum) : Attribute
 {
     /// <summary>
     /// The suffix for nodes in this tree.
@@ -36,14 +36,8 @@ public sealed class GreenTreeRootAttribute(Type redBase, string suffix, Type kin
     /// </summary>
     public bool CreateRewriter { get; set; }
 
-    // NOTE: Make cache configurable?
-    // /// <summary>
-    // /// Whether to enable the green cache or not.
-    // /// </summary>
-    // public bool CacheEnabled { get; set; } = true;
-
-    // /// <summary>
-    // /// The amount of bits from the hash to use for caching.
-    // /// </summary>
-    // public int CacheSizeBits { get; set; } = 16;
+    /// <summary>
+    /// Whether to generate a file with only comments dumping the entire tree structure.
+    /// </summary>
+    public bool DebugDump { get; set; }
 }
