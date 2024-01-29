@@ -9,7 +9,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
 
-    <WarningsAsErrors></WarningsAsErrors>
+    <WarningsAsErrors>CS8785</WarningsAsErrors>
     <NoWarn>CA17107;CS1591</NoWarn>
   </PropertyGroup>
 
