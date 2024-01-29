@@ -32,11 +32,11 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             protected set => _slotCount = (byte) value;
         }
 
-        public abstract global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int slot);
+        public abstract global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index);
 
-        public global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode GetRequiredSlot(int slot)
+        public global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode GetRequiredSlot(int index)
         {
-            var node = this.GetSlot(slot);
+            var node = this.GetSlot(index);
             Debug.Assert((object)node != null)
             return node;
         }
@@ -46,8 +46,8 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         public global::System.Collections.Generic.IEnumerable<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode> ChildNodes()
         {
             var count = this.SlotCount;
-            for (var slot = 0; slot < count; slot++)
-                yield return this.GetRequiredSlot(slot);
+            for (var index = 0; index < count; index++)
+                yield return this.GetRequiredSlot(index);
         }
 
         public global::System.Collections.Generic.IEnumerable<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode> EnumerateDescendants()
@@ -108,6 +108,11 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             this.SlotCount = 0;
             this._name = name;
         }
+
+        public string Name => this._name;
+
+        public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
+            null;
     }
 
     partial class NumericalLiteralExpressionSample : global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample
@@ -117,6 +122,11 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             this.SlotCount = 0;
             this._value = value;
         }
+
+        public double Value => this._value;
+
+        public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
+            null;
     }
 
     partial class BinaryOperationExpressionSample : global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample
@@ -127,6 +137,17 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             this._left = left;
             this._right = right;
         }
+
+        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample Left => this._left;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample Right => this._right;
+
+        public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
+            index switch
+            {
+                0 => this.Left,
+                1 => this.Right,
+                _ => null
+            };
     }
 
     partial class FunctionCallExpressionSample : global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample
@@ -138,6 +159,19 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             this.firstArg = firstArg;
             this.secondArg = secondArg;
         }
+
+        public global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample Identifier => this.identifier;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample FirstArg => this.firstArg;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample SecondArg => this.secondArg;
+
+        public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
+            index switch
+            {
+                0 => this.Identifier,
+                1 => this.FirstArg,
+                2 => this.SecondArg,
+                _ => null
+            };
     }
 }
 

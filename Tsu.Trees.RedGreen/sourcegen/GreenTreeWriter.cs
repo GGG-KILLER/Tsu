@@ -110,15 +110,15 @@ internal static class GreenTreeWriter
 
             writer.Write("public abstract ");
             writer.Write(tree.GreenBase.ToCSharpString());
-            writer.WriteLine("? GetSlot(int slot);");
+            writer.WriteLine("? GetSlot(int index);");
             writer.WriteLineNoTabs("");
 
             #region TGreenRoot GetRequiredSlot(int index)
-            writer.WriteLine("public {0} GetRequiredSlot(int slot)", tree.GreenBase.ToCSharpString());
+            writer.WriteLine("public {0} GetRequiredSlot(int index)", tree.GreenBase.ToCSharpString());
             writer.WriteLine('{');
             writer.Indent++;
             {
-                writer.WriteLine("var node = this.GetSlot(slot);");
+                writer.WriteLine("var node = this.GetSlot(index);");
                 writer.WriteLine("Debug.Assert((object)node != null)");
                 writer.WriteLine("return node;");
             }
@@ -136,9 +136,9 @@ internal static class GreenTreeWriter
             writer.Indent++;
             {
                 writer.WriteLine("var count = this.SlotCount;");
-                writer.WriteLine("for (var slot = 0; slot < count; slot++)");
+                writer.WriteLine("for (var index = 0; index < count; index++)");
                 writer.Indent++;
-                writer.WriteLine("yield return this.GetRequiredSlot(slot);");
+                writer.WriteLine("yield return this.GetRequiredSlot(index);");
                 writer.Indent--;
             }
             writer.Indent--;
@@ -233,7 +233,51 @@ internal static class GreenTreeWriter
         writer.Indent++;
         {
             writer.WriteGreenConstructor(node);
-            writer.WriteLineNoTabs("");
+
+            if (node.ExtraData.Any(x => !x.PassToBase) || node.Children.Any(x => !x.PassToBase))
+            {
+                writer.WriteLineNoTabs("");
+                foreach (var extraData in node.ExtraData.Where(x => !x.PassToBase))
+                {
+                    writer.WriteLine("public {0} {1} => this.{2};", extraData.Type.ToCSharpString(), extraData.PropertyName, extraData.FieldName);
+                }
+                foreach (var child in node.Children.Where(x => !x.PassToBase))
+                {
+                    writer.WriteLine("public {0} {1} => this.{2};", child.Type.ToCSharpString(), child.PropertyName, child.FieldName);
+                }
+            }
+
+            #region TGreenBase? GetSlot(int index)
+            if (!node.TypeSymbol.IsAbstract)
+            {
+                writer.WriteLineNoTabs("");
+                writer.WriteLine("public override {0}? GetSlot(int index) =>", tree.GreenBase.ToCSharpString());
+                writer.Indent++;
+                if (node.Children.Length == 0)
+                {
+                    writer.WriteLine("null;");
+                }
+                else if (node.Children.Length == 1)
+                {
+                    writer.WriteLine("index == 0 ? this.{0} : null;", node.Children[0].PropertyName);
+                }
+                else
+                {
+                    writer.WriteLine("index switch");
+                    writer.WriteLine('{');
+                    writer.Indent++;
+                    for (var idx = 0; idx < node.Children.Length; idx++)
+                    {
+                        var child = node.Children[idx];
+                        writer.WriteLine("{0} => this.{1},", idx, child.PropertyName);
+                    }
+                    writer.WriteLine("_ => null");
+                    writer.Indent--;
+                    writer.WriteLine("};");
+                }
+                writer.Indent--;
+            }
+            #endregion TGreenBase? GetSlot(int index)
         }
         writer.Indent--;
         writer.WriteLine('}');
