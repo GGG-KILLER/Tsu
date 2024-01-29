@@ -6,7 +6,7 @@ using Tsu.Trees.RedGreen.SourceGenerator.Model;
 
 namespace Tsu.Trees.RedGreen.SourceGenerator;
 
-internal static class GreenTreeWriter
+internal static class GreenTreeGenerator
 {
     public static void ValidateTrees(this IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Tree> trees)
     {
@@ -63,7 +63,7 @@ internal static class GreenTreeWriter
         });
     }
 
-    public static void WriteGreenRoot(this IndentedTextWriter writer, Tree tree, Node root)
+    private static void WriteGreenRoot(this IndentedTextWriter writer, Tree tree, Node root)
     {
         writer.WriteLine("abstract partial class {0} : global::Tsu.Trees.RedGreen.Internal.IGreenNode<{1}, {2}, {3}>",
             root.TypeSymbol.Name,
@@ -225,7 +225,7 @@ internal static class GreenTreeWriter
         writer.WriteLine('}');
     }
 
-    public static void WriteGreenNode(this IndentedTextWriter writer, Tree tree, Node node)
+    private static void WriteGreenNode(this IndentedTextWriter writer, Tree tree, Node node)
     {
         if (node.TypeSymbol.IsAbstract)
             writer.Write("abstract ");
@@ -398,7 +398,7 @@ internal static class GreenTreeWriter
         writer.WriteLine('}');
     }
 
-    public static void WriteGreenFactory(this IndentedTextWriter writer, Tree tree)
+    private static void WriteGreenFactory(this IndentedTextWriter writer, Tree tree)
     {
         writer.WriteLine("{0} static class {1}Factory", tree.GreenBase.DeclaredAccessibility.ToCSharpString(), tree.Suffix);
         writer.WriteLine('{');
@@ -496,13 +496,5 @@ internal static class GreenTreeWriter
             writer.Indent--;
             writer.WriteLine('}');
         }
-    }
-
-    private static string WithoutSuffix(this string name, string suffix)
-    {
-        if (name.EndsWith(suffix, StringComparison.Ordinal))
-            return name.Substring(0, name.Length - suffix.Length);
-        else
-            return name;
     }
 }

@@ -26,6 +26,14 @@ internal static class Utils
     public static string ToPascalCase(this string str) =>
         string.Concat(char.ToUpperInvariant(str[0]), str.Substring(1));
 
+    public static string WithoutSuffix(this string name, string suffix)
+    {
+        if (name.EndsWith(suffix, StringComparison.Ordinal))
+            return name.Substring(0, name.Length - suffix.Length);
+        else
+            return name;
+    }
+
     public static string ToCSharpString(this Accessibility accessibility) =>
         accessibility switch
         {
