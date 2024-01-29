@@ -3,7 +3,7 @@
 # shellcheck shell=bash
 set -euo pipefail
 
-rm -r packages;
+[ -d packages ] && rm -r packages;
 
 dotnet clean -c Debug -v quiet;
 dotnet clean -c Release -v quiet;
