@@ -113,6 +113,19 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
             null;
+
+        public override global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed(global::Tsu.Trees.RedGreen.Sample.SampleNode? parent) =>
+            new global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample(this, parent);
+
+        public global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample Update(string name)
+        {
+            if (name != this.Name)
+            {
+                return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.IdentifierExpression(name);
+            }
+
+            return this;
+        }
     }
 
     partial class NumericalLiteralExpressionSample : global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample
@@ -127,6 +140,19 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
             null;
+
+        public override global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed(global::Tsu.Trees.RedGreen.Sample.SampleNode? parent) =>
+            new global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample(this, parent);
+
+        public global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample Update(double value)
+        {
+            if (value != this.Value)
+            {
+                return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.NumericalLiteralExpression(value);
+            }
+
+            return this;
+        }
     }
 
     partial class BinaryOperationExpressionSample : global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample
@@ -148,6 +174,9 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
                 1 => this.Right,
                 _ => null
             };
+
+        public override global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed(global::Tsu.Trees.RedGreen.Sample.SampleNode? parent) =>
+            new global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample(this, parent);
     }
 
     partial class FunctionCallExpressionSample : global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample
@@ -172,6 +201,19 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
                 2 => this.SecondArg,
                 _ => null
             };
+
+        public override global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed(global::Tsu.Trees.RedGreen.Sample.SampleNode? parent) =>
+            new global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample(this, parent);
+
+        public global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample Update(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample secondArg)
+        {
+            if (identifier != this.Identifier && firstArg != this.FirstArg && secondArg != this.SecondArg)
+            {
+                return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.FunctionCallExpression(identifier, firstArg, secondArg);
+            }
+
+            return this;
+        }
     }
 }
 

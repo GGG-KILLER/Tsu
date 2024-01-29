@@ -278,6 +278,72 @@ internal static class GreenTreeWriter
                 writer.Indent--;
             }
             #endregion TGreenBase? GetSlot(int index)
+
+            #region TRedBase CreateRed(TRedBase? parent)
+            if (!node.TypeSymbol.IsAbstract)
+            {
+                writer.WriteLineNoTabs("");
+                writer.WriteLine("public override {0} CreateRed({0}? parent) =>", tree.RedBase.ToCSharpString());
+                writer.Indent++;
+                writer.WriteLine("new global::{0}.{1}(this, parent);", tree.RedBase.ContainingNamespace.ToCSharpString(), node.TypeSymbol.Name);
+                writer.Indent--;
+            }
+            #endregion TRedBase CreateRed(TRedBase? parent)
+
+            #region TNode Update(...)
+            if (!node.TypeSymbol.IsAbstract && node.ExtraData.Concat(node.Children).Where(x => node.Kinds.Length == 1 && x.FieldName != "_kind").Any())
+            {
+                writer.WriteLineNoTabs("");
+                writer.Write("public {0} Update(", node.TypeSymbol.ToCSharpString());
+                var components = node.ExtraData.Concat(node.Children);
+                // Don't need to specify the kind if there's only one possible kind.
+                if (node.Kinds.Length == 1)
+                    components = components.Where(x => x.FieldName != "_kind");
+                var first = true;
+                foreach (var component in components)
+                {
+                    if (!first) writer.Write(", ");
+                    first = false;
+                    writer.Write("{0} {1}", component.Type.ToCSharpString(), component.ParameterName);
+                }
+                writer.WriteLine(')');
+                writer.WriteLine('{');
+                writer.Indent++;
+                {
+                    writer.Write("if (");
+                    first = true;
+                    foreach (var component in components)
+                    {
+                        if (!first) writer.Write(" && ");
+                        first = false;
+                        writer.Write("{0} != this.{1}", component.ParameterName, component.PropertyName);
+                    }
+                    writer.WriteLine(')');
+                    writer.WriteLine('{');
+                    writer.Indent++;
+                    {
+                        writer.Write("return global::{0}.{1}Factory.{2}(",
+                            tree.GreenBase.ContainingNamespace.ToCSharpString(),
+                            tree.Suffix,
+                            node.TypeSymbol.Name.WithoutSuffix(tree.Suffix));
+                        first = true;
+                        foreach (var component in components)
+                        {
+                            if (!first) writer.Write(", ");
+                            first = false;
+                            writer.Write(component.ParameterName);
+                        }
+                        writer.WriteLine(");");
+                    }
+                    writer.Indent--;
+                    writer.WriteLine('}');
+                    writer.WriteLineNoTabs("");
+                    writer.WriteLine("return this;");
+                }
+                writer.Indent--;
+                writer.WriteLine('}');
+            }
+            #endregion TNode Update(...)
         }
         writer.Indent--;
         writer.WriteLine('}');
@@ -364,5 +430,13 @@ internal static class GreenTreeWriter
 
     public static void WriteGreenFactory(this IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Tree> trees)
     {
+    }
+
+    private static string WithoutSuffix(this string name, string suffix)
+    {
+        if (name.EndsWith(suffix, StringComparison.Ordinal))
+            return name.Substring(0, name.Length - suffix.Length);
+        else
+            return name;
     }
 }
