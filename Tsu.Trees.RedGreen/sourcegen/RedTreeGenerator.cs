@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Tsu.Trees.RedGreen.SourceGenerator.Model;
@@ -458,6 +459,39 @@ internal static class RedTreeGenerator
                 writer.WriteLine('}');
             }
             #endregion TNode Update(...)
+
+            #region TNode WithX(...)
+            if (node.Descendants.Length == 0 && node.RequiredComponents.Any())
+            {
+                var components = node.RequiredComponents.ToImmutableArray();
+                for (var targetIdx = 0; targetIdx < components.Length; targetIdx++)
+                {
+                    var target = components[targetIdx];
+                    var isNode = target.Type.DerivesFrom(tree.GreenBase);
+
+                    writer.WriteLineNoTabs("");
+                    writer.Write("public {0}.{1} With{2}({3}.{4}{5} {6}) => this.Update(",
+                        tree.RedBase.ContainingNamespace.ToCSharpString(false),
+                        node.TypeSymbol.Name,
+                        target.PropertyName,
+                        (isNode ? tree.RedBase.ContainingNamespace : target.Type.ContainingNamespace).ToCSharpString(false),
+                        target.Type.Name,
+                        target.IsOptional ? "?" : "",
+                        target.ParameterName);
+                    var first = true;
+                    for (var idx = 0; idx < components.Length; idx++)
+                    {
+                        var component = components[idx];
+                        if (!first) writer.Write(", ");
+                        first = false;
+
+                        if (targetIdx == idx) writer.Write(component.ParameterName);
+                        else writer.Write("this.{0}", component.PropertyName);
+                    }
+                    writer.WriteLine(");");
+                }
+            }
+            #endregion TNode WithX(...)
         }
         writer.Indent--;
         writer.WriteLine('}');

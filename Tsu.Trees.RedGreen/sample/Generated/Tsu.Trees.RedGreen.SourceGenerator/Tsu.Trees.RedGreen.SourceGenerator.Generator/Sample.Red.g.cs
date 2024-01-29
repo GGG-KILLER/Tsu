@@ -188,6 +188,12 @@ namespace Tsu.Trees.RedGreen.Sample
 
             return this;
         }
+
+        public global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample WithIdentifier(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample identifier) => this.Update(identifier, this.FirstArg, this.SecondArg);
+
+        public global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample WithFirstArg(global::Tsu.Trees.RedGreen.Sample.ExpressionSample firstArg) => this.Update(this.Identifier, firstArg, this.SecondArg);
+
+        public global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample WithSecondArg(global::Tsu.Trees.RedGreen.Sample.ExpressionSample? secondArg) => this.Update(this.Identifier, this.FirstArg, secondArg);
     }
 
     public sealed partial class BinaryOperationExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
@@ -220,6 +226,12 @@ namespace Tsu.Trees.RedGreen.Sample
 
             return this;
         }
+
+        public global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample WithKind(global::Tsu.Trees.RedGreen.Sample.SampleKind kind) => this.Update(kind, this.Left, this.Right);
+
+        public global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample WithLeft(global::Tsu.Trees.RedGreen.Sample.ExpressionSample left) => this.Update(this.Kind, left, this.Right);
+
+        public global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample WithRight(global::Tsu.Trees.RedGreen.Sample.ExpressionSample right) => this.Update(this.Kind, this.Left, right);
     }
 
     public sealed partial class NumericalLiteralExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
@@ -247,6 +259,8 @@ namespace Tsu.Trees.RedGreen.Sample
 
             return this;
         }
+
+        public global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample WithValue(global::System.Double value) => this.Update(value);
     }
 
     public sealed partial class IdentifierExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
@@ -274,6 +288,8 @@ namespace Tsu.Trees.RedGreen.Sample
 
             return this;
         }
+
+        public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample WithName(global::System.String name) => this.Update(name);
     }
 }
 
