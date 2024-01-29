@@ -30,11 +30,22 @@ internal static class RedTreeGenerator
                 writer.WriteLine("namespace {0}", tree.RedBase.ContainingNamespace.ToCSharpString());
                 writer.WriteLine('{');
                 writer.Indent++;
-
                 {
                     writer.WriteRedRoot(tree, tree.Root);
-                }
 
+                    var stack = new Stack<Node>();
+                    foreach (var desc in tree.Root.Descendants)
+                        stack.Push(desc);
+                    while (stack.Count > 0)
+                    {
+                        var node = stack.Pop();
+                        foreach (var desc in node.Descendants)
+                            stack.Push(desc);
+
+                        writer.WriteLineNoTabs("");
+                        writer.WriteRedNode(tree, node);
+                    }
+                }
                 writer.Indent--;
                 writer.WriteLine('}');
                 writer.WriteLineNoTabs("");
@@ -260,5 +271,106 @@ internal static class RedTreeGenerator
 
     private static void WriteRedNode(this IndentedTextWriter writer, Tree tree, Node node)
     {
+        var nodeBase = node.BaseSymbol;
+        if (SymbolEqualityComparer.Default.Equals(nodeBase, tree.GreenBase))
+            nodeBase = tree.RedBase;
+
+        writer.WriteLine("{0} {1} partial class {2} : {3}.{4}",
+            tree.RedBase.DeclaredAccessibility.ToCSharpString(),
+            node.Descendants.Length > 0 ? "abstract" : "sealed",
+            node.TypeSymbol.Name,
+            tree.RedBase.ContainingNamespace.ToCSharpString(false),
+            nodeBase!.Name);
+        writer.WriteLine('{');
+        writer.Indent++;
+        {
+            foreach (var child in node.Children)
+            {
+                writer.WriteLine("private {0}.{1}? {2};",
+                    tree.RedBase.ContainingNamespace.ToCSharpString(false),
+                    child.Type.Name,
+                    child.FieldName);
+            }
+            writer.WriteLineNoTabs("");
+
+            writer.WriteLines($$"""
+                internal {{node.TypeSymbol.Name}}({{tree.GreenBase.ToCSharpString()}} green, {{tree.RedBase.ToCSharpString()}}? parent)
+                    : base(green, parent)
+                {
+                }
+
+                """);
+
+            #region Components
+            if (node.Descendants.Length > 0)
+            {
+                foreach (var component in node.NodeComponents)
+                {
+                    writer.WriteLine($"public abstract {component.Type.ToCSharpString()} {component.PropertyName};");
+                }
+            }
+            else
+            {
+                foreach (var extra in node.ExtraData)
+                {
+                    if (extra.FieldName == "_kind") continue;
+
+                    writer.WriteLine("public {0}{1} {2} => (({3})this.Green).{2};",
+                        extra.PassToBase ? " override" : "",
+                        extra.Type.ToCSharpString(),
+                        extra.PropertyName,
+                        node.TypeSymbol.ToCSharpString(false));
+                }
+                for (var idx = 0; idx < node.Children.Length; idx++)
+                {
+                    var child = node.Children[idx];
+                    writer.WriteLine("public {0}{1}.{2} {3} => GetRed(ref this.{4}, {5}){6};",
+                        child.PassToBase ? " override" : "",
+                        tree.RedBase.ContainingNamespace.ToCSharpString(false),
+                        child.Type.Name + (child.IsOptional ? "?" : ""),
+                        child.PropertyName,
+                        child.FieldName,
+                        idx,
+                        child.IsOptional ? "" : "!");
+                }
+            }
+            writer.WriteLineNoTabs("");
+            #endregion Components
+
+            #region TRedRoot? GetNodeSlot(int index)
+            if (node.Descendants.Length == 0)
+            {
+                writer.WriteLine("internal override {0}? GetNodeSlot(int index) =>", tree.RedBase.ToCSharpString());
+                writer.Indent++;
+                if (node.Children.Length == 1)
+                {
+                    writer.Indent++;
+                    writer.WriteLine("index == 1 ? GetRed(ref this.{0}, 1){1} : null;",
+                        node.Children[0].FieldName,
+                        node.Children[0].IsOptional ? "" : "!");
+                    writer.Indent--;
+                }
+                else
+                {
+                    writer.WriteLine("index switch");
+                    writer.WriteLine('{');
+                    writer.Indent++;
+                    {
+                        for (var idx = 0; idx < node.Children.Length; idx++)
+                        {
+                            var child = node.Children[idx];
+                            writer.WriteLine("{0} => GetRed(ref this.{1}, {0}){2},", idx, child.FieldName, child.IsOptional ? "" : "!");
+                        }
+                        writer.WriteLine("_ => null");
+                    }
+                    writer.Indent--;
+                    writer.WriteLine("};");
+                }
+                writer.Indent--;
+            }
+            #endregion TRedRoot? GetNodeSlot(int index)
+        }
+        writer.Indent--;
+        writer.WriteLine('}');
     }
 }

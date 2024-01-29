@@ -143,5 +143,97 @@ namespace Tsu.Trees.RedGreen.Sample
             }
         }
     }
+
+    public abstract partial class ExpressionSample : global::Tsu.Trees.RedGreen.Sample.SampleNode
+    {
+
+        internal ExpressionSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
+            : base(green, parent)
+        {
+        }
+
+
+    }
+
+    public sealed partial class FunctionCallExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
+    {
+        private global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample? identifier;
+        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? firstArg;
+        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? secondArg;
+
+        internal FunctionCallExpressionSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
+            : base(green, parent)
+        {
+        }
+
+        public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample Identifier => GetRed(ref this.identifier, 0)!;
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample FirstArg => GetRed(ref this.firstArg, 1)!;
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample? SecondArg => GetRed(ref this.secondArg, 2);
+
+        internal override global::Tsu.Trees.RedGreen.Sample.SampleNode? GetNodeSlot(int index) =>
+            index switch
+            {
+                0 => GetRed(ref this.identifier, 0)!,
+                1 => GetRed(ref this.firstArg, 1)!,
+                2 => GetRed(ref this.secondArg, 2),
+                _ => null
+            };
+    }
+
+    public sealed partial class BinaryOperationExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
+    {
+        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? _left;
+        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? _right;
+
+        internal BinaryOperationExpressionSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
+            : base(green, parent)
+        {
+        }
+
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample Left => GetRed(ref this._left, 0)!;
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample Right => GetRed(ref this._right, 1)!;
+
+        internal override global::Tsu.Trees.RedGreen.Sample.SampleNode? GetNodeSlot(int index) =>
+            index switch
+            {
+                0 => GetRed(ref this._left, 0)!,
+                1 => GetRed(ref this._right, 1)!,
+                _ => null
+            };
+    }
+
+    public sealed partial class NumericalLiteralExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
+    {
+
+        internal NumericalLiteralExpressionSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
+            : base(green, parent)
+        {
+        }
+
+        public double Value => ((global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample)this.Green).Value;
+
+        internal override global::Tsu.Trees.RedGreen.Sample.SampleNode? GetNodeSlot(int index) =>
+            index switch
+            {
+                _ => null
+            };
+    }
+
+    public sealed partial class IdentifierExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
+    {
+
+        internal IdentifierExpressionSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
+            : base(green, parent)
+        {
+        }
+
+        public string Name => ((global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample)this.Green).Name;
+
+        internal override global::Tsu.Trees.RedGreen.Sample.SampleNode? GetNodeSlot(int index) =>
+            index switch
+            {
+                _ => null
+            };
+    }
 }
 
