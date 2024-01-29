@@ -254,30 +254,37 @@ internal static class VisitorGenerator
                         node.TypeSymbol.Name);
                     writer.Indent++;
                     {
-                        writer.Write("node.Update(");
-                        var first = true;
-                        foreach (var component in node.RequiredComponents)
+                        if (!node.RequiredComponents.Any())
                         {
-                            if (!first) writer.Write(", ");
-                            first = false;
-
-                            if (component.Type.DerivesFrom(tree.GreenBase))
+                            writer.WriteLine("node;");
+                        }
+                        else
+                        {
+                            writer.Write("node.Update(");
+                            var first = true;
+                            foreach (var component in node.RequiredComponents)
                             {
-                                writer.Write("({0}.{1}?)Visit(node.{2})",
-                                    baseType.ContainingNamespace.ToCSharpString(false),
-                                    component.Type.Name,
-                                    component.PropertyName);
-                                if (!component.IsOptional)
+                                if (!first) writer.Write(", ");
+                                first = false;
+
+                                if (component.Type.DerivesFrom(tree.GreenBase))
                                 {
-                                    writer.Write(" ?? throw new global::System.InvalidOperationException(\"{0} cannot be null.\")", component.PropertyName);
+                                    writer.Write("({0}.{1}?)Visit(node.{2})",
+                                        baseType.ContainingNamespace.ToCSharpString(false),
+                                        component.Type.Name,
+                                        component.PropertyName);
+                                    if (!component.IsOptional)
+                                    {
+                                        writer.Write(" ?? throw new global::System.InvalidOperationException(\"{0} cannot be null.\")", component.PropertyName);
+                                    }
+                                }
+                                else
+                                {
+                                    writer.Write("node.{0}", component.PropertyName);
                                 }
                             }
-                            else
-                            {
-                                writer.Write("node.{0}", component.PropertyName);
-                            }
+                            writer.WriteLine(");");
                         }
-                        writer.WriteLine(");");
                     }
                     writer.Indent--;
                 }

@@ -151,7 +151,6 @@ namespace Tsu.Trees.RedGreen.Sample
 
     public abstract partial class ExpressionSample : global::Tsu.Trees.RedGreen.Sample.SampleNode
     {
-
         internal ExpressionSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
             : base(green, parent)
         {
@@ -339,8 +338,6 @@ namespace Tsu.Trees.RedGreen.Sample
 
     public abstract partial class StatementSample : global::Tsu.Trees.RedGreen.Sample.SampleNode
     {
-        private global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample? _semicolon;
-
         internal StatementSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
             : base(green, parent)
         {

@@ -333,14 +333,17 @@ internal static class RedTreeGenerator
         writer.WriteLine('{');
         writer.Indent++;
         {
-            foreach (var child in node.Children)
+            if (node.Descendants.Length == 0)
             {
-                writer.WriteLine("private {0}.{1}? {2};",
-                    tree.RedBase.ContainingNamespace.ToCSharpString(false),
-                    child.Type.Name,
-                    child.FieldName);
+                foreach (var child in node.Children)
+                {
+                    writer.WriteLine("private {0}.{1}? {2};",
+                        tree.RedBase.ContainingNamespace.ToCSharpString(false),
+                        child.Type.Name,
+                        child.FieldName);
+                }
+                writer.WriteLineNoTabs("");
             }
-            writer.WriteLineNoTabs("");
 
             writer.WriteLines($$"""
                 internal {{node.TypeSymbol.Name}}({{tree.GreenBase.ToCSharpString()}} green, {{tree.RedBase.ToCSharpString()}}? parent)

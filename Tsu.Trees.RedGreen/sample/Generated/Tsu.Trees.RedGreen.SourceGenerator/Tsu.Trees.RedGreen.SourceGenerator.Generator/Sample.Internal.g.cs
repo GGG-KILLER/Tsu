@@ -597,7 +597,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
     public partial class SampleRewriter : Tsu.Trees.RedGreen.Sample.SampleVisitor<global::Tsu.Trees.RedGreen.Sample.SampleNode>
     {
         public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitSemicolonToken(global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample node) =>
-            node.Update();
+            node;
         public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitAssignmentStatement(global::Tsu.Trees.RedGreen.Sample.AssignmentStatement node) =>
             node.Update((global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample?)Visit(node.Semicolon) ?? throw new global::System.InvalidOperationException("Semicolon cannot be null."), (global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample?)Visit(node.Identifier) ?? throw new global::System.InvalidOperationException("Identifier cannot be null."), (global::Tsu.Trees.RedGreen.Sample.ExpressionSample?)Visit(node.Value) ?? throw new global::System.InvalidOperationException("Value cannot be null."));
         public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitExpressionStatement(global::Tsu.Trees.RedGreen.Sample.ExpressionStatementSample node) =>
