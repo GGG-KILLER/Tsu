@@ -108,7 +108,7 @@ internal static class TreeCreator
                                      .ToImmutableArray();
 
         if (SymbolEqualityComparer.Default.Equals(node.NodeType, tree.GreenBase))
-            extraData = extraData.Add(new Component(tree.KindEnum, "kind", false, false));
+            extraData = extraData.Add(new Component(tree.KindEnum, "_kind", false, false));
 
         return new Node(
             node.NodeType,
