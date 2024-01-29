@@ -32,8 +32,7 @@ internal static class GreenTreeWriter
             writer.WriteLine("using System.Linq;");
             writer.WriteLineNoTabs("");
 
-            writer.Write("namespace ");
-            writer.WriteLine(tree.GreenBase.ContainingNamespace.ToCSharpString());
+            writer.WriteLine("namespace {0}", tree.GreenBase.ContainingNamespace.ToCSharpString());
             writer.WriteLine('{');
             writer.Indent++;
 
