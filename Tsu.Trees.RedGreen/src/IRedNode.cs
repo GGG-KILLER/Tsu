@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Tsu.Trees.RedGreen.Internal;
 
@@ -7,12 +6,10 @@ namespace Tsu.Trees.RedGreen;
 /// <summary>
 /// Base interface for a red tree node.
 /// </summary>
-/// <typeparam name="TGreenRoot"></typeparam>
 /// <typeparam name="TRedRoot"></typeparam>
 /// <typeparam name="TKind"></typeparam>
-public interface IRedNode<TGreenRoot, TRedRoot, TKind>
-    where TGreenRoot : class, IGreenNode<TGreenRoot, TRedRoot, TKind>
-    where TRedRoot : class, IRedNode<TGreenRoot, TRedRoot, TKind>
+public interface IRedNode<TRedRoot, TKind>
+    where TRedRoot : class, IRedNode<TRedRoot, TKind>
     where TKind : Enum
 {
     /// <summary>
@@ -20,16 +17,10 @@ public interface IRedNode<TGreenRoot, TRedRoot, TKind>
     /// </summary>
     TKind Kind { get; }
 
-#pragma warning disable CS1591
-    // Intentionally undocumented so people don't use it.
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    TGreenRoot Green { get; }
-#pragma warning restore
-
     /// <summary>
     /// This node's parent.
     /// </summary>
-    TGreenRoot? Parent { get; }
+    TRedRoot? Parent { get; }
 
     /// <summary>
     /// Checks whether the current node is structurally equivalent to another.
@@ -45,16 +36,6 @@ public interface IRedNode<TGreenRoot, TRedRoot, TKind>
     /// <param name="other"></param>
     /// <returns></returns>
     bool Contains(TRedRoot other);
-
-#pragma warning disable CS1591
-    // Intentionally left undocumented to discourage usage.
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    TRedRoot? GetNodeSlot(int slot);
-
-    // Intentionally left undocumented to discourage usage.
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    TRedRoot GetRequiredNodeSlot(int slot);
-#pragma warning disable
 
     /// <summary>
     /// Gets a list of the child nodes in prefix document order.
