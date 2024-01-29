@@ -58,10 +58,10 @@ public sealed class Generator : IIncrementalGenerator
                 builder.AppendLine($"// {indent}{node.Item2.TypeSymbol.ToCSharpString()}");
                 builder.AppendLine($"// {indent}    Children:");
                 foreach (var child in node.Item2.Children)
-                    builder.AppendLine($"// {indent}        {child.Type.ToCSharpString()} (Name = {child.Name}, IsOptional = {child.IsOptional}, PassToBase = {child.PassToBase})");
+                    builder.AppendLine($"// {indent}        {child.Type.ToCSharpString()} (Name = {child.FieldName}, IsOptional = {child.IsOptional}, PassToBase = {child.PassToBase})");
                 builder.AppendLine($"// {indent}    ExtraData:");
                 foreach (var child in node.Item2.ExtraData)
-                    builder.AppendLine($"// {indent}        {child.Type.ToCSharpString()} (Name = {child.Name}, IsOptional = {child.IsOptional}, PassToBase = {child.PassToBase})");
+                    builder.AppendLine($"// {indent}        {child.Type.ToCSharpString()} (Name = {child.FieldName}, IsOptional = {child.IsOptional}, PassToBase = {child.PassToBase})");
                 foreach (var derived in node.Item2.Descendants)
                     queue.Push((node.Item1 + 1, derived));
             }
