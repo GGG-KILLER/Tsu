@@ -84,6 +84,38 @@ internal static class RedTreeGenerator
             writer.WriteLine("internal int SlotCount => this.Green.SlotCount;", tree.RedBase.ToCSharpString());
             writer.WriteLineNoTabs("");
 
+            #region T GetRed<T>(ref T? field, int slot) where T : TRedRoot
+            writer.WriteLine("protected T? GetRed<T>(ref T? field, int index) where T : {0}", tree.RedBase.ToCSharpString());
+            writer.WriteLine('{');
+            writer.Indent++;
+            {
+                writer.WriteLine("var result = field;");
+                writer.WriteLineNoTabs("");
+                writer.WriteLine("if (result == null)");
+                writer.WriteLine('{');
+                writer.Indent++;
+                {
+                    writer.WriteLine("var green = this.Green.GetSlot(index);");
+                    writer.WriteLine("if (green != null)");
+                    writer.WriteLine('{');
+                    writer.Indent++;
+                    {
+                        writer.WriteLine("global::System.Threading.Interlocked.CompareExchange(ref field, (T) green.CreateRed(this), null);");
+                        writer.WriteLine("result = field;");
+                    }
+                    writer.Indent--;
+                    writer.WriteLine('}');
+                }
+                writer.Indent--;
+                writer.WriteLine('}');
+                writer.WriteLineNoTabs("");
+                writer.WriteLine("return result;");
+            }
+            writer.Indent--;
+            writer.WriteLine('}');
+            writer.WriteLineNoTabs("");
+            #endregion T GetRed<T>(ref T? field, int slot) where T : TRedRoot
+
             #region bool IsEquivalentTo([NotNullWhen(true)] TRedRoot? other)
             writer.WriteLine("public bool IsEquivalentTo({0}? other)", tree.RedBase.ToCSharpString());
             writer.WriteLine('{');

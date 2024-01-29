@@ -23,6 +23,23 @@ namespace Tsu.Trees.RedGreen.Sample
         public global::Tsu.Trees.RedGreen.Sample.SampleNode? Parent => _parent;
         internal int SlotCount => this.Green.SlotCount;
 
+        protected T? GetRed<T>(ref T? field, int index) where T : global::Tsu.Trees.RedGreen.Sample.SampleNode
+        {
+            var result = field;
+
+            if (result == null)
+            {
+                var green = this.Green.GetSlot(index);
+                if (green != null)
+                {
+                    global::System.Threading.Interlocked.CompareExchange(ref field, (T) green.CreateRed(this), null);
+                    result = field;
+                }
+            }
+
+            return result;
+        }
+
         public bool IsEquivalentTo(global::Tsu.Trees.RedGreen.Sample.SampleNode? other)
         {
             if (this == other) return true;
