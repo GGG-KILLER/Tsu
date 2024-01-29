@@ -20,6 +20,7 @@ namespace Tsu.Trees.RedGreen.Sample
 
     }
 }
+
 namespace Tsu.Trees.RedGreen.Sample.Internal
 {
     [GreenTreeRoot(typeof(SampleNode), "Sample", typeof(SampleKind), CreateRewriter = true, CreateVisitors = true, CreateWalker = true)]
@@ -34,20 +35,20 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
     [GreenNode(SampleKind.IdentifierExpression)]
     internal sealed partial class IdentifierExpressionSample : ExpressionSample
     {
-        private readonly string name;
+        private readonly string _name;
     }
 
     [GreenNode(SampleKind.NumericalLiteralExpression)]
     internal sealed partial class NumericalLiteralExpressionSample : ExpressionSample
     {
-        private readonly double value;
+        private readonly double _value;
     }
 
     [GreenNode(SampleKind.AdditionExpression, SampleKind.DivisionExpression, SampleKind.MultiplicationExpression, SampleKind.SubtractionExpression)]
     internal sealed partial class BinaryOperationExpressionSample : ExpressionSample
     {
-        private readonly ExpressionSample left;
-        private readonly ExpressionSample right;
+        private readonly ExpressionSample _left;
+        private readonly ExpressionSample _right;
     }
 
     [GreenNode(SampleKind.FunctionCallExpression)]
