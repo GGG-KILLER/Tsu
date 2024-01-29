@@ -40,7 +40,7 @@ internal static class Utils
 
     public static string ToCSharpString(this ISymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-    public static string ToCSharpString(this INamespaceSymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+    public static string ToCSharpString(this INamespaceSymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).Substring("global::".Length);
 
     public static SourceText ToSourceText(this StringBuilder builder) =>
         SourceText.From(new StringBuilderReader(builder), builder.Length, Encoding.UTF8);
