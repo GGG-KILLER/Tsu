@@ -46,9 +46,19 @@ internal static class Utils
             _ => throw new NotImplementedException()
         };
 
-    public static string ToCSharpString(this ISymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+    public static string ToCSharpString(this ITypeSymbol symbol, bool addNullable = true)
+    {
+        var str = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        if (addNullable && symbol.NullableAnnotation is NullableAnnotation.Annotated)
+            str += '?';
+        return str;
+    }
 
-    public static string ToCSharpString(this INamespaceSymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).Substring("global::".Length);
+    public static string ToCSharpString(this INamespaceSymbol symbol, bool noGlobal = true)
+    {
+        var str = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        return noGlobal ? str.Substring("global::".Length) : str;
+    }
 
     public static SourceText ToSourceText(this StringBuilder builder) =>
         SourceText.From(new StringBuilderReader(builder), builder.Length, Encoding.UTF8);

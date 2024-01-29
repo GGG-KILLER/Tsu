@@ -21,7 +21,7 @@
 //             Children:
 //                 global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample (Name = identifier, IsOptional = False, PassToBase = False)
 //                 global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample (Name = firstArg, IsOptional = False, PassToBase = False)
-//                 global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample (Name = secondArg, IsOptional = True, PassToBase = False)
+//                 global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample? (Name = secondArg, IsOptional = True, PassToBase = False)
 //             ExtraData:
 //                 global::Tsu.Trees.RedGreen.Sample.SampleKind (Name = _kind, IsOptional = False, PassToBase = True)
 //         global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample

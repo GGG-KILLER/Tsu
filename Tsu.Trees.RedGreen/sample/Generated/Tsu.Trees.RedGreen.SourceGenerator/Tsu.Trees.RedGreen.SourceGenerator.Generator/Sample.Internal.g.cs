@@ -37,7 +37,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         public global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode GetRequiredSlot(int index)
         {
             var node = this.GetSlot(index);
-            Debug.Assert((object)node != null)
+            Debug.Assert(node != null);
             return node!;
         }
 
@@ -191,7 +191,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
     partial class FunctionCallExpressionSample : global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample
     {
-        internal FunctionCallExpressionSample(global::Tsu.Trees.RedGreen.Sample.SampleKind kind, global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample secondArg) : base(kind)
+        internal FunctionCallExpressionSample(global::Tsu.Trees.RedGreen.Sample.SampleKind kind, global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample? secondArg) : base(kind)
         {
             this.SlotCount = 3;
             this.identifier = identifier;
@@ -201,7 +201,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         public global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample Identifier => this.identifier;
         public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample FirstArg => this.firstArg;
-        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample SecondArg => this.secondArg;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample? SecondArg => this.secondArg;
 
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
             index switch
@@ -215,7 +215,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         public override global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed(global::Tsu.Trees.RedGreen.Sample.SampleNode? parent) =>
             new global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample(this, parent);
 
-        public global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample Update(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample secondArg)
+        public global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample Update(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample? secondArg)
         {
             if (identifier != this.Identifier && firstArg != this.FirstArg && secondArg != this.SecondArg)
             {
@@ -231,7 +231,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         public static global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample IdentifierExpression(string name)
         {
 #if DEBUG
-            if ((object)name == null) throw new global::System.ArgumentNullException(nameof(name))
+            if (name == null) throw new global::System.ArgumentNullException(nameof(name));
 #endif // DEBUG
 
             return new global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample(
@@ -250,8 +250,8 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         public static global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample BinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.SampleKind kind, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample left, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample right)
         {
 #if DEBUG
-            if ((object)left == null) throw new global::System.ArgumentNullException(nameof(left))
-            if ((object)right == null) throw new global::System.ArgumentNullException(nameof(right))
+            if (left == null) throw new global::System.ArgumentNullException(nameof(left));
+            if (right == null) throw new global::System.ArgumentNullException(nameof(right));
             switch (kind)
             {
                 case Tsu.Trees.RedGreen.Sample.SampleKind.AdditionExpression:
@@ -271,20 +271,19 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         public static global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample FunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg)
         {
 #if DEBUG
-            if ((object)identifier == null) throw new global::System.ArgumentNullException(nameof(identifier))
-            if ((object)firstArg == null) throw new global::System.ArgumentNullException(nameof(firstArg))
+            if (identifier == null) throw new global::System.ArgumentNullException(nameof(identifier));
+            if (firstArg == null) throw new global::System.ArgumentNullException(nameof(firstArg));
 #endif // DEBUG
 
             return new global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample(
-            global::Tsu.Trees.RedGreen.Sample.SampleKind.FunctionCallExpression, identifier, firstArg);
+            global::Tsu.Trees.RedGreen.Sample.SampleKind.FunctionCallExpression, identifier, firstArg, default);
         }
 
-        public static global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample FunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample secondArg)
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample FunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample? secondArg)
         {
 #if DEBUG
-            if ((object)identifier == null) throw new global::System.ArgumentNullException(nameof(identifier))
-            if ((object)firstArg == null) throw new global::System.ArgumentNullException(nameof(firstArg))
-            if ((object)secondArg == null) throw new global::System.ArgumentNullException(nameof(secondArg))
+            if (identifier == null) throw new global::System.ArgumentNullException(nameof(identifier));
+            if (firstArg == null) throw new global::System.ArgumentNullException(nameof(firstArg));
 #endif // DEBUG
 
             return new global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample(

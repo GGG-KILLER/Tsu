@@ -67,9 +67,9 @@ internal static class GreenTreeGenerator
     {
         writer.WriteLine("abstract partial class {0} : global::Tsu.Trees.RedGreen.Internal.IGreenNode<{1}, {2}, {3}>",
             root.TypeSymbol.Name,
-            tree.GreenBase.ToCSharpString(),
-            tree.RedBase.ToCSharpString(),
-            tree.KindEnum.ToCSharpString());
+            tree.GreenBase.ToCSharpString(false),
+            tree.RedBase.ToCSharpString(false),
+            tree.KindEnum.ToCSharpString(false));
         writer.WriteLine('{');
         writer.Indent++;
         {
@@ -120,7 +120,7 @@ internal static class GreenTreeGenerator
             writer.Indent++;
             {
                 writer.WriteLine("var node = this.GetSlot(index);");
-                writer.WriteLine("Debug.Assert((object)node != null)");
+                writer.WriteLine("Debug.Assert(node != null);");
                 writer.WriteLine("return node!;");
             }
             writer.Indent--;
@@ -229,7 +229,7 @@ internal static class GreenTreeGenerator
     {
         if (node.TypeSymbol.IsAbstract)
             writer.Write("abstract ");
-        writer.WriteLine("partial class {0} : {1}", node.TypeSymbol.Name, node.BaseSymbol!.ToCSharpString());
+        writer.WriteLine("partial class {0} : {1}", node.TypeSymbol.Name, node.BaseSymbol!.ToCSharpString(false));
         writer.WriteLine('{');
         writer.Indent++;
         {
@@ -433,18 +433,18 @@ internal static class GreenTreeGenerator
     {
         if (node.RequiredComponents.Any(x => x.IsOptional))
         {
-            var nonOptionalRequired = node.RequiredComponents.Where(x => !x.IsOptional);
-            writeMethod(writer, tree, node, nonOptionalRequired);
+            writeMethod(writer, tree, node, false);
             writer.WriteLineNoTabs("");
         }
-        writeMethod(writer, tree, node, node.RequiredComponents);
+        writeMethod(writer, tree, node, true);
 
-        static void writeMethod(IndentedTextWriter writer, Tree tree, Node node, IEnumerable<Component> components)
+        static void writeMethod(IndentedTextWriter writer, Tree tree, Node node, bool includeOptional)
         {
             writer.Write("public static {0} {1}(", node.TypeSymbol.ToCSharpString(), node.TypeSymbol.Name.WithoutSuffix(tree.Suffix));
             var first = true;
-            foreach (var component in components)
+            foreach (var component in node.RequiredComponents)
             {
+                if (!includeOptional && component.IsOptional) continue;
                 if (!first) writer.Write(", ");
                 first = false;
                 writer.Write("{0} {1}", component.Type.ToCSharpString(), component.ParameterName);
@@ -454,8 +454,11 @@ internal static class GreenTreeGenerator
             writer.Indent++;
             {
                 writer.WriteLineNoTabs("#if DEBUG");
-                foreach (var component in components.Where(x => !x.Type.IsValueType))
-                    writer.WriteLine("if ((object){0} == null) throw new global::System.ArgumentNullException(nameof({0}))", component.ParameterName);
+                foreach (var component in node.RequiredComponents.Where(x => !x.Type.IsValueType))
+                {
+                    if (component.IsOptional) continue;
+                    writer.WriteLine("if ({0} == null) throw new global::System.ArgumentNullException(nameof({0}));", component.ParameterName);
+                }
                 if (node.Kinds.Length != 1)
                 {
                     writer.WriteLine("switch (kind)");
@@ -485,11 +488,14 @@ internal static class GreenTreeGenerator
                     first = false;
                     writer.Write("global::{0}", node.Kinds[0].ToCSharpString());
                 }
-                foreach (var component in components)
+                foreach (var component in node.RequiredComponents)
                 {
                     if (!first) writer.Write(", ");
                     first = false;
-                    writer.Write(component.ParameterName);
+                    if (component.IsOptional && !includeOptional)
+                        writer.Write("default");
+                    else
+                        writer.Write(component.ParameterName);
                 }
                 writer.WriteLine(");");
             }
