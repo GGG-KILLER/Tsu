@@ -77,7 +77,10 @@ internal static class GreenTreeWriter
             writer.WriteGreenConstructor(root);
             writer.WriteLineNoTabs("");
 
-            writer.WriteLine("public {0} Kind => this._kind;", tree.KindEnum.ToCSharpString());
+            foreach (var extraData in root.ExtraData)
+            {
+                writer.WriteLine("public {0} {1} => this.{2};", extraData.Type.ToCSharpString(), extraData.PropertyName, extraData.FieldName);
+            }
             writer.WriteLineNoTabs("");
 
             #region int SlotCount
@@ -229,9 +232,8 @@ internal static class GreenTreeWriter
         writer.WriteLine('{');
         writer.Indent++;
         {
-            #region Constructor
             writer.WriteGreenConstructor(node);
-            #endregion Constructor
+            writer.WriteLineNoTabs("");
         }
         writer.Indent--;
         writer.WriteLine('}');
