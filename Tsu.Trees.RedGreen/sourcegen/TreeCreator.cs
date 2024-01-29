@@ -111,6 +111,7 @@ internal static class TreeCreator
             extraData = extraData.Add(new Component(tree.KindEnum, "_kind", false, false));
 
         return new Node(
+            node.BaseType,
             node.NodeType,
             nodes[node.NodeType].Select(x => ProcessNode(tree, x, nodes, children, extraData))
                                 .ToImmutableArray(),

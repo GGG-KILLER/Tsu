@@ -21,6 +21,7 @@ using Microsoft.CodeAnalysis;
 namespace Tsu.Trees.RedGreen.SourceGenerator.Model;
 
 internal sealed record Node(
+    INamedTypeSymbol? BaseSymbol,
     INamedTypeSymbol TypeSymbol,
     ImmutableArray<Node> Descendants,
     ImmutableArray<Component> Children,
@@ -29,6 +30,7 @@ internal sealed record Node(
 {
     public bool Equals(Node? other) =>
         other is not null
+        && SymbolEqualityComparer.Default.Equals(BaseSymbol, other.BaseSymbol)
         && SymbolEqualityComparer.Default.Equals(TypeSymbol, other.TypeSymbol)
         && Descendants.SequenceEqual(other.Descendants)
         && Children.SequenceEqual(other.Children)
@@ -37,6 +39,7 @@ internal sealed record Node(
     public override int GetHashCode()
     {
         var hash = new HashCode();
+        hash.Add(BaseSymbol, SymbolEqualityComparer.Default);
         hash.Add(TypeSymbol, SymbolEqualityComparer.Default);
         foreach (var node in Descendants)
             hash.Add(node);
