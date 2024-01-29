@@ -178,6 +178,16 @@ namespace Tsu.Trees.RedGreen.Sample
                 2 => GetRed(ref this.secondArg, 2),
                 _ => null
             };
+
+        public global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample Update(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.ExpressionSample firstArg, global::Tsu.Trees.RedGreen.Sample.ExpressionSample? secondArg)
+        {
+            if (identifier != this.Identifier && firstArg != this.FirstArg && secondArg != this.SecondArg)
+            {
+                return global::Tsu.Trees.RedGreen.Sample.SampleFactory.FunctionCallExpression(identifier, firstArg, secondArg);
+            }
+
+            return this;
+        }
     }
 
     public sealed partial class BinaryOperationExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
@@ -200,6 +210,16 @@ namespace Tsu.Trees.RedGreen.Sample
                 1 => GetRed(ref this._right, 1)!,
                 _ => null
             };
+
+        public global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample Update(global::Tsu.Trees.RedGreen.Sample.SampleKind kind, global::Tsu.Trees.RedGreen.Sample.ExpressionSample left, global::Tsu.Trees.RedGreen.Sample.ExpressionSample right)
+        {
+            if (kind != this.Kind && left != this.Left && right != this.Right)
+            {
+                return global::Tsu.Trees.RedGreen.Sample.SampleFactory.BinaryOperationExpression(kind, left, right);
+            }
+
+            return this;
+        }
     }
 
     public sealed partial class NumericalLiteralExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
@@ -217,6 +237,16 @@ namespace Tsu.Trees.RedGreen.Sample
             {
                 _ => null
             };
+
+        public global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample Update(global::System.Double value)
+        {
+            if (value != this.Value)
+            {
+                return global::Tsu.Trees.RedGreen.Sample.SampleFactory.NumericalLiteralExpression(value);
+            }
+
+            return this;
+        }
     }
 
     public sealed partial class IdentifierExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
@@ -234,6 +264,16 @@ namespace Tsu.Trees.RedGreen.Sample
             {
                 _ => null
             };
+
+        public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample Update(global::System.String name)
+        {
+            if (name != this.Name)
+            {
+                return global::Tsu.Trees.RedGreen.Sample.SampleFactory.IdentifierExpression(name);
+            }
+
+            return this;
+        }
     }
 }
 
