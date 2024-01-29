@@ -73,7 +73,6 @@ public sealed class Generator : IIncrementalGenerator
             ctx.AddSource($"{tree.GreenBase.Name}.Debug.g.cs", builder.ToSourceText());
         });
 
-        context.WriteGreenNodes(trees);
-        context.WriteGreenFactory(trees);
+        context.RegisterGreenOutput(trees);
     }
 }

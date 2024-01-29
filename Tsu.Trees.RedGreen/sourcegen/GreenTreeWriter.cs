@@ -13,7 +13,7 @@ internal static class GreenTreeWriter
         return;
     }
 
-    public static void WriteGreenNodes(this IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Tree> trees)
+    public static void RegisterGreenOutput(this IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Tree> trees)
     {
         context.RegisterSourceOutput(trees, (ctx, tree) =>
         {
