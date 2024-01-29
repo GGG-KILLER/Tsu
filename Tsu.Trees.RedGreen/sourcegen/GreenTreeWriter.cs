@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Tsu.Trees.RedGreen.SourceGenerator.Model;
 
 namespace Tsu.Trees.RedGreen.SourceGenerator;
@@ -50,6 +51,9 @@ internal static class GreenTreeWriter
                 writer.WriteLineNoTabs("");
                 writer.WriteGreenNode(tree, node);
             }
+
+            writer.WriteLineNoTabs("");
+            writer.WriteGreenFactory(tree);
 
             writer.Indent--;
             writer.WriteLine('}');
@@ -395,8 +399,104 @@ internal static class GreenTreeWriter
         writer.WriteLine('}');
     }
 
-    public static void WriteGreenFactory(this IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Tree> trees)
+    public static void WriteGreenFactory(this IndentedTextWriter writer, Tree tree)
     {
+        writer.WriteLine("{0} static class {1}Factory", tree.GreenBase.DeclaredAccessibility.ToCSharpString(), tree.Suffix);
+        writer.WriteLine('{');
+        writer.Indent++;
+        {
+            var queue = new Queue<Node>();
+            foreach (var desc in tree.Root.Descendants)
+                queue.Enqueue(desc);
+
+            var first = true;
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+                if (node.Descendants.Any())
+                {
+                    foreach (var desc in node.Descendants)
+                        queue.Enqueue(desc);
+                }
+                else
+                {
+                    if (!first) writer.WriteLineNoTabs("");
+                    first = false;
+                    writer.WriteGreenFactoryMethods(tree, node);
+                }
+            }
+        }
+        writer.Indent--;
+        writer.WriteLine('}');
+    }
+
+    private static void WriteGreenFactoryMethods(this IndentedTextWriter writer, Tree tree, Node node)
+    {
+        if (node.RequiredComponents.Any(x => x.IsOptional))
+        {
+            var nonOptionalRequired = node.RequiredComponents.Where(x => !x.IsOptional);
+            writeMethod(writer, tree, node, nonOptionalRequired);
+            writer.WriteLineNoTabs("");
+        }
+        writeMethod(writer, tree, node, node.RequiredComponents);
+
+        static void writeMethod(IndentedTextWriter writer, Tree tree, Node node, IEnumerable<Component> components)
+        {
+            writer.Write("public static {0} {1}(", node.TypeSymbol.ToCSharpString(), node.TypeSymbol.Name.WithoutSuffix(tree.Suffix));
+            var first = true;
+            foreach (var component in components)
+            {
+                if (!first) writer.Write(", ");
+                first = false;
+                writer.Write("{0} {1}", component.Type.ToCSharpString(), component.ParameterName);
+            }
+            writer.WriteLine(')');
+            writer.WriteLine('{');
+            writer.Indent++;
+            {
+                writer.WriteLineNoTabs("#if DEBUG");
+                foreach (var component in components.Where(x => !x.Type.IsValueType))
+                    writer.WriteLine("if ((object){0} == null) throw new global::System.ArgumentNullException(nameof({0}))", component.ParameterName);
+                if (node.Kinds.Length != 1)
+                {
+                    writer.WriteLine("switch (kind)");
+                    writer.WriteLine('{');
+                    writer.Indent++;
+                    {
+                        foreach (var kind in node.Kinds)
+                            writer.WriteLine("case {0}:", kind.ToCSharpString());
+                        writer.Indent++;
+                        writer.WriteLine("break;");
+                        writer.Indent--;
+                        writer.WriteLine("default:");
+                        writer.Indent++;
+                        writer.WriteLine("throw new global::System.ArgumentException(\"Kind not accepted for this node.\", nameof(kind));");
+                        writer.Indent--;
+                    }
+                    writer.Indent--;
+                    writer.WriteLine('}');
+                }
+                writer.WriteLineNoTabs("#endif // DEBUG");
+                writer.WriteLineNoTabs("");
+
+                writer.WriteLine("return new {0}(", node.TypeSymbol.ToCSharpString());
+                first = true;
+                if (node.Kinds.Length == 1)
+                {
+                    first = false;
+                    writer.Write("global::{0}", node.Kinds[0].ToCSharpString());
+                }
+                foreach (var component in components)
+                {
+                    if (!first) writer.Write(", ");
+                    first = false;
+                    writer.Write(component.ParameterName);
+                }
+                writer.WriteLine(");");
+            }
+            writer.Indent--;
+            writer.WriteLine('}');
+        }
     }
 
     private static string WithoutSuffix(this string name, string suffix)

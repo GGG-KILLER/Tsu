@@ -38,7 +38,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         {
             var node = this.GetSlot(index);
             Debug.Assert((object)node != null)
-            return node;
+            return node!;
         }
 
         protected virtual int GetSlotCount() => _slotCount;
@@ -177,6 +177,16 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         public override global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed(global::Tsu.Trees.RedGreen.Sample.SampleNode? parent) =>
             new global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample(this, parent);
+
+        public global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample Update(global::Tsu.Trees.RedGreen.Sample.SampleKind kind, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample left, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample right)
+        {
+            if (kind != this.Kind && left != this.Left && right != this.Right)
+            {
+                return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.BinaryOperationExpression(kind, left, right);
+            }
+
+            return this;
+        }
     }
 
     partial class FunctionCallExpressionSample : global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample
@@ -213,6 +223,72 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             }
 
             return this;
+        }
+    }
+
+    internal static class SampleFactory
+    {
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample IdentifierExpression(string name)
+        {
+#if DEBUG
+            if ((object)name == null) throw new global::System.ArgumentNullException(nameof(name))
+#endif // DEBUG
+
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample(
+            global::Tsu.Trees.RedGreen.Sample.SampleKind.IdentifierExpression, name);
+        }
+
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample NumericalLiteralExpression(double value)
+        {
+#if DEBUG
+#endif // DEBUG
+
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample(
+            global::Tsu.Trees.RedGreen.Sample.SampleKind.NumericalLiteralExpression, value);
+        }
+
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample BinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.SampleKind kind, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample left, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample right)
+        {
+#if DEBUG
+            if ((object)left == null) throw new global::System.ArgumentNullException(nameof(left))
+            if ((object)right == null) throw new global::System.ArgumentNullException(nameof(right))
+            switch (kind)
+            {
+                case Tsu.Trees.RedGreen.Sample.SampleKind.AdditionExpression:
+                case Tsu.Trees.RedGreen.Sample.SampleKind.DivisionExpression:
+                case Tsu.Trees.RedGreen.Sample.SampleKind.MultiplicationExpression:
+                case Tsu.Trees.RedGreen.Sample.SampleKind.SubtractionExpression:
+                    break;
+                default:
+                    throw new global::System.ArgumentException("Kind not accepted for this node.", nameof(kind));
+            }
+#endif // DEBUG
+
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample(
+            kind, left, right);
+        }
+
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample FunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg)
+        {
+#if DEBUG
+            if ((object)identifier == null) throw new global::System.ArgumentNullException(nameof(identifier))
+            if ((object)firstArg == null) throw new global::System.ArgumentNullException(nameof(firstArg))
+#endif // DEBUG
+
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample(
+            global::Tsu.Trees.RedGreen.Sample.SampleKind.FunctionCallExpression, identifier, firstArg);
+        }
+
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample FunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample secondArg)
+        {
+#if DEBUG
+            if ((object)identifier == null) throw new global::System.ArgumentNullException(nameof(identifier))
+            if ((object)firstArg == null) throw new global::System.ArgumentNullException(nameof(firstArg))
+            if ((object)secondArg == null) throw new global::System.ArgumentNullException(nameof(secondArg))
+#endif // DEBUG
+
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample(
+            global::Tsu.Trees.RedGreen.Sample.SampleKind.FunctionCallExpression, identifier, firstArg, secondArg);
         }
     }
 }
