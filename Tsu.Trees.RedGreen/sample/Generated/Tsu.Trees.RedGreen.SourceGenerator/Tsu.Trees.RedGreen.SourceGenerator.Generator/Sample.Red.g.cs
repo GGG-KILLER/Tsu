@@ -83,6 +83,7 @@ namespace Tsu.Trees.RedGreen.Sample
             for (var node = this; node != null; node = node.Parent)
                 yield return node;
         }
+
         public TNode? FirstAncestorOrSelf<TNode>(Func<TNode, bool>? predicate = null) where TNode : global::Tsu.Trees.RedGreen.Sample.SampleNode
         {
             for (var node = this; node != null; node = node.Parent)

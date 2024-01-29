@@ -61,19 +61,14 @@ internal static class RedTreeGenerator
             writer.WriteLine("private readonly {0}? _parent;", tree.RedBase.ToCSharpString());
             writer.WriteLineNoTabs("");
 
-            writer.WriteLine("private protected {0}({1} green, {2}? parent)",
-                tree.RedBase.Name,
-                tree.GreenBase.ToCSharpString(),
-                tree.RedBase.ToCSharpString());
-            writer.WriteLine('{');
-            writer.Indent++;
-            {
-                writer.WriteLine("this._parent = parent;");
-                writer.WriteLine("this.Green = green;");
-            }
-            writer.Indent--;
-            writer.WriteLine('}');
-            writer.WriteLineNoTabs("");
+            writer.WriteLines($$"""
+                private protected {{tree.RedBase.Name}}({{tree.GreenBase.ToCSharpString()}} green, {{tree.RedBase.ToCSharpString()}}? parent)
+                {
+                    this._parent = parent;
+                    this.Green = green;
+                }
+
+                """);
 
             foreach (var component in root.Components)
             {
@@ -85,107 +80,81 @@ internal static class RedTreeGenerator
             writer.WriteLineNoTabs("");
 
             #region T GetRed<T>(ref T? field, int slot) where T : TRedRoot
-            writer.WriteLine("protected T? GetRed<T>(ref T? field, int index) where T : {0}", tree.RedBase.ToCSharpString());
-            writer.WriteLine('{');
-            writer.Indent++;
-            {
-                writer.WriteLine("var result = field;");
-                writer.WriteLineNoTabs("");
-                writer.WriteLine("if (result == null)");
-                writer.WriteLine('{');
-                writer.Indent++;
+            writer.WriteLines($$"""
+                protected T? GetRed<T>(ref T? field, int index) where T : {{tree.RedBase.ToCSharpString()}}
                 {
-                    writer.WriteLine("var green = this.Green.GetSlot(index);");
-                    writer.WriteLine("if (green != null)");
-                    writer.WriteLine('{');
-                    writer.Indent++;
+                    var result = field;
+
+                    if (result == null)
                     {
-                        writer.WriteLine("global::System.Threading.Interlocked.CompareExchange(ref field, (T) green.CreateRed(this), null);");
-                        writer.WriteLine("result = field;");
+                        var green = this.Green.GetSlot(index);
+                        if (green != null)
+                        {
+                            global::System.Threading.Interlocked.CompareExchange(ref field, (T) green.CreateRed(this), null);
+                            result = field;
+                        }
                     }
-                    writer.Indent--;
-                    writer.WriteLine('}');
+
+                    return result;
                 }
-                writer.Indent--;
-                writer.WriteLine('}');
-                writer.WriteLineNoTabs("");
-                writer.WriteLine("return result;");
-            }
-            writer.Indent--;
-            writer.WriteLine('}');
-            writer.WriteLineNoTabs("");
+
+                """);
             #endregion T GetRed<T>(ref T? field, int slot) where T : TRedRoot
 
             #region bool IsEquivalentTo([NotNullWhen(true)] TRedRoot? other)
-            writer.WriteLine("public bool IsEquivalentTo({0}? other)", tree.RedBase.ToCSharpString());
-            writer.WriteLine('{');
-            writer.Indent++;
-            {
-                writer.WriteLine("if (this == other) return true;");
-                writer.WriteLine("if (other == null) return false;");
-                writer.WriteLineNoTabs("");
-                writer.WriteLine("return this.Green.IsEquivalentTo(other.Green);");
-            }
-            writer.Indent--;
-            writer.WriteLine('}');
-            writer.WriteLineNoTabs("");
+            writer.WriteLines($$"""
+                public bool IsEquivalentTo({{tree.RedBase.ToCSharpString()}}? other)
+                {
+                    if (this == other) return true;
+                    if (other == null) return false;
+
+                    return this.Green.IsEquivalentTo(other.Green);
+                }
+
+                """);
             #endregion bool IsEquivalentTo([NotNullWhen(true)] TRedRoot? other)
 
             #region bool Contains(TRedRoot other)
-            writer.WriteLine("public bool Contains({0} other)", tree.RedBase.ToCSharpString());
-            writer.WriteLine('{');
-            writer.Indent++;
-            {
-                writer.WriteLine("for (var node = other; node != null; node = node.Parent)");
-                writer.WriteLine('{');
-                writer.Indent++;
+            writer.WriteLines($$"""
+                public bool Contains({{tree.RedBase.ToCSharpString()}} other)
                 {
-                    writer.WriteLine("if (node == this)");
-                    writer.Indent++;
-                    writer.WriteLine("return true;");
-                    writer.Indent--;
+                    for (var node = other; node != null; node = node.Parent)
+                    {
+                        if (node == this)
+                            return true;
+                    }
+
+                    return false;
                 }
-                writer.Indent--;
-                writer.WriteLine('}');
-                writer.WriteLineNoTabs("");
-                writer.WriteLine("return false;");
-            }
-            writer.Indent--;
-            writer.WriteLine('}');
-            writer.WriteLineNoTabs("");
+
+                """);
             #endregion bool Contains(TRedRoot other)
 
             writer.WriteLine("internal abstract {0}? GetNodeSlot(int index);", tree.RedBase.ToCSharpString());
             writer.WriteLineNoTabs("");
 
             #region TRedRoot GetRequiredNodeSlot(int slot)
-            writer.WriteLine("internal {0} GetRequiredNodeSlot(int index)", tree.RedBase.ToCSharpString());
-            writer.WriteLine('{');
-            writer.Indent++;
-            {
-                writer.WriteLine("var node = this.GetNodeSlot(index);");
-                writer.WriteLine("Debug.Assert(node != null);");
-                writer.WriteLine("return node!;");
-            }
-            writer.Indent--;
-            writer.WriteLine('}');
-            writer.WriteLineNoTabs("");
+            writer.WriteLines($$"""
+                internal {{tree.RedBase.ToCSharpString()}} GetRequiredNodeSlot(int index)
+                {
+                    var node = this.GetNodeSlot(index);
+                    Debug.Assert(node != null);
+                    return node!;
+                }
+
+                """);
             #endregion TRedRoot GetRequiredNodeSlot(int slot)
 
             #region IEnumerable<TRedRoot> ChildNodes()
-            writer.WriteLine("public global::System.Collections.Generic.IEnumerable<{0}> ChildNodes()", tree.RedBase.ToCSharpString());
-            writer.WriteLine('{');
-            writer.Indent++;
-            {
-                writer.WriteLine("var count = this.SlotCount;");
-                writer.WriteLine("for (var index = 0; index < count; index++)");
-                writer.Indent++;
-                writer.WriteLine("yield return this.GetRequiredNodeSlot(index);");
-                writer.Indent--;
-            }
-            writer.Indent--;
-            writer.WriteLine('}');
-            writer.WriteLineNoTabs("");
+            writer.WriteLines($$"""
+                public global::System.Collections.Generic.IEnumerable<{{tree.RedBase.ToCSharpString()}}> ChildNodes()
+                {
+                    var count = this.SlotCount;
+                    for (var index = 0; index < count; index++)
+                        yield return this.GetRequiredNodeSlot(index);
+                }
+
+                """);
             #endregion IEnumerable<TRedRoot> ChildNodes()
 
             #region IEnumerable<SyntaxNode> Ancestors
@@ -197,135 +166,99 @@ internal static class RedTreeGenerator
             #endregion IEnumerable<SyntaxNode> Ancestors
 
             #region IEnumerable<TRedRoot> AncestorsAndSelf()
-            writer.WriteLine("public global::System.Collections.Generic.IEnumerable<{0}> AncestorsAndSelf()", tree.RedBase.ToCSharpString());
-            writer.WriteLine('{');
-            writer.Indent++;
-            {
-                writer.WriteLine("for (var node = this; node != null; node = node.Parent)");
-                writer.Indent++;
-                writer.WriteLine("yield return node;");
-                writer.Indent--;
-            }
-            writer.Indent--;
-            writer.WriteLine('}');
+            writer.WriteLines($$"""
+                public global::System.Collections.Generic.IEnumerable<{{tree.RedBase.ToCSharpString()}}> AncestorsAndSelf()
+                {
+                    for (var node = this; node != null; node = node.Parent)
+                        yield return node;
+                }
+
+                """);
             #endregion IEnumerable<TRedRoot> AncestorsAndSelf()
 
             #region TNode? FirstAncestorOrSelf<TNode>(Func<TNode, bool>? predicate = null) where TNode : TRedRoot
-            writer.WriteLine("public TNode? FirstAncestorOrSelf<TNode>(Func<TNode, bool>? predicate = null) where TNode : {0}", tree.RedBase.ToCSharpString());
-            writer.WriteLine('{');
-            writer.Indent++;
-            {
-                writer.WriteLine("for (var node = this; node != null; node = node.Parent)");
-                writer.WriteLine('{');
-                writer.Indent++;
+            writer.WriteLines($$"""
+                public TNode? FirstAncestorOrSelf<TNode>(Func<TNode, bool>? predicate = null) where TNode : {{tree.RedBase.ToCSharpString()}}
                 {
-                    writer.WriteLine("if (node is TNode tnode && (predicate == null || predicate(tnode)))");
-                    writer.Indent++;
-                    writer.WriteLine("return tnode;");
-                    writer.Indent--;
+                    for (var node = this; node != null; node = node.Parent)
+                    {
+                        if (node is TNode tnode && (predicate == null || predicate(tnode)))
+                            return tnode;
+                    }
+
+                    return null;
                 }
-                writer.Indent--;
-                writer.WriteLine('}');
-                writer.WriteLineNoTabs("");
-                writer.WriteLine("return null;");
-            }
-            writer.Indent--;
-            writer.WriteLine('}');
-            writer.WriteLineNoTabs("");
+
+                """);
             #endregion TNode? FirstAncestorOrSelf<TNode>(Func<TNode, bool>? predicate = null) where TNode : TRedRoot
 
             #region TNode? FirstAncestorOrSelf<TNode, TArg>(Func<TNode, TArg, bool> predicate, TArg argument) where TNode : TRedRoot
-            writer.WriteLine("public TNode? FirstAncestorOrSelf<TNode, TArg>(Func<TNode, TArg, bool> predicate, TArg argument) where TNode : {0}",
-                tree.RedBase.ToCSharpString());
-            writer.WriteLine('{');
-            writer.Indent++;
-            {
-                writer.WriteLine("for (var node = this; node != null; node = node.Parent)");
-                writer.WriteLine('{');
-                writer.Indent++;
+            writer.WriteLines($$"""
+                public TNode? FirstAncestorOrSelf<TNode, TArg>(Func<TNode, TArg, bool> predicate, TArg argument) where TNode : {{tree.RedBase.ToCSharpString()}}
                 {
-                    writer.WriteLine("if (node is TNode tnode && (predicate == null || predicate(tnode, argument)))");
-                    writer.Indent++;
-                    writer.WriteLine("return tnode;");
-                    writer.Indent--;
+                    for (var node = this; node != null; node = node.Parent)
+                    {
+                        if (node is TNode tnode && (predicate == null || predicate(tnode, argument)))
+                            return tnode;
+                    }
+
+                    return null;
                 }
-                writer.Indent--;
-                writer.WriteLine('}');
-                writer.WriteLineNoTabs("");
-                writer.WriteLine("return null;");
-            }
-            writer.Indent--;
-            writer.WriteLine('}');
-            writer.WriteLineNoTabs("");
+
+                """);
             #endregion TNode? FirstAncestorOrSelf<TNode, TArg>(Func<TNode, TArg, bool> predicate, TArg argument) where TNode : TRedRoot
 
             #region IEnumerable<TRedRoot> DescendantNodes(Func<TRedRoot, bool>? descendIntoChildren = null)
-            writer.WriteLine("public global::System.Collections.Generic.IEnumerable<{0}> DescendantNodes(Func<{0}, bool>? descendIntoChildren = null)",
-                tree.RedBase.ToCSharpString());
-            writer.WriteLine('{');
-            writer.Indent++;
-            {
-                writer.WriteLine("var stack = new Stack<{0}>(24);", tree.RedBase.ToCSharpString());
-                writer.WriteLine("foreach (var child in this.ChildNodes())");
-                writer.Indent++;
-                writer.WriteLine("stack.Push(child);");
-                writer.Indent--;
-                writer.WriteLineNoTabs("");
-                writer.WriteLine("while (stack.Count > 0)");
-                writer.WriteLine('{');
-                writer.Indent++;
+            writer.WriteLines($$"""
+                public global::System.Collections.Generic.IEnumerable<{{tree.RedBase.ToCSharpString()}}> DescendantNodes(Func<{{tree.RedBase.ToCSharpString()}}, bool>? descendIntoChildren = null)
                 {
-                    writer.WriteLine("var current = stack.Pop();");
-                    writer.WriteLineNoTabs("");
-                    writer.WriteLine("yield return current;");
-                    writer.WriteLineNoTabs("");
-                    writer.WriteLine("foreach (var child in current.ChildNodes().Reverse())");
-                    writer.WriteLine('{');
-                    writer.Indent++;
-                    writer.WriteLine("stack.Push(child);");
-                    writer.Indent--;
-                    writer.WriteLine('}');
+                    var stack = new Stack<{{tree.RedBase.ToCSharpString()}}>(24);
+                    foreach (var child in this.ChildNodes())
+                        stack.Push(child);
+
+                    while (stack.Count > 0)
+                    {
+                        var current = stack.Pop();
+
+                        yield return current;
+
+                        foreach (var child in current.ChildNodes().Reverse())
+                        {
+                            stack.Push(child);
+                        }
+                    }
                 }
-                writer.Indent--;
-                writer.WriteLine('}');
-            }
-            writer.Indent--;
-            writer.WriteLine('}');
-            writer.WriteLineNoTabs("");
+
+                """);
             #endregion IEnumerable<TRedRoot> DescendantNodes(Func<TRedRoot, bool>? descendIntoChildren = null)
 
             #region IEnumerable<TRedRoot> DescendantNodesAndSelf(Func<TRedRoot, bool>? descendIntoChildren = null)
-            writer.WriteLine("public global::System.Collections.Generic.IEnumerable<{0}> DescendantNodesAndSelf(Func<{0}, bool>? descendIntoChildren = null)",
-                tree.RedBase.ToCSharpString());
-            writer.WriteLine('{');
-            writer.Indent++;
-            {
-                writer.WriteLine("var stack = new Stack<{0}>(24);", tree.RedBase.ToCSharpString());
-                writer.WriteLine("stack.Push(this);");
-                writer.WriteLineNoTabs("");
-                writer.WriteLine("while (stack.Count > 0)");
-                writer.WriteLine('{');
-                writer.Indent++;
+            writer.WriteLines($$"""
+                public global::System.Collections.Generic.IEnumerable<{{tree.RedBase.ToCSharpString()}}> DescendantNodesAndSelf(Func<{{tree.RedBase.ToCSharpString()}}, bool>? descendIntoChildren = null)
                 {
-                    writer.WriteLine("var current = stack.Pop();");
-                    writer.WriteLineNoTabs("");
-                    writer.WriteLine("yield return current;");
-                    writer.WriteLineNoTabs("");
-                    writer.WriteLine("foreach (var child in current.ChildNodes().Reverse())");
-                    writer.WriteLine('{');
-                    writer.Indent++;
-                    writer.WriteLine("stack.Push(child);");
-                    writer.Indent--;
-                    writer.WriteLine('}');
+                    var stack = new Stack<{{tree.RedBase.ToCSharpString()}}>(24);
+                    stack.Push(this);
+
+                    while (stack.Count > 0)
+                    {
+                        var current = stack.Pop();
+
+                        yield return current;
+
+                        foreach (var child in current.ChildNodes().Reverse())
+                        {
+                            stack.Push(child);
+                        }
+                    }
                 }
-                writer.Indent--;
-                writer.WriteLine('}');
-            }
-            writer.Indent--;
-            writer.WriteLine('}');
+                """);
             #endregion IEnumerable<TRedRoot> DescendantNodesAndSelf(Func<TRedRoot, bool>? descendIntoChildren = null)
         }
         writer.Indent--;
         writer.WriteLine('}');
+    }
+
+    private static void WriteRedNode(this IndentedTextWriter writer, Tree tree, Node node)
+    {
     }
 }
