@@ -88,6 +88,11 @@ internal static class RedTreeGenerator
                     writer.WriteLineNoTabs("");
                 }
 
+                if (tree.CreateRewriter)
+                {
+                    writer.WriteLineNoTabs("");
+                    writer.WriteRewriter(tree, tree.RedBase);
+                }
 
                 writer.WriteRedFactory(tree);
             }

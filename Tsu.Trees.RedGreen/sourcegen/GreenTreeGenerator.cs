@@ -66,6 +66,12 @@ internal static class GreenTreeGenerator
                 writer.WriteWalker(tree, tree.GreenBase);
             }
 
+            if (tree.CreateRewriter)
+            {
+                writer.WriteLineNoTabs("");
+                writer.WriteRewriter(tree, tree.RedBase);
+            }
+
             writer.Indent--;
             writer.WriteLine('}');
             writer.WriteLineNoTabs("");

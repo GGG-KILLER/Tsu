@@ -216,4 +216,74 @@ internal static class VisitorGenerator
             }
             """);
     }
+
+    public static void WriteRewriter(this IndentedTextWriter writer, Tree tree, INamedTypeSymbol baseType)
+    {
+        if (!tree.CreateVisitors)
+        {
+            writer.WriteVisitor(tree, baseType, 1);
+            writer.WriteLineNoTabs("");
+        }
+
+        writer.WriteLine("{0} partial class {1}Rewriter : {2}.{1}Visitor<{3}>",
+            baseType.DeclaredAccessibility.ToCSharpString(),
+            tree.Suffix,
+            baseType.ContainingNamespace.ToCSharpString(true),
+            baseType.ToCSharpString(false));
+        writer.WriteLine('{');
+        writer.Indent++;
+        {
+            var queue = new Queue<Node>();
+            foreach (var desc in tree.Root.Descendants)
+                queue.Enqueue(desc);
+
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+                if (node.Descendants.Any())
+                {
+                    foreach (var desc in node.Descendants)
+                        queue.Enqueue(desc);
+                }
+                else
+                {
+                    writer.WriteLine("public override {0} Visit{1}({2}.{3} node) =>",
+                        baseType.ToCSharpString(),
+                        node.TypeSymbol.Name.WithoutSuffix(tree.Suffix),
+                        baseType.ContainingNamespace.ToCSharpString(false),
+                        node.TypeSymbol.Name);
+                    writer.Indent++;
+                    {
+                        writer.Write("node.Update(");
+                        var first = true;
+                        foreach (var component in node.RequiredComponents)
+                        {
+                            if (!first) writer.Write(", ");
+                            first = false;
+
+                            if (component.Type.DerivesFrom(tree.GreenBase))
+                            {
+                                writer.Write("({0}.{1}?)Visit(node.{2})",
+                                    baseType.ContainingNamespace.ToCSharpString(false),
+                                    component.Type.Name,
+                                    component.PropertyName);
+                                if (!component.IsOptional)
+                                {
+                                    writer.Write(" ?? throw new global::System.InvalidOperationException(\"{0} cannot be null.\")", component.PropertyName);
+                                }
+                            }
+                            else
+                            {
+                                writer.Write("node.{0}", component.PropertyName);
+                            }
+                        }
+                        writer.WriteLine(");");
+                    }
+                    writer.Indent--;
+                }
+            }
+        }
+        writer.Indent--;
+        writer.WriteLine('}');
+    }
 }
