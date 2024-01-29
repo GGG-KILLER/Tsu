@@ -355,7 +355,10 @@ internal static class RedTreeGenerator
             {
                 foreach (var component in node.NodeComponents)
                 {
-                    writer.WriteLine($"public abstract {component.Type.ToCSharpString()} {component.PropertyName};");
+                    var ns = component.Type.ContainingNamespace;
+                    if (component.Type.DerivesFrom(tree.GreenBase))
+                        ns = tree.RedBase.ContainingNamespace;
+                    writer.WriteLine($"public abstract {ns.ToCSharpString(false)}.{component.Type.Name}{(component.IsOptional ? "?" : "")} {component.PropertyName} {{ get; }}");
                 }
             }
             else
@@ -365,7 +368,7 @@ internal static class RedTreeGenerator
                     if (extra.FieldName == "_kind") continue;
 
                     writer.WriteLine("public {0}{1} {2} => (({3})this.Green).{2};",
-                        extra.PassToBase ? " override" : "",
+                        extra.PassToBase ? "override " : "",
                         extra.Type.ToCSharpString(),
                         extra.PropertyName,
                         node.TypeSymbol.ToCSharpString(false));
@@ -374,7 +377,7 @@ internal static class RedTreeGenerator
                 {
                     var child = node.Children[idx];
                     writer.WriteLine("public {0}{1}.{2} {3} => GetRed(ref this.{4}, {5}){6};",
-                        child.PassToBase ? " override" : "",
+                        child.PassToBase ? "override " : "",
                         tree.RedBase.ContainingNamespace.ToCSharpString(false),
                         child.Type.Name + (child.IsOptional ? "?" : ""),
                         child.PropertyName,

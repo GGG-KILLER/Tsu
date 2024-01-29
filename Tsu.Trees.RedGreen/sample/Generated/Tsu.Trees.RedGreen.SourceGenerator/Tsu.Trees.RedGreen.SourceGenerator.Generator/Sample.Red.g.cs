@@ -162,25 +162,25 @@ namespace Tsu.Trees.RedGreen.Sample
 
     public sealed partial class FunctionCallExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
     {
-        private global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample? identifier;
-        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? firstArg;
-        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? secondArg;
+        private global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample? _identifier;
+        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? _firstArg;
+        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? _secondArg;
 
         internal FunctionCallExpressionSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
             : base(green, parent)
         {
         }
 
-        public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample Identifier => GetRed(ref this.identifier, 0)!;
-        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample FirstArg => GetRed(ref this.firstArg, 1)!;
-        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample? SecondArg => GetRed(ref this.secondArg, 2);
+        public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample Identifier => GetRed(ref this._identifier, 0)!;
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample FirstArg => GetRed(ref this._firstArg, 1)!;
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample? SecondArg => GetRed(ref this._secondArg, 2);
 
         internal override global::Tsu.Trees.RedGreen.Sample.SampleNode? GetNodeSlot(int index) =>
             index switch
             {
-                0 => GetRed(ref this.identifier, 0)!,
-                1 => GetRed(ref this.firstArg, 1)!,
-                2 => GetRed(ref this.secondArg, 2),
+                0 => GetRed(ref this._identifier, 0)!,
+                1 => GetRed(ref this._firstArg, 1)!,
+                2 => GetRed(ref this._secondArg, 2),
                 _ => null
             };
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
@@ -335,6 +335,142 @@ namespace Tsu.Trees.RedGreen.Sample
         }
 
         public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample WithName(global::System.String name) => this.Update(name);
+    }
+
+    public abstract partial class StatementSample : global::Tsu.Trees.RedGreen.Sample.SampleNode
+    {
+        private global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample? _semicolon;
+
+        internal StatementSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
+            : base(green, parent)
+        {
+        }
+
+        public abstract global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample Semicolon { get; }
+
+    }
+
+    public sealed partial class ExpressionStatementSample : global::Tsu.Trees.RedGreen.Sample.StatementSample
+    {
+        private global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample? _semicolon;
+        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? _expression;
+
+        internal ExpressionStatementSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
+            : base(green, parent)
+        {
+        }
+
+        public override global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample Semicolon => GetRed(ref this._semicolon, 0)!;
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample Expression => GetRed(ref this._expression, 1)!;
+
+        internal override global::Tsu.Trees.RedGreen.Sample.SampleNode? GetNodeSlot(int index) =>
+            index switch
+            {
+                0 => GetRed(ref this._semicolon, 0)!,
+                1 => GetRed(ref this._expression, 1)!,
+                _ => null
+            };
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override void Accept(Tsu.Trees.RedGreen.Sample.SampleVisitor visitor) => visitor.VisitExpressionStatement(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<TResult>(Tsu.Trees.RedGreen.Sample.SampleVisitor<TResult> visitor) => visitor.VisitExpressionStatement(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, TResult>(Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, TResult> visitor, T1 arg1) => visitor.VisitExpressionStatement(this, arg1);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, TResult>(Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) => visitor.VisitExpressionStatement(this, arg1, arg2);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, T3, TResult>(Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) => visitor.VisitExpressionStatement(this, arg1, arg2, arg3);
+
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionStatementSample Update(global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample semicolon, global::Tsu.Trees.RedGreen.Sample.ExpressionSample expression)
+        {
+            if (semicolon != this.Semicolon && expression != this.Expression)
+            {
+                return global::Tsu.Trees.RedGreen.Sample.SampleFactory.ExpressionStatement(semicolon, expression);
+            }
+
+            return this;
+        }
+
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionStatementSample WithSemicolon(global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample semicolon) => this.Update(semicolon, this.Expression);
+
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionStatementSample WithExpression(global::Tsu.Trees.RedGreen.Sample.ExpressionSample expression) => this.Update(this.Semicolon, expression);
+    }
+
+    public sealed partial class AssignmentStatement : global::Tsu.Trees.RedGreen.Sample.StatementSample
+    {
+        private global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample? _semicolon;
+        private global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample? _identifier;
+        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? _value;
+
+        internal AssignmentStatement(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
+            : base(green, parent)
+        {
+        }
+
+        public override global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample Semicolon => GetRed(ref this._semicolon, 0)!;
+        public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample Identifier => GetRed(ref this._identifier, 1)!;
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample Value => GetRed(ref this._value, 2)!;
+
+        internal override global::Tsu.Trees.RedGreen.Sample.SampleNode? GetNodeSlot(int index) =>
+            index switch
+            {
+                0 => GetRed(ref this._semicolon, 0)!,
+                1 => GetRed(ref this._identifier, 1)!,
+                2 => GetRed(ref this._value, 2)!,
+                _ => null
+            };
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override void Accept(Tsu.Trees.RedGreen.Sample.SampleVisitor visitor) => visitor.VisitAssignmentStatement(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<TResult>(Tsu.Trees.RedGreen.Sample.SampleVisitor<TResult> visitor) => visitor.VisitAssignmentStatement(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, TResult>(Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, TResult> visitor, T1 arg1) => visitor.VisitAssignmentStatement(this, arg1);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, TResult>(Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) => visitor.VisitAssignmentStatement(this, arg1, arg2);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, T3, TResult>(Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) => visitor.VisitAssignmentStatement(this, arg1, arg2, arg3);
+
+        public global::Tsu.Trees.RedGreen.Sample.AssignmentStatement Update(global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample semicolon, global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.ExpressionSample value)
+        {
+            if (semicolon != this.Semicolon && identifier != this.Identifier && value != this.Value)
+            {
+                return global::Tsu.Trees.RedGreen.Sample.SampleFactory.AssignmentStatement(semicolon, identifier, value);
+            }
+
+            return this;
+        }
+
+        public global::Tsu.Trees.RedGreen.Sample.AssignmentStatement WithSemicolon(global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample semicolon) => this.Update(semicolon, this.Identifier, this.Value);
+
+        public global::Tsu.Trees.RedGreen.Sample.AssignmentStatement WithIdentifier(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample identifier) => this.Update(this.Semicolon, identifier, this.Value);
+
+        public global::Tsu.Trees.RedGreen.Sample.AssignmentStatement WithValue(global::Tsu.Trees.RedGreen.Sample.ExpressionSample value) => this.Update(this.Semicolon, this.Identifier, value);
+    }
+
+    public sealed partial class SemicolonTokenSample : global::Tsu.Trees.RedGreen.Sample.SampleNode
+    {
+
+        internal SemicolonTokenSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
+            : base(green, parent)
+        {
+        }
+
+
+        internal override global::Tsu.Trees.RedGreen.Sample.SampleNode? GetNodeSlot(int index) =>
+            index switch
+            {
+                _ => null
+            };
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override void Accept(Tsu.Trees.RedGreen.Sample.SampleVisitor visitor) => visitor.VisitSemicolonToken(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<TResult>(Tsu.Trees.RedGreen.Sample.SampleVisitor<TResult> visitor) => visitor.VisitSemicolonToken(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, TResult>(Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, TResult> visitor, T1 arg1) => visitor.VisitSemicolonToken(this, arg1);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, TResult>(Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) => visitor.VisitSemicolonToken(this, arg1, arg2);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, T3, TResult>(Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) => visitor.VisitSemicolonToken(this, arg1, arg2, arg3);
     }
 }
 

@@ -4,6 +4,7 @@ namespace Tsu.Trees.RedGreen.Sample
 {
     public enum SampleKind
     {
+        SemicolonToken,
         IdentifierExpression,
         NumericalLiteralExpression,
 
@@ -13,6 +14,9 @@ namespace Tsu.Trees.RedGreen.Sample
         DivisionExpression,
 
         FunctionCallExpression,
+
+        AssignmentStatement,
+        ExpressionStatement,
     }
 
     public abstract partial class SampleNode
@@ -25,6 +29,11 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 {
     [GreenTreeRoot(typeof(SampleNode), "Sample", typeof(SampleKind), CreateRewriter = true, CreateVisitors = true, CreateWalker = true)]
     internal abstract partial class GreenNode
+    {
+    }
+
+    [GreenNode(SampleKind.SemicolonToken)]
+    internal sealed partial class SemicolonTokenSample : GreenNode
     {
     }
 
@@ -54,8 +63,26 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
     [GreenNode(SampleKind.FunctionCallExpression)]
     internal sealed partial class FunctionCallExpressionSample : ExpressionSample
     {
-        private readonly IdentifierExpressionSample identifier;
-        private readonly ExpressionSample firstArg;
-        private readonly ExpressionSample? secondArg;
+        private readonly IdentifierExpressionSample _identifier;
+        private readonly ExpressionSample _firstArg;
+        private readonly ExpressionSample? _secondArg;
+    }
+
+    internal abstract partial class StatementSample : GreenNode
+    {
+        protected readonly SemicolonTokenSample _semicolon;
+    }
+
+    [GreenNode(SampleKind.AssignmentStatement)]
+    internal sealed partial class AssignmentStatement : StatementSample
+    {
+        private readonly IdentifierExpressionSample _identifier;
+        private readonly ExpressionSample _value;
+    }
+
+    [GreenNode(SampleKind.ExpressionStatement)]
+    internal sealed partial class ExpressionStatementSample : StatementSample
+    {
+        private readonly ExpressionSample _expression;
     }
 }
