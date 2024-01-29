@@ -77,9 +77,9 @@ internal static class GreenTreeWriter
             writer.WriteGreenConstructor(root);
             writer.WriteLineNoTabs("");
 
-            foreach (var extraData in root.ExtraData)
+            foreach (var component in root.Components)
             {
-                writer.WriteLine("public {0} {1} => this.{2};", extraData.Type.ToCSharpString(), extraData.PropertyName, extraData.FieldName);
+                writer.WriteLine("public {0} {1} => this.{2};", component.Type.ToCSharpString(), component.PropertyName, component.FieldName);
             }
             writer.WriteLineNoTabs("");
 
@@ -108,9 +108,7 @@ internal static class GreenTreeWriter
             writer.WriteLineNoTabs("");
             #endregion int SlotCount
 
-            writer.Write("public abstract ");
-            writer.Write(tree.GreenBase.ToCSharpString());
-            writer.WriteLine("? GetSlot(int index);");
+            writer.WriteLine("public abstract {0}? GetSlot(int index);", tree.GreenBase.ToCSharpString());
             writer.WriteLineNoTabs("");
 
             #region TGreenRoot GetRequiredSlot(int index)
@@ -120,7 +118,7 @@ internal static class GreenTreeWriter
             {
                 writer.WriteLine("var node = this.GetSlot(index);");
                 writer.WriteLine("Debug.Assert((object)node != null)");
-                writer.WriteLine("return node;");
+                writer.WriteLine("return node!;");
             }
             writer.Indent--;
             writer.WriteLine('}');
@@ -234,16 +232,12 @@ internal static class GreenTreeWriter
         {
             writer.WriteGreenConstructor(node);
 
-            if (node.ExtraData.Any(x => !x.PassToBase) || node.Children.Any(x => !x.PassToBase))
+            if (node.NodeComponents.Any())
             {
                 writer.WriteLineNoTabs("");
-                foreach (var extraData in node.ExtraData.Where(x => !x.PassToBase))
+                foreach (var component in node.NodeComponents)
                 {
-                    writer.WriteLine("public {0} {1} => this.{2};", extraData.Type.ToCSharpString(), extraData.PropertyName, extraData.FieldName);
-                }
-                foreach (var child in node.Children.Where(x => !x.PassToBase))
-                {
-                    writer.WriteLine("public {0} {1} => this.{2};", child.Type.ToCSharpString(), child.PropertyName, child.FieldName);
+                    writer.WriteLine("public {0} {1} => this.{2};", component.Type.ToCSharpString(), component.PropertyName, component.FieldName);
                 }
             }
 
@@ -291,16 +285,12 @@ internal static class GreenTreeWriter
             #endregion TRedBase CreateRed(TRedBase? parent)
 
             #region TNode Update(...)
-            if (!node.TypeSymbol.IsAbstract && node.ExtraData.Concat(node.Children).Where(x => node.Kinds.Length == 1 && x.FieldName != "_kind").Any())
+            if (!node.TypeSymbol.IsAbstract && node.RequiredComponents.Any())
             {
                 writer.WriteLineNoTabs("");
                 writer.Write("public {0} Update(", node.TypeSymbol.ToCSharpString());
-                var components = node.ExtraData.Concat(node.Children);
-                // Don't need to specify the kind if there's only one possible kind.
-                if (node.Kinds.Length == 1)
-                    components = components.Where(x => x.FieldName != "_kind");
                 var first = true;
-                foreach (var component in components)
+                foreach (var component in node.RequiredComponents)
                 {
                     if (!first) writer.Write(", ");
                     first = false;
@@ -312,7 +302,7 @@ internal static class GreenTreeWriter
                 {
                     writer.Write("if (");
                     first = true;
-                    foreach (var component in components)
+                    foreach (var component in node.RequiredComponents)
                     {
                         if (!first) writer.Write(" && ");
                         first = false;
@@ -327,7 +317,7 @@ internal static class GreenTreeWriter
                             tree.Suffix,
                             node.TypeSymbol.Name.WithoutSuffix(tree.Suffix));
                         first = true;
-                        foreach (var component in components)
+                        foreach (var component in node.RequiredComponents)
                         {
                             if (!first) writer.Write(", ");
                             first = false;
@@ -358,15 +348,7 @@ internal static class GreenTreeWriter
         writer.Write(node.TypeSymbol.Name);
         writer.Write('(');
         var first = true;
-        foreach (var component in node.ExtraData)
-        {
-            if (!first) writer.Write(", ");
-            first = false;
-            writer.Write(component.Type.ToCSharpString());
-            writer.Write(' ');
-            writer.Write(component.ParameterName);
-        }
-        foreach (var component in node.Children)
+        foreach (var component in node.Components)
         {
             if (!first) writer.Write(", ");
             first = false;
@@ -375,17 +357,11 @@ internal static class GreenTreeWriter
             writer.Write(component.ParameterName);
         }
         writer.Write(')');
-        if (node.ExtraData.Any(x => x.PassToBase) || node.Children.Any(x => x.PassToBase))
+        if (node.ParentComponents.Any())
         {
             writer.Write(" : base(");
             first = true;
-            foreach (var component in node.ExtraData.Where(x => x.PassToBase))
-            {
-                if (!first) writer.Write(", ");
-                first = false;
-                writer.Write(component.ParameterName);
-            }
-            foreach (var component in node.Children.Where(x => x.PassToBase))
+            foreach (var component in node.ParentComponents)
             {
                 if (!first) writer.Write(", ");
                 first = false;
@@ -405,16 +381,7 @@ internal static class GreenTreeWriter
                 writer.WriteLine($"this.SlotCount = {node.Children.Length};");
         }
 
-        foreach (var component in node.ExtraData)
-        {
-            if (component.PassToBase) continue;
-            writer.Write("this.");
-            writer.Write(component.FieldName);
-            writer.Write(" = ");
-            writer.Write(component.ParameterName);
-            writer.WriteLine(';');
-        }
-        foreach (var component in node.Children)
+        foreach (var component in node.NodeComponents)
         {
             if (component.PassToBase) continue;
             writer.Write("this.");

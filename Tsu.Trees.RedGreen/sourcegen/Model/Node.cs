@@ -29,6 +29,16 @@ internal sealed record Node(
     ImmutableArray<Component> ExtraData
 )
 {
+    public IEnumerable<Component> Components => Children.Concat(ExtraData);
+
+    public IEnumerable<Component> ParentComponents => Components.Where(x => x.PassToBase);
+
+    public IEnumerable<Component> NodeComponents => Components.Where(x => !x.PassToBase);
+
+    public IEnumerable<Component> ComponentsWithoutKind => Components.Where(x => x.FieldName != "_kind");
+
+    public IEnumerable<Component> RequiredComponents => Kinds.Length == 1 ? ComponentsWithoutKind : Components;
+
     public bool Equals(Node? other) =>
         other is not null
         && SymbolEqualityComparer.Default.Equals(BaseSymbol, other.BaseSymbol)
