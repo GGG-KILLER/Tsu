@@ -8,6 +8,96 @@ using System.Linq;
 
 namespace Tsu.Trees.RedGreen.Sample
 {
+
+    public partial class SampleVisitor
+    {
+        public virtual void Visit(global::Tsu.Trees.RedGreen.Sample.SampleNode? node)
+        {
+            if (node != null)
+            {
+                node.Accept(this);
+            }
+        }
+        public virtual void VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample node) => this.DefaultVisit(node);
+        public virtual void VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample node) => this.DefaultVisit(node);
+        public virtual void VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample node) => this.DefaultVisit(node);
+        public virtual void VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample node) => this.DefaultVisit(node);
+        protected virtual void DefaultVisit(global::Tsu.Trees.RedGreen.Sample.SampleNode node) { }
+    }
+
+    public partial class SampleVisitor<TResult>
+    {
+        public virtual TResult? Visit(global::Tsu.Trees.RedGreen.Sample.SampleNode? node) => node == null ? default : node.Accept(this
+        );
+        public virtual TResult? VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample node) => this.DefaultVisit(node);
+        public virtual TResult? VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample node) => this.DefaultVisit(node);
+        public virtual TResult? VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample node) => this.DefaultVisit(node);
+        public virtual TResult? VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample node) => this.DefaultVisit(node);
+        protected virtual TResult? DefaultVisit(global::Tsu.Trees.RedGreen.Sample.SampleNode node) => default;
+    }
+
+    public partial class SampleVisitor<T1, TResult>
+    {
+        public virtual TResult? Visit(global::Tsu.Trees.RedGreen.Sample.SampleNode? node, T1 arg1) => node == null ? default : node.Accept(this
+        , arg1);
+        public virtual TResult? VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample node, T1 arg1) => this.DefaultVisit(node, arg1);
+        public virtual TResult? VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample node, T1 arg1) => this.DefaultVisit(node, arg1);
+        public virtual TResult? VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample node, T1 arg1) => this.DefaultVisit(node, arg1);
+        public virtual TResult? VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample node, T1 arg1) => this.DefaultVisit(node, arg1);
+        protected virtual TResult? DefaultVisit(global::Tsu.Trees.RedGreen.Sample.SampleNode node, T1 arg1) => default;
+    }
+
+    public partial class SampleVisitor<T1, T2, TResult>
+    {
+        public virtual TResult? Visit(global::Tsu.Trees.RedGreen.Sample.SampleNode? node, T1 arg1, T2 arg2) => node == null ? default : node.Accept(this
+        , arg1, arg2);
+        public virtual TResult? VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample node, T1 arg1, T2 arg2) => this.DefaultVisit(node, arg1, arg2);
+        public virtual TResult? VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample node, T1 arg1, T2 arg2) => this.DefaultVisit(node, arg1, arg2);
+        public virtual TResult? VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample node, T1 arg1, T2 arg2) => this.DefaultVisit(node, arg1, arg2);
+        public virtual TResult? VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample node, T1 arg1, T2 arg2) => this.DefaultVisit(node, arg1, arg2);
+        protected virtual TResult? DefaultVisit(global::Tsu.Trees.RedGreen.Sample.SampleNode node, T1 arg1, T2 arg2) => default;
+    }
+
+    public partial class SampleVisitor<T1, T2, T3, TResult>
+    {
+        public virtual TResult? Visit(global::Tsu.Trees.RedGreen.Sample.SampleNode? node, T1 arg1, T2 arg2, T3 arg3) => node == null ? default : node.Accept(this
+        , arg1, arg2, arg3);
+        public virtual TResult? VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample node, T1 arg1, T2 arg2, T3 arg3) => this.DefaultVisit(node, arg1, arg2, arg3);
+        public virtual TResult? VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample node, T1 arg1, T2 arg2, T3 arg3) => this.DefaultVisit(node, arg1, arg2, arg3);
+        public virtual TResult? VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample node, T1 arg1, T2 arg2, T3 arg3) => this.DefaultVisit(node, arg1, arg2, arg3);
+        public virtual TResult? VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample node, T1 arg1, T2 arg2, T3 arg3) => this.DefaultVisit(node, arg1, arg2, arg3);
+        protected virtual TResult? DefaultVisit(global::Tsu.Trees.RedGreen.Sample.SampleNode node, T1 arg1, T2 arg2, T3 arg3) => default;
+    }
+
+    public abstract class SampleWalker : global::Tsu.Trees.RedGreen.Sample.SampleVisitor
+    {
+        private int _recursionDepth;
+
+        public override void Visit(global::Tsu.Trees.RedGreen.Sample.SampleNode? node)
+        {
+            if (node != null)
+            {
+                _recursionDepth++;
+                if (_recursionDepth > 30)
+                {
+                    global::System.Runtime.CompilerServices.RuntimeHelpers.EnsureSufficientExecutionStack();
+                }
+
+                node.Accept(this);
+
+                _recursionDepth--;
+            }
+        }
+
+        protected override void DefaultVisit(global::Tsu.Trees.RedGreen.Sample.SampleNode node)
+        {
+            foreach (var child in node.ChildNodes())
+            {
+                Visit(child);
+            }
+        }
+    }
+
     public static class SampleFactory
     {
         public static global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample IdentifierExpression(global::System.String name) =>

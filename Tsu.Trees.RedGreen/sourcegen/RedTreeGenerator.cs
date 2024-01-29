@@ -76,6 +76,19 @@ internal static class RedTreeGenerator
             writer.WriteLine('{');
             writer.Indent++;
             {
+                if (tree.CreateVisitors)
+                {
+                    writer.WriteVisitors(tree, tree.RedBase);
+                    writer.WriteLineNoTabs("");
+                }
+
+                if (tree.CreateWalker)
+                {
+                    writer.WriteWalker(tree, tree.RedBase);
+                    writer.WriteLineNoTabs("");
+                }
+
+
                 writer.WriteRedFactory(tree);
             }
             writer.Indent--;
@@ -182,6 +195,10 @@ internal static class RedTreeGenerator
 
                 """);
             #endregion TRedRoot GetRequiredNodeSlot(int slot)
+
+            #region T Accept(Visitor visitor)
+            writer.WriteAbstractAcceptMethods(tree, tree.RedBase.ContainingNamespace);
+            #endregion T Accept(Visitor visitor)
 
             #region IEnumerable<TRedRoot> ChildNodes()
             writer.WriteLines($$"""
@@ -396,6 +413,13 @@ internal static class RedTreeGenerator
                 writer.Indent--;
             }
             #endregion TRedRoot? GetNodeSlot(int index)
+
+            #region T Accept(Visitor visitor)
+            if (node.Descendants.Length == 0)
+            {
+                writer.WriteOverrideAcceptMethods(tree, tree.RedBase.ContainingNamespace, node);
+            }
+            #endregion T Accept(Visitor visitor)
 
             #region TNode Update(...)
             if (node.Descendants.Length == 0 && node.RequiredComponents.Any())

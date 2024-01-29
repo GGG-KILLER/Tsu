@@ -92,6 +92,11 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         public global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed() => this.CreateRed(null);
         public abstract global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed(global::Tsu.Trees.RedGreen.Sample.SampleNode? parent);
+        public abstract void Accept(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor visitor);
+        public abstract TResult? Accept<TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<TResult> visitor);
+        public abstract TResult? Accept<T1, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, TResult> visitor, T1 arg1);
+        public abstract TResult? Accept<T1, T2, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2);
+        public abstract TResult? Accept<T1, T2, T3, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3);
     }
 
     abstract partial class ExpressionSample : global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode
@@ -116,6 +121,16 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         public override global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed(global::Tsu.Trees.RedGreen.Sample.SampleNode? parent) =>
             new global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample(this, parent);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override void Accept(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor visitor) => visitor.VisitIdentifierExpression(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<TResult> visitor) => visitor.VisitIdentifierExpression(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, TResult> visitor, T1 arg1) => visitor.VisitIdentifierExpression(this, arg1);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) => visitor.VisitIdentifierExpression(this, arg1, arg2);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, T3, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) => visitor.VisitIdentifierExpression(this, arg1, arg2, arg3);
 
         public global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample Update(string name)
         {
@@ -143,6 +158,16 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         public override global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed(global::Tsu.Trees.RedGreen.Sample.SampleNode? parent) =>
             new global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample(this, parent);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override void Accept(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor visitor) => visitor.VisitNumericalLiteralExpression(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<TResult> visitor) => visitor.VisitNumericalLiteralExpression(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, TResult> visitor, T1 arg1) => visitor.VisitNumericalLiteralExpression(this, arg1);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) => visitor.VisitNumericalLiteralExpression(this, arg1, arg2);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, T3, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) => visitor.VisitNumericalLiteralExpression(this, arg1, arg2, arg3);
 
         public global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample Update(double value)
         {
@@ -177,6 +202,16 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         public override global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed(global::Tsu.Trees.RedGreen.Sample.SampleNode? parent) =>
             new global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample(this, parent);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override void Accept(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor visitor) => visitor.VisitBinaryOperationExpression(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<TResult> visitor) => visitor.VisitBinaryOperationExpression(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, TResult> visitor, T1 arg1) => visitor.VisitBinaryOperationExpression(this, arg1);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) => visitor.VisitBinaryOperationExpression(this, arg1, arg2);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, T3, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) => visitor.VisitBinaryOperationExpression(this, arg1, arg2, arg3);
 
         public global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample Update(global::Tsu.Trees.RedGreen.Sample.SampleKind kind, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample left, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample right)
         {
@@ -214,6 +249,16 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         public override global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed(global::Tsu.Trees.RedGreen.Sample.SampleNode? parent) =>
             new global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample(this, parent);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override void Accept(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor visitor) => visitor.VisitFunctionCallExpression(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<TResult> visitor) => visitor.VisitFunctionCallExpression(this);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, TResult> visitor, T1 arg1) => visitor.VisitFunctionCallExpression(this, arg1);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) => visitor.VisitFunctionCallExpression(this, arg1, arg2);
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, T3, TResult>(Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) => visitor.VisitFunctionCallExpression(this, arg1, arg2, arg3);
 
         public global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample Update(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample? secondArg)
         {
@@ -288,6 +333,96 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
             return new global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample(
             global::Tsu.Trees.RedGreen.Sample.SampleKind.FunctionCallExpression, identifier, firstArg, secondArg);
+        }
+    }
+
+
+    internal partial class SampleVisitor
+    {
+        public virtual void Visit(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? node)
+        {
+            if (node != null)
+            {
+                node.Accept(this);
+            }
+        }
+        public virtual void VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample node) => this.DefaultVisit(node);
+        public virtual void VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample node) => this.DefaultVisit(node);
+        public virtual void VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample node) => this.DefaultVisit(node);
+        public virtual void VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample node) => this.DefaultVisit(node);
+        protected virtual void DefaultVisit(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode node) { }
+    }
+
+    internal partial class SampleVisitor<TResult>
+    {
+        public virtual TResult? Visit(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? node) => node == null ? default : node.Accept(this
+        );
+        public virtual TResult? VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample node) => this.DefaultVisit(node);
+        public virtual TResult? VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample node) => this.DefaultVisit(node);
+        public virtual TResult? VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample node) => this.DefaultVisit(node);
+        public virtual TResult? VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample node) => this.DefaultVisit(node);
+        protected virtual TResult? DefaultVisit(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode node) => default;
+    }
+
+    internal partial class SampleVisitor<T1, TResult>
+    {
+        public virtual TResult? Visit(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? node, T1 arg1) => node == null ? default : node.Accept(this
+        , arg1);
+        public virtual TResult? VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample node, T1 arg1) => this.DefaultVisit(node, arg1);
+        public virtual TResult? VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample node, T1 arg1) => this.DefaultVisit(node, arg1);
+        public virtual TResult? VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample node, T1 arg1) => this.DefaultVisit(node, arg1);
+        public virtual TResult? VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample node, T1 arg1) => this.DefaultVisit(node, arg1);
+        protected virtual TResult? DefaultVisit(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode node, T1 arg1) => default;
+    }
+
+    internal partial class SampleVisitor<T1, T2, TResult>
+    {
+        public virtual TResult? Visit(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? node, T1 arg1, T2 arg2) => node == null ? default : node.Accept(this
+        , arg1, arg2);
+        public virtual TResult? VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample node, T1 arg1, T2 arg2) => this.DefaultVisit(node, arg1, arg2);
+        public virtual TResult? VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample node, T1 arg1, T2 arg2) => this.DefaultVisit(node, arg1, arg2);
+        public virtual TResult? VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample node, T1 arg1, T2 arg2) => this.DefaultVisit(node, arg1, arg2);
+        public virtual TResult? VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample node, T1 arg1, T2 arg2) => this.DefaultVisit(node, arg1, arg2);
+        protected virtual TResult? DefaultVisit(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode node, T1 arg1, T2 arg2) => default;
+    }
+
+    internal partial class SampleVisitor<T1, T2, T3, TResult>
+    {
+        public virtual TResult? Visit(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? node, T1 arg1, T2 arg2, T3 arg3) => node == null ? default : node.Accept(this
+        , arg1, arg2, arg3);
+        public virtual TResult? VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample node, T1 arg1, T2 arg2, T3 arg3) => this.DefaultVisit(node, arg1, arg2, arg3);
+        public virtual TResult? VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample node, T1 arg1, T2 arg2, T3 arg3) => this.DefaultVisit(node, arg1, arg2, arg3);
+        public virtual TResult? VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample node, T1 arg1, T2 arg2, T3 arg3) => this.DefaultVisit(node, arg1, arg2, arg3);
+        public virtual TResult? VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample node, T1 arg1, T2 arg2, T3 arg3) => this.DefaultVisit(node, arg1, arg2, arg3);
+        protected virtual TResult? DefaultVisit(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode node, T1 arg1, T2 arg2, T3 arg3) => default;
+    }
+
+    internal abstract class SampleWalker : global::Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor
+    {
+        private int _recursionDepth;
+
+        public override void Visit(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? node)
+        {
+            if (node != null)
+            {
+                _recursionDepth++;
+                if (_recursionDepth > 30)
+                {
+                    global::System.Runtime.CompilerServices.RuntimeHelpers.EnsureSufficientExecutionStack();
+                }
+
+                node.Accept(this);
+
+                _recursionDepth--;
+            }
+        }
+
+        protected override void DefaultVisit(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode node)
+        {
+            foreach (var child in node.ChildNodes())
+            {
+                Visit(child);
+            }
         }
     }
 }

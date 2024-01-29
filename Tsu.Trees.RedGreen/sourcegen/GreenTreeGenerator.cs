@@ -54,6 +54,18 @@ internal static class GreenTreeGenerator
             writer.WriteLineNoTabs("");
             writer.WriteGreenFactory(tree);
 
+            if (tree.CreateVisitors)
+            {
+                writer.WriteLineNoTabs("");
+                writer.WriteVisitors(tree, tree.GreenBase);
+            }
+
+            if (tree.CreateWalker)
+            {
+                writer.WriteLineNoTabs("");
+                writer.WriteWalker(tree, tree.GreenBase);
+            }
+
             writer.Indent--;
             writer.WriteLine('}');
             writer.WriteLineNoTabs("");
@@ -220,6 +232,10 @@ internal static class GreenTreeGenerator
             writer.WriteLine("public {0} CreateRed() => this.CreateRed(null);", tree.RedBase.ToCSharpString());
             writer.WriteLine("public abstract {0} CreateRed({0}? parent);", tree.RedBase.ToCSharpString());
             #endregion TRedRoot CreateRed()
+
+            #region T Accept(Visitor visitor)
+            writer.WriteAbstractAcceptMethods(tree, tree.GreenBase.ContainingNamespace);
+            #endregion T Accept(Visitor visitor)
         }
         writer.Indent--;
         writer.WriteLine('}');
@@ -286,6 +302,13 @@ internal static class GreenTreeGenerator
                 writer.Indent--;
             }
             #endregion TRedBase CreateRed(TRedBase? parent)
+
+            #region T Accept(Visitor visitor)
+            if (node.Descendants.Length == 0)
+            {
+                writer.WriteOverrideAcceptMethods(tree, tree.GreenBase.ContainingNamespace, node);
+            }
+            #endregion T Accept(Visitor visitor)
 
             #region TNode Update(...)
             if (!node.TypeSymbol.IsAbstract && node.RequiredComponents.Any())
