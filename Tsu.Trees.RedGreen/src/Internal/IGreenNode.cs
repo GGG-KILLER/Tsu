@@ -57,58 +57,16 @@ public interface IGreenNode<TGreenRoot, TRedRoot, TKind>
     TGreenRoot GetRequiredSlot(int index);
 
     /// <summary>
-    /// Enumerate all descendants of this tree in depth-first order.
-    /// </summary>
-    /// <returns></returns>
-    IEnumerable<TGreenRoot> EnumerateDescendants();
-
-    /// <summary>
     /// Enumerates the direct children that are under this node.
     /// </summary>
     /// <returns></returns>
     IEnumerable<TGreenRoot> ChildNodes();
 
-    #region Caching
-
     /// <summary>
-    /// Whether this node can be cached.
-    /// </summary>
-    bool IsCacheable { get; }
-
-    /// <summary>
-    /// Returns the hash code to be used for caching this node.
+    /// Enumerate all descendants of this tree in depth-first order.
     /// </summary>
     /// <returns></returns>
-    int GetCacheHash();
-
-    /// <summary>
-    /// Returns whether this node is equivalent to another cached counterpart.
-    /// </summary>
-    /// <param name="kind"></param>
-    /// <param name="child1"></param>
-    /// <returns></returns>
-    bool IsCacheEquivalent(int kind, TGreenRoot? child1);
-
-    /// <summary>
-    /// Returns whether this node is equivalent to another cached counterpart.
-    /// </summary>
-    /// <param name="kind"></param>
-    /// <param name="child1"></param>
-    /// <param name="child2"></param>
-    /// <returns></returns>
-    bool IsCacheEquivalent(int kind, TGreenRoot? child1, TGreenRoot? child2);
-
-    /// <summary>
-    /// Returns whether this node is equivalent to another cached counterpart.
-    /// </summary>
-    /// <param name="kind"></param>
-    /// <param name="child1"></param>
-    /// <param name="child2"></param>
-    /// <param name="child3"></param>
-    /// <returns></returns>
-    bool IsCacheEquivalent(int kind, TGreenRoot? child1, TGreenRoot? child2, TGreenRoot? child3);
-
-    #endregion Caching
+    IEnumerable<TGreenRoot> EnumerateDescendants();
 
     /// <summary>
     /// Returns whether this given node is equivalent to another.
