@@ -17,6 +17,7 @@
 
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Tsu.Trees.RedGreen.SourceGenerator.Model;
 
 namespace Tsu.Trees.RedGreen.SourceGenerator;
@@ -56,6 +57,9 @@ public sealed class Generator : IIncrementalGenerator
 
                 var indent = new string(' ', node.Item1 * 4);
                 builder.AppendLine($"// {indent}{node.Item2.TypeSymbol.ToCSharpString()}");
+                builder.AppendLine($"// {indent}    Kinds:");
+                foreach (var kind in node.Item2.Kinds)
+                    builder.AppendLine($"// {indent}        {kind.ToCSharpString()} (IsNull = {kind.IsNull}, Type = {kind.Type?.ToCSharpString() ?? "null"}, Value = {kind.Value})");
                 builder.AppendLine($"// {indent}    Children:");
                 foreach (var child in node.Item2.Children)
                     builder.AppendLine($"// {indent}        {child.Type.ToCSharpString()} (Name = {child.FieldName}, IsOptional = {child.IsOptional}, PassToBase = {child.PassToBase})");

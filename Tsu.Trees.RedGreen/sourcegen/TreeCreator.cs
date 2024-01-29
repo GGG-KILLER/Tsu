@@ -46,6 +46,8 @@ internal static class TreeCreator
 
                 var type = (INamedTypeSymbol) ctx.TargetSymbol;
                 var kinds = attr.ConstructorArguments.SingleOrDefault().Values;
+                if (kinds.IsDefault)
+                    kinds = ImmutableArray<TypedConstant>.Empty;
 
                 return new NodeInfo(
                     type.BaseType!,
@@ -115,6 +117,7 @@ internal static class TreeCreator
             node.NodeType,
             nodes[node.NodeType].Select(x => ProcessNode(tree, x, nodes, children, extraData))
                                 .ToImmutableArray(),
+            node.Kinds,
             children,
             extraData);
 

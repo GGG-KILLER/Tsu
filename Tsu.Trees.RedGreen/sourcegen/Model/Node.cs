@@ -24,6 +24,7 @@ internal sealed record Node(
     INamedTypeSymbol? BaseSymbol,
     INamedTypeSymbol TypeSymbol,
     ImmutableArray<Node> Descendants,
+    ImmutableArray<TypedConstant> Kinds,
     ImmutableArray<Component> Children,
     ImmutableArray<Component> ExtraData
 )
@@ -33,6 +34,7 @@ internal sealed record Node(
         && SymbolEqualityComparer.Default.Equals(BaseSymbol, other.BaseSymbol)
         && SymbolEqualityComparer.Default.Equals(TypeSymbol, other.TypeSymbol)
         && Descendants.SequenceEqual(other.Descendants)
+        && Kinds.SequenceEqual(other.Kinds)
         && Children.SequenceEqual(other.Children)
         && ExtraData.SequenceEqual(other.ExtraData);
 
@@ -45,6 +47,8 @@ internal sealed record Node(
             hash.Add(node);
         foreach (var child in Children)
             hash.Add(child);
+        foreach (var kind in Kinds)
+            hash.Add(kind);
         foreach (var data in ExtraData)
             hash.Add(data);
         return hash.ToHashCode();
