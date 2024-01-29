@@ -180,7 +180,7 @@ internal static class GreenTreeWriter
                 writer.WriteLine("if (other == null) return false;");
                 foreach (var extraData in root.ExtraData)
                 {
-                    writer.Write("if (this.{0} != other.{0}) return false;", extraData.PropertyName);
+                    writer.WriteLine("if (this.{0} != other.{0}) return false;", extraData.PropertyName);
                 }
                 writer.WriteLineNoTabs("");
                 writer.WriteLine("var n = this.SlotCount;");

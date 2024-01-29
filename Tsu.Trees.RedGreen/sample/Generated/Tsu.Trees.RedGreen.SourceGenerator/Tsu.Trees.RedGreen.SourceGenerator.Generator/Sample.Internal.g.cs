@@ -71,7 +71,8 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             if (this == other) return true;
             if (other == null) return false;
             if (this.Kind != other.Kind) return false;
-var n = this.SlotCount;
+
+            var n = this.SlotCount;
             if (n != other.SlotCount) return false;
 
             for (int i = 0; i < n; i++)
