@@ -39,6 +39,7 @@ internal static class TreeCreator
                 var createVisitors = attr.NamedArguments.SingleOrDefault(x => x.Key == "CreateVisitors").Value.Value is true;
                 var createWalker = attr.NamedArguments.SingleOrDefault(x => x.Key == "CreateWalker").Value.Value is true;
                 var createRewriter = attr.NamedArguments.SingleOrDefault(x => x.Key == "CreateRewriter").Value.Value is true;
+                var createLists = attr.NamedArguments.SingleOrDefault(x => x.Key == "CreateLists").Value.Value is true;
                 var debugDump = attr.NamedArguments.SingleOrDefault(x => x.Key == "DebugDump").Value.Value is true;
 
                 return new TreeInfo(
@@ -49,6 +50,7 @@ internal static class TreeCreator
                     createVisitors,
                     createWalker,
                     createRewriter,
+                    createLists,
                     debugDump
                 );
             });
@@ -164,6 +166,7 @@ internal static class TreeCreator
                     root.CreateVisitors,
                     root.CreateWalker,
                     root.CreateRewriter,
+                    root.CreateLists,
                     root.DebugDump
                 );
             });

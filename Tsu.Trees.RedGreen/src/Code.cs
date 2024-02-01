@@ -83,6 +83,12 @@ internal static class Code
         public bool CreateRewriter { get; set; }
 
         /// <summary>
+        /// Whether to generate list types and infrastructure for this tree.
+        /// This implies in having roslyn MIT-licensed code being added to your project.
+        /// </summary>
+        public bool CreateLists { get; set; }
+
+        /// <summary>
         /// Whether to generate a file with only comments dumping the entire tree structure.
         /// </summary>
         public bool DebugDump { get; set; }

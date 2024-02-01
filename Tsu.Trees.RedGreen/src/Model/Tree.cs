@@ -28,5 +28,6 @@ internal sealed record Tree(
     bool CreateVisitors,
     bool CreateWalker,
     bool CreateRewriter,
+    bool CreateLists,
     bool DebugDump
 );

@@ -29,6 +29,7 @@ internal sealed class ScriptTree(Tree tree)
     public bool CreateVisitors => tree.CreateVisitors;
     public bool CreateWalker => tree.CreateWalker;
     public bool CreateRewriter => tree.CreateRewriter;
+    public bool CreateLists => tree.CreateLists;
     public bool DebugDump => tree.DebugDump;
 
     public IEnumerable<ScriptNode> Nodes
