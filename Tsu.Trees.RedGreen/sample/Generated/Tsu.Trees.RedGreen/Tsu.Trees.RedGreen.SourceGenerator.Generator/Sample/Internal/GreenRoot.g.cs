@@ -6,6 +6,8 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 {
     abstract partial class GreenNode
     {
+        public const global::Tsu.Trees.RedGreen.Sample.SampleKind ListKind = global::Tsu.Trees.RedGreen.Sample.SampleKind.List;
+
         private readonly global::Tsu.Trees.RedGreen.Sample.SampleKind _kind;
         private byte _slotCount;
 
@@ -28,6 +30,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             protected set => _slotCount = (byte) value;
         }
 
+        public bool IsList => this._kind == ListKind;
 
         public abstract global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index);
 
@@ -40,28 +43,32 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         protected virtual int GetSlotCount() => _slotCount;
 
-        public global::System.Collections.Generic.IEnumerable<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode> ChildNodes()
-        {
-            var count = this.SlotCount;
-            for (var index = 0; index < count; index++)
-                yield return this.GetRequiredSlot(index);
-        }
+        public global::Tsu.Trees.RedGreen.Sample.Internal.ChildSampleList ChildNodes() =>
+            new global::Tsu.Trees.RedGreen.Sample.Internal.ChildSampleList(this);
 
         public global::System.Collections.Generic.IEnumerable<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode> EnumerateDescendants()
         {
-            var stack = new Stack<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode>(24);
-            stack.Push(this);
+            yield return this;
+
+            var stack = new Stack<global::Tsu.Trees.RedGreen.Sample.Internal.ChildSampleList.Enumerator>(24);
+            stack.Push(ChildNodes().GetEnumerator());
 
             while (stack.Count > 0)
             {
-                var current = stack.Pop();
+                var en = stack.Pop();
+                if (!en.MoveNext())
+                {
+                    // no more down this branch
+                    continue;
+                }
+
+                var current = en.Current;
+                stack.Push(en); // put it back on stack (struct enumerator)
 
                 yield return current;
 
-                foreach (var child in current.ChildNodes().Reverse())
-                {
-                    stack.Push(child);
-                }
+                stack.Push(current.ChildNodes().GetEnumerator());
+                continue;
             }
         }
 

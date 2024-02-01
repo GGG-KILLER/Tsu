@@ -6,6 +6,10 @@ namespace {{ green_base.namespace | not_global }}
 {
     abstract partial class {{ green_base.name }}
     {
+{{~ if create_lists ~}}
+        public const {{ kind_enum.csharp }} ListKind = {{ kind_enum.csharp }}.List;
+{{~ end ~}}
+
 {{~ for component in root.components ~}}
         private readonly {{ component.type.csharp }} {{ component.field_name }};
 {{~ end ~}}
@@ -36,9 +40,11 @@ namespace {{ green_base.namespace | not_global }}
             protected set => _slotCount = (byte) value;
         }
 
-        {{~ if create_lists ~}}
-        public bool IsList => this._kind == {{ kind_enum.csharp }}.List;
-        {{~ end ~}}
+{{~ if create_lists ~}}
+        public bool IsList => this._kind == ListKind;
+{{~ else ~}}
+        public bool IsList => false;
+{{~ end ~}}
 
         public abstract {{ green_base.csharp | not_null }}? GetSlot(int index);
 
@@ -51,28 +57,32 @@ namespace {{ green_base.namespace | not_global }}
 
         protected virtual int GetSlotCount() => _slotCount;
 
-        public global::System.Collections.Generic.IEnumerable<{{ green_base.csharp | not_null }}> ChildNodes()
-        {
-            var count = this.SlotCount;
-            for (var index = 0; index < count; index++)
-                yield return this.GetRequiredSlot(index);
-        }
+        public {{ green_base.namespace }}.Child{{ suffix }}List ChildNodes() =>
+            new {{ green_base.namespace }}.Child{{ suffix }}List(this);
 
         public global::System.Collections.Generic.IEnumerable<{{ green_base.csharp | not_null }}> EnumerateDescendants()
         {
-            var stack = new Stack<{{ green_base.csharp | not_null }}>(24);
-            stack.Push(this);
+            yield return this;
+
+            var stack = new Stack<{{ green_base.namespace }}.Child{{ suffix }}List.Enumerator>(24);
+            stack.Push(ChildNodes().GetEnumerator());
 
             while (stack.Count > 0)
             {
-                var current = stack.Pop();
+                var en = stack.Pop();
+                if (!en.MoveNext())
+                {
+                    // no more down this branch
+                    continue;
+                }
+
+                var current = en.Current;
+                stack.Push(en); // put it back on stack (struct enumerator)
 
                 yield return current;
 
-                foreach (var child in current.ChildNodes().Reverse())
-                {
-                    stack.Push(child);
-                }
+                stack.Push(current.ChildNodes().GetEnumerator());
+                continue;
             }
         }
 
