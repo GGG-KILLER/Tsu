@@ -79,7 +79,6 @@ public sealed class Generator : IIncrementalGenerator
 
         context.RegisterTemplateOutput(trees);
         context.RegisterGreenOutput(trees);
-        context.RegisterRedTreeOutput(trees);
         context.RegisterRedMainOutput(trees);
     }
 }

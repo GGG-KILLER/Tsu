@@ -21,6 +21,7 @@ internal static class TemplateGenerator
         {
             var builtins = GetBuiltins();
             builtins.Import("nosuffix", (string str) => str.WithoutSuffix(tree.Suffix));
+            builtins.Import("derives_from", (ScriptTypeSymbol symbolA, ScriptTypeSymbol symbolB) => symbolA.Symbol.DerivesFrom((INamedTypeSymbol) symbolB.Symbol));
             var context = new TemplateContext(builtins, StringComparer.OrdinalIgnoreCase)
             {
                 EnableRelaxedIndexerAccess = false,

@@ -31,6 +31,7 @@
     <EmbeddedResource Include="Templates/Internal/GreenNodes.sbn-cs" Visible="true" LogicalName="Internal/GreenNodes.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenWalker.sbn-cs" Visible="true" LogicalName="Internal/GreenWalker.sbn-cs" />
     <EmbeddedResource Include="Templates/RedBase.sbn-cs" Visible="true" LogicalName="RedBase.sbn-cs" />
+    <EmbeddedResource Include="Templates/RedNodes.sbn-cs" Visible="true" LogicalName="RedNodes.sbn-cs" />
     <EmbeddedResource Include="Templates/RedWalker.sbn-cs" Visible="true" LogicalName="RedWalker.sbn-cs" />
   </ItemGroup>
 
