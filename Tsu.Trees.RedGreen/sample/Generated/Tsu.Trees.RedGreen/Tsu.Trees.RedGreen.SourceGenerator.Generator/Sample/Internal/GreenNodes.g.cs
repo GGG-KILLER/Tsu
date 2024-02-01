@@ -4,7 +4,7 @@
 
 namespace Tsu.Trees.RedGreen.Sample.Internal
 {
-    abstract partial class ExpressionSample : global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode
+    partial class ExpressionSample : global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode
     {
         protected ExpressionSample(
             global::Tsu.Trees.RedGreen.Sample.SampleKind kind
@@ -276,7 +276,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             return this;
         }
     }
-    abstract partial class StatementSample : global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode
+    partial class StatementSample : global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode
     {
         protected StatementSample(
             global::Tsu.Trees.RedGreen.Sample.SampleKind kind,

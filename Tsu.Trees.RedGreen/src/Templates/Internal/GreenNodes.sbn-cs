@@ -5,7 +5,7 @@
 namespace {{ green_base.namespace_no_global }}
 {
 {{~ for node in non_root_nodes ~}}
-    {{ if node.type.is_abstract -}} abstract {{ end }}partial class {{ node.type.name }} : {{ node.base.csharp_no_nullable }}
+    partial class {{ node.type.name }} : {{ node.base.csharp_no_nullable }}
     {
         {{ if node.type.is_abstract -}}
         protected
