@@ -16,7 +16,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Microsoft.CodeAnalysis;
-using Scriban.Runtime;
 
 namespace Tsu.Trees.RedGreen.SourceGenerator.Model;
 
