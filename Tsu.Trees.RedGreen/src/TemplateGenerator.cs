@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using System.Reflection;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Scriban;
 using Scriban.Functions;
@@ -91,31 +90,5 @@ internal static class TemplateGenerator
             return (path, template);
         })
             .ToImmutableArray();
-    }
-
-    private static string DumpObject(ScriptObject obj)
-    {
-        var builder = new StringBuilder();
-        dumpKeys(builder, obj);
-        return builder.ToString();
-
-        static void dumpKeys(StringBuilder builder, ScriptObject obj, int depth = 0)
-        {
-            foreach (var kv in obj)
-            {
-                builder.Append(new string(' ', depth * 2));
-                if (kv.Value is ScriptObject scriptObj && depth < 3)
-                {
-                    builder.AppendLine($"#region {kv.Key}");
-                    dumpKeys(builder, scriptObj, depth + 1);
-                    builder.AppendLine($"#endregion {kv.Key}");
-                }
-                else
-                {
-                    builder.Append("// ");
-                    builder.AppendLine($"{kv.Key}: {kv.Value}");
-                }
-            }
-        }
     }
 }
