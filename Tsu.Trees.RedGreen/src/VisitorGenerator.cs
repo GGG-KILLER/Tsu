@@ -199,39 +199,7 @@ internal static class VisitorGenerator
         if (!tree.CreateVisitors)
         {
             writer.WriteVisitor(tree, baseType, 0);
-            writer.WriteLineNoTabs("");
         }
-
-        writer.WriteLines($$"""
-            {{baseType.DeclaredAccessibility.ToCSharpString()}} abstract class {{tree.Suffix}}Walker : {{baseType.ContainingNamespace.ToCSharpString(false)}}.{{tree.Suffix}}Visitor
-            {
-                private int _recursionDepth;
-
-                public override void Visit({{baseType.ToCSharpString()}}? node)
-                {
-                    if (node != null)
-                    {
-                        _recursionDepth++;
-                        if (_recursionDepth > 30)
-                        {
-                            global::System.Runtime.CompilerServices.RuntimeHelpers.EnsureSufficientExecutionStack();
-                        }
-
-                        node.Accept(this);
-
-                        _recursionDepth--;
-                    }
-                }
-
-                protected override void DefaultVisit({{baseType.ToCSharpString()}} node)
-                {
-                    foreach (var child in node.ChildNodes())
-                    {
-                        Visit(child);
-                    }
-                }
-            }
-            """);
     }
 
     public static void WriteRewriter(this IndentedTextWriter writer, Tree tree, INamedTypeSymbol baseType)

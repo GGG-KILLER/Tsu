@@ -79,7 +79,7 @@ internal static class GreenTreeGenerator
             writer.WriteLineNoTabs("");
 
             writer.Flush();
-            ctx.AddSource($"{tree.Suffix}.Internal.g.cs", builder.ToSourceText());
+            ctx.AddSource($"{tree.Suffix}/Internal/Visitors.g.cs", builder.ToSourceText());
         });
     }
     private static void WriteGreenFactory(this IndentedTextWriter writer, Tree tree)

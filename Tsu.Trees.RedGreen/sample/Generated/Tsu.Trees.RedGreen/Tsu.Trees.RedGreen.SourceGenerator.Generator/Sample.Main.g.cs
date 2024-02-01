@@ -84,34 +84,6 @@ namespace Tsu.Trees.RedGreen.Sample
         protected virtual TResult? DefaultVisit(global::Tsu.Trees.RedGreen.Sample.SampleNode node, T1 arg1, T2 arg2, T3 arg3) => default;
     }
 
-    public abstract class SampleWalker : global::Tsu.Trees.RedGreen.Sample.SampleVisitor
-    {
-        private int _recursionDepth;
-
-        public override void Visit(global::Tsu.Trees.RedGreen.Sample.SampleNode? node)
-        {
-            if (node != null)
-            {
-                _recursionDepth++;
-                if (_recursionDepth > 30)
-                {
-                    global::System.Runtime.CompilerServices.RuntimeHelpers.EnsureSufficientExecutionStack();
-                }
-
-                node.Accept(this);
-
-                _recursionDepth--;
-            }
-        }
-
-        protected override void DefaultVisit(global::Tsu.Trees.RedGreen.Sample.SampleNode node)
-        {
-            foreach (var child in node.ChildNodes())
-            {
-                Visit(child);
-            }
-        }
-    }
 
 
     public partial class SampleRewriter : Tsu.Trees.RedGreen.Sample.SampleVisitor<global::Tsu.Trees.RedGreen.Sample.SampleNode>
