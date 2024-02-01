@@ -71,7 +71,7 @@ internal static class RedTreeGenerator
             writer.WriteLineNoTabs("");
 
             writer.Flush();
-            ctx.AddSource($"{tree.Suffix}.Main.g.cs", builder.ToSourceText());
+            ctx.AddSource($"{tree.Suffix}/Main.g.cs", builder.ToSourceText());
         });
     }
 
