@@ -27,16 +27,15 @@ public sealed class Generator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        context.RegisterResourcesToCopy([
+            "GreenTreeRootAttribute.cs",
+            "GreenNodeAttribute.cs",
+        ]);
+
         var roots = context.GetTreeInfos();
         var nodes = context.GetNodeInfos();
 
         var trees = TreeCreator.BuildTree(roots, nodes);
-
-        context.RegisterPostInitializationOutput(ctx =>
-        {
-            ctx.AddSource("GreenNodeAttribute.g.cs", Code.GreenNodeAttributeCode);
-            ctx.AddSource("GreenTreeRootAttribute.g.cs", Code.GreenTreeRootAttributeCode);
-        });
 
         context.RegisterSourceOutput(trees, (ctx, tree) =>
         {

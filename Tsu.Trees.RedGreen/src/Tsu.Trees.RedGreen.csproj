@@ -27,6 +27,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Templates/**/*.cs" />
+    <EmbeddedResource Include="Templates/GreenTreeRootAttribute.cs" Visible="true" LogicalName="GreenTreeRootAttribute.cs" />
+    <EmbeddedResource Include="Templates/GreenNodeAttribute.cs" Visible="true" LogicalName="GreenNodeAttribute.cs" />
+    <EmbeddedResource Include="Templates/GreenListAttribute.cs" Visible="true" LogicalName="GreenListAttribute.cs" />
+
     <EmbeddedResource Include="Templates/Internal/GreenRoot.sbn-cs" Visible="true" LogicalName="Internal/GreenRoot.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenNodes.sbn-cs" Visible="true" LogicalName="Internal/GreenNodes.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenWalker.sbn-cs" Visible="true" LogicalName="Internal/GreenWalker.sbn-cs" />

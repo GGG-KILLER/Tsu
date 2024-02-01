@@ -3,8 +3,8 @@
 /// <summary>
 /// An attribute that marks the given class as the base class for all nodes in a green node tree.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-internal sealed class GreenTreeRootAttribute(Type redBase, string suffix, Type kindEnum) : Attribute
+[global::System.AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+internal sealed class GreenTreeRootAttribute(Type redBase, string suffix, Type kindEnum) : global::System.Attribute
 {
     /// <summary>
     /// The suffix for nodes in this tree.
@@ -14,12 +14,12 @@ internal sealed class GreenTreeRootAttribute(Type redBase, string suffix, Type k
     /// <summary>
     /// The base node type for all nodes in the red tree.
     /// </summary>
-    public Type RedBase { get; } = redBase;
+    public global::System.Type RedBase { get; } = redBase;
 
     /// <summary>
     /// The enum type that contains the definitions for the node kinds.
     /// </summary>
-    public Type KindEnum { get; } = kindEnum;
+    public global::System.Type KindEnum { get; } = kindEnum;
 
     /// <summary>
     /// Whether to create base visitor implementations for this tree.
@@ -35,6 +35,12 @@ internal sealed class GreenTreeRootAttribute(Type redBase, string suffix, Type k
     /// Whether to generate a base rewriter implementation for this tree.
     /// </summary>
     public bool CreateRewriter { get; set; }
+
+    /// <summary>
+    /// Whether to generate list types and infrastructure for this tree.
+    /// This implies in having roslyn MIT-licensed code being added to your project.
+    /// </summary>
+    public bool CreateLists { get; set; }
 
     /// <summary>
     /// Whether to generate a file with only comments dumping the entire tree structure.
