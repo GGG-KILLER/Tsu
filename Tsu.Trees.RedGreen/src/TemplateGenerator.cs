@@ -19,9 +19,15 @@ internal static class TemplateGenerator
 
         context.RegisterSourceOutput(trees, (ctx, tree) =>
         {
-            var builtins = GetBuiltins();
+            var builtins = new BuiltinFunctions();
+
             builtins.Import("no_suffix", (string str) => str.WithoutSuffix(tree.Suffix));
-            builtins.Import("derives_from", (ScriptTypeSymbol symbolA, ScriptTypeSymbol symbolB) => symbolA.Symbol.DerivesFrom((INamedTypeSymbol) symbolB.Symbol));
+            builtins.SetReadOnly("no_suffix", true);
+
+            builtins.Import("derives_from", (ScriptTypeSymbol symbolA, ScriptTypeSymbol symbolB) =>
+                symbolA.Symbol.DerivesFrom((INamedTypeSymbol) symbolB.Symbol));
+            builtins.SetReadOnly("derives_from", true);
+
             builtins.Import("as_red", (ScriptTypeSymbol symbol) =>
             {
                 if (symbol.Symbol.DerivesFrom(tree.GreenBase))
@@ -33,8 +39,21 @@ internal static class TemplateGenerator
                     return symbol.CSharp;
                 }
             });
+            builtins.SetReadOnly("as_red", true);
+
             builtins.Import("not_null", (string str) => str.WithoutSuffix("?"));
+            builtins.SetReadOnly("not_null", true);
+
             builtins.Import("not_global", (string str) => str.StartsWith("global::") ? str.Substring("global::".Length) : str);
+            builtins.SetReadOnly("not_global", true);
+
+            builtins.Import("is_list", (ScriptTypeSymbol symbol) =>
+            {
+                return (SymbolEqualityComparer.Default.Equals(symbol.Symbol.ContainingNamespace, tree.GreenBase.ContainingNamespace)
+                    || SymbolEqualityComparer.Default.Equals(symbol.Symbol.ContainingNamespace, tree.RedBase.ContainingNamespace))
+                    && symbol.Name == $"{tree.Suffix}List";
+            });
+
             var context = new TemplateContext(builtins, StringComparer.OrdinalIgnoreCase)
             {
                 EnableRelaxedIndexerAccess = false,
@@ -74,13 +93,6 @@ internal static class TemplateGenerator
             .ToImmutableArray();
     }
 
-    private static BuiltinFunctions GetBuiltins()
-    {
-        var builtins = new BuiltinFunctions();
-        builtins.SetValue("csharp", new CSharpFunctions(), true);
-        return builtins;
-    }
-
     private static string DumpObject(ScriptObject obj)
     {
         var builder = new StringBuilder();
@@ -105,12 +117,5 @@ internal static class TemplateGenerator
                 }
             }
         }
-    }
-
-    private sealed class CSharpFunctions : ScriptObject
-    {
-        public static string Namespace(INamespaceSymbol symbol, bool noGlobal = true) => symbol.ToCSharpString(noGlobal);
-        public static string Type(ITypeSymbol symbol, bool addNullable = true) => symbol.ToCSharpString(addNullable);
-        public static string Accessibility(Accessibility accessibility) => accessibility.ToCSharpString();
     }
 }

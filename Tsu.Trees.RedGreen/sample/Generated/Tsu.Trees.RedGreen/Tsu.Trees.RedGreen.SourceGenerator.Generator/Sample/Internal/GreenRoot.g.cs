@@ -28,6 +28,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             protected set => _slotCount = (byte) value;
         }
 
+
         public abstract global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index);
 
         public global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode GetRequiredSlot(int index)

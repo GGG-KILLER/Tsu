@@ -36,6 +36,10 @@ namespace {{ green_base.namespace | not_global }}
             protected set => _slotCount = (byte) value;
         }
 
+        {{~ if create_lists ~}}
+        public bool IsList => this._kind == {{ kind_enum.csharp }}.List;
+        {{~ end ~}}
+
         public abstract {{ green_base.csharp | not_null }}? GetSlot(int index);
 
         public {{ green_base.csharp | not_null }} GetRequiredSlot(int index)
