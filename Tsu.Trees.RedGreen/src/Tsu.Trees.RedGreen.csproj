@@ -22,7 +22,15 @@
     <PackageId>Tsu.Trees.RedGreen</PackageId>
     <Version>0.1.0</Version>
     <Description>A source generator generates all the boilerplate for your red/green trees.</Description>
+
+    <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Templates/Internal/GreenRoot.sbn-cs" Visible="true" LogicalName="Internal.GreenRoot.sbn-cs" />
+    <EmbeddedResource Include="Templates/Internal/GreenList`1.sbn-cs" Visible="true" LogicalName="Internal.GreenList`1.sbn-cs" />
+    <EmbeddedResource Include="Templates/RedList`1.sbn-cs" Visible="true" LogicalName="RedList`1.sbn-cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
@@ -30,6 +38,9 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.7.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Scriban" Version="5.9.1" IncludeAssets="Build" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
 
 </Project>

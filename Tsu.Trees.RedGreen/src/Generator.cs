@@ -77,6 +77,7 @@ public sealed class Generator : IIncrementalGenerator
             ctx.AddSource($"{tree.Suffix}.Debug.g.cs", builder.ToSourceText());
         });
 
+        context.RegisterTemplateOutput(trees);
         context.RegisterGreenOutput(trees);
         context.RegisterRedTreeOutput(trees);
         context.RegisterRedMainOutput(trees);
