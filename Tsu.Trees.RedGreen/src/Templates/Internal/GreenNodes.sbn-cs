@@ -2,10 +2,10 @@
 
 #nullable enable
 
-namespace {{ green_base.namespace_no_global }}
+namespace {{ green_base.namespace | not_global }}
 {
 {{~ for node in non_root_nodes ~}}
-    partial class {{ node.type.name }} : {{ node.base.csharp_no_nullable }}
+    partial class {{ node.type.name }} : {{ node.base.csharp | not_null }}
     {
         {{ if node.type.is_abstract -}}
         protected
@@ -35,7 +35,7 @@ namespace {{ green_base.namespace_no_global }}
         {{~ end ~}}
 
         {{~ if !node.type.is_abstract ~}}
-        public override {{ green_base.csharp_no_nullable }}? GetSlot(int index) =>
+        public override {{ green_base.csharp | not_null }}? GetSlot(int index) =>
         {{~ if node.children | array.size == 0 ~}}
             null;
         {{~ else if node.children | array.size == 1 ~}}
@@ -52,38 +52,38 @@ namespace {{ green_base.namespace_no_global }}
         {{~ end ~}}
 
         {{~ if !node.type.is_abstract ~}}
-        public override {{ red_base.csharp_no_nullable }} CreateRed({{ red_base.csharp_no_nullable }}? parent) =>
+        public override {{ red_base.csharp | not_null }} CreateRed({{ red_base.csharp | not_null }}? parent) =>
             new {{ red_base.namespace }}.{{ node.type.name }}(this, parent);
         {{~ end ~}}
 
         {{~ if !node.type.is_abstract && (create_visitors || create_walker) ~}}
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
         public override void Accept({{ green_base.namespace }}.{{ suffix }}Visitor visitor) =>
-            visitor.Visit{{ node.type.name | nosuffix }}(this);
+            visitor.Visit{{ node.type.name | no_suffix }}(this);
         {{~ end ~}}
 
         {{~ if !node.type.is_abstract && (create_visitors || create_rewriter) ~}}
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
         public override TResult Accept<TResult>({{ green_base.namespace }}.{{ suffix }}Visitor<TResult> visitor) =>
-            visitor.Visit{{ node.type.name | nosuffix }}(this);
+            visitor.Visit{{ node.type.name | no_suffix }}(this);
         {{~ end ~}}
 
         {{~ if !node.type.is_abstract && create_visitors ~}}
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
         public override TResult Accept<T1, TResult>({{ green_base.namespace }}.{{ suffix }}Visitor<T1, TResult> visitor, T1 arg1) =>
-            visitor.Visit{{ node.type.name | nosuffix }}(this, arg1);
+            visitor.Visit{{ node.type.name | no_suffix }}(this, arg1);
 
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
         public override TResult Accept<T1, T2, TResult>({{ green_base.namespace }}.{{ suffix }}Visitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) =>
-            visitor.Visit{{ node.type.name | nosuffix }}(this, arg1, arg2);
+            visitor.Visit{{ node.type.name | no_suffix }}(this, arg1, arg2);
 
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
         public override TResult Accept<T1, T2, T3, TResult>({{ green_base.namespace }}.{{ suffix }}Visitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) =>
-            visitor.Visit{{ node.type.name | nosuffix }}(this, arg1, arg2, arg3);
+            visitor.Visit{{ node.type.name | no_suffix }}(this, arg1, arg2, arg3);
         {{~ end ~}}
 
         {{~ if !node.type.is_abstract && (node.required_components | array.size) > 0 ~}}
-        public {{ node.type.csharp_no_nullable}} Update(
+        public {{ node.type.csharp | not_null}} Update(
             {{~ for component in node.required_components ~}}
             {{ component.type.csharp }} {{ component.parameter_name }}{{ if !for.last }},{{ end }}
             {{~ end ~}}
@@ -95,7 +95,7 @@ namespace {{ green_base.namespace_no_global }}
                 {{~ end ~}}
             )
             {
-                return {{ green_base.namespace }}.{{ suffix }}Factory.{{ node.type.name | nosuffix }}(
+                return {{ green_base.namespace }}.{{ suffix }}Factory.{{ node.type.name | no_suffix }}(
                     {{~ for component in node.required_components ~}}
                     {{ component.parameter_name }}{{ if !for.last }},{{ end }}
                     {{~ end ~}}

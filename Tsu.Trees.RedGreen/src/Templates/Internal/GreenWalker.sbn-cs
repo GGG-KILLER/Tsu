@@ -2,13 +2,13 @@
 
 #nullable enable
 
-namespace {{ green_base.namespace_no_global }}
+namespace {{ green_base.namespace | not_global }}
 {
     {{ green_base.accessibility }} abstract class {{ suffix }}Walker : {{ green_base.namespace }}.{{ suffix }}Visitor
     {
         private int _recursionDepth;
 
-        public override void Visit({{ green_base.csharp_no_nullable }}? node)
+        public override void Visit({{ green_base.csharp | not_null }}? node)
         {
             if (node != null)
             {
@@ -24,7 +24,7 @@ namespace {{ green_base.namespace_no_global }}
             }
         }
 
-        protected override void DefaultVisit({{ green_base.csharp_no_nullable }} node)
+        protected override void DefaultVisit({{ green_base.csharp | not_null }} node)
         {
             foreach (var child in node.ChildNodes())
             {

@@ -221,7 +221,7 @@ namespace Tsu.Trees.RedGreen.Sample
             visitor.VisitNumericalLiteralExpression(this, arg1, arg2, arg3);
 
         public global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample Update(
-            global::System.Double value
+            double value
         )
         {
             if (
@@ -236,7 +236,7 @@ namespace Tsu.Trees.RedGreen.Sample
             return this;
         }
 
-        public global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample WithValue(global::System.Double value) =>
+        public global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample WithValue(double value) =>
             this.Update(
                 value
             );
@@ -275,7 +275,7 @@ namespace Tsu.Trees.RedGreen.Sample
             visitor.VisitIdentifierExpression(this, arg1, arg2, arg3);
 
         public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample Update(
-            global::System.String name
+            string name
         )
         {
             if (
@@ -290,7 +290,7 @@ namespace Tsu.Trees.RedGreen.Sample
             return this;
         }
 
-        public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample WithName(global::System.String name) =>
+        public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample WithName(string name) =>
             this.Update(
                 name
             );

@@ -2,26 +2,26 @@
 
 #nullable enable
 
-namespace {{ red_base.namespace_no_global }}
+namespace {{ red_base.namespace | not_global }}
 {
     abstract partial class {{ red_base.name }}
     {
-        private readonly {{ red_base.csharp_no_nullable }}? _parent;
+        private readonly {{ red_base.csharp | not_null }}? _parent;
 
-        private protected {{ red_base.name }}({{ green_base.csharp_no_nullable }} green, {{ red_base.csharp_no_nullable }}? parent)
+        private protected {{ red_base.name }}({{ green_base.csharp | not_null }} green, {{ red_base.csharp | not_null }}? parent)
         {
             this._parent = parent;
             this.Green = green;
         }
 
         {{~ for component in root.components ~}}
-        public {{ component.type.csharp }} {{ component.property_name }} => this.Green.{{ component.property_name }};
+        public {{ component.type | as_red }} {{ component.property_name }} => this.Green.{{ component.property_name }};
         {{~ end ~}}
-        internal {{ green_base.csharp_no_nullable }} Green { get; }
-        public {{ red_base.csharp_no_nullable }}? Parent => _parent;
+        internal {{ green_base.csharp | not_null }} Green { get; }
+        public {{ red_base.csharp | not_null }}? Parent => _parent;
         internal int SlotCount => this.Green.SlotCount;
 
-        protected T? GetRed<T>(ref T? field, int index) where T : {{ red_base.csharp_no_nullable }}
+        protected T? GetRed<T>(ref T? field, int index) where T : {{ red_base.csharp | not_null }}
         {
             var result = field;
 
@@ -38,7 +38,7 @@ namespace {{ red_base.namespace_no_global }}
             return result;
         }
 
-        public bool IsEquivalentTo({{ red_base.csharp_no_nullable }}? other)
+        public bool IsEquivalentTo({{ red_base.csharp | not_null }}? other)
         {
             if (this == other) return true;
             if (other == null) return false;
@@ -46,7 +46,7 @@ namespace {{ red_base.namespace_no_global }}
             return this.Green.IsEquivalentTo(other.Green);
         }
 
-        public bool Contains({{ red_base.csharp_no_nullable }} other)
+        public bool Contains({{ red_base.csharp | not_null }} other)
         {
             for (var node = other; node != null; node = node.Parent)
             {
@@ -57,9 +57,9 @@ namespace {{ red_base.namespace_no_global }}
             return false;
         }
 
-        internal abstract {{ red_base.csharp_no_nullable }}? GetNodeSlot(int index);
+        internal abstract {{ red_base.csharp | not_null }}? GetNodeSlot(int index);
 
-        internal {{ red_base.csharp_no_nullable }} GetRequiredNodeSlot(int index)
+        internal {{ red_base.csharp | not_null }} GetRequiredNodeSlot(int index)
         {
             var node = this.GetNodeSlot(index);
             global::System.Diagnostics.Debug.Assert(node != null);
@@ -72,23 +72,23 @@ namespace {{ red_base.namespace_no_global }}
         public abstract TResult? Accept<T1, T2, TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2);
         public abstract TResult? Accept<T1, T2, T3, TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3);
 
-        public global::System.Collections.Generic.IEnumerable<{{ red_base.csharp_no_nullable }}> ChildNodes()
+        public global::System.Collections.Generic.IEnumerable<{{ red_base.csharp | not_null }}> ChildNodes()
         {
             var count = this.SlotCount;
             for (var index = 0; index < count; index++)
                 yield return this.GetRequiredNodeSlot(index);
         }
 
-        public global::System.Collections.Generic.IEnumerable<{{ red_base.csharp_no_nullable }}> Ancestors() =>
-            this.Parent?.AncestorsAndSelf() ?? global::System.Linq.Enumerable.Empty<{{ red_base.csharp_no_nullable }}>();
+        public global::System.Collections.Generic.IEnumerable<{{ red_base.csharp | not_null }}> Ancestors() =>
+            this.Parent?.AncestorsAndSelf() ?? global::System.Linq.Enumerable.Empty<{{ red_base.csharp | not_null }}>();
 
-        public global::System.Collections.Generic.IEnumerable<{{ red_base.csharp_no_nullable }}> AncestorsAndSelf()
+        public global::System.Collections.Generic.IEnumerable<{{ red_base.csharp | not_null }}> AncestorsAndSelf()
         {
             for (var node = this; node != null; node = node.Parent)
                 yield return node;
         }
 
-        public TNode? FirstAncestorOrSelf<TNode>(Func<TNode, bool>? predicate = null) where TNode : {{ red_base.csharp_no_nullable }}
+        public TNode? FirstAncestorOrSelf<TNode>(Func<TNode, bool>? predicate = null) where TNode : {{ red_base.csharp | not_null }}
         {
             for (var node = this; node != null; node = node.Parent)
             {
@@ -99,7 +99,7 @@ namespace {{ red_base.namespace_no_global }}
             return null;
         }
 
-        public TNode? FirstAncestorOrSelf<TNode, TArg>(Func<TNode, TArg, bool> predicate, TArg argument) where TNode : {{ red_base.csharp_no_nullable }}
+        public TNode? FirstAncestorOrSelf<TNode, TArg>(Func<TNode, TArg, bool> predicate, TArg argument) where TNode : {{ red_base.csharp | not_null }}
         {
             for (var node = this; node != null; node = node.Parent)
             {
@@ -110,9 +110,9 @@ namespace {{ red_base.namespace_no_global }}
             return null;
         }
 
-        public global::System.Collections.Generic.IEnumerable<{{ red_base.csharp_no_nullable }}> DescendantNodes(Func<{{ red_base.csharp_no_nullable }}, bool>? descendIntoChildren = null)
+        public global::System.Collections.Generic.IEnumerable<{{ red_base.csharp | not_null }}> DescendantNodes(Func<{{ red_base.csharp | not_null }}, bool>? descendIntoChildren = null)
         {
-            var stack = new Stack<{{ red_base.csharp_no_nullable }}>(24);
+            var stack = new Stack<{{ red_base.csharp | not_null }}>(24);
             foreach (var child in this.ChildNodes())
                 stack.Push(child);
 
@@ -129,9 +129,9 @@ namespace {{ red_base.namespace_no_global }}
             }
         }
 
-        public global::System.Collections.Generic.IEnumerable<{{ red_base.csharp_no_nullable }}> DescendantNodesAndSelf(Func<{{ red_base.csharp_no_nullable }}, bool>? descendIntoChildren = null)
+        public global::System.Collections.Generic.IEnumerable<{{ red_base.csharp | not_null }}> DescendantNodesAndSelf(Func<{{ red_base.csharp | not_null }}, bool>? descendIntoChildren = null)
         {
-            var stack = new Stack<{{ red_base.csharp_no_nullable }}>(24);
+            var stack = new Stack<{{ red_base.csharp | not_null }}>(24);
             stack.Push(this);
 
             while (stack.Count > 0)

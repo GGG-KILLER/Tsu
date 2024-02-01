@@ -8,7 +8,7 @@ end
 #nullable enable
 
 
-namespace {{ red_base.namespace_no_global }}
+namespace {{ red_base.namespace | not_global }}
 {
 {{~
 for node in non_root_nodes
@@ -21,37 +21,34 @@ for node in non_root_nodes
     {
         {{~ if node.descendants | array.size == 0 ~}}
             {{~ for child in node.children ~}}
-        private {{ red_base.namespace }}.{{ child.type.name }}? {{ child.field_name }};
+        private {{ child.type | as_red | not_null }}? {{ child.field_name }};
             {{~ end ~}}
         {{~ end ~}}
 
-        internal {{ node.type.name }}({{ green_base.csharp_no_nullable }} green, {{ red_base.csharp_no_nullable }}? parent)
+        internal {{ node.type.name }}({{ green_base.csharp | not_null }} green, {{ red_base.csharp | not_null }}? parent)
             : base(green, parent)
         {
         }
 
         {{~ ## Components ## ~}}
         {{~ if node.descendants | array.size > 0 ~}}
-            {{~ for data in (node.extra_data | array.filter @isnt_passed_to_parent) ~}}
-        public abstract {{ data.type.csharp }} {{ data.property_name }} { get; }
-            {{~ end ~}}
-            {{~ for child in (node.children | array.filter @isnt_passed_to_parent) ~}}
-        public abstract {{ red_base.namespace }}.{{ child.type.name }} {{ child.property_name }} { get; }
+            {{~ for data in node.node_components ~}}
+        public abstract {{ data.type | as_red }} {{ data.property_name }} { get; }
             {{~ end ~}}
         {{~ else ~}}
             {{~ for data in node.extra_data ~}}
                 {{~ if data.field_name == "_kind"; continue; end ~}}
-        public {{ if data.pass_to_base }}override {{ end }} {{ data.type.csharp }} {{ data.property_name }} => (({{ node.type.csharp_no_nullable }})this.Green).{{ data.property_name }};
+        public {{ if data.pass_to_base }}override {{ end }} {{ data.type | as_red }} {{ data.property_name }} => (({{ node.type.csharp | not_null }})this.Green).{{ data.property_name }};
             {{~ end ~}}
             {{~ for child in node.children ~}}
-        public {{ if child.pass_to_base }}override {{ end }}{{ red_base.namespace }}.{{ child.type.name }}{{ if child.is_optional }}?{{ end }} {{ child.property_name }} => GetRed(ref this.{{ child.field_name }}, {{ for.index }}){{if !child.is_optional}}!{{end}};
+        public {{ if child.pass_to_base }}override {{ end }}{{ child.type | as_red }} {{ child.property_name }} => GetRed(ref this.{{ child.field_name }}, {{ for.index }}){{if !child.is_optional}}!{{end}};
             {{~ end ~}}
         {{~ end ~}}
         {{~ ## End Components ## ~}}
 
         {{~ ## GetNodeSlot ## ~}}
         {{~ if node.descendants | array.size == 0 ~}}
-        internal override {{ red_base.csharp_no_nullable }}? GetNodeSlot(int index) =>
+        internal override {{ red_base.csharp | not_null }}? GetNodeSlot(int index) =>
             {{~ if node.children | array.size == 0 ~}}
                 null;
             {{~ else if node.children | array.size == 1 ~}}
@@ -72,41 +69,35 @@ for node in non_root_nodes
         {{~ if !node.type.is_abstract && (create_visitors || create_walker) ~}}
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
         public override void Accept({{ red_base.namespace }}.{{ suffix }}Visitor visitor) =>
-            visitor.Visit{{ node.type.name | nosuffix }}(this);
+            visitor.Visit{{ node.type.name | no_suffix }}(this);
         {{~ end ~}}
 
         {{~ if !node.type.is_abstract && (create_visitors || create_rewriter) ~}}
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
         public override TResult Accept<TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<TResult> visitor) =>
-            visitor.Visit{{ node.type.name | nosuffix }}(this);
+            visitor.Visit{{ node.type.name | no_suffix }}(this);
         {{~ end ~}}
 
         {{~ if !node.type.is_abstract && create_visitors ~}}
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
         public override TResult Accept<T1, TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<T1, TResult> visitor, T1 arg1) =>
-            visitor.Visit{{ node.type.name | nosuffix }}(this, arg1);
+            visitor.Visit{{ node.type.name | no_suffix }}(this, arg1);
 
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
         public override TResult Accept<T1, T2, TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) =>
-            visitor.Visit{{ node.type.name | nosuffix }}(this, arg1, arg2);
+            visitor.Visit{{ node.type.name | no_suffix }}(this, arg1, arg2);
 
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
         public override TResult Accept<T1, T2, T3, TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) =>
-            visitor.Visit{{ node.type.name | nosuffix }}(this, arg1, arg2, arg3);
+            visitor.Visit{{ node.type.name | no_suffix }}(this, arg1, arg2, arg3);
         {{~ end ~}}
         {{~ ## End Accept ## ~}}
 
         {{~ ## TNode Update(...) ## ~}}
         {{~ if (node.descendants | array.size == 0) && (node.required_components | array.size > 0) ~}}
-        public {{ red_base.namespace }}.{{ node.type.name }} Update(
-            {{~
-            for component in node.required_components
-                ns = component.type.namespace
-                if component.type | derives_from green_base
-                    ns = red_base.namespace
-                end
-            ~}}
-            {{ ns }}.{{ component.type.name }}{{ if component.is_optional }}?{{ end }} {{ component.parameter_name }}{{ if !for.last }},{{ end }}
+        public {{ node.type | as_red }} Update(
+            {{~ for component in node.required_components ~}}
+            {{ component.type | as_red }} {{ component.parameter_name }}{{ if !for.last }},{{ end }}
             {{~ end ~}}
         )
         {
@@ -116,7 +107,7 @@ for node in non_root_nodes
                 {{~ end ~}}
             )
             {
-                return {{ red_base.namespace }}.{{ suffix }}Factory.{{ node.type.name | nosuffix }}(
+                return {{ red_base.namespace }}.{{ suffix }}Factory.{{ node.type.name | no_suffix }}(
                     {{~ for component in node.required_components ~}}
                     {{ component.parameter_name }}{{ if !for.last }},{{ end }}
                     {{~ end ~}}
@@ -130,18 +121,8 @@ for node in non_root_nodes
 
         {{~ ## TNode WithX(...) ## ~}}
         {{~ if (node.descendants | array.size == 0) && (node.required_components | array.size > 0) ~}}
-        {{~
-        for target in node.required_components
-            targetNs = target.type.namespace
-            if target.type | derives_from green_base
-                targetNs = red_base.namespace
-            end
-            nullable = ""
-            if target.is_optional
-                nullable = "?"
-            end
-        ~}}
-        public {{ red_base.namespace }}.{{ node.type.name }} With{{ target.property_name }}({{ targetNs }}.{{ target.type.name }}{{ nullable }} {{ target.parameter_name }}) =>
+        {{~ for target in node.required_components ~}}
+        public {{ node.type | as_red }} With{{ target.property_name }}({{ target.type | as_red }} {{ target.parameter_name }}) =>
             this.Update(
             {{~ for component in node.required_components ~}}
                 {{~ if target.parameter_name == component.parameter_name ~}}

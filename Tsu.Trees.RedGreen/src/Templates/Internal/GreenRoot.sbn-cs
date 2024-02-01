@@ -2,7 +2,7 @@
 
 #nullable enable
 
-namespace {{ green_base.namespace_no_global }}
+namespace {{ green_base.namespace | not_global }}
 {
     abstract partial class {{ green_base.name }}
     {
@@ -36,9 +36,9 @@ namespace {{ green_base.namespace_no_global }}
             protected set => _slotCount = (byte) value;
         }
 
-        public abstract {{ green_base.csharp_no_nullable }}? GetSlot(int index);
+        public abstract {{ green_base.csharp | not_null }}? GetSlot(int index);
 
-        public {{ green_base.csharp_no_nullable }} GetRequiredSlot(int index)
+        public {{ green_base.csharp | not_null }} GetRequiredSlot(int index)
         {
             var node = this.GetSlot(index);
             global::System.Diagnostics.Debug.Assert(node != null);
@@ -47,16 +47,16 @@ namespace {{ green_base.namespace_no_global }}
 
         protected virtual int GetSlotCount() => _slotCount;
 
-        public global::System.Collections.Generic.IEnumerable<{{ green_base.csharp_no_nullable }}> ChildNodes()
+        public global::System.Collections.Generic.IEnumerable<{{ green_base.csharp | not_null }}> ChildNodes()
         {
             var count = this.SlotCount;
             for (var index = 0; index < count; index++)
                 yield return this.GetRequiredSlot(index);
         }
 
-        public global::System.Collections.Generic.IEnumerable<{{ green_base.csharp_no_nullable }}> EnumerateDescendants()
+        public global::System.Collections.Generic.IEnumerable<{{ green_base.csharp | not_null }}> EnumerateDescendants()
         {
-            var stack = new Stack<{{ green_base.csharp_no_nullable }}>(24);
+            var stack = new Stack<{{ green_base.csharp | not_null }}>(24);
             stack.Push(this);
 
             while (stack.Count > 0)
@@ -72,7 +72,7 @@ namespace {{ green_base.namespace_no_global }}
             }
         }
 
-        public virtual bool IsEquivalentTo([global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] {{ green_base.csharp_no_nullable }}? other)
+        public virtual bool IsEquivalentTo([global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] {{ green_base.csharp | not_null }}? other)
         {
             if (this == other) return true;
             if (other == null) return false;
@@ -96,8 +96,8 @@ namespace {{ green_base.namespace_no_global }}
             return true;
         }
 
-        public {{ red_base.csharp_no_nullable }} CreateRed() => this.CreateRed(null);
-        public abstract {{ red_base.csharp_no_nullable }} CreateRed({{ red_base.csharp_no_nullable }}? parent);
+        public {{ red_base.csharp | not_null }} CreateRed() => this.CreateRed(null);
+        public abstract {{ red_base.csharp | not_null }} CreateRed({{ red_base.csharp | not_null }}? parent);
 
 {{~ if create_visitors || create_walker ~}}
         public abstract void Accept({{ green_base.namespace }}.{{ suffix }}Visitor visitor);

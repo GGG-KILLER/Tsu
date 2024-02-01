@@ -20,8 +20,21 @@ internal static class TemplateGenerator
         context.RegisterSourceOutput(trees, (ctx, tree) =>
         {
             var builtins = GetBuiltins();
-            builtins.Import("nosuffix", (string str) => str.WithoutSuffix(tree.Suffix));
+            builtins.Import("no_suffix", (string str) => str.WithoutSuffix(tree.Suffix));
             builtins.Import("derives_from", (ScriptTypeSymbol symbolA, ScriptTypeSymbol symbolB) => symbolA.Symbol.DerivesFrom((INamedTypeSymbol) symbolB.Symbol));
+            builtins.Import("as_red", (ScriptTypeSymbol symbol) =>
+            {
+                if (symbol.Symbol.DerivesFrom(tree.GreenBase))
+                {
+                    return $"{tree.RedBase.ContainingNamespace.ToCSharpString(false)}.{symbol.Name}{(symbol.Symbol.NullableAnnotation == NullableAnnotation.Annotated ? "?" : "")}";
+                }
+                else
+                {
+                    return symbol.CSharp;
+                }
+            });
+            builtins.Import("not_null", (string str) => str.WithoutSuffix("?"));
+            builtins.Import("not_global", (string str) => str.StartsWith("global::") ? str.Substring("global::".Length) : str);
             var context = new TemplateContext(builtins, StringComparer.OrdinalIgnoreCase)
             {
                 EnableRelaxedIndexerAccess = false,
