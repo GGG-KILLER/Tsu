@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TsuProjectType>SourceGenerator</TsuProjectType>
@@ -27,9 +27,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Templates/Internal/GreenRoot.sbn-cs" Visible="true" LogicalName="Internal.GreenRoot.sbn-cs" />
-    <EmbeddedResource Include="Templates/Internal/GreenList`1.sbn-cs" Visible="true" LogicalName="Internal.GreenList`1.sbn-cs" />
-    <EmbeddedResource Include="Templates/RedList`1.sbn-cs" Visible="true" LogicalName="RedList`1.sbn-cs" />
+    <EmbeddedResource Include="Templates/Internal/GreenRoot.sbn-cs" Visible="true" LogicalName="Internal/GreenRoot.sbn-cs" />
   </ItemGroup>
 
   <ItemGroup>

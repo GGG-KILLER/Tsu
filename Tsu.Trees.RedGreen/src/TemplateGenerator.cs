@@ -33,7 +33,7 @@ internal static class TemplateGenerator
 
             foreach (var template in templates)
             {
-                ctx.AddSource($"{tree.Suffix}.{Path.GetFileNameWithoutExtension(template.Path)}.g.cs", template.Template.Render(context));
+                ctx.AddSource($"{tree.Suffix}/{template.Path.WithoutSuffix(".sbn-cs")}.g.cs", template.Template.Render(context));
             }
         });
     }
