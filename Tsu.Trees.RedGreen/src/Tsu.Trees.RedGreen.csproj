@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Templates/Internal/GreenRoot.sbn-cs" Visible="true" LogicalName="Internal/GreenRoot.sbn-cs" />
+    <EmbeddedResource Include="Templates/Internal/GreenNodes.sbn-cs" Visible="true" LogicalName="Internal/GreenNodes.sbn-cs" />
   </ItemGroup>
 
   <ItemGroup>

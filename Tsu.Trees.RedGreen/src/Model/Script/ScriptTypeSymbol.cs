@@ -22,6 +22,8 @@ namespace Tsu.Trees.RedGreen.SourceGenerator.Model;
 
 internal sealed class ScriptTypeSymbol(ITypeSymbol symbol)
 {
+    public bool IsAbstract => symbol.IsAbstract;
+
     public string Accessibility => symbol.DeclaredAccessibility.ToCSharpString();
 
     public string Name => symbol.Name;
