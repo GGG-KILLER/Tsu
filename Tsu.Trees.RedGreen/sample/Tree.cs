@@ -53,8 +53,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         CreateRewriter = true,
         CreateVisitors = true,
         CreateWalker = true,
-        CreateLists = true,
-        DebugDump = true)]
+        CreateLists = true)]
     internal abstract partial class GreenNode
     {
         // Stub to be filled in by codegen
