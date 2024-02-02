@@ -25,27 +25,23 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         internal FunctionCallExpressionSample(
             global::Tsu.Trees.RedGreen.Sample.SampleKind kind,
             global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier,
-            global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg,
-            global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample? secondArg
+            global::Tsu.Trees.RedGreen.Sample.Internal.SampleList args
         )
             : base(kind)
         {
-            this.SlotCount = 3;
+            this.SlotCount = 2;
             this._identifier = identifier;
-            this._firstArg = firstArg;
-            this._secondArg = secondArg;
+            this._args = args;
         }
 
-        public global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample Identifier => _identifier;
-        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample FirstArg => _firstArg;
-        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample? SecondArg => _secondArg;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample Identifier => this._identifier;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.SampleList<global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample> Args => new global::Tsu.Trees.RedGreen.Sample.Internal.SampleList<global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample>(this._args);
 
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
             index switch
             {
                 0 => this._identifier,
-                1 => this._firstArg,
-                2 => this._secondArg,
+                1 => this._args,
                 _ => null
             };
 
@@ -74,20 +70,17 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         public global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample Update(
             global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier,
-            global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample firstArg,
-            global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample? secondArg
+            global::Tsu.Trees.RedGreen.Sample.Internal.SampleList args
         )
         {
             if (
                 this.Identifier != identifier
-                && this.FirstArg != firstArg
-                && this.SecondArg != secondArg
+                && this.Args != args
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.FunctionCallExpression(
                     identifier,
-                    firstArg,
-                    secondArg
+                    args
                 );
             }
 
@@ -108,8 +101,8 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             this._right = right;
         }
 
-        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample Left => _left;
-        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample Right => _right;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample Left => this._left;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample Right => this._right;
 
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
             index switch
@@ -176,7 +169,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             this._value = value;
         }
 
-        public double Value => _value;
+        public double Value => this._value;
 
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
             null;
@@ -232,7 +225,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             this._name = name;
         }
 
-        public string Name => _name;
+        public string Name => this._name;
 
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
             null;
@@ -287,7 +280,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             this._semicolon = semicolon;
         }
 
-        public global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample Semicolon => _semicolon;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample Semicolon => this._semicolon;
 
 
 
@@ -308,7 +301,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             this._expression = expression;
         }
 
-        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample Expression => _expression;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample Expression => this._expression;
 
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
             index switch
@@ -375,8 +368,8 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             this._value = value;
         }
 
-        public global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample Identifier => _identifier;
-        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample Value => _value;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample Identifier => this._identifier;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample Value => this._value;
 
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? GetSlot(int index) =>
             index switch

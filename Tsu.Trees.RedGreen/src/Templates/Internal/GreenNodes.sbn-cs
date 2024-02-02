@@ -13,7 +13,7 @@ namespace {{ green_base.namespace | not_global }}
         internal
         {{- end }} {{ node.type.name }}(
             {{~ for component in node.components ~}}
-            {{ component.type.csharp }} {{ component.parameter_name }}{{ if !for.last }},{{ end }}
+            {{ component | parameter_type true }} {{ component.parameter_name }}{{ if !for.last }},{{ end }}
             {{~ end ~}}
         )
             : base({{- for component in node.parent_components -}}{{ if !for.first }}, {{ end }}{{ component.parameter_name }}{{- end -}})
@@ -31,7 +31,11 @@ namespace {{ green_base.namespace | not_global }}
         }
 
         {{~ for component in node.node_components ~}}
-        public {{ component.type.csharp }} {{ component.property_name }} => {{ component.field_name }};
+        {{~ if component.is_list ~}}
+        public {{ component | property_type true }} {{ component.property_name }} => new {{ component | property_type true }}(this.{{ component.field_name }});
+        {{~ else ~}}
+        public {{ component | property_type true }} {{ component.property_name }} => this.{{ component.field_name }};
+        {{~ end ~}}
         {{~ end ~}}
 
         {{~ if !node.type.is_abstract ~}}
@@ -85,7 +89,7 @@ namespace {{ green_base.namespace | not_global }}
         {{~ if !node.type.is_abstract && (node.required_components | array.size) > 0 ~}}
         public {{ node.type.csharp | not_null}} Update(
             {{~ for component in node.required_components ~}}
-            {{ component.type.csharp }} {{ component.parameter_name }}{{ if !for.last }},{{ end }}
+            {{ component | parameter_type true }} {{ component.parameter_name }}{{ if !for.last }},{{ end }}
             {{~ end ~}}
         )
         {
