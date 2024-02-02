@@ -35,6 +35,12 @@
     <EmbeddedResource Include="Templates/Internal/GreenRoot.sbn-cs" Visible="true" LogicalName="Internal/GreenRoot.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenNodes.sbn-cs" Visible="true" LogicalName="Internal/GreenNodes.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenWalker.sbn-cs" Visible="true" LogicalName="Internal/GreenWalker.sbn-cs" />
+    <EmbeddedResource Include="Templates/Internal/GreenList.sbn-cs" Visible="true" LogicalName="Internal/GreenList.sbn-cs" />
+    <EmbeddedResource Include="Templates/Internal/GreenList.WithTwoChildren.sbn-cs" Visible="true" LogicalName="Internal/GreenList.WithTwoChildren.sbn-cs" />
+    <EmbeddedResource Include="Templates/Internal/GreenList.WithThreeChildren.sbn-cs" Visible="true" LogicalName="Internal/GreenList.WithThreeChildren.sbn-cs" />
+    <EmbeddedResource Include="Templates/Internal/GreenList.WithManyChildren.sbn-cs" Visible="true" LogicalName="Internal/GreenList.WithManyChildren.sbn-cs" />
+    <EmbeddedResource Include="Templates/Internal/GreenList`1.sbn-cs" Visible="true" LogicalName="Internal/GreenList`1.sbn-cs" />
+    <EmbeddedResource Include="Templates/Internal/GreenList`1.Enumerable.sbn-cs" Visible="true" LogicalName="Internal/GreenList`1.Enumerable.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/ChildGreenList.sbn-cs" Visible="true" LogicalName="Internal/ChildGreenList.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/ChildGreenList.Enumerator.sbn-cs" Visible="true" LogicalName="Internal/ChildGreenList.Enumerator.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/ChildGreenList.Reversed.sbn-cs" Visible="true" LogicalName="Internal/ChildGreenList.Reversed.sbn-cs" />
