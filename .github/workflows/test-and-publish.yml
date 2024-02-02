@@ -25,7 +25,6 @@ jobs:
           6.0.x
           7.0.x
           8.0.x
-        include-prerelease: true
     - name: Install dependencies
       run: dotnet restore
     - name: Build
@@ -47,7 +46,6 @@ jobs:
           6.0.x
           7.0.x
           8.0.x
-        include-prerelease: true
     - name: Install dependencies
       run: dotnet restore
     - name: Build
@@ -82,7 +80,6 @@ jobs:
   #         6.0.x
   #         7.0.x
   #         8.0.x
-  #       include-prerelease: true
   #   - name: Install dependencies
   #     run: dotnet restore
   #   - name: Build
