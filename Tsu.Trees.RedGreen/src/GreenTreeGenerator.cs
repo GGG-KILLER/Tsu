@@ -131,14 +131,17 @@ internal static class GreenTreeGenerator
                 if (!includeOptional && component.IsOptional) continue;
                 if (!first) writer.Write(", ");
                 first = false;
-                writer.Write("{0} {1}", component.Type.ToCSharpString(), component.ParameterName);
+                var type = component.IsList && component.Type.DerivesFrom(tree.GreenBase)
+                    ? $"{tree.GreenBase.ContainingNamespace.ToCSharpString(false)}.{tree.Suffix}List"
+                    : component.Type.ToCSharpString();
+                writer.Write("{0} {1}", type, component.ParameterName);
             }
             writer.WriteLine(')');
             writer.WriteLine('{');
             writer.Indent++;
             {
                 writer.WriteLineNoTabs("#if DEBUG");
-                foreach (var component in node.RequiredComponents.Where(x => !x.Type.IsValueType))
+                foreach (var component in node.RequiredComponents.Where(x => !x.Type.IsValueType && (!x.Type.DerivesFrom(tree.GreenBase) || !x.IsList)))
                 {
                     if (component.IsOptional) continue;
                     writer.WriteLine("if ({0} == null) throw new global::System.ArgumentNullException(nameof({0}));", component.ParameterName);

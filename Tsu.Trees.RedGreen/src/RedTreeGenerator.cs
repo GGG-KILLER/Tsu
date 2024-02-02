@@ -133,9 +133,12 @@ internal static class RedTreeGenerator
                 if (component.Type.DerivesFrom(tree.GreenBase))
                     ns = tree.RedBase.ContainingNamespace;
 
-                writer.Write("{0}.{1}{2} {3}",
-                    ns.ToCSharpString(false),
-                    component.Type.Name,
+                var type = ns.ToCSharpString(false) + '.' + component.Type.Name;
+                if (component.IsList && component.Type.DerivesFrom(tree.GreenBase))
+                    type = $"{ns.ToCSharpString(false)}.{tree.Suffix}List<{type}>";
+
+                writer.Write("{0}{1} {2}",
+                    type,
                     component.IsOptional ? "?" : "",
                     component.ParameterName);
             }
@@ -159,16 +162,15 @@ internal static class RedTreeGenerator
                 {
                     if (component.IsOptional)
                     {
-                        writer.Write("{0} == null ? null : ({1}){0}.Green",
-                            component.ParameterName,
-                            component.Type.ToCSharpString(false));
+                        writer.Write("{0} == null ? null : ", component.ParameterName);
                     }
-                    else
-                    {
-                        writer.Write("({0}){1}.Green",
-                            component.Type.ToCSharpString(false),
-                            component.ParameterName);
-                    }
+
+                    writer.Write("({0}){1}.{2}",
+                        component.IsList
+                            ? $"{tree.GreenBase.ContainingNamespace.ToCSharpString(false)}.{tree.Suffix}List"
+                            : component.Type.ToCSharpString(false),
+                        component.ParameterName,
+                        component.IsList ? "Node!.Green" : "Green");
                 }
                 else
                 {

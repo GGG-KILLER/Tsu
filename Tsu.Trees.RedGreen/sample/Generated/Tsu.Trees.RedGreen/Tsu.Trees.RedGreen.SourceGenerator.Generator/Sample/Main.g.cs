@@ -101,7 +101,7 @@ namespace Tsu.Trees.RedGreen.Sample
         public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample node) =>
             node.Update(node.Kind, (global::Tsu.Trees.RedGreen.Sample.ExpressionSample?)Visit(node.Left) ?? throw new global::System.InvalidOperationException("Left cannot be null."), (global::Tsu.Trees.RedGreen.Sample.ExpressionSample?)Visit(node.Right) ?? throw new global::System.InvalidOperationException("Right cannot be null."));
         public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample node) =>
-            node.Update((global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample?)Visit(node.Identifier) ?? throw new global::System.InvalidOperationException("Identifier cannot be null."), (global::Tsu.Trees.RedGreen.Sample.ExpressionSample?)Visit(node.FirstArg) ?? throw new global::System.InvalidOperationException("FirstArg cannot be null."), (global::Tsu.Trees.RedGreen.Sample.ExpressionSample?)Visit(node.SecondArg));
+            node.Update((global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample?)Visit(node.Identifier) ?? throw new global::System.InvalidOperationException("Identifier cannot be null."), (global::Tsu.Trees.RedGreen.Sample.ExpressionSample?)Visit(node.Args) ?? throw new global::System.InvalidOperationException("Args cannot be null."));
     }
     public static class SampleFactory
     {
@@ -123,11 +123,8 @@ namespace Tsu.Trees.RedGreen.Sample
         public static global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample BinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.SampleKind kind, global::Tsu.Trees.RedGreen.Sample.ExpressionSample left, global::Tsu.Trees.RedGreen.Sample.ExpressionSample right) =>
             (global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample) global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.BinaryOperationExpression(kind, (global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample)left.Green, (global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample)right.Green).CreateRed();
 
-        public static global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample FunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.ExpressionSample firstArg) =>
-            (global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample) global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.FunctionCallExpression((global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample)identifier.Green, (global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample)firstArg.Green).CreateRed();
-
-        public static global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample FunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.ExpressionSample firstArg, global::Tsu.Trees.RedGreen.Sample.ExpressionSample? secondArg) =>
-            (global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample) global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.FunctionCallExpression((global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample)identifier.Green, (global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample)firstArg.Green, secondArg == null ? null : (global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample)secondArg.Green).CreateRed();
+        public static global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample FunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.SampleList<global::Tsu.Trees.RedGreen.Sample.ExpressionSample> args) =>
+            (global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample) global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.FunctionCallExpression((global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample)identifier.Green, (global::Tsu.Trees.RedGreen.Sample.Internal.SampleList)args.Node!.Green).CreateRed();
     }
 }
 
