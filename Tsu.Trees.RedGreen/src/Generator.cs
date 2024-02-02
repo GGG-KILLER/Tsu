@@ -27,6 +27,7 @@ public sealed class Generator : IIncrementalGenerator
         context.RegisterResourcesToCopy([
             "GreenTreeRootAttribute.cs",
             "GreenNodeAttribute.cs",
+            "NodeComponentAttribute.cs",
             "GreenListAttribute.cs",
         ]);
 

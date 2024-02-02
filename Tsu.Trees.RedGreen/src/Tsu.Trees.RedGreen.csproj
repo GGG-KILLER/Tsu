@@ -30,6 +30,7 @@
     <Compile Remove="Templates/**/*.cs" />
     <EmbeddedResource Include="Templates/GreenTreeRootAttribute.cs" Visible="true" LogicalName="GreenTreeRootAttribute.cs" />
     <EmbeddedResource Include="Templates/GreenNodeAttribute.cs" Visible="true" LogicalName="GreenNodeAttribute.cs" />
+    <EmbeddedResource Include="Templates/NodeComponentAttribute.cs" Visible="true" LogicalName="NodeComponentAttribute.cs" />
     <EmbeddedResource Include="Templates/GreenListAttribute.cs" Visible="true" LogicalName="GreenListAttribute.cs" />
 
     <EmbeddedResource Include="Templates/Internal/GreenRoot.sbn-cs" Visible="true" LogicalName="Internal/GreenRoot.sbn-cs" />
