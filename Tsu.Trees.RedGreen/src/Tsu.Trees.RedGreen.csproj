@@ -20,7 +20,7 @@
 
     <Copyright>GGG KILLER © 2024</Copyright>
     <PackageId>Tsu.Trees.RedGreen</PackageId>
-    <Version>0.1.1</Version>
+    <Version>0.2.0</Version>
     <Description>A source generator generates all the boilerplate for your red/green trees.</Description>
 
     <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
