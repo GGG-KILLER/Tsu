@@ -80,4 +80,72 @@ internal static class Utils
 
     public static SourceText ToSourceText(this StringBuilder builder) =>
         SourceText.From(new StringBuilderReader(builder), builder.Length, Encoding.UTF8);
+
+    public static void WriteLines(this IndentedTextWriter writer, string text)
+    {
+        var initialIndent = writer.Indent;
+        var lines = text.Split('\n');
+        foreach (var l in lines)
+        {
+            var line = l.TrimEnd();
+            if (line.Length == 0)
+            {
+                writer.WriteLineNoTabs("");
+            }
+            else
+            {
+                var indents = countIndents(line, 4);
+                if (writer.Indent != initialIndent + indents)
+                    writer.Indent = initialIndent + indents;
+                writer.WriteLine(line.TrimStart());
+            }
+        }
+
+        static int countIndents(string str, int spaces)
+        {
+            var n = 0;
+            for (var idx = 0; idx < str.Length; idx++)
+            {
+                if (str[idx] == ' ')
+                    n++;
+                else
+                    break;
+            }
+            return n / spaces;
+        }
+    }
+
+    public static void WriteLines(this IndentedTextWriter writer, string text, params object[] args)
+    {
+        var initialIndent = writer.Indent;
+        var lines = text.Split('\n');
+        foreach (var l in lines)
+        {
+            var line = l.TrimEnd();
+            if (line.Length == 0)
+            {
+                writer.WriteLineNoTabs("");
+            }
+            else
+            {
+                var indents = countIndents(line, 4);
+                if (writer.Indent != initialIndent + indents)
+                    writer.Indent = initialIndent + indents;
+                writer.WriteLine(line.TrimStart(), args);
+            }
+        }
+
+        static int countIndents(string str, int spaces)
+        {
+            var n = 0;
+            for (var idx = 0; idx < str.Length; idx++)
+            {
+                if (str[idx] == ' ')
+                    n++;
+                else
+                    break;
+            }
+            return n / spaces;
+        }
+    }
 }
