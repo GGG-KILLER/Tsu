@@ -39,6 +39,28 @@ namespace Tsu.Trees.RedGreen.Sample
             return result;
         }
 
+        /// <summary>
+        /// This works the same as GetRed, but intended to be used in lists
+        /// The only difference is that the public parent of the node is not the list,
+        /// but the list's parent. (element's grand parent).
+        /// </summary>
+        protected global::Tsu.Trees.RedGreen.Sample.SampleNode? GetRedElement(ref global::Tsu.Trees.RedGreen.Sample.SampleNode? element, int slot)
+        {
+            global::System.Diagnostics.Debug.Assert(IsList);
+
+            var result = element;
+
+            if (result == null)
+            {
+                var green = Green.GetRequiredSlot(slot);
+                // passing list's parent
+                global::System.Threading.Interlocked.CompareExchange(ref element, green.CreateRed(Parent, GetChildPosition(slot)), null);
+                result = element;
+            }
+
+            return result;
+        }
+
         public bool IsEquivalentTo(global::Tsu.Trees.RedGreen.Sample.SampleNode? other)
         {
             if (this == other) return true;

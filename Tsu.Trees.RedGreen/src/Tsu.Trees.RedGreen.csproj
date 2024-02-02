@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TsuProjectType>SourceGenerator</TsuProjectType>
@@ -20,7 +20,7 @@
 
     <Copyright>GGG KILLER © 2024</Copyright>
     <PackageId>Tsu.Trees.RedGreen</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Description>A source generator generates all the boilerplate for your red/green trees.</Description>
 
     <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
@@ -45,6 +45,15 @@
     <EmbeddedResource Include="Templates/Internal/ChildGreenList.Enumerator.sbn-cs" Visible="true" LogicalName="Internal/ChildGreenList.Enumerator.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/ChildGreenList.Reversed.sbn-cs" Visible="true" LogicalName="Internal/ChildGreenList.Reversed.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/ChildGreenList.Reversed.Enumerator.sbn-cs" Visible="true" LogicalName="Internal/ChildGreenList.Reversed.Enumerator.sbn-cs" />
+    <EmbeddedResource Include="Templates/RedList.sbn-cs" LogicalName="RedList.sbn-cs" />
+    <EmbeddedResource Include="Templates/RedList.WithTwoChildren.sbn-cs" LogicalName="RedList.WithTwoChildren.sbn-cs" />
+    <EmbeddedResource Include="Templates/RedList.WithThreeChildren.sbn-cs" LogicalName="RedList.WithThreeChildren.sbn-cs" />
+    <EmbeddedResource Include="Templates/RedList.WithManyChildren.sbn-cs" LogicalName="RedList.WithManyChildren.sbn-cs" />
+    <EmbeddedResource Include="Templates/RedList`1.sbn-cs" LogicalName="RedList`1.sbn-cs" />
+    <EmbeddedResource Include="Templates/RedList`1.Enumerator.sbn-cs" LogicalName="RedList`1.Enumerator.sbn-cs" />
+    <EmbeddedResource Include="Templates/RedListBuilder.sbn-cs" LogicalName="RedListBuilder.sbn-cs" />
+    <EmbeddedResource Include="Templates/RedListBuilder`1.sbn-cs" LogicalName="RedListBuilder`1.sbn-cs" />
+    <EmbeddedResource Include="Templates/RedListExtensions.sbn-cs" LogicalName="RedListExtensions.sbn-cs" />
     <EmbeddedResource Include="Templates/RedBase.sbn-cs" Visible="true" LogicalName="RedBase.sbn-cs" />
     <EmbeddedResource Include="Templates/RedNodes.sbn-cs" Visible="true" LogicalName="RedNodes.sbn-cs" />
     <EmbeddedResource Include="Templates/RedWalker.sbn-cs" Visible="true" LogicalName="RedWalker.sbn-cs" />
