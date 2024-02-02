@@ -19,8 +19,8 @@ namespace Tsu.Trees.RedGreen.Sample
 {
     public enum SampleKind
     {
-        Invalid = 0,
-
+        // Meta kinds (required)
+        None = 0,
         List,
 
         SemicolonToken,
