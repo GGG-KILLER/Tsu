@@ -7,13 +7,16 @@
 
 namespace Tsu.Trees.RedGreen.Sample
 {
+    using System.Collections;
+    using System.Collections.Generic;
+
     public readonly partial struct SampleList<TNode>
     {
         /// <summary>
         /// The enumerator for <see cref="SampleList{TNode}"/>.
         /// </summary>
         #pragma warning disable IDE0079 // Remove unnecessary suppression
-        [SuppressMessage("Performance", "CA1067", Justification = "Equality not actually implemented")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1067", Justification = "Equality not actually implemented")]
 #pragma warning restore IDE0079 // Remove unnecessary suppression
         public struct Enumerator
         {
@@ -75,7 +78,7 @@ namespace Tsu.Trees.RedGreen.Sample
             /// Always thrown.
             /// </exception>
 #pragma warning disable IDE0079 // Remove unnecessary suppression
-            [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required.")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required.")]
 #pragma warning restore IDE0079 // Remove unnecessary suppression
             public static bool operator ==(SampleList<TNode>.Enumerator left, SampleList<TNode>.Enumerator right) =>
                 throw new NotSupportedException();
@@ -89,7 +92,7 @@ namespace Tsu.Trees.RedGreen.Sample
             /// Always thrown.
             /// </exception>
 #pragma warning disable IDE0079 // Remove unnecessary suppression
-            [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required.")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required.")]
 #pragma warning restore IDE0079 // Remove unnecessary suppression
             public static bool operator !=(SampleList<TNode>.Enumerator left, SampleList<TNode>.Enumerator right) =>
                 throw new NotSupportedException();

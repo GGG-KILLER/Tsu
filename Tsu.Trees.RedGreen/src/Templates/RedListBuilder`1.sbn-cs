@@ -45,11 +45,9 @@ namespace {{ red_base.namespace | not_global }}
         public void AddRange({{ suffix }}List<TNode> nodes, int offset, int length) =>
             _builder!.AddRange(nodes, offset, length);
 
-        public bool Any(int kind) => _builder!.Any(kind);
+        public bool Any({{ kind_enum.csharp | not_null }} kind) => _builder!.Any(kind);
 
         public {{ suffix }}List<TNode> ToList() => _builder.ToList();
-
-        internal static implicit operator {{ suffix }}ListBuilder?({{ suffix }}ListBuilder<TNode> builder) => builder._builder;
 
         public static implicit operator {{ suffix }}List<TNode>({{ suffix }}ListBuilder<TNode> builder)
         {

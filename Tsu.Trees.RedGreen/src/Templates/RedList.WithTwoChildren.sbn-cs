@@ -27,7 +27,7 @@ namespace {{ red_base.namespace | not_global }}
                 return index switch
                 {
                     0 => GetRedElement(ref _child0, 0),
-                    1 => GetRedElementIfNotToken(ref _child1),
+                    1 => GetRedElement(ref _child1, 1),
                     _ => null,
                 };
             }

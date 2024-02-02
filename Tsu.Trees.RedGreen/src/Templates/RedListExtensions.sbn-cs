@@ -10,7 +10,7 @@ namespace {{ red_base.namespace | not_global }}
 {
     internal static class {{ suffix }}ListBuilderExtensions
     {
-        public static {{ suffix }}List<{{ red_base.csharp || not_null }}> ToList(this {{ suffix }}ListBuilder? builder)
+        public static {{ suffix }}List<{{ red_base.csharp | not_null }}> ToList(this {{ suffix }}ListBuilder? builder)
         {
             var listNode = builder?.ToListNode();
             if (listNode is null)
@@ -18,7 +18,7 @@ namespace {{ red_base.namespace | not_global }}
                 return default;
             }
 
-            return new {{ suffix }}List<{{ red_base.csharp || not_null }}>(listNode.CreateRed());
+            return new {{ suffix }}List<{{ red_base.csharp | not_null }}>(listNode.CreateRed());
         }
     }
 }

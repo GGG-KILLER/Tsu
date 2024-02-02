@@ -21,6 +21,7 @@ namespace Tsu.Trees.RedGreen.Sample
         internal global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode Green { get; }
         public global::Tsu.Trees.RedGreen.Sample.SampleNode? Parent => _parent;
         internal int SlotCount => this.Green.SlotCount;
+        internal bool IsList => this.Green.IsList;
 
         protected T? GetRed<T>(ref T? field, int index) where T : global::Tsu.Trees.RedGreen.Sample.SampleNode
         {
@@ -54,7 +55,7 @@ namespace Tsu.Trees.RedGreen.Sample
             {
                 var green = Green.GetRequiredSlot(slot);
                 // passing list's parent
-                global::System.Threading.Interlocked.CompareExchange(ref element, green.CreateRed(Parent, GetChildPosition(slot)), null);
+                global::System.Threading.Interlocked.CompareExchange(ref element, green.CreateRed(Parent), null);
                 result = element;
             }
 

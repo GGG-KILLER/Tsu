@@ -44,11 +44,9 @@ namespace Tsu.Trees.RedGreen.Sample
         public void AddRange(SampleList<TNode> nodes, int offset, int length) =>
             _builder!.AddRange(nodes, offset, length);
 
-        public bool Any(int kind) => _builder!.Any(kind);
+        public bool Any(global::Tsu.Trees.RedGreen.Sample.SampleKind kind) => _builder!.Any(kind);
 
         public SampleList<TNode> ToList() => _builder.ToList();
-
-        internal static implicit operator SampleListBuilder?(SampleListBuilder<TNode> builder) => builder._builder;
 
         public static implicit operator SampleList<TNode>(SampleListBuilder<TNode> builder)
         {

@@ -23,6 +23,7 @@ namespace {{ red_base.namespace | not_global }}
         internal {{ green_base.csharp | not_null }} Green { get; }
         public {{ red_base.csharp | not_null }}? Parent => _parent;
         internal int SlotCount => this.Green.SlotCount;
+        internal bool IsList => this.Green.IsList;
 
         protected T? GetRed<T>(ref T? field, int index) where T : {{ red_base.csharp | not_null }}
         {
@@ -56,7 +57,7 @@ namespace {{ red_base.namespace | not_global }}
             {
                 var green = Green.GetRequiredSlot(slot);
                 // passing list's parent
-                global::System.Threading.Interlocked.CompareExchange(ref element, green.CreateRed(Parent, GetChildPosition(slot)), null);
+                global::System.Threading.Interlocked.CompareExchange(ref element, green.CreateRed(Parent), null);
                 result = element;
             }
 

@@ -24,7 +24,7 @@ namespace {{ red_base.namespace | not_global }}
         public void Add({{ red_base.csharp | not_null }} item) => AddInternal(item.Green);
 
 #pragma warning disable IDE0079 // Remove unnecessary suppression
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0016:Use 'throw' expression", Justification = "The throw exception being early avoids resizing in the error case.")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0016:Use 'throw' expression", Justification = "The throw exception being early avoids resizing in the error case.")]
 #pragma warning restore IDE0079 // Remove unnecessary suppression
         internal void AddInternal({{ green_base.csharp | not_null }} item)
         {
@@ -56,7 +56,6 @@ namespace {{ red_base.namespace | not_global }}
             Validate(start, Count);
         }
 
-        [Conditional("DEBUG")]
         private void Validate(int start, int end)
         {
             for (int i = start; i < end; i++)
@@ -97,7 +96,7 @@ namespace {{ red_base.namespace | not_global }}
 
         private void Grow(int size)
         {
-            var tmp = new ArrayElement<{{ green_base.csharp | not_null }}?>[size];
+            var tmp = new {{ green_base.csharp | not_null }}?[size];
             Array.Copy(_nodes, tmp, _nodes.Length);
             _nodes = tmp;
         }
@@ -128,7 +127,7 @@ namespace {{ red_base.namespace | not_global }}
                 case 3:
                     return {{ green_base.namespace }}.{{ suffix }}List.List(_nodes[0]!, _nodes[1]!, _nodes[2]!);
                 default:
-                    var tmp = new ArrayElement<{{ green_base.csharp | not_null }}>[Count];
+                    var tmp = new {{ green_base.csharp | not_null }}[Count];
                     for (int i = 0; i < Count; i++)
                     {
                         tmp[i] = _nodes[i]!;

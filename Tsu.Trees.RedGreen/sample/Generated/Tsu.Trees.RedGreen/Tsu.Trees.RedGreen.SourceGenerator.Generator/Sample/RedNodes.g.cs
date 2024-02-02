@@ -23,8 +23,7 @@ namespace Tsu.Trees.RedGreen.Sample
     public partial class FunctionCallExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
     {
         private global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample? _identifier;
-        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? _firstArg;
-        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? _secondArg;
+        private global::Tsu.Trees.RedGreen.Sample.ExpressionSample? _args;
 
         internal FunctionCallExpressionSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
             : base(green, parent)
@@ -32,15 +31,13 @@ namespace Tsu.Trees.RedGreen.Sample
         }
 
         public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample Identifier => GetRed(ref this._identifier, 0)!;
-        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample FirstArg => GetRed(ref this._firstArg, 1)!;
-        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample? SecondArg => GetRed(ref this._secondArg, 2);
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionSample Args => GetRed(ref this._args, 1)!;
 
         internal override global::Tsu.Trees.RedGreen.Sample.SampleNode? GetNodeSlot(int index) =>
                 index switch
                 {
                     0 => GetRed(ref this._identifier, 0)!,
-                    1 => GetRed(ref this._firstArg, 1)!,
-                    2 => GetRed(ref this._secondArg, 2),
+                    1 => GetRed(ref this._args, 1)!,
                     _ => null
                 };
 
@@ -66,20 +63,17 @@ namespace Tsu.Trees.RedGreen.Sample
 
         public global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample Update(
             global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample identifier,
-            global::Tsu.Trees.RedGreen.Sample.ExpressionSample firstArg,
-            global::Tsu.Trees.RedGreen.Sample.ExpressionSample? secondArg
+            global::Tsu.Trees.RedGreen.Sample.ExpressionSample args
         )
         {
             if (
                 this.Identifier != identifier
-                && this.FirstArg != firstArg
-                && this.SecondArg != secondArg
+                || this.Args != args
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.SampleFactory.FunctionCallExpression(
                     identifier,
-                    firstArg,
-                    secondArg
+                    args
                 );
             }
 
@@ -89,20 +83,12 @@ namespace Tsu.Trees.RedGreen.Sample
         public global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample WithIdentifier(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample identifier) =>
             this.Update(
                 identifier,
-                this.FirstArg,
-                this.SecondArg
+                this.Args
             );
-        public global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample WithFirstArg(global::Tsu.Trees.RedGreen.Sample.ExpressionSample firstArg) =>
+        public global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample WithArgs(global::Tsu.Trees.RedGreen.Sample.ExpressionSample args) =>
             this.Update(
                 this.Identifier,
-                firstArg,
-                this.SecondArg
-            );
-        public global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample WithSecondArg(global::Tsu.Trees.RedGreen.Sample.ExpressionSample? secondArg) =>
-            this.Update(
-                this.Identifier,
-                this.FirstArg,
-                secondArg
+                args
             );
     }
     public partial class BinaryOperationExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
@@ -154,8 +140,8 @@ namespace Tsu.Trees.RedGreen.Sample
         {
             if (
                 this.Kind != kind
-                && this.Left != left
-                && this.Right != right
+                || this.Left != left
+                || this.Right != right
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.SampleFactory.BinaryOperationExpression(
@@ -359,7 +345,7 @@ namespace Tsu.Trees.RedGreen.Sample
         {
             if (
                 this.Semicolon != semicolon
-                && this.Expression != expression
+                || this.Expression != expression
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.SampleFactory.ExpressionStatement(
@@ -434,8 +420,8 @@ namespace Tsu.Trees.RedGreen.Sample
         {
             if (
                 this.Semicolon != semicolon
-                && this.Identifier != identifier
-                && this.Value != value
+                || this.Identifier != identifier
+                || this.Value != value
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.SampleFactory.AssignmentStatement(

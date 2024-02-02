@@ -103,7 +103,7 @@ for node in non_root_nodes
         {
             if (
                 {{~ for component in node.required_components ~}}
-                {{ if !for.first }}&& {{ end }}this.{{ component.property_name }} != {{ component.parameter_name }}
+                {{ if !for.first }}|| {{ end }}this.{{ component.property_name }} != {{ component.parameter_name }}
                 {{~ end ~}}
             )
             {

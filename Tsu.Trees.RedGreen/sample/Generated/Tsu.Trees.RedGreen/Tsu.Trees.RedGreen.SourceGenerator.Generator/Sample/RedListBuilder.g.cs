@@ -23,7 +23,7 @@ namespace Tsu.Trees.RedGreen.Sample
         public void Add(global::Tsu.Trees.RedGreen.Sample.SampleNode item) => AddInternal(item.Green);
 
 #pragma warning disable IDE0079 // Remove unnecessary suppression
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0016:Use 'throw' expression", Justification = "The throw exception being early avoids resizing in the error case.")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0016:Use 'throw' expression", Justification = "The throw exception being early avoids resizing in the error case.")]
 #pragma warning restore IDE0079 // Remove unnecessary suppression
         internal void AddInternal(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode item)
         {
@@ -55,7 +55,6 @@ namespace Tsu.Trees.RedGreen.Sample
             Validate(start, Count);
         }
 
-        [Conditional("DEBUG")]
         private void Validate(int start, int end)
         {
             for (int i = start; i < end; i++)
@@ -96,7 +95,7 @@ namespace Tsu.Trees.RedGreen.Sample
 
         private void Grow(int size)
         {
-            var tmp = new ArrayElement<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode?>[size];
+            var tmp = new global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode?[size];
             Array.Copy(_nodes, tmp, _nodes.Length);
             _nodes = tmp;
         }
@@ -127,7 +126,7 @@ namespace Tsu.Trees.RedGreen.Sample
                 case 3:
                     return global::Tsu.Trees.RedGreen.Sample.Internal.SampleList.List(_nodes[0]!, _nodes[1]!, _nodes[2]!);
                 default:
-                    var tmp = new ArrayElement<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode>[Count];
+                    var tmp = new global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode[Count];
                     for (int i = 0; i < Count; i++)
                     {
                         tmp[i] = _nodes[i]!;

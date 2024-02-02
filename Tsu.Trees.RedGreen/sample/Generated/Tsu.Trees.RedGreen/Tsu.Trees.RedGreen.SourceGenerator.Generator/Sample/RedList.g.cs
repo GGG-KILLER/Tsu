@@ -13,25 +13,26 @@ namespace Tsu.Trees.RedGreen.Sample
         internal SampleList(global::Tsu.Trees.RedGreen.Sample.Internal.SampleList green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
             : base(green, parent)
         {
-            [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-            public override void Accept(global::Tsu.Trees.RedGreen.Sample.SampleVisitor visitor) =>
-                throw new global::System.InvalidOperationException("A list must not be visited directly.");
-
-            [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-            public override TResult Accept<TResult>(global::Tsu.Trees.RedGreen.Sample.SampleVisitor<TResult> visitor) =>
-                throw new global::System.InvalidOperationException("A list must not be visited directly.");
-
-            [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-            public override TResult Accept<T1, TResult>(global::Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, TResult> visitor, T1 arg1) =>
-                throw new global::System.InvalidOperationException("A list must not be visited directly.");
-
-            [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-            public override TResult Accept<T1, T2, TResult>(global::Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) =>
-                throw new global::System.InvalidOperationException("A list must not be visited directly.");
-
-            [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-            public override TResult Accept<T1, T2, T3, TResult>(global::Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) =>
-                throw new global::System.InvalidOperationException("A list must not be visited directly.");
         }
+
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override void Accept(global::Tsu.Trees.RedGreen.Sample.SampleVisitor visitor) =>
+            throw new global::System.InvalidOperationException("A list must not be visited directly.");
+
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<TResult>(global::Tsu.Trees.RedGreen.Sample.SampleVisitor<TResult> visitor) =>
+            throw new global::System.InvalidOperationException("A list must not be visited directly.");
+
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, TResult>(global::Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, TResult> visitor, T1 arg1) =>
+            throw new global::System.InvalidOperationException("A list must not be visited directly.");
+
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, TResult>(global::Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) =>
+            throw new global::System.InvalidOperationException("A list must not be visited directly.");
+
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, T3, TResult>(global::Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) =>
+            throw new global::System.InvalidOperationException("A list must not be visited directly.");
     }
 }

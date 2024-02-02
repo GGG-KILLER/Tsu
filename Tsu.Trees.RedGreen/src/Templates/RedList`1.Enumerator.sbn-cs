@@ -8,13 +8,16 @@
 
 namespace {{ red_base.namespace | not_global }}
 {
+    using System.Collections;
+    using System.Collections.Generic;
+
     {{ red_base.accessibility }} readonly partial struct {{ suffix }}List<TNode>
     {
         /// <summary>
         /// The enumerator for <see cref="{{ suffix }}List{TNode}"/>.
         /// </summary>
         #pragma warning disable IDE0079 // Remove unnecessary suppression
-        [SuppressMessage("Performance", "CA1067", Justification = "Equality not actually implemented")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1067", Justification = "Equality not actually implemented")]
 #pragma warning restore IDE0079 // Remove unnecessary suppression
         public struct Enumerator
         {
@@ -76,7 +79,7 @@ namespace {{ red_base.namespace | not_global }}
             /// Always thrown.
             /// </exception>
 #pragma warning disable IDE0079 // Remove unnecessary suppression
-            [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required.")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required.")]
 #pragma warning restore IDE0079 // Remove unnecessary suppression
             public static bool operator ==({{ suffix }}List<TNode>.Enumerator left, {{ suffix }}List<TNode>.Enumerator right) =>
                 throw new NotSupportedException();
@@ -90,7 +93,7 @@ namespace {{ red_base.namespace | not_global }}
             /// Always thrown.
             /// </exception>
 #pragma warning disable IDE0079 // Remove unnecessary suppression
-            [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required.")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required.")]
 #pragma warning restore IDE0079 // Remove unnecessary suppression
             public static bool operator !=({{ suffix }}List<TNode>.Enumerator left, {{ suffix }}List<TNode>.Enumerator right) =>
                 throw new NotSupportedException();

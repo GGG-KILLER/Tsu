@@ -7,6 +7,9 @@
 
 namespace Tsu.Trees.RedGreen.Sample
 {
+    using System.Collections;
+    using System.Collections.Generic;
+
     /// <summary>
     /// A list of <see cref="global::Tsu.Trees.RedGreen.Sample.SampleNode"/>.
     /// </summary>
@@ -95,7 +98,7 @@ namespace Tsu.Trees.RedGreen.Sample
                 return _node.GetNodeSlot(index);
             }
 
-            LorettaDebug.Assert(index == 0);
+            global::System.Diagnostics.Debug.Assert(index == 0);
             return _node;
         }
 
@@ -208,7 +211,7 @@ namespace Tsu.Trees.RedGreen.Sample
                 return default;
             }
 
-            var newGreen = GreenNode.CreateList(items, static n => n.Green);
+            var newGreen = global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode.CreateList(items, static n => n.Green);
             return new SampleList<TNode>(newGreen!.CreateRed());
         }
 
@@ -257,7 +260,7 @@ namespace Tsu.Trees.RedGreen.Sample
         /// </summary>
         public bool Any()
         {
-            LorettaDebug.Assert(_node == null || Count != 0);
+            global::System.Diagnostics.Debug.Assert(_node == null || Count != 0);
             return _node != null;
         }
 
@@ -276,7 +279,7 @@ namespace Tsu.Trees.RedGreen.Sample
 
 #if DEBUG
         [Obsolete("For debugging only", true)]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "For debugging only")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "For debugging only")]
         private TNode[] Nodes => this.ToArray();
 #endif
 
@@ -286,25 +289,9 @@ namespace Tsu.Trees.RedGreen.Sample
 #pragma warning disable RS0041 // uses oblivious reference types
         public Enumerator GetEnumerator() => new(this);
 
-        IEnumerator<TNode> IEnumerable<TNode>.GetEnumerator()
-        {
-            if (Any())
-            {
-                return new EnumeratorImpl(this);
-            }
+        IEnumerator<TNode> IEnumerable<TNode>.GetEnumerator() => new EnumeratorImpl(this);
 
-            return SpecializedCollections.EmptyEnumerator<TNode>();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            if (Any())
-            {
-                return new EnumeratorImpl(this);
-            }
-
-            return SpecializedCollections.EmptyEnumerator<TNode>();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => new EnumeratorImpl(this);
 
         /// <summary>
         /// Checks whether two lists are equal.
@@ -390,12 +377,12 @@ namespace Tsu.Trees.RedGreen.Sample
             return -1;
         }
 
-        internal int IndexOf(int rawKind)
+        internal int IndexOf(global::Tsu.Trees.RedGreen.Sample.SampleKind kind)
         {
             var index = 0;
             foreach (var child in this)
             {
-                if (child.RawKind == rawKind)
+                if (child.Kind == kind)
                 {
                     return index;
                 }

@@ -9,7 +9,7 @@ namespace Tsu.Trees.RedGreen.Sample
 {
     internal static class SampleListBuilderExtensions
     {
-        public static SampleList<true> ToList(this SampleListBuilder? builder)
+        public static SampleList<global::Tsu.Trees.RedGreen.Sample.SampleNode> ToList(this SampleListBuilder? builder)
         {
             var listNode = builder?.ToListNode();
             if (listNode is null)
@@ -17,7 +17,7 @@ namespace Tsu.Trees.RedGreen.Sample
                 return default;
             }
 
-            return new SampleList<true>(listNode.CreateRed());
+            return new SampleList<global::Tsu.Trees.RedGreen.Sample.SampleNode>(listNode.CreateRed());
         }
     }
 }

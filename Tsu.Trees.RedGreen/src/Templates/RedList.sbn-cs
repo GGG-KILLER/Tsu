@@ -14,34 +14,35 @@ namespace {{ red_base.namespace | not_global }}
         internal {{ suffix }}List({{ green_base.namespace }}.{{ suffix }}List green, {{ red_base.csharp | not_null }}? parent)
             : base(green, parent)
         {
-            {{~ ## Accept ## ~}}
-            {{~ if create_visitors || create_walker ~}}
-            [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-            public override void Accept({{ red_base.namespace }}.{{ suffix }}Visitor visitor) =>
-                throw new global::System.InvalidOperationException("A list must not be visited directly.");
-            {{~ end ~}}
-
-            {{~ if create_visitors || create_rewriter ~}}
-            [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-            public override TResult Accept<TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<TResult> visitor) =>
-                throw new global::System.InvalidOperationException("A list must not be visited directly.");
-            {{~ end ~}}
-
-            {{~ if create_visitors ~}}
-            [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-            public override TResult Accept<T1, TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<T1, TResult> visitor, T1 arg1) =>
-                throw new global::System.InvalidOperationException("A list must not be visited directly.");
-
-            [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-            public override TResult Accept<T1, T2, TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) =>
-                throw new global::System.InvalidOperationException("A list must not be visited directly.");
-
-            [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-            public override TResult Accept<T1, T2, T3, TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) =>
-                throw new global::System.InvalidOperationException("A list must not be visited directly.");
-            {{~ end ~}}
-            {{~ ## End Accept ## ~}}
         }
+
+        {{~ ## Accept ## ~}}
+        {{~ if create_visitors || create_walker ~}}
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override void Accept({{ red_base.namespace }}.{{ suffix }}Visitor visitor) =>
+            throw new global::System.InvalidOperationException("A list must not be visited directly.");
+        {{~ end ~}}
+
+        {{~ if create_visitors || create_rewriter ~}}
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<TResult> visitor) =>
+            throw new global::System.InvalidOperationException("A list must not be visited directly.");
+        {{~ end ~}}
+
+        {{~ if create_visitors ~}}
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<T1, TResult> visitor, T1 arg1) =>
+            throw new global::System.InvalidOperationException("A list must not be visited directly.");
+
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) =>
+            throw new global::System.InvalidOperationException("A list must not be visited directly.");
+
+        [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+        public override TResult Accept<T1, T2, T3, TResult>({{ red_base.namespace }}.{{ suffix }}Visitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) =>
+            throw new global::System.InvalidOperationException("A list must not be visited directly.");
+        {{~ end ~}}
+        {{~ ## End Accept ## ~}}
     }
 }
 {{~ end ~}}
