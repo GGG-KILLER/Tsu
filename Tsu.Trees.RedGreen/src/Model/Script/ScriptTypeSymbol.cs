@@ -16,12 +16,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Microsoft.CodeAnalysis;
-using Scriban.Runtime;
 
 namespace Tsu.Trees.RedGreen.SourceGenerator.Model;
 
 internal sealed class ScriptTypeSymbol(ITypeSymbol symbol)
 {
+    public ITypeSymbol Symbol => symbol;
+
+    public bool IsAbstract => symbol.IsAbstract;
+
     public string Accessibility => symbol.DeclaredAccessibility.ToCSharpString();
 
     public string Name => symbol.Name;

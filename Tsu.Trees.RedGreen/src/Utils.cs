@@ -78,6 +78,9 @@ internal static class Utils
         return noGlobal ? str.Substring("global::".Length) : str;
     }
 
+    public static SourceText ToSourceText(this StringBuilder builder) =>
+        SourceText.From(new StringBuilderReader(builder), builder.Length, Encoding.UTF8);
+
     public static void WriteLines(this IndentedTextWriter writer, string text)
     {
         var initialIndent = writer.Indent;
@@ -145,7 +148,4 @@ internal static class Utils
             return n / spaces;
         }
     }
-
-    public static SourceText ToSourceText(this StringBuilder builder) =>
-        SourceText.From(new StringBuilderReader(builder), builder.Length, Encoding.UTF8);
 }

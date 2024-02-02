@@ -53,19 +53,6 @@ internal static class GreenTreeGenerator
             writer.WriteLine('{');
             writer.Indent++;
 
-            var queue = new Queue<Node>();
-            foreach (var node in tree.Root.Descendants)
-                queue.Enqueue(node);
-
-            while (queue.Count > 0)
-            {
-                var node = queue.Dequeue();
-                foreach (var descendant in node.Descendants)
-                    queue.Enqueue(descendant);
-                writer.WriteLineNoTabs("");
-                writer.WriteGreenNode(tree, node);
-            }
-
             writer.WriteLineNoTabs("");
             writer.WriteGreenFactory(tree);
 
@@ -92,190 +79,9 @@ internal static class GreenTreeGenerator
             writer.WriteLineNoTabs("");
 
             writer.Flush();
-            ctx.AddSource($"{tree.Suffix}.Internal.g.cs", builder.ToSourceText());
+            ctx.AddSource($"{tree.Suffix}/Internal/Visitors.g.cs", builder.ToSourceText());
         });
     }
-
-    private static void WriteGreenNode(this IndentedTextWriter writer, Tree tree, Node node)
-    {
-        if (node.TypeSymbol.IsAbstract)
-            writer.Write("abstract ");
-        writer.WriteLine("partial class {0} : {1}", node.TypeSymbol.Name, node.BaseSymbol!.ToCSharpString(false));
-        writer.WriteLine('{');
-        writer.Indent++;
-        {
-            writer.WriteGreenConstructor(node);
-
-            if (node.NodeComponents.Any())
-            {
-                writer.WriteLineNoTabs("");
-                foreach (var component in node.NodeComponents)
-                {
-                    writer.WriteLine("public {0} {1} => this.{2};", component.Type.ToCSharpString(), component.PropertyName, component.FieldName);
-                }
-            }
-
-            #region TGreenBase? GetSlot(int index)
-            if (!node.TypeSymbol.IsAbstract)
-            {
-                writer.WriteLineNoTabs("");
-                writer.WriteLine("public override {0}? GetSlot(int index) =>", tree.GreenBase.ToCSharpString());
-                writer.Indent++;
-                if (node.Children.Length == 0)
-                {
-                    writer.WriteLine("null;");
-                }
-                else if (node.Children.Length == 1)
-                {
-                    writer.WriteLine("index == 0 ? this.{0} : null;", node.Children[0].PropertyName);
-                }
-                else
-                {
-                    writer.WriteLine("index switch");
-                    writer.WriteLine('{');
-                    writer.Indent++;
-                    for (var idx = 0; idx < node.Children.Length; idx++)
-                    {
-                        var child = node.Children[idx];
-                        writer.WriteLine("{0} => this.{1},", idx, child.PropertyName);
-                    }
-                    writer.WriteLine("_ => null");
-                    writer.Indent--;
-                    writer.WriteLine("};");
-                }
-                writer.Indent--;
-            }
-            #endregion TGreenBase? GetSlot(int index)
-
-            #region TRedBase CreateRed(TRedBase? parent)
-            if (!node.TypeSymbol.IsAbstract)
-            {
-                writer.WriteLineNoTabs("");
-                writer.WriteLine("public override {0} CreateRed({0}? parent) =>", tree.RedBase.ToCSharpString());
-                writer.Indent++;
-                writer.WriteLine("new global::{0}.{1}(this, parent);", tree.RedBase.ContainingNamespace.ToCSharpString(), node.TypeSymbol.Name);
-                writer.Indent--;
-            }
-            #endregion TRedBase CreateRed(TRedBase? parent)
-
-            #region T Accept(Visitor visitor)
-            if (node.Descendants.Length == 0)
-            {
-                writer.WriteOverrideAcceptMethods(tree, tree.GreenBase.ContainingNamespace, node);
-            }
-            #endregion T Accept(Visitor visitor)
-
-            #region TNode Update(...)
-            if (!node.TypeSymbol.IsAbstract && node.RequiredComponents.Any())
-            {
-                writer.WriteLineNoTabs("");
-                writer.Write("public {0} Update(", node.TypeSymbol.ToCSharpString());
-                var first = true;
-                foreach (var component in node.RequiredComponents)
-                {
-                    if (!first) writer.Write(", ");
-                    first = false;
-                    writer.Write("{0} {1}", component.Type.ToCSharpString(), component.ParameterName);
-                }
-                writer.WriteLine(')');
-                writer.WriteLine('{');
-                writer.Indent++;
-                {
-                    writer.Write("if (");
-                    first = true;
-                    foreach (var component in node.RequiredComponents)
-                    {
-                        if (!first) writer.Write(" && ");
-                        first = false;
-                        writer.Write("{0} != this.{1}", component.ParameterName, component.PropertyName);
-                    }
-                    writer.WriteLine(')');
-                    writer.WriteLine('{');
-                    writer.Indent++;
-                    {
-                        writer.Write("return global::{0}.{1}Factory.{2}(",
-                            tree.GreenBase.ContainingNamespace.ToCSharpString(),
-                            tree.Suffix,
-                            node.TypeSymbol.Name.WithoutSuffix(tree.Suffix));
-                        first = true;
-                        foreach (var component in node.RequiredComponents)
-                        {
-                            if (!first) writer.Write(", ");
-                            first = false;
-                            writer.Write(component.ParameterName);
-                        }
-                        writer.WriteLine(");");
-                    }
-                    writer.Indent--;
-                    writer.WriteLine('}');
-                    writer.WriteLineNoTabs("");
-                    writer.WriteLine("return this;");
-                }
-                writer.Indent--;
-                writer.WriteLine('}');
-            }
-            #endregion TNode Update(...)
-        }
-        writer.Indent--;
-        writer.WriteLine('}');
-    }
-
-    private static void WriteGreenConstructor(this IndentedTextWriter writer, Node node)
-    {
-        if (node.TypeSymbol.IsAbstract)
-            writer.Write("protected ");
-        else
-            writer.Write("internal ");
-        writer.Write(node.TypeSymbol.Name);
-        writer.Write('(');
-        var first = true;
-        foreach (var component in node.Components)
-        {
-            if (!first) writer.Write(", ");
-            first = false;
-            writer.Write(component.Type.ToCSharpString());
-            writer.Write(' ');
-            writer.Write(component.ParameterName);
-        }
-        writer.Write(')');
-        if (node.ParentComponents.Any())
-        {
-            writer.Write(" : base(");
-            first = true;
-            foreach (var component in node.ParentComponents)
-            {
-                if (!first) writer.Write(", ");
-                first = false;
-                writer.Write(component.ParameterName);
-            }
-            writer.Write(')');
-        }
-        writer.WriteLine();
-        writer.WriteLine('{');
-        writer.Indent++;
-
-        if (node.Descendants.IsDefaultOrEmpty)
-        {
-            if (node.Children.Length > byte.MaxValue)
-                writer.WriteLine("this.SlotCount = byte.MaxValue;");
-            else
-                writer.WriteLine($"this.SlotCount = {node.Children.Length};");
-        }
-
-        foreach (var component in node.NodeComponents)
-        {
-            if (component.PassToBase) continue;
-            writer.Write("this.");
-            writer.Write(component.FieldName);
-            writer.Write(" = ");
-            writer.Write(component.ParameterName);
-            writer.WriteLine(';');
-        }
-
-        writer.Indent--;
-        writer.WriteLine('}');
-    }
-
     private static void WriteGreenFactory(this IndentedTextWriter writer, Tree tree)
     {
         writer.WriteLine("{0} static class {1}Factory", tree.GreenBase.DeclaredAccessibility.ToCSharpString(), tree.Suffix);
@@ -325,14 +131,17 @@ internal static class GreenTreeGenerator
                 if (!includeOptional && component.IsOptional) continue;
                 if (!first) writer.Write(", ");
                 first = false;
-                writer.Write("{0} {1}", component.Type.ToCSharpString(), component.ParameterName);
+                var type = component.IsList && component.Type.DerivesFrom(tree.GreenBase)
+                    ? $"{tree.GreenBase.ContainingNamespace.ToCSharpString(false)}.{tree.Suffix}List"
+                    : component.Type.ToCSharpString();
+                writer.Write("{0} {1}", type, component.ParameterName);
             }
             writer.WriteLine(')');
             writer.WriteLine('{');
             writer.Indent++;
             {
                 writer.WriteLineNoTabs("#if DEBUG");
-                foreach (var component in node.RequiredComponents.Where(x => !x.Type.IsValueType))
+                foreach (var component in node.RequiredComponents.Where(x => !x.Type.IsValueType && (!x.Type.DerivesFrom(tree.GreenBase) || !x.IsList)))
                 {
                     if (component.IsOptional) continue;
                     writer.WriteLine("if ({0} == null) throw new global::System.ArgumentNullException(nameof({0}));", component.ParameterName);

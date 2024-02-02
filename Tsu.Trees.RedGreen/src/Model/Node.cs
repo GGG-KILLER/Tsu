@@ -29,7 +29,7 @@ internal sealed record Node(
     ImmutableArray<Component> ExtraData
 )
 {
-    public IEnumerable<Component> Components => ExtraData.Concat(Children);
+    public IEnumerable<Component> Components => ExtraData.Concat(Children).OrderBy(x => x.SortOrder);
 
     public IEnumerable<Component> ParentComponents => Components.Where(x => x.PassToBase);
 

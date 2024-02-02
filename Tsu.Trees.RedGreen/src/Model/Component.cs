@@ -20,13 +20,15 @@ using Microsoft.CodeAnalysis;
 namespace Tsu.Trees.RedGreen.SourceGenerator.Model;
 
 public sealed record Component(
+    bool IsList,
     ITypeSymbol Type,
     string FieldName,
     bool IsOptional,
-    bool PassToBase
+    bool PassToBase,
+    int Order
 )
 {
-    private string? _parameterName, _propertyName;
-    public string ParameterName => _parameterName ??= FieldName.TrimStart('_').ToCamelCase();
-    public string PropertyName => _propertyName ??= FieldName.TrimStart('_').ToPascalCase();
+    public int SortOrder => Order < 0 ? int.MaxValue + Order : Order;
+    public string ParameterName { get; } = FieldName.TrimStart('_').ToCamelCase();
+    public string PropertyName { get; } = FieldName.TrimStart('_').ToPascalCase();
 }

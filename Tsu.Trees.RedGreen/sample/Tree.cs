@@ -19,6 +19,10 @@ namespace Tsu.Trees.RedGreen.Sample
 {
     public enum SampleKind
     {
+        // Meta kinds (required)
+        None = 0,
+        List,
+
         SemicolonToken,
         IdentifierExpression,
         NumericalLiteralExpression,
@@ -36,36 +40,56 @@ namespace Tsu.Trees.RedGreen.Sample
 
     public abstract partial class SampleNode
     {
-
+        // Stub to be filled in by codegen
     }
 }
 
 namespace Tsu.Trees.RedGreen.Sample.Internal
 {
-    [GreenTreeRoot(typeof(SampleNode), "Sample", typeof(SampleKind), CreateRewriter = true, CreateVisitors = true, CreateWalker = true)]
+    [GreenTreeRoot(
+        typeof(SampleNode),
+        "Sample",
+        typeof(SampleKind),
+        CreateRewriter = true,
+        CreateVisitors = true,
+        CreateWalker = true,
+        CreateLists = true,
+        DebugDump = true)]
     internal abstract partial class GreenNode
     {
+        // Stub to be filled in by codegen
+    }
+
+    partial class SampleList : GreenNode
+    {
+        // Stub to be filled in by codegen
     }
 
     [GreenNode(SampleKind.SemicolonToken)]
     internal sealed partial class SemicolonTokenSample : GreenNode
     {
+        // Stub to be filled in by codegen
     }
 
     internal abstract partial class ExpressionSample : GreenNode
     {
+        // Stub to be filled in by codegen
     }
 
     [GreenNode(SampleKind.IdentifierExpression)]
     internal sealed partial class IdentifierExpressionSample : ExpressionSample
     {
         private readonly string _name;
+
+        // Stub to be filled in by codegen
     }
 
     [GreenNode(SampleKind.NumericalLiteralExpression)]
     internal sealed partial class NumericalLiteralExpressionSample : ExpressionSample
     {
         private readonly double _value;
+
+        // Stub to be filled in by codegen
     }
 
     [GreenNode(SampleKind.AdditionExpression, SampleKind.DivisionExpression, SampleKind.MultiplicationExpression, SampleKind.SubtractionExpression)]
@@ -73,19 +97,27 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
     {
         private readonly ExpressionSample _left;
         private readonly ExpressionSample _right;
+
+        // Stub to be filled in by codegen
     }
 
     [GreenNode(SampleKind.FunctionCallExpression)]
     internal sealed partial class FunctionCallExpressionSample : ExpressionSample
     {
         private readonly IdentifierExpressionSample _identifier;
-        private readonly ExpressionSample _firstArg;
-        private readonly ExpressionSample? _secondArg;
+
+        [GreenList(typeof(ExpressionSample))]
+        private readonly SampleList _args;
+
+        // Stub to be filled in by codegen
     }
 
     internal abstract partial class StatementSample : GreenNode
     {
+        [NodeComponent(Order = -1)]
         protected readonly SemicolonTokenSample _semicolon;
+
+        // Stub to be filled in by codegen
     }
 
     [GreenNode(SampleKind.AssignmentStatement)]
@@ -93,11 +125,15 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
     {
         private readonly IdentifierExpressionSample _identifier;
         private readonly ExpressionSample _value;
+
+        // Stub to be filled in by codegen
     }
 
     [GreenNode(SampleKind.ExpressionStatement)]
     internal sealed partial class ExpressionStatementSample : StatementSample
     {
         private readonly ExpressionSample _expression;
+
+        // Stub to be filled in by codegen
     }
 }

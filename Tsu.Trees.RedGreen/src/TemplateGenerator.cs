@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -15,12 +16,16 @@ internal static class TemplateGenerator
 
     public static void RegisterTemplateOutput(this IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Tree> trees)
     {
+        var initSw = Stopwatch.StartNew();
         var templates = LoadTemplates();
+        initSw.Stop();
 
         context.RegisterSourceOutput(trees, (ctx, tree) =>
         {
-            var builtins = GetBuiltins();
-            builtins.Import("nosuffix", (string str) => str.WithoutSuffix(tree.Suffix));
+            var treeInitSw = Stopwatch.StartNew();
+            var builtins = new BuiltinFunctions();
+            builtins.Import(new TemplateHelpers(tree));
+
             var context = new TemplateContext(builtins, StringComparer.OrdinalIgnoreCase)
             {
                 EnableRelaxedIndexerAccess = false,
@@ -30,17 +35,38 @@ internal static class TemplateGenerator
             var globals = new ScriptObject();
             globals.Import(new ScriptTree(tree));
             context.PushGlobal(globals);
+            treeInitSw.Stop();
 
+            var renderSw = new Stopwatch();
+            var elapsed = new List<(string Path, TimeSpan Elapsed)>();
             foreach (var template in templates)
             {
-                ctx.AddSource($"{tree.Suffix}.{Path.GetFileNameWithoutExtension(template.Path)}.g.cs", template.Template.Render(context));
+                renderSw.Restart();
+                var rendered = template.Template.Render(context);
+                renderSw.Stop();
+                elapsed.Add((template.Path, renderSw.Elapsed));
+
+                ctx.AddSource($"{tree.Suffix}/{template.Path.WithoutSuffix(".sbn-cs")}.g.cs", rendered);
             }
+
+#if DEBUG
+            var builder = new StringBuilder();
+            builder.AppendLine($"// Templates Load: {initSw.Elapsed.TotalMilliseconds}ms")
+                   .AppendLine($"// Tree Init: {treeInitSw.Elapsed.TotalMilliseconds}ms");
+            foreach (var s in elapsed.OrderByDescending(x => x.Elapsed))
+                builder.AppendLine($"// {s.Path}: {s.Elapsed.TotalMilliseconds}ms");
+            builder.AppendLine($"// Total: {TimeSpan.FromTicks(initSw.Elapsed.Ticks + treeInitSw.Elapsed.Ticks + elapsed.Sum(x => x.Elapsed.Ticks)).TotalMilliseconds}ms");
+            ctx.AddSource($"{tree.Suffix}/TemplateTimings.g.cs", builder.ToSourceText());
+#endif
         });
     }
 
     private static ImmutableArray<(string Path, Template Template)> LoadTemplates()
     {
-        return _assembly.GetManifestResourceNames().Where(x => x.EndsWith(".sbn-cs")).Select(path =>
+        var names = _assembly.GetManifestResourceNames().Where(x => x.EndsWith(".sbn-cs"));
+        return names.Select(loadTemplate).ToImmutableArray();
+
+        static (string Path, Template Template) loadTemplate(string path)
         {
             string raw;
             using (var stream = _assembly.GetManifestResourceStream(path))
@@ -56,47 +82,87 @@ internal static class TemplateGenerator
             }
 
             return (path, template);
-        })
-            .ToImmutableArray();
-    }
-
-    private static BuiltinFunctions GetBuiltins()
-    {
-        var builtins = new BuiltinFunctions();
-        builtins.SetValue("csharp", new CSharpFunctions(), true);
-        return builtins;
-    }
-
-    private static string DumpObject(ScriptObject obj)
-    {
-        var builder = new StringBuilder();
-        dumpKeys(builder, obj);
-        return builder.ToString();
-
-        static void dumpKeys(StringBuilder builder, ScriptObject obj, int depth = 0)
-        {
-            foreach (var kv in obj)
-            {
-                builder.Append(new string(' ', depth * 2));
-                if (kv.Value is ScriptObject scriptObj && depth < 3)
-                {
-                    builder.AppendLine($"#region {kv.Key}");
-                    dumpKeys(builder, scriptObj, depth + 1);
-                    builder.AppendLine($"#endregion {kv.Key}");
-                }
-                else
-                {
-                    builder.Append("// ");
-                    builder.AppendLine($"{kv.Key}: {kv.Value}");
-                }
-            }
         }
     }
 
-    private sealed class CSharpFunctions : ScriptObject
+    private sealed class TemplateHelpers : ScriptObject
     {
-        public static string Namespace(INamespaceSymbol symbol, bool noGlobal = true) => symbol.ToCSharpString(noGlobal);
-        public static string Type(ITypeSymbol symbol, bool addNullable = true) => symbol.ToCSharpString(addNullable);
-        public static string Accessibility(Accessibility accessibility) => accessibility.ToCSharpString();
+        private static readonly MethodInfo[] _methods = typeof(TemplateHelpers).GetMethods(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static);
+        private readonly Tree _tree;
+
+        public TemplateHelpers(Tree tree) : base(9, autoImportStaticsFromThisType: false)
+        {
+            _tree = tree;
+
+            foreach (var method in _methods)
+            {
+                SetValue(
+                    StandardMemberRenamer.Rename(method),
+                    DynamicCustomFunction.Create(method.IsStatic ? null : this, method),
+                    true
+                );
+            }
+        }
+
+        public string NoSuffix(string value) => value.WithoutSuffix(_tree.Suffix);
+
+        public bool IsGreenNode(ScriptTypeSymbol symbol) => symbol.Symbol.DerivesFrom(_tree.GreenBase);
+
+        public string AsRed(ScriptTypeSymbol symbol)
+        {
+            if (symbol.Symbol.DerivesFrom(_tree.GreenBase))
+            {
+                return $"{_tree.RedBase.ContainingNamespace.ToCSharpString(false)}.{symbol.Name}{(symbol.Symbol.NullableAnnotation == NullableAnnotation.Annotated ? "?" : "")}";
+            }
+            else
+            {
+                return symbol.CSharp;
+            }
+        }
+
+        public string FieldType(ScriptComponent component, bool isGreen) => ParameterType(component, isGreen);
+
+        public string ParameterType(ScriptComponent component, bool isGreen)
+        {
+            if (IsGreenNode(component.Type))
+            {
+                var ns = isGreen ? _tree.GreenBase.ContainingNamespace : _tree.RedBase.ContainingNamespace;
+                if (component.IsList)
+                {
+                    return $"{ns.ToCSharpString(false)}.{_tree.Suffix}List";
+                }
+                else
+                {
+                    return $"{ns.ToCSharpString(false)}.{component.Type.Name}";
+                }
+            }
+            else
+            {
+                return component.Type.CSharp;
+            }
+        }
+
+        public string PropertyType(ScriptComponent component, bool isGreen)
+        {
+            if (IsGreenNode(component.Type))
+            {
+                var ns = isGreen ? _tree.GreenBase.ContainingNamespace : _tree.RedBase.ContainingNamespace;
+                if (component.IsList)
+                {
+                    return $"{ns.ToCSharpString(false)}.{_tree.Suffix}List<{ns.ToCSharpString(false)}.{component.Type.Name}>";
+                }
+                else
+                {
+                    return $"{ns.ToCSharpString(false)}.{component.Type.Name}";
+                }
+            }
+            else
+            {
+                return component.Type.CSharp;
+            }
+        }
+
+        public static string NotNull(string value) => value.WithoutSuffix("?");
+        public static string NotGlobal(string value) => value.StartsWith("global::") ? value.Substring("global::".Length) : value;
     }
 }

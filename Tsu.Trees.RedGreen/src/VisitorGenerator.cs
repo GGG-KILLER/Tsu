@@ -199,39 +199,7 @@ internal static class VisitorGenerator
         if (!tree.CreateVisitors)
         {
             writer.WriteVisitor(tree, baseType, 0);
-            writer.WriteLineNoTabs("");
         }
-
-        writer.WriteLines($$"""
-            {{baseType.DeclaredAccessibility.ToCSharpString()}} abstract class {{tree.Suffix}}Walker : {{baseType.ContainingNamespace.ToCSharpString(false)}}.{{tree.Suffix}}Visitor
-            {
-                private int _recursionDepth;
-
-                public override void Visit({{baseType.ToCSharpString()}}? node)
-                {
-                    if (node != null)
-                    {
-                        _recursionDepth++;
-                        if (_recursionDepth > 30)
-                        {
-                            global::System.Runtime.CompilerServices.RuntimeHelpers.EnsureSufficientExecutionStack();
-                        }
-
-                        node.Accept(this);
-
-                        _recursionDepth--;
-                    }
-                }
-
-                protected override void DefaultVisit({{baseType.ToCSharpString()}} node)
-                {
-                    foreach (var child in node.ChildNodes())
-                    {
-                        Visit(child);
-                    }
-                }
-            }
-            """);
     }
 
     public static void WriteRewriter(this IndentedTextWriter writer, Tree tree, INamedTypeSymbol baseType)
@@ -250,6 +218,36 @@ internal static class VisitorGenerator
         writer.WriteLine('{');
         writer.Indent++;
         {
+            var baseTypeNs = baseType.ContainingNamespace.ToCSharpString(false);
+            writer.WriteLines($$"""
+            public {{baseTypeNs}}.{{tree.Suffix}}List<TNode> VisitList<TNode>({{baseTypeNs}}.{{tree.Suffix}}List<TNode> list) where TNode : {{tree.RedBase.ToCSharpString(false)}}
+            {
+                {{baseTypeNs}}.{{tree.Suffix}}ListBuilder? alternate = null;
+                for (int i = 0, n = list.Count; i < n; i++)
+                {
+                    var item = list[i];
+                    var visited = Visit(item);
+                    if (item != visited && alternate == null)
+                    {
+                        alternate = new {{baseTypeNs}}.{{tree.Suffix}}ListBuilder(n);
+                        alternate.AddRange(list, 0, i);
+                    }
+
+                    if (alternate != null && visited != null && visited.Kind != {{tree.KindEnum.ToCSharpString(false)}}.None)
+                    {
+                        alternate.Add(visited);
+                    }
+                }
+
+                if (alternate != null)
+                {
+                    return alternate.ToList();
+                }
+
+                return list;
+            }
+
+            """);
             var queue = new Queue<Node>();
             foreach (var desc in tree.Root.Descendants)
                 queue.Enqueue(desc);
@@ -286,13 +284,20 @@ internal static class VisitorGenerator
 
                                 if (component.Type.DerivesFrom(tree.GreenBase))
                                 {
-                                    writer.Write("({0}.{1}?)Visit(node.{2})",
+                                    if (component.IsList)
+                                    {
+                                        writer.Write("VisitList(node.{0})", component.PropertyName);
+                                    }
+                                    else
+                                    {
+                                        writer.Write("({0}.{1}?)Visit(node.{2})",
                                         baseType.ContainingNamespace.ToCSharpString(false),
                                         component.Type.Name,
                                         component.PropertyName);
-                                    if (!component.IsOptional)
-                                    {
-                                        writer.Write(" ?? throw new global::System.InvalidOperationException(\"{0} cannot be null.\")", component.PropertyName);
+                                        if (!component.IsOptional)
+                                        {
+                                            writer.Write(" ?? throw new global::System.InvalidOperationException(\"{0} cannot be null.\")", component.PropertyName);
+                                        }
                                     }
                                 }
                                 else

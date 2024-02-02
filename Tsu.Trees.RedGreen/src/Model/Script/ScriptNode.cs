@@ -18,7 +18,6 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Scriban.Runtime;
 
 namespace Tsu.Trees.RedGreen.SourceGenerator.Model;
 
@@ -31,7 +30,7 @@ internal sealed class ScriptNode(Node node)
     public ImmutableArray<ScriptComponent> Children { get; } = node.Children.Select(x => new ScriptComponent(x)).ToImmutableArray();
     public ImmutableArray<ScriptComponent> ExtraData { get; } = node.ExtraData.Select(x => new ScriptComponent(x)).ToImmutableArray();
 
-    public IEnumerable<ScriptComponent> Components => ExtraData.Concat(Children);
+    public IEnumerable<ScriptComponent> Components => ExtraData.Concat(Children).OrderBy(x => x.SortOrder);
 
     public IEnumerable<ScriptComponent> ParentComponents => Components.Where(x => x.PassToBase);
 
