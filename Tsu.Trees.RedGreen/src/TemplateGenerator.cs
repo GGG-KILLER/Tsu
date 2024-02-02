@@ -19,39 +19,7 @@ internal static class TemplateGenerator
         context.RegisterSourceOutput(trees, (ctx, tree) =>
         {
             var builtins = new BuiltinFunctions();
-
-            builtins.Import("no_suffix", (string str) => str.WithoutSuffix(tree.Suffix));
-            builtins.SetReadOnly("no_suffix", true);
-
-            builtins.Import("derives_from", (ScriptTypeSymbol symbolA, ScriptTypeSymbol symbolB) =>
-                symbolA.Symbol.DerivesFrom((INamedTypeSymbol) symbolB.Symbol));
-            builtins.SetReadOnly("derives_from", true);
-
-            builtins.Import("as_red", (ScriptTypeSymbol symbol) =>
-            {
-                if (symbol.Symbol.DerivesFrom(tree.GreenBase))
-                {
-                    return $"{tree.RedBase.ContainingNamespace.ToCSharpString(false)}.{symbol.Name}{(symbol.Symbol.NullableAnnotation == NullableAnnotation.Annotated ? "?" : "")}";
-                }
-                else
-                {
-                    return symbol.CSharp;
-                }
-            });
-            builtins.SetReadOnly("as_red", true);
-
-            builtins.Import("not_null", (string str) => str.WithoutSuffix("?"));
-            builtins.SetReadOnly("not_null", true);
-
-            builtins.Import("not_global", (string str) => str.StartsWith("global::") ? str.Substring("global::".Length) : str);
-            builtins.SetReadOnly("not_global", true);
-
-            builtins.Import("is_list", (ScriptTypeSymbol symbol) =>
-            {
-                return (SymbolEqualityComparer.Default.Equals(symbol.Symbol.ContainingNamespace, tree.GreenBase.ContainingNamespace)
-                    || SymbolEqualityComparer.Default.Equals(symbol.Symbol.ContainingNamespace, tree.RedBase.ContainingNamespace))
-                    && symbol.Name == $"{tree.Suffix}List";
-            });
+            builtins.Import(new TemplateHelpers(tree));
 
             var context = new TemplateContext(builtins, StringComparer.OrdinalIgnoreCase)
             {
@@ -90,5 +58,87 @@ internal static class TemplateGenerator
             return (path, template);
         })
             .ToImmutableArray();
+    }
+
+    private sealed class TemplateHelpers : ScriptObject
+    {
+        private readonly Tree _tree;
+
+        public TemplateHelpers(Tree tree) : base(9, autoImportStaticsFromThisType: false)
+        {
+            _tree = tree;
+
+            var methods = typeof(TemplateHelpers).GetMethods(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static);
+            if (methods.Length == 0) throw new InvalidOperationException("No helper methods found.");
+            foreach (var method in methods)
+            {
+                SetValue(
+                    StandardMemberRenamer.Rename(method),
+                    DynamicCustomFunction.Create(method.IsStatic ? null : this, method),
+                    true
+                );
+            }
+        }
+
+        public string NoSuffix(string value) => value.WithoutSuffix(_tree.Suffix);
+
+        public bool IsGreenNode(ScriptTypeSymbol symbol) => symbol.Symbol.DerivesFrom(_tree.GreenBase);
+
+        public string AsRed(ScriptTypeSymbol symbol)
+        {
+            if (symbol.Symbol.DerivesFrom(_tree.GreenBase))
+            {
+                return $"{_tree.RedBase.ContainingNamespace.ToCSharpString(false)}.{symbol.Name}{(symbol.Symbol.NullableAnnotation == NullableAnnotation.Annotated ? "?" : "")}";
+            }
+            else
+            {
+                return symbol.CSharp;
+            }
+        }
+
+        public string FieldType(ScriptComponent component, bool isGreen) => ParameterType(component, isGreen);
+
+        public string ParameterType(ScriptComponent component, bool isGreen)
+        {
+            if (IsGreenNode(component.Type))
+            {
+                var ns = isGreen ? _tree.GreenBase.ContainingNamespace : _tree.RedBase.ContainingNamespace;
+                if (component.IsList)
+                {
+                    return $"{ns.ToCSharpString(false)}.{_tree.Suffix}List";
+                }
+                else
+                {
+                    return $"{ns.ToCSharpString(false)}.{component.Type.Name}";
+                }
+            }
+            else
+            {
+                return component.Type.CSharp;
+            }
+        }
+
+        public string PropertyType(ScriptComponent component, bool isGreen)
+        {
+            if (IsGreenNode(component.Type))
+            {
+                var ns = isGreen ? _tree.GreenBase.ContainingNamespace : _tree.RedBase.ContainingNamespace;
+                if (component.IsList)
+                {
+                    return $"{ns.ToCSharpString(false)}.{_tree.Suffix}List<{ns.ToCSharpString(false)}.{component.Type.Name}>";
+                }
+                else
+                {
+                    return $"{ns.ToCSharpString(false)}.{component.Type.Name}";
+                }
+            }
+            else
+            {
+                return component.Type.CSharp;
+            }
+        }
+
+        public static string NotNull(string value) => value.WithoutSuffix("?");
+        public static string NotGlobal(string value) => value.StartsWith("global::") ? value.Substring("global::".Length) : value;
     }
 }
