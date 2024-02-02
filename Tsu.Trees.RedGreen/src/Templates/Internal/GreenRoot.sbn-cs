@@ -7,6 +7,10 @@
 
 namespace {{ green_base.namespace | not_global }}
 {
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
+
     abstract partial class {{ green_base.name }}
     {
 {{~ if create_lists ~}}
@@ -14,7 +18,7 @@ namespace {{ green_base.namespace | not_global }}
 {{~ end ~}}
 
 {{~ for component in root.components ~}}
-        private readonly {{ component.type.csharp }} {{ component.field_name }};
+        protected readonly {{ component.type.csharp }} {{ component.field_name }};
 {{~ end ~}}
         private byte _slotCount;
 
@@ -54,7 +58,7 @@ namespace {{ green_base.namespace | not_global }}
         public {{ green_base.csharp | not_null }} GetRequiredSlot(int index)
         {
             var node = this.GetSlot(index);
-            global::System.Diagnostics.Debug.Assert(node != null);
+            Debug.Assert(node != null);
             return node!;
         }
 
@@ -63,7 +67,7 @@ namespace {{ green_base.namespace | not_global }}
         public {{ green_base.namespace }}.Child{{ suffix }}List ChildNodes() =>
             new {{ green_base.namespace }}.Child{{ suffix }}List(this);
 
-        public global::System.Collections.Generic.IEnumerable<{{ green_base.csharp | not_null }}> EnumerateDescendants()
+        public IEnumerable<{{ green_base.csharp | not_null }}> EnumerateDescendants()
         {
             yield return this;
 
@@ -89,7 +93,7 @@ namespace {{ green_base.namespace | not_global }}
             }
         }
 
-        public virtual bool IsEquivalentTo([global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] {{ green_base.csharp | not_null }}? other)
+        public virtual bool IsEquivalentTo([NotNullWhen(true)] {{ green_base.csharp | not_null }}? other)
         {
             if (this == other) return true;
             if (other == null) return false;
@@ -111,6 +115,66 @@ namespace {{ green_base.namespace | not_global }}
             }
 
             return true;
+        }
+
+        /*
+         * There are 3 overloads of this, because most callers already know what they have is a List<T> and only transform it.
+         * In those cases List<TFrom> performs much better.
+         * In other cases, the type is unknown / is IEnumerable<T>, where we try to find the best match.
+         * There is another overload for IReadOnlyList, since most collections already implement this, so checking for it will
+         * perform better then copying to a List<T>, though not as good as List<T> directly.
+         */
+        public static {{ green_base.csharp | not_null }}? CreateList<TFrom>(IEnumerable<TFrom>? enumerable, Func<TFrom, {{ green_base.csharp | not_null }}> select)
+            => enumerable switch
+            {
+                null => null,
+                List<TFrom> l => CreateList(l, select),
+                IReadOnlyList<TFrom> l => CreateList(l, select),
+                _ => CreateList(enumerable.ToList(), select)
+            };
+
+        public static {{ green_base.csharp | not_null }}? CreateList<TFrom>(List<TFrom> list, Func<TFrom, {{ green_base.csharp | not_null }}> select)
+        {
+            switch (list.Count)
+            {
+                case 0:
+                    return null;
+                case 1:
+                    return select(list[0]);
+                case 2:
+                    return {{ green_base.namespace }}.{{ suffix }}List.List(select(list[0]), select(list[1]));
+                case 3:
+                    return {{ green_base.namespace }}.{{ suffix }}List.List(select(list[0]), select(list[1]), select(list[2]));
+                default:
+                {
+                    var array = new {{ green_base.csharp | not_null }}[list.Count];
+                    for (int i = 0; i < array.Length; i++)
+                        array[i] = select(list[i]);
+                    return {{ green_base.namespace }}.{{ suffix }}List.List(array);
+                }
+            }
+        }
+
+        public static {{ green_base.csharp | not_null }}? CreateList<TFrom>(IReadOnlyList<TFrom> list, Func<TFrom, {{ green_base.csharp | not_null }}> select)
+        {
+            switch (list.Count)
+            {
+                case 0:
+                    return null;
+                case 1:
+                    return select(list[0]);
+                case 2:
+                    return {{ suffix }}List.List(select(list[0]), select(list[1]));
+                case 3:
+                    return {{ suffix }}List.List(select(list[0]), select(list[1]), select(list[2]));
+                default:
+                {
+                    var array = new {{ green_base.csharp | not_null }}[list.Count];
+                    for (int i = 0; i < array.Length; i++)
+                        array[i] = select(list[i]);
+                    return {{ suffix }}List.List(array);
+                }
+            }
         }
 
         public {{ red_base.csharp | not_null }} CreateRed() => this.CreateRed(null);

@@ -22,7 +22,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
 #if DEBUG
             [Obsolete("For debugging", error: true)]
-            [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "for debugging")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "for debugging")]
             private global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode[] Nodes
             {
                 get

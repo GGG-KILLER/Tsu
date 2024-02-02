@@ -74,8 +74,8 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         )
         {
             if (
-                this.Identifier != identifier
-                && this.Args != args
+                this._identifier != identifier
+                || this._args != args
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.FunctionCallExpression(
@@ -142,9 +142,9 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         )
         {
             if (
-                this.Kind != kind
-                && this.Left != left
-                && this.Right != right
+                this._kind != kind
+                || this._left != left
+                || this._right != right
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.BinaryOperationExpression(
@@ -202,7 +202,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         )
         {
             if (
-                this.Value != value
+                this._value != value
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.NumericalLiteralExpression(
@@ -258,7 +258,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         )
         {
             if (
-                this.Name != name
+                this._name != name
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.IdentifierExpression(
@@ -340,8 +340,8 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         )
         {
             if (
-                this.Semicolon != semicolon
-                && this.Expression != expression
+                this._semicolon != semicolon
+                || this._expression != expression
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.ExpressionStatement(
@@ -410,9 +410,9 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         )
         {
             if (
-                this.Semicolon != semicolon
-                && this.Identifier != identifier
-                && this.Value != value
+                this._semicolon != semicolon
+                || this._identifier != identifier
+                || this._value != value
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.AssignmentStatement(

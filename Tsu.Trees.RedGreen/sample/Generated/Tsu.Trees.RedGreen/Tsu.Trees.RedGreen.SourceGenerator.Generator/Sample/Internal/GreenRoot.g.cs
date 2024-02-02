@@ -7,11 +7,15 @@
 
 namespace Tsu.Trees.RedGreen.Sample.Internal
 {
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
+
     abstract partial class GreenNode
     {
         public const global::Tsu.Trees.RedGreen.Sample.SampleKind ListKind = global::Tsu.Trees.RedGreen.Sample.SampleKind.List;
 
-        private readonly global::Tsu.Trees.RedGreen.Sample.SampleKind _kind;
+        protected readonly global::Tsu.Trees.RedGreen.Sample.SampleKind _kind;
         private byte _slotCount;
 
         protected GreenNode(global::Tsu.Trees.RedGreen.Sample.SampleKind kind)
@@ -40,7 +44,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         public global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode GetRequiredSlot(int index)
         {
             var node = this.GetSlot(index);
-            global::System.Diagnostics.Debug.Assert(node != null);
+            Debug.Assert(node != null);
             return node!;
         }
 
@@ -49,7 +53,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         public global::Tsu.Trees.RedGreen.Sample.Internal.ChildSampleList ChildNodes() =>
             new global::Tsu.Trees.RedGreen.Sample.Internal.ChildSampleList(this);
 
-        public global::System.Collections.Generic.IEnumerable<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode> EnumerateDescendants()
+        public IEnumerable<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode> EnumerateDescendants()
         {
             yield return this;
 
@@ -75,7 +79,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             }
         }
 
-        public virtual bool IsEquivalentTo([global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? other)
+        public virtual bool IsEquivalentTo([NotNullWhen(true)] global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? other)
         {
             if (this == other) return true;
             if (other == null) return false;
@@ -95,6 +99,66 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             }
 
             return true;
+        }
+
+        /*
+         * There are 3 overloads of this, because most callers already know what they have is a List<T> and only transform it.
+         * In those cases List<TFrom> performs much better.
+         * In other cases, the type is unknown / is IEnumerable<T>, where we try to find the best match.
+         * There is another overload for IReadOnlyList, since most collections already implement this, so checking for it will
+         * perform better then copying to a List<T>, though not as good as List<T> directly.
+         */
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? CreateList<TFrom>(IEnumerable<TFrom>? enumerable, Func<TFrom, global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode> select)
+            => enumerable switch
+            {
+                null => null,
+                List<TFrom> l => CreateList(l, select),
+                IReadOnlyList<TFrom> l => CreateList(l, select),
+                _ => CreateList(enumerable.ToList(), select)
+            };
+
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? CreateList<TFrom>(List<TFrom> list, Func<TFrom, global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode> select)
+        {
+            switch (list.Count)
+            {
+                case 0:
+                    return null;
+                case 1:
+                    return select(list[0]);
+                case 2:
+                    return global::Tsu.Trees.RedGreen.Sample.Internal.SampleList.List(select(list[0]), select(list[1]));
+                case 3:
+                    return global::Tsu.Trees.RedGreen.Sample.Internal.SampleList.List(select(list[0]), select(list[1]), select(list[2]));
+                default:
+                {
+                    var array = new global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode[list.Count];
+                    for (int i = 0; i < array.Length; i++)
+                        array[i] = select(list[i]);
+                    return global::Tsu.Trees.RedGreen.Sample.Internal.SampleList.List(array);
+                }
+            }
+        }
+
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? CreateList<TFrom>(IReadOnlyList<TFrom> list, Func<TFrom, global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode> select)
+        {
+            switch (list.Count)
+            {
+                case 0:
+                    return null;
+                case 1:
+                    return select(list[0]);
+                case 2:
+                    return SampleList.List(select(list[0]), select(list[1]));
+                case 3:
+                    return SampleList.List(select(list[0]), select(list[1]), select(list[2]));
+                default:
+                {
+                    var array = new global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode[list.Count];
+                    for (int i = 0; i < array.Length; i++)
+                        array[i] = select(list[i]);
+                    return SampleList.List(array);
+                }
+            }
         }
 
         public global::Tsu.Trees.RedGreen.Sample.SampleNode CreateRed() => this.CreateRed(null);

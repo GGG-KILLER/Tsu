@@ -95,7 +95,7 @@ namespace {{ green_base.namespace | not_global }}
         {
             if (
                 {{~ for component in node.required_components ~}}
-                {{ if !for.first }}&& {{ end }}this.{{ component.property_name }} != {{ component.parameter_name }}
+                {{ if !for.first }}|| {{ end }}this.{{ component.field_name }} != {{ component.parameter_name }}
                 {{~ end ~}}
             )
             {

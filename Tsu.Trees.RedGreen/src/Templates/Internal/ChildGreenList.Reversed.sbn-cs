@@ -22,7 +22,7 @@ namespace {{ green_base.namespace | not_global }}
 
 #if DEBUG
             [Obsolete("For debugging", error: true)]
-            [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "for debugging")]
+            [global::System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "for debugging")]
             private {{ green_base.csharp | not_null }}[] Nodes
             {
                 get
