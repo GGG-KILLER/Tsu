@@ -26,4 +26,6 @@ internal sealed class ScriptComponent(Component component)
     public string PropertyName => component.PropertyName;
     public bool IsOptional => component.IsOptional;
     public bool PassToBase => component.PassToBase;
+    public int Order => component.Order;
+    public int SortOrder => component.SortOrder;
 }

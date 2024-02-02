@@ -39,14 +39,16 @@ internal static class DebugGenerator
 
                 builder.AppendLine($"// {indent}    Children:");
                 foreach (var child in node.Item2.Children)
-                    builder.AppendLine($"// {indent}        {child.Type.ToCSharpString()} (IsList = {child.IsList}, Name = {child.FieldName}, IsOptional = {child.IsOptional}, PassToBase = {child.PassToBase})");
+                    builder.AppendLine($"// {indent}        {child.Type.ToCSharpString()} (IsList = {child.IsList}, Name = {child.FieldName}, IsOptional = {child.IsOptional}, PassToBase = {child.PassToBase}, Order = {child.Order})");
 
                 builder.AppendLine($"// {indent}    ExtraData:");
                 foreach (var child in node.Item2.ExtraData)
-                    builder.AppendLine($"// {indent}        {child.Type.ToCSharpString()} (IsList = {child.IsList}, Name = {child.FieldName}, IsOptional = {child.IsOptional}, PassToBase = {child.PassToBase})");
+                    builder.AppendLine($"// {indent}        {child.Type.ToCSharpString()} (IsList = {child.IsList}, Name = {child.FieldName}, IsOptional = {child.IsOptional}, PassToBase = {child.PassToBase}, Order = {child.Order})");
+
+                builder.AppendLine($"// {indent}    Descendants:");
 
                 foreach (var derived in node.Item2.Descendants)
-                    queue.Push((node.Item1 + 1, derived));
+                    queue.Push((node.Item1 + 2, derived));
             }
 
             ctx.AddSource($"{tree.Suffix}/Debug.g.cs", builder.ToSourceText());

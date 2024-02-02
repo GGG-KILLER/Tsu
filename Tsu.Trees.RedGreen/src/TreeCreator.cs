@@ -119,19 +119,45 @@ internal static class TreeCreator
         IEnumerable<Component> parentExtraData)
     {
         var fields = node.NodeType.GetMembers().OfType<IFieldSymbol>().Where(f => f.IsReadOnly);
-        var nodeChildren = fields.Where(x => x.Type.DerivesFrom(tree.GreenBase)).Select(toComponent);
-        var nodeExtraData = fields.Where(x => !x.Type.DerivesFrom(tree.GreenBase)).Select(toComponent);
+
+        // Starting order for this node
+        var order = 1;
+        if (parentNodes.Any())
+            order = Math.Max(order, parentNodes.Select(x => x.Order).Max() + 1);
+        if (parentExtraData.Any())
+            order = Math.Max(order, parentExtraData.Select(x => x.Order).Max() + 1);
+
+        var nodeChildren = fields.Where(x => x.Type.DerivesFrom(tree.GreenBase))
+                                 .Select(x =>
+                                 {
+                                     var ret = toComponent(x, order);
+                                     if (ret.Order == order)
+                                         order++;
+                                     return ret;
+                                 })
+                                 .ToArray();
+        var nodeExtraData = fields.Where(x => !x.Type.DerivesFrom(tree.GreenBase))
+                                 .Select(x =>
+                                 {
+                                     var ret = toComponent(x, order);
+                                     if (ret.Order == order)
+                                         order++;
+                                     return ret;
+                                 })
+                                 .ToArray();
 
         var children = parentNodes.Select(x => x with { PassToBase = true })
                                   .Concat(nodeChildren)
+                                  .OrderBy(x => x.SortOrder)
                                   .ToImmutableArray();
 
         var extraData = parentExtraData.Select(x => x with { PassToBase = true })
                                      .Concat(nodeExtraData)
+                                     .OrderBy(x => x.SortOrder)
                                      .ToImmutableArray();
 
         if (SymbolEqualityComparer.Default.Equals(node.NodeType, tree.GreenBase))
-            extraData = extraData.Add(new Component(false, tree.KindEnum, "_kind", false, false));
+            extraData = extraData.Add(new Component(false, tree.KindEnum, "_kind", false, false, 0));
 
         return new Node(
             node.BaseType,
@@ -142,15 +168,22 @@ internal static class TreeCreator
             children,
             extraData);
 
-        static Component toComponent(IFieldSymbol fieldSymbol)
+        static Component toComponent(IFieldSymbol fieldSymbol, int order)
         {
             var isList = false;
             var type = fieldSymbol.Type;
 
-            if (fieldSymbol.GetAttributes().SingleOrDefault(x => x.AttributeClass?.ToCSharpString(false) == "global::Tsu.Trees.RedGreen.GreenListAttribute") is AttributeData attr)
+            if (fieldSymbol.GetAttributes().SingleOrDefault(x => x.AttributeClass?.ToCSharpString(false) == "global::Tsu.Trees.RedGreen.GreenListAttribute") is AttributeData listAttr)
             {
                 isList = true;
-                type = (INamedTypeSymbol) attr.ConstructorArguments.Single().Value!;
+                type = (INamedTypeSymbol) listAttr.ConstructorArguments.Single().Value!;
+            }
+
+            if (fieldSymbol.GetAttributes().SingleOrDefault(x => x.AttributeClass?.ToCSharpString(false) == "global::Tsu.Trees.RedGreen.NodeComponentAttribute") is AttributeData custAttr)
+            {
+                var val = custAttr.NamedArguments.SingleOrDefault(x => x.Key == "Order").Value;
+                if (val.Value is int num)
+                    order = num;
             }
 
             return new(
@@ -158,7 +191,8 @@ internal static class TreeCreator
                 type,
                 fieldSymbol.Name,
                 fieldSymbol.Type.NullableAnnotation == NullableAnnotation.Annotated,
-                false);
+                false,
+                order);
         }
     }
 

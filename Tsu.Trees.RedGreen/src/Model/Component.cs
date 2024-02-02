@@ -24,9 +24,11 @@ public sealed record Component(
     ITypeSymbol Type,
     string FieldName,
     bool IsOptional,
-    bool PassToBase
+    bool PassToBase,
+    int Order
 )
 {
+    public int SortOrder => Order < 0 ? int.MaxValue + Order : Order;
     public string ParameterName { get; } = FieldName.TrimStart('_').ToCamelCase();
     public string PropertyName { get; } = FieldName.TrimStart('_').ToPascalCase();
 }
