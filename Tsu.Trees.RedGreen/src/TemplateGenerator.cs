@@ -1,5 +1,7 @@
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Scriban;
 using Scriban.Functions;
@@ -14,10 +16,13 @@ internal static class TemplateGenerator
 
     public static void RegisterTemplateOutput(this IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Tree> trees)
     {
+        var initSw = Stopwatch.StartNew();
         var templates = LoadTemplates();
+        initSw.Stop();
 
         context.RegisterSourceOutput(trees, (ctx, tree) =>
         {
+            var treeInitSw = Stopwatch.StartNew();
             var builtins = new BuiltinFunctions();
             builtins.Import(new TemplateHelpers(tree));
 
@@ -30,17 +35,38 @@ internal static class TemplateGenerator
             var globals = new ScriptObject();
             globals.Import(new ScriptTree(tree));
             context.PushGlobal(globals);
+            treeInitSw.Stop();
 
+            var renderSw = new Stopwatch();
+            var elapsed = new List<(string Path, TimeSpan Elapsed)>();
             foreach (var template in templates)
             {
-                ctx.AddSource($"{tree.Suffix}/{template.Path.WithoutSuffix(".sbn-cs")}.g.cs", template.Template.Render(context));
+                renderSw.Restart();
+                var rendered = template.Template.Render(context);
+                renderSw.Stop();
+                elapsed.Add((template.Path, renderSw.Elapsed));
+
+                ctx.AddSource($"{tree.Suffix}/{template.Path.WithoutSuffix(".sbn-cs")}.g.cs", rendered);
             }
+
+#if DEBUG
+            var builder = new StringBuilder();
+            builder.AppendLine($"// Templates Load: {initSw.Elapsed.TotalMilliseconds}ms")
+                   .AppendLine($"// Tree Init: {treeInitSw.Elapsed.TotalMilliseconds}ms");
+            foreach (var s in elapsed.OrderByDescending(x => x.Elapsed))
+                builder.AppendLine($"// {s.Path}: {s.Elapsed.TotalMilliseconds}ms");
+            builder.AppendLine($"// Total: {TimeSpan.FromTicks(initSw.Elapsed.Ticks + treeInitSw.Elapsed.Ticks + elapsed.Sum(x => x.Elapsed.Ticks)).TotalMilliseconds}ms");
+            ctx.AddSource($"{tree.Suffix}/TemplateTimings.g.cs", builder.ToSourceText());
+#endif
         });
     }
 
     private static ImmutableArray<(string Path, Template Template)> LoadTemplates()
     {
-        return _assembly.GetManifestResourceNames().Where(x => x.EndsWith(".sbn-cs")).Select(path =>
+        var names = _assembly.GetManifestResourceNames().Where(x => x.EndsWith(".sbn-cs"));
+        return names.Select(loadTemplate).ToImmutableArray();
+
+        static (string Path, Template Template) loadTemplate(string path)
         {
             string raw;
             using (var stream = _assembly.GetManifestResourceStream(path))
@@ -56,21 +82,19 @@ internal static class TemplateGenerator
             }
 
             return (path, template);
-        })
-            .ToImmutableArray();
+        }
     }
 
     private sealed class TemplateHelpers : ScriptObject
     {
+        private static readonly MethodInfo[] _methods = typeof(TemplateHelpers).GetMethods(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static);
         private readonly Tree _tree;
 
         public TemplateHelpers(Tree tree) : base(9, autoImportStaticsFromThisType: false)
         {
             _tree = tree;
 
-            var methods = typeof(TemplateHelpers).GetMethods(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static);
-            if (methods.Length == 0) throw new InvalidOperationException("No helper methods found.");
-            foreach (var method in methods)
+            foreach (var method in _methods)
             {
                 SetValue(
                     StandardMemberRenamer.Rename(method),
