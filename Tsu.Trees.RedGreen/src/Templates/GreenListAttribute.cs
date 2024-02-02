@@ -1,17 +1,13 @@
 namespace Tsu.Trees.RedGreen;
 
 /// <summary>
-/// Marks this struct as a green list base.
+/// Marks this field as a green list of nodes of the specified type.
 /// </summary>
-/// <param name="kinds">
-/// The kind that all lists will have.
-/// This should be the value on the enum (e.g.: SyntaxKind.List)
-/// </param>
-[global::System.AttributeUsage(AttributeTargets.Struct, Inherited = false, AllowMultiple = false)]
-internal sealed class GreenListAttribute(object kind) : global::System.Attribute
+[global::System.AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
+internal sealed class GreenListAttribute(global::System.Type elementType) : global::System.Attribute
 {
     /// <summary>
-    /// The List Kind.
+    /// The type of element in this List.
     /// </summary>
-    public object Kind { get; } = kind;
+    public global::System.Type ElementType { get; } = elementType;
 }

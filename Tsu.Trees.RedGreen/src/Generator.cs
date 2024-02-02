@@ -15,10 +15,7 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Tsu.Trees.RedGreen.SourceGenerator.Model;
 
 namespace Tsu.Trees.RedGreen.SourceGenerator;
 
@@ -30,6 +27,7 @@ public sealed class Generator : IIncrementalGenerator
         context.RegisterResourcesToCopy([
             "GreenTreeRootAttribute.cs",
             "GreenNodeAttribute.cs",
+            "GreenListAttribute.cs",
         ]);
 
         var roots = context.GetTreeInfos();

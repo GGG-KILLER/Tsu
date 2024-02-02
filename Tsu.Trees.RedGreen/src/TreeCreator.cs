@@ -131,7 +131,7 @@ internal static class TreeCreator
                                      .ToImmutableArray();
 
         if (SymbolEqualityComparer.Default.Equals(node.NodeType, tree.GreenBase))
-            extraData = extraData.Add(new Component(tree.KindEnum, "_kind", false, false));
+            extraData = extraData.Add(new Component(false, tree.KindEnum, "_kind", false, false));
 
         return new Node(
             node.BaseType,
@@ -142,8 +142,24 @@ internal static class TreeCreator
             children,
             extraData);
 
-        static Component toComponent(IFieldSymbol fieldSymbol) =>
-            new(fieldSymbol.Type, fieldSymbol.Name, fieldSymbol.Type.NullableAnnotation == NullableAnnotation.Annotated, false);
+        static Component toComponent(IFieldSymbol fieldSymbol)
+        {
+            var isList = false;
+            var type = fieldSymbol.Type;
+
+            if (fieldSymbol.GetAttributes().SingleOrDefault(x => x.AttributeClass?.ToCSharpString(false) == "global::Tsu.Trees.RedGreen.GreenListAttribute") is AttributeData attr)
+            {
+                isList = true;
+                type = (INamedTypeSymbol) attr.ConstructorArguments.Single().Value!;
+            }
+
+            return new(
+                isList,
+                type,
+                fieldSymbol.Name,
+                fieldSymbol.Type.NullableAnnotation == NullableAnnotation.Annotated,
+                false);
+        }
     }
 
     public static IncrementalValuesProvider<Tree> BuildTree(IncrementalValuesProvider<TreeInfo> roots, IncrementalValuesProvider<NodeInfo> nodes)

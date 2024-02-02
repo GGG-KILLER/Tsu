@@ -15,12 +15,11 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using Scriban.Runtime;
-
 namespace Tsu.Trees.RedGreen.SourceGenerator.Model;
 
 internal sealed class ScriptComponent(Component component)
 {
+    public bool IsList => component.IsList;
     public ScriptTypeSymbol Type { get; } = new ScriptTypeSymbol(component.Type);
     public string FieldName => component.FieldName;
     public string ParameterName => component.ParameterName;
