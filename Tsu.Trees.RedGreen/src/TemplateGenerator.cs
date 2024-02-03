@@ -120,7 +120,30 @@ internal static class TemplateGenerator
             }
         }
 
-        public string FieldType(ScriptComponent component, bool isGreen) => ParameterType(component, isGreen);
+        public string FieldType(ScriptComponent component, bool isGreen)
+        {
+            var ns = isGreen ? _tree.GreenBase.ContainingNamespace : _tree.RedBase.ContainingNamespace;
+            if (component.IsList)
+            {
+                return isGreen
+                    ? _tree.GreenBase.ToCSharpString(false) + '?'
+                    : _tree.RedBase.ToCSharpString(false);
+            }
+            else if (component.Type.Symbol.DerivesFrom(_tree.GreenBase))
+            {
+                var type = SymbolEqualityComparer.Default.Equals(component.Type.Symbol, _tree.GreenBase)
+                    ? _tree.RedBase
+                    : component.Type.Symbol;
+                if (!component.IsOptional && isGreen)
+                    return $"{ns.ToCSharpString(false)}.{type.Name}";
+                else
+                    return $"{ns.ToCSharpString(false)}.{type.Name}?";
+            }
+            else
+            {
+                return component.Type.CSharp;
+            }
+        }
 
         public string ParameterType(ScriptComponent component, bool isGreen)
         {
@@ -129,7 +152,7 @@ internal static class TemplateGenerator
                 var ns = isGreen ? _tree.GreenBase.ContainingNamespace : _tree.RedBase.ContainingNamespace;
                 if (component.IsList)
                 {
-                    return $"{ns.ToCSharpString(false)}.{_tree.Suffix}List";
+                    return $"{ns.ToCSharpString(false)}.{_tree.Suffix}List<{ns.ToCSharpString(false)}.{component.Type.Name}>";
                 }
                 else
                 {
