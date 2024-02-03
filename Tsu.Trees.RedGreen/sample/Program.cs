@@ -15,4 +15,18 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+using Tsu.Trees.RedGreen.Sample;
+
+var function = SampleFactory.FunctionCallExpression(
+    SampleFactory.IdentifierExpression("hi"),
+    new SampleList<ExpressionSample>()
+);
+Console.WriteLine(function.Args);
+
+function = function.WithArgs(new SampleList<ExpressionSample>(SampleFactory.NumericalLiteralExpression(1)));
+Console.WriteLine(function.Args);
+
+function = function.WithArgs(new SampleList<ExpressionSample>([SampleFactory.NumericalLiteralExpression(1), SampleFactory.NumericalLiteralExpression(1)]));
+Console.WriteLine(function.Args);
+
 Console.WriteLine("Hello world.");
