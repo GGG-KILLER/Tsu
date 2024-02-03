@@ -132,7 +132,7 @@ internal static class GreenTreeGenerator
                 if (!first) writer.Write(", ");
                 first = false;
                 var type = component.IsList && component.Type.DerivesFrom(tree.GreenBase)
-                    ? $"{tree.GreenBase.ContainingNamespace.ToCSharpString(false)}.{tree.Suffix}List"
+                    ? $"{tree.GreenBase.ContainingNamespace.ToCSharpString(false)}.{tree.Suffix}List<{component.Type.ToCSharpString(true)}>"
                     : component.Type.ToCSharpString();
                 writer.Write("{0} {1}", type, component.ParameterName);
             }
@@ -168,7 +168,7 @@ internal static class GreenTreeGenerator
                 writer.WriteLineNoTabs("#endif // DEBUG");
                 writer.WriteLineNoTabs("");
 
-                writer.WriteLine("return new {0}(", node.TypeSymbol.ToCSharpString());
+                writer.Write("return new {0}(", node.TypeSymbol.ToCSharpString());
                 first = true;
                 if (node.Kinds.Length == 1)
                 {
@@ -180,9 +180,15 @@ internal static class GreenTreeGenerator
                     if (!first) writer.Write(", ");
                     first = false;
                     if (component.IsOptional && !includeOptional)
+                    {
                         writer.Write("default");
+                    }
                     else
+                    {
                         writer.Write(component.ParameterName);
+                        if (component.IsList)
+                            writer.Write(".Node");
+                    }
                 }
                 writer.WriteLine(");");
             }
