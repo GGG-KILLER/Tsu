@@ -107,7 +107,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         private readonly IdentifierExpressionSample _identifier;
 
         [GreenList(typeof(ExpressionSample))]
-        private readonly SampleList _args;
+        private readonly GreenNode? _args;
 
         // Stub to be filled in by codegen
     }
