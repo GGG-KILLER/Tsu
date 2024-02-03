@@ -40,6 +40,7 @@ internal static class RedTreeGenerator
             writer.WriteLine("using System.Diagnostics;");
             writer.WriteLine("using System.Diagnostics.CodeAnalysis;");
             writer.WriteLine("using System.Linq;");
+            writer.WriteLine($"using {tree.GreenBase.ContainingNamespace.ToCSharpString(true)};");
             writer.WriteLineNoTabs("");
 
             writer.WriteLine("namespace {0}", tree.RedBase.ContainingNamespace.ToCSharpString());
@@ -139,7 +140,7 @@ internal static class RedTreeGenerator
 
                 writer.Write("{0}{1} {2}",
                     type,
-                    component.IsOptional ? "?" : "",
+                    component.IsOptional && !component.IsList ? "?" : "",
                     component.ParameterName);
             }
             writer.WriteLine(") =>");
@@ -160,17 +161,15 @@ internal static class RedTreeGenerator
 
                 if (component.Type.DerivesFrom(tree.GreenBase))
                 {
-                    if (component.IsOptional)
+                    if (!component.IsList)
                     {
-                        writer.Write("{0} == null ? null : ", component.ParameterName);
+                        if (component.IsOptional)
+                            writer.Write("{0} == null ? null : ", component.ParameterName);
+                        writer.Write("({0})", component.Type.ToCSharpString(false));
                     }
-
-                    writer.Write("({0}){1}.{2}",
-                        component.IsList
-                            ? $"{tree.GreenBase.ContainingNamespace.ToCSharpString(false)}.{tree.Suffix}List"
-                            : component.Type.ToCSharpString(false),
+                    writer.Write("{0}.{1}",
                         component.ParameterName,
-                        component.IsList ? "Node!.Green" : "Green");
+                        component.IsList ? $"Node.To{tree.Suffix}List<{component.Type.ToCSharpString()}>()" : "Green");
                 }
                 else
                 {

@@ -20,7 +20,7 @@
 
     <Copyright>GGG KILLER © 2024</Copyright>
     <PackageId>Tsu.Trees.RedGreen</PackageId>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <Description>A source generator generates all the boilerplate for your red/green trees.</Description>
 
     <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
@@ -35,6 +35,7 @@
 
     <EmbeddedResource Include="Templates/Internal/GreenRoot.sbn-cs" Visible="true" LogicalName="Internal/GreenRoot.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenNodes.sbn-cs" Visible="true" LogicalName="Internal/GreenNodes.sbn-cs" />
+    <EmbeddedResource Include="Templates/Internal/GreenNodeExtensions.sbn-cs" Visible="true" LogicalName="Internal/GreenNodeExtensions.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenWalker.sbn-cs" Visible="true" LogicalName="Internal/GreenWalker.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenList.sbn-cs" Visible="true" LogicalName="Internal/GreenList.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenList.WithTwoChildren.sbn-cs" Visible="true" LogicalName="Internal/GreenList.WithTwoChildren.sbn-cs" />
