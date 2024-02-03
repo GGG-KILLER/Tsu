@@ -23,7 +23,7 @@ namespace Tsu.Trees.RedGreen.Sample
     public partial class FunctionCallExpressionSample : global::Tsu.Trees.RedGreen.Sample.ExpressionSample
     {
         private global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample? _identifier;
-        private global::Tsu.Trees.RedGreen.Sample.SampleList? _args;
+        private global::Tsu.Trees.RedGreen.Sample.SampleNode? _args;
 
         internal FunctionCallExpressionSample(global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode green, global::Tsu.Trees.RedGreen.Sample.SampleNode? parent)
             : base(green, parent)
@@ -31,13 +31,13 @@ namespace Tsu.Trees.RedGreen.Sample
         }
 
         public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample Identifier => GetRed(ref this._identifier, 0)!;
-            public global::Tsu.Trees.RedGreen.Sample.SampleList<global::Tsu.Trees.RedGreen.Sample.ExpressionSample> Args => new global::Tsu.Trees.RedGreen.Sample.SampleList<global::Tsu.Trees.RedGreen.Sample.ExpressionSample>(GetRed(ref this._args, 1)!);
+            public global::Tsu.Trees.RedGreen.Sample.SampleList<global::Tsu.Trees.RedGreen.Sample.ExpressionSample> Args => new global::Tsu.Trees.RedGreen.Sample.SampleList<global::Tsu.Trees.RedGreen.Sample.ExpressionSample>(GetRed(ref this._args, 1));
 
         internal override global::Tsu.Trees.RedGreen.Sample.SampleNode? GetNodeSlot(int index) =>
                 index switch
                 {
                     0 => GetRed(ref this._identifier, 0)!,
-                    1 => GetRed(ref this._args, 1)!,
+                    1 => GetRed(ref this._args, 1),
                     _ => null
                 };
 

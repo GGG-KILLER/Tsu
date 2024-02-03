@@ -25,7 +25,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         internal FunctionCallExpressionSample(
             global::Tsu.Trees.RedGreen.Sample.SampleKind kind,
             global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier,
-            global::Tsu.Trees.RedGreen.Sample.Internal.SampleList args
+            global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode? args
         )
             : base(kind)
         {
@@ -70,12 +70,12 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         public global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample Update(
             global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier,
-            global::Tsu.Trees.RedGreen.Sample.Internal.SampleList args
+            global::Tsu.Trees.RedGreen.Sample.Internal.SampleList<global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample> args
         )
         {
             if (
-                this._identifier != identifier
-                || this._args != args
+                this.Identifier != identifier
+                || this.Args != args
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.FunctionCallExpression(
@@ -142,9 +142,9 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         )
         {
             if (
-                this._kind != kind
-                || this._left != left
-                || this._right != right
+                this.Kind != kind
+                || this.Left != left
+                || this.Right != right
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.BinaryOperationExpression(
@@ -202,7 +202,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         )
         {
             if (
-                this._value != value
+                this.Value != value
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.NumericalLiteralExpression(
@@ -258,7 +258,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         )
         {
             if (
-                this._name != name
+                this.Name != name
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.IdentifierExpression(
@@ -340,8 +340,8 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         )
         {
             if (
-                this._expression != expression
-                || this._semicolon != semicolon
+                this.Expression != expression
+                || this.Semicolon != semicolon
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.ExpressionStatement(
@@ -410,9 +410,9 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         )
         {
             if (
-                this._identifier != identifier
-                || this._value != value
-                || this._semicolon != semicolon
+                this.Identifier != identifier
+                || this.Value != value
+                || this.Semicolon != semicolon
             )
             {
                 return global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.AssignmentStatement(

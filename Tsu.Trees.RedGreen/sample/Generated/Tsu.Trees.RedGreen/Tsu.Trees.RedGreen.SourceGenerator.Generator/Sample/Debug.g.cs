@@ -22,7 +22,7 @@
 //                         Tsu.Trees.RedGreen.Sample.SampleKind.FunctionCallExpression (IsNull = False, Type = global::Tsu.Trees.RedGreen.Sample.SampleKind, Value = 9)
 //                     Children:
 //                         global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample (IsList = False, Name = _identifier, IsOptional = False, PassToBase = False, Order = 1)
-//                         global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample (IsList = True, Name = _args, IsOptional = False, PassToBase = False, Order = 2)
+//                         global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample (IsList = True, Name = _args, IsOptional = True, PassToBase = False, Order = 2)
 //                     ExtraData:
 //                         global::Tsu.Trees.RedGreen.Sample.SampleKind (IsList = False, Name = _kind, IsOptional = False, PassToBase = True, Order = 0)
 //                     Descendants:

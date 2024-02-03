@@ -16,8 +16,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 #if DEBUG
 #endif // DEBUG
 
-            return new global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample(
-            global::Tsu.Trees.RedGreen.Sample.SampleKind.SemicolonToken);
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample(global::Tsu.Trees.RedGreen.Sample.SampleKind.SemicolonToken);
         }
 
         public static global::Tsu.Trees.RedGreen.Sample.Internal.AssignmentStatement AssignmentStatement(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample value, global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample semicolon)
@@ -28,8 +27,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             if (semicolon == null) throw new global::System.ArgumentNullException(nameof(semicolon));
 #endif // DEBUG
 
-            return new global::Tsu.Trees.RedGreen.Sample.Internal.AssignmentStatement(
-            global::Tsu.Trees.RedGreen.Sample.SampleKind.AssignmentStatement, identifier, value, semicolon);
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.AssignmentStatement(global::Tsu.Trees.RedGreen.Sample.SampleKind.AssignmentStatement, identifier, value, semicolon);
         }
 
         public static global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionStatementSample ExpressionStatement(global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample expression, global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample semicolon)
@@ -39,8 +37,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             if (semicolon == null) throw new global::System.ArgumentNullException(nameof(semicolon));
 #endif // DEBUG
 
-            return new global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionStatementSample(
-            global::Tsu.Trees.RedGreen.Sample.SampleKind.ExpressionStatement, expression, semicolon);
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionStatementSample(global::Tsu.Trees.RedGreen.Sample.SampleKind.ExpressionStatement, expression, semicolon);
         }
 
         public static global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample IdentifierExpression(string name)
@@ -49,8 +46,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             if (name == null) throw new global::System.ArgumentNullException(nameof(name));
 #endif // DEBUG
 
-            return new global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample(
-            global::Tsu.Trees.RedGreen.Sample.SampleKind.IdentifierExpression, name);
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample(global::Tsu.Trees.RedGreen.Sample.SampleKind.IdentifierExpression, name);
         }
 
         public static global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample NumericalLiteralExpression(double value)
@@ -58,8 +54,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 #if DEBUG
 #endif // DEBUG
 
-            return new global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample(
-            global::Tsu.Trees.RedGreen.Sample.SampleKind.NumericalLiteralExpression, value);
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample(global::Tsu.Trees.RedGreen.Sample.SampleKind.NumericalLiteralExpression, value);
         }
 
         public static global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample BinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.SampleKind kind, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample left, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample right)
@@ -79,18 +74,25 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             }
 #endif // DEBUG
 
-            return new global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample(
-            kind, left, right);
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample(kind, left, right);
         }
 
-        public static global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample FunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.SampleList args)
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample FunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier)
         {
 #if DEBUG
             if (identifier == null) throw new global::System.ArgumentNullException(nameof(identifier));
 #endif // DEBUG
 
-            return new global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample(
-            global::Tsu.Trees.RedGreen.Sample.SampleKind.FunctionCallExpression, identifier, args);
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample(global::Tsu.Trees.RedGreen.Sample.SampleKind.FunctionCallExpression, identifier, default);
+        }
+
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample FunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.SampleList<global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample> args)
+        {
+#if DEBUG
+            if (identifier == null) throw new global::System.ArgumentNullException(nameof(identifier));
+#endif // DEBUG
+
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample(global::Tsu.Trees.RedGreen.Sample.SampleKind.FunctionCallExpression, identifier, args.Node);
         }
     }
 
