@@ -26,10 +26,7 @@ internal static class Utils
 {
     public static bool DerivesFrom(this ITypeSymbol symbol, INamedTypeSymbol parent)
     {
-        if (symbol.BaseType is null)
-            return false;
-
-        for (var type = symbol.BaseType; type is not null; type = type.BaseType)
+        for (var type = symbol; type is not null; type = type.BaseType)
         {
             if (SymbolEqualityComparer.Default.Equals(type, parent))
                 return true;
