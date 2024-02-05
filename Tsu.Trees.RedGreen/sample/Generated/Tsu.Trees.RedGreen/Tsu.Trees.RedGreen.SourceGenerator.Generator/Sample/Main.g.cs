@@ -142,10 +142,10 @@ namespace Tsu.Trees.RedGreen.Sample
         public static global::Tsu.Trees.RedGreen.Sample.ExpressionStatementSample ExpressionStatement(global::Tsu.Trees.RedGreen.Sample.ExpressionSample expression, global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample semicolon) =>
             (global::Tsu.Trees.RedGreen.Sample.ExpressionStatementSample) global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.ExpressionStatement((global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample)expression.Green, (global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample)semicolon.Green).CreateRed();
 
-        public static global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample IdentifierExpression(global::System.String name) =>
+        public static global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample IdentifierExpression(string name) =>
             (global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample) global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.IdentifierExpression(name).CreateRed();
 
-        public static global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample NumericalLiteralExpression(global::System.Double value) =>
+        public static global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample NumericalLiteralExpression(double value) =>
             (global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample) global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.NumericalLiteralExpression(value).CreateRed();
 
         public static global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample BinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.SampleKind kind, global::Tsu.Trees.RedGreen.Sample.ExpressionSample left, global::Tsu.Trees.RedGreen.Sample.ExpressionSample right) =>

@@ -173,18 +173,18 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
     }
 
 
-    public partial class SampleRewriter : Tsu.Trees.RedGreen.Sample.SampleVisitor<global::Tsu.Trees.RedGreen.Sample.SampleNode>
+    internal partial class SampleRewriter : Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode>
     {
-        public global::Tsu.Trees.RedGreen.Sample.SampleList<TNode> VisitList<TNode>(global::Tsu.Trees.RedGreen.Sample.SampleList<TNode> list) where TNode : global::Tsu.Trees.RedGreen.Sample.SampleNode
+        public global::Tsu.Trees.RedGreen.Sample.Internal.SampleList<TNode> VisitList<TNode>(global::Tsu.Trees.RedGreen.Sample.Internal.SampleList<TNode> list) where TNode : global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode
         {
-            global::Tsu.Trees.RedGreen.Sample.SampleListBuilder? alternate = null;
+            global::Tsu.Trees.RedGreen.Sample.Internal.SampleListBuilder? alternate = null;
             for (int i = 0, n = list.Count; i < n; i++)
             {
                 var item = list[i];
                 var visited = Visit(item);
                 if (item != visited && alternate == null)
                 {
-                    alternate = new global::Tsu.Trees.RedGreen.Sample.SampleListBuilder(n);
+                    alternate = new global::Tsu.Trees.RedGreen.Sample.Internal.SampleListBuilder(n);
                     alternate.AddRange(list, 0, i);
                 }
 
@@ -202,20 +202,20 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             return list;
         }
 
-        public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitSemicolonToken(global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample node) =>
+        public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode VisitSemicolonToken(global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample node) =>
             node;
-        public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitAssignmentStatement(global::Tsu.Trees.RedGreen.Sample.AssignmentStatement node) =>
-            node.Update((global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample?)Visit(node.Identifier) ?? throw new global::System.InvalidOperationException("Identifier cannot be null."), (global::Tsu.Trees.RedGreen.Sample.ExpressionSample?)Visit(node.Value) ?? throw new global::System.InvalidOperationException("Value cannot be null."), (global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample?)Visit(node.Semicolon) ?? throw new global::System.InvalidOperationException("Semicolon cannot be null."));
-        public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitExpressionStatement(global::Tsu.Trees.RedGreen.Sample.ExpressionStatementSample node) =>
-            node.Update((global::Tsu.Trees.RedGreen.Sample.ExpressionSample?)Visit(node.Expression) ?? throw new global::System.InvalidOperationException("Expression cannot be null."), (global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample?)Visit(node.Semicolon) ?? throw new global::System.InvalidOperationException("Semicolon cannot be null."));
-        public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample node) =>
+        public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode VisitAssignmentStatement(global::Tsu.Trees.RedGreen.Sample.Internal.AssignmentStatement node) =>
+            node.Update((global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample?)Visit(node.Identifier) ?? throw new global::System.InvalidOperationException("Identifier cannot be null."), (global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample?)Visit(node.Value) ?? throw new global::System.InvalidOperationException("Value cannot be null."), (global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample?)Visit(node.Semicolon) ?? throw new global::System.InvalidOperationException("Semicolon cannot be null."));
+        public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode VisitExpressionStatement(global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionStatementSample node) =>
+            node.Update((global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample?)Visit(node.Expression) ?? throw new global::System.InvalidOperationException("Expression cannot be null."), (global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample?)Visit(node.Semicolon) ?? throw new global::System.InvalidOperationException("Semicolon cannot be null."));
+        public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample node) =>
             node.Update(node.Name);
-        public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.NumericalLiteralExpressionSample node) =>
+        public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample node) =>
             node.Update(node.Value);
-        public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.BinaryOperationExpressionSample node) =>
-            node.Update(node.Kind, (global::Tsu.Trees.RedGreen.Sample.ExpressionSample?)Visit(node.Left) ?? throw new global::System.InvalidOperationException("Left cannot be null."), (global::Tsu.Trees.RedGreen.Sample.ExpressionSample?)Visit(node.Right) ?? throw new global::System.InvalidOperationException("Right cannot be null."));
-        public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample node) =>
-            node.Update((global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample?)Visit(node.Identifier) ?? throw new global::System.InvalidOperationException("Identifier cannot be null."), VisitList(node.Args));
+        public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode VisitBinaryOperationExpression(global::Tsu.Trees.RedGreen.Sample.Internal.BinaryOperationExpressionSample node) =>
+            node.Update(node.Kind, (global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample?)Visit(node.Left) ?? throw new global::System.InvalidOperationException("Left cannot be null."), (global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample?)Visit(node.Right) ?? throw new global::System.InvalidOperationException("Right cannot be null."));
+        public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.Internal.FunctionCallExpressionSample node) =>
+            node.Update((global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample?)Visit(node.Identifier) ?? throw new global::System.InvalidOperationException("Identifier cannot be null."), VisitList(node.Args));
     }
 }
 
