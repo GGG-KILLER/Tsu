@@ -15,6 +15,7 @@ namespace Tsu.Trees.RedGreen.Sample
         {
         }
 
+
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
         public override void Accept(global::Tsu.Trees.RedGreen.Sample.SampleVisitor visitor) =>
             throw new global::System.InvalidOperationException("A list must not be visited directly.");

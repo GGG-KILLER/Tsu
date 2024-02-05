@@ -7,7 +7,7 @@
 
 namespace Tsu.Trees.RedGreen.Sample
 {
-    public abstract class SampleWalker : global::Tsu.Trees.RedGreen.Sample.SampleVisitor
+    public abstract partial class SampleWalker : global::Tsu.Trees.RedGreen.Sample.SampleVisitor
     {
         private int _recursionDepth;
 

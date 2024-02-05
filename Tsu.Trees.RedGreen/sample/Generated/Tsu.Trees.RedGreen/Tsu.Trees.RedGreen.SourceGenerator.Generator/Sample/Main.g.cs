@@ -87,7 +87,7 @@ namespace Tsu.Trees.RedGreen.Sample
 
 
 
-    public partial class SampleRewriter : Tsu.Trees.RedGreen.Sample.SampleVisitor<global::Tsu.Trees.RedGreen.Sample.SampleNode>
+    public partial class SampleRewriter : global::Tsu.Trees.RedGreen.Sample.SampleVisitor<global::Tsu.Trees.RedGreen.Sample.SampleNode>
     {
         public global::Tsu.Trees.RedGreen.Sample.SampleList<TNode> VisitList<TNode>(global::Tsu.Trees.RedGreen.Sample.SampleList<TNode> list) where TNode : global::Tsu.Trees.RedGreen.Sample.SampleNode
         {
@@ -131,7 +131,7 @@ namespace Tsu.Trees.RedGreen.Sample
         public override global::Tsu.Trees.RedGreen.Sample.SampleNode VisitFunctionCallExpression(global::Tsu.Trees.RedGreen.Sample.FunctionCallExpressionSample node) =>
             node.Update((global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample?)Visit(node.Identifier) ?? throw new global::System.InvalidOperationException("Identifier cannot be null."), VisitList(node.Args));
     }
-    public static class SampleFactory
+    public static partial class SampleFactory
     {
         public static global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample SemicolonToken() =>
             (global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample) global::Tsu.Trees.RedGreen.Sample.Internal.SampleFactory.SemicolonToken().CreateRed();

@@ -9,7 +9,7 @@ using System.Linq;
 namespace Tsu.Trees.RedGreen.Sample.Internal
 {
 
-    internal static class SampleFactory
+    internal static partial class SampleFactory
     {
         public static global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample SemicolonToken()
         {
@@ -173,7 +173,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
     }
 
 
-    internal partial class SampleRewriter : Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode>
+    internal partial class SampleRewriter : global::Tsu.Trees.RedGreen.Sample.Internal.SampleVisitor<global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode>
     {
         public global::Tsu.Trees.RedGreen.Sample.Internal.SampleList<TNode> VisitList<TNode>(global::Tsu.Trees.RedGreen.Sample.Internal.SampleList<TNode> list) where TNode : global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode
         {
