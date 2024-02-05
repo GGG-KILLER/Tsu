@@ -17,9 +17,7 @@ namespace {{ green_base.namespace | not_global }}
         public const {{ kind_enum.csharp }} ListKind = {{ kind_enum.csharp }}.List;
 {{~ end ~}}
 
-{{~ for component in root.components ~}}
-        protected readonly {{ component.type.csharp }} {{ component.field_name }};
-{{~ end ~}}
+        protected readonly {{ kind_enum.csharp }} _kind;
         private byte _slotCount;
 
         protected {{ green_base.name }}({{- for component in root.components -}}
