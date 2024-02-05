@@ -7,7 +7,7 @@
 
 namespace {{ green_base.namespace | not_global }}
 {
-    {{ green_base.accessibility }} abstract class {{ suffix }}Walker : {{ green_base.namespace }}.{{ suffix }}Visitor
+    {{ green_base.accessibility }} abstract partial class {{ suffix }}Walker : {{ green_base.namespace }}.{{ suffix }}Visitor
     {
         private int _recursionDepth;
 

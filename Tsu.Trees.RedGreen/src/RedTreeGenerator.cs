@@ -86,7 +86,7 @@ internal static class RedTreeGenerator
 
     private static void WriteRedFactory(this IndentedTextWriter writer, Tree tree)
     {
-        writer.WriteLine("{0} static class {1}Factory", tree.RedBase.DeclaredAccessibility.ToCSharpString(), tree.Suffix);
+        writer.WriteLine("{0} static partial class {1}Factory", tree.RedBase.DeclaredAccessibility.ToCSharpString(), tree.Suffix);
         writer.WriteLine('{');
         writer.Indent++;
         {

@@ -92,7 +92,7 @@ internal static class GreenTreeGenerator
     }
     private static void WriteGreenFactory(this IndentedTextWriter writer, Tree tree)
     {
-        writer.WriteLine("{0} static class {1}Factory", tree.GreenBase.DeclaredAccessibility.ToCSharpString(), tree.Suffix);
+        writer.WriteLine("{0} static partial class {1}Factory", tree.GreenBase.DeclaredAccessibility.ToCSharpString(), tree.Suffix);
         writer.WriteLine('{');
         writer.Indent++;
         {
