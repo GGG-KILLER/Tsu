@@ -28,25 +28,25 @@ internal static class VisitorGenerator
         if (tree.CreateVisitors || tree.CreateWalker)
         {
             writer.WriteLine("public abstract void Accept({0}.{1}Visitor visitor);",
-                ns.ToCSharpString(true),
+                ns.ToCSharpString(false),
                 tree.Suffix);
         }
         if (tree.CreateVisitors || tree.CreateRewriter)
         {
             writer.WriteLine("public abstract TResult? Accept<TResult>({0}.{1}Visitor<TResult> visitor);",
-                ns.ToCSharpString(true),
+                ns.ToCSharpString(false),
                 tree.Suffix);
         }
         if (tree.CreateVisitors)
         {
             writer.WriteLine("public abstract TResult? Accept<T1, TResult>({0}.{1}Visitor<T1, TResult> visitor, T1 arg1);",
-                ns.ToCSharpString(true),
+                ns.ToCSharpString(false),
                 tree.Suffix);
             writer.WriteLine("public abstract TResult? Accept<T1, T2, TResult>({0}.{1}Visitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2);",
-                ns.ToCSharpString(true),
+                ns.ToCSharpString(false),
                 tree.Suffix);
             writer.WriteLine("public abstract TResult? Accept<T1, T2, T3, TResult>({0}.{1}Visitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3);",
-                ns.ToCSharpString(true),
+                ns.ToCSharpString(false),
                 tree.Suffix);
         }
     }
@@ -57,7 +57,7 @@ internal static class VisitorGenerator
         {
             writer.WriteLine("[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]");
             writer.WriteLine("public override void Accept({0}.{1}Visitor visitor) => visitor.Visit{2}(this);",
-                ns.ToCSharpString(true),
+                ns.ToCSharpString(false),
                 tree.Suffix,
                 node.TypeSymbol.Name.WithoutSuffix(tree.Suffix));
         }
@@ -65,7 +65,7 @@ internal static class VisitorGenerator
         {
             writer.WriteLine("[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]");
             writer.WriteLine("public override TResult Accept<TResult>({0}.{1}Visitor<TResult> visitor) => visitor.Visit{2}(this);",
-                ns.ToCSharpString(true),
+                ns.ToCSharpString(false),
                 tree.Suffix,
                 node.TypeSymbol.Name.WithoutSuffix(tree.Suffix));
         }
@@ -73,17 +73,17 @@ internal static class VisitorGenerator
         {
             writer.WriteLine("[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]");
             writer.WriteLine("public override TResult Accept<T1, TResult>({0}.{1}Visitor<T1, TResult> visitor, T1 arg1) => visitor.Visit{2}(this, arg1);",
-                ns.ToCSharpString(true),
+                ns.ToCSharpString(false),
                 tree.Suffix,
                 node.TypeSymbol.Name.WithoutSuffix(tree.Suffix));
             writer.WriteLine("[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]");
             writer.WriteLine("public override TResult Accept<T1, T2, TResult>({0}.{1}Visitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2) => visitor.Visit{2}(this, arg1, arg2);",
-                ns.ToCSharpString(true),
+                ns.ToCSharpString(false),
                 tree.Suffix,
                 node.TypeSymbol.Name.WithoutSuffix(tree.Suffix));
             writer.WriteLine("[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]");
             writer.WriteLine("public override TResult Accept<T1, T2, T3, TResult>({0}.{1}Visitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3) => visitor.Visit{2}(this, arg1, arg2, arg3);",
-                ns.ToCSharpString(true),
+                ns.ToCSharpString(false),
                 tree.Suffix,
                 node.TypeSymbol.Name.WithoutSuffix(tree.Suffix));
         }
@@ -214,7 +214,7 @@ internal static class VisitorGenerator
         writer.WriteLine("{0} partial class {1}Rewriter : {2}.{1}Visitor<{3}>",
             baseType.DeclaredAccessibility.ToCSharpString(),
             tree.Suffix,
-            baseType.ContainingNamespace.ToCSharpString(true),
+            baseType.ContainingNamespace.ToCSharpString(false),
             baseType.ToCSharpString(false));
         writer.WriteLine('{');
         writer.Indent++;
