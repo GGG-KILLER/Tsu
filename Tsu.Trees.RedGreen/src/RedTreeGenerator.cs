@@ -146,9 +146,8 @@ internal static class RedTreeGenerator
                 if (component.IsList && component.Type.DerivesFrom(tree.GreenBase))
                     type = $"{ns.ToCSharpString(false)}.{tree.Suffix}List<{type}>";
 
-                writer.Write("{0}{1} {2}",
+                writer.Write("{0} {1}",
                     type,
-                    component.IsOptional && !component.IsList ? "?" : "",
                     component.ParameterName);
             }
             writer.WriteLine(") =>");
