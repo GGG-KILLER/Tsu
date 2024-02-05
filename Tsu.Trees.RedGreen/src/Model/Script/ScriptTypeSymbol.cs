@@ -19,9 +19,9 @@ using Microsoft.CodeAnalysis;
 
 namespace Tsu.Trees.RedGreen.SourceGenerator.Model;
 
-internal sealed class ScriptTypeSymbol(ITypeSymbol symbol)
+internal sealed class ScriptTypeSymbol(INamedTypeSymbol symbol)
 {
-    public ITypeSymbol Symbol => symbol;
+    public INamedTypeSymbol Symbol => symbol;
 
     public bool IsAbstract => symbol.IsAbstract;
 
