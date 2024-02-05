@@ -30,4 +30,11 @@ internal sealed record Tree(
     bool CreateRewriter,
     bool CreateLists,
     bool DebugDump
-);
+)
+{
+    public string ToRedCSharp(ITypeSymbol symbol) =>
+        symbol.DerivesFrom(GreenBase)
+        ? symbol.ToCSharpString()
+                .Replace(GreenBase.ContainingNamespace.ToCSharpString(false), RedBase.ContainingNamespace.ToCSharpString(false))
+        : symbol.ToCSharpString();
+}
