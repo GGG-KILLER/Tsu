@@ -17,8 +17,9 @@ namespace {{ red_base.namespace | not_global }}
             this.Green = green;
         }
 
-        {{~ for component in root.components ~}}
-        public {{ component.type | as_red }} {{ component.property_name }} => this.Green.{{ component.property_name }};
+        public {{ kind_enum.csharp | not_null }} Kind => this.Green.Kind;
+        {{~ for component in root.components_without_kind ~}}
+        public abstract {{ component.type | as_red }} {{ component.property_name }} { get; }
         {{~ end ~}}
         internal {{ green_base.csharp | not_null }} Green { get; }
         public {{ red_base.csharp | not_null }}? Parent => _parent;
