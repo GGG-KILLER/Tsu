@@ -16,6 +16,10 @@ namespace {{ red_base.namespace | not_global }}
         {
         }
 
+        {{~ for component in root.components_without_kind ~}}
+        public override {{ component | property_type false }} {{ component.property_name }} => throw new global::System.InvalidOperationException("Unreachable.");
+        {{~ end ~}}
+
         {{~ ## Accept ## ~}}
         {{~ if create_visitors || create_walker ~}}
         [return: global::System.Diagnostics.CodeAnalysis.MaybeNull]

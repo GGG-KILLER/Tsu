@@ -14,7 +14,7 @@ namespace {{ green_base.namespace | not_global }}
     {{ green_base.accessibility }} abstract partial class {{ suffix }}List : {{ green_node }}
     {
         {{ green_base.accessibility }} {{ suffix }}List()
-            : base(ListKind)
+            : base(ListKind{{~ for component in root.components_without_kind ~}}, default({{ component.type.csharp | not_null }})!{{~ end ~}})
         {
         }
 
