@@ -123,14 +123,14 @@ internal static class TreeCreator
             .Where(f => f.CanBeReferencedByName && f.IsDefinition && !f.IsImplicitlyDeclared && !f.IsStatic && !f.IsConst && f.IsReadOnly);
 
         // Starting order for this node
-        var order = 1;
+        var order = 1; // Start after kind by default, because if there are no parents, we're the root and we'll add the kind to it.
         if (parentNodes.Any())
             order = Math.Max(order, parentNodes.Select(x => x.Order).Max() + 1);
         if (parentExtraData.Any())
             order = Math.Max(order, parentExtraData.Select(x => x.Order).Max() + 1);
 
-        var nodeChildren = fields.Where(x => x.Type.DerivesFrom(tree.GreenBase))
-                                 .Select(x =>
+        // Use same order as declared fields in source.
+        var components = fields.Select(x =>
                                  {
                                      var ret = toComponent(x, order);
                                      if (ret.Order == order)
@@ -138,15 +138,9 @@ internal static class TreeCreator
                                      return ret;
                                  })
                                  .ToArray();
-        var nodeExtraData = fields.Where(x => !x.Type.DerivesFrom(tree.GreenBase))
-                                 .Select(x =>
-                                 {
-                                     var ret = toComponent(x, order);
-                                     if (ret.Order == order)
-                                         order++;
-                                     return ret;
-                                 })
-                                 .ToArray();
+
+        var nodeChildren = components.Where(x => x.Type.DerivesFrom(tree.GreenBase));
+        var nodeExtraData = components.Where(x => !x.Type.DerivesFrom(tree.GreenBase));
 
         var children = parentNodes.Select(x => x with { PassToBase = true })
                                   .Concat(nodeChildren)
@@ -159,7 +153,7 @@ internal static class TreeCreator
                                      .ToImmutableArray();
 
         if (SymbolEqualityComparer.Default.Equals(node.NodeType, tree.GreenBase))
-            extraData = extraData.Add(new Component(false, tree.KindEnum, "_kind", false, false, 0));
+            extraData = extraData.Insert(0, new Component(false, tree.KindEnum, "_kind", false, false, 0));
 
         return new Node(
             node.BaseType,
