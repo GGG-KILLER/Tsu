@@ -23,8 +23,10 @@ internal static class TemplateGenerator
         context.RegisterSourceOutput(trees, (ctx, tree) =>
         {
             var treeInitSw = Stopwatch.StartNew();
+            var scriptTree = new ScriptTree(tree);
+
             var builtins = new BuiltinFunctions();
-            builtins.Import(new TemplateHelpers(tree));
+            builtins.Import(new TemplateHelpers(scriptTree));
 
             var context = new TemplateContext(builtins, StringComparer.OrdinalIgnoreCase)
             {
@@ -33,7 +35,7 @@ internal static class TemplateGenerator
                 MemberFilter = null
             };
             var globals = new ScriptObject();
-            globals.Import(new ScriptTree(tree));
+            globals.Import(scriptTree);
             context.PushGlobal(globals);
             treeInitSw.Stop();
 
@@ -88,9 +90,9 @@ internal static class TemplateGenerator
     private sealed class TemplateHelpers : ScriptObject
     {
         private static readonly MethodInfo[] _methods = typeof(TemplateHelpers).GetMethods(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static);
-        private readonly Tree _tree;
+        private readonly ScriptTree _tree;
 
-        public TemplateHelpers(Tree tree) : base(9, autoImportStaticsFromThisType: false)
+        public TemplateHelpers(ScriptTree tree) : base(9, autoImportStaticsFromThisType: false)
         {
             _tree = tree;
 
@@ -106,38 +108,32 @@ internal static class TemplateGenerator
 
         public string NoSuffix(string value) => value.WithoutSuffix(_tree.Suffix);
 
-        public bool IsGreenNode(ScriptTypeSymbol symbol) => symbol.Symbol.DerivesFrom(_tree.GreenBase);
+        public bool IsGreenNode(ScriptTypeSymbol symbol) => symbol.Symbol.DerivesFrom(_tree.GreenBase.Symbol);
 
         public string AsRed(ScriptTypeSymbol symbol)
         {
-            if (symbol.Symbol.DerivesFrom(_tree.GreenBase))
-            {
-                return $"{_tree.RedBase.ContainingNamespace.ToCSharpString(false)}.{symbol.Name}{(symbol.Symbol.NullableAnnotation == NullableAnnotation.Annotated ? "?" : "")}";
-            }
-            else
-            {
-                return symbol.CSharp;
-            }
+            return IsGreenNode(symbol)
+                ? symbol.CSharp.Replace(symbol.Namespace, _tree.RedBase.Namespace)
+                : symbol.CSharp;
         }
 
         public string FieldType(ScriptComponent component, bool isGreen)
         {
-            var ns = isGreen ? _tree.GreenBase.ContainingNamespace : _tree.RedBase.ContainingNamespace;
             if (component.IsList)
             {
                 return isGreen
-                    ? _tree.GreenBase.ToCSharpString(false) + '?'
-                    : _tree.RedBase.ToCSharpString(false);
+                    ? _tree.GreenBase.CSharpNoNullable + '?'
+                    : _tree.RedBase.CSharpNoNullable;
             }
-            else if (component.Type.Symbol.DerivesFrom(_tree.GreenBase))
+            else if (IsGreenNode(component.Type))
             {
-                var type = SymbolEqualityComparer.Default.Equals(component.Type.Symbol, _tree.GreenBase)
+                var type = SymbolEqualityComparer.Default.Equals(component.Type.Symbol, _tree.GreenBase.Symbol)
                     ? _tree.RedBase
-                    : component.Type.Symbol;
+                    : component.Type;
                 if (!component.IsOptional && isGreen)
-                    return $"{ns.ToCSharpString(false)}.{type.Name}";
+                    return $"{(isGreen ? type.CSharp : AsRed(type))}";
                 else
-                    return $"{ns.ToCSharpString(false)}.{type.Name}?";
+                    return $"{(isGreen ? type.CSharp : AsRed(type))}?";
             }
             else
             {
@@ -145,38 +141,21 @@ internal static class TemplateGenerator
             }
         }
 
-        public string ParameterType(ScriptComponent component, bool isGreen)
-        {
-            if (IsGreenNode(component.Type))
-            {
-                var ns = isGreen ? _tree.GreenBase.ContainingNamespace : _tree.RedBase.ContainingNamespace;
-                if (component.IsList)
-                {
-                    return $"{ns.ToCSharpString(false)}.{_tree.Suffix}List<{ns.ToCSharpString(false)}.{component.Type.Name}>";
-                }
-                else
-                {
-                    return $"{ns.ToCSharpString(false)}.{component.Type.Name}";
-                }
-            }
-            else
-            {
-                return component.Type.CSharp;
-            }
-        }
+        public string ParameterType(ScriptComponent component, bool isGreen) => PropertyType(component, isGreen);
 
         public string PropertyType(ScriptComponent component, bool isGreen)
         {
             if (IsGreenNode(component.Type))
             {
-                var ns = isGreen ? _tree.GreenBase.ContainingNamespace : _tree.RedBase.ContainingNamespace;
+                var ns = isGreen ? _tree.GreenBase.Namespace : _tree.RedBase.Namespace;
+                var type = isGreen ? component.Type.CSharp : AsRed(component.Type);
                 if (component.IsList)
                 {
-                    return $"{ns.ToCSharpString(false)}.{_tree.Suffix}List<{ns.ToCSharpString(false)}.{component.Type.Name}>";
+                    return $"{ns}.{_tree.Suffix}List<{type}>";
                 }
                 else
                 {
-                    return $"{ns.ToCSharpString(false)}.{component.Type.Name}";
+                    return type;
                 }
             }
             else
