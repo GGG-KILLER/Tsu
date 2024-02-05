@@ -118,7 +118,9 @@ internal static class TreeCreator
         IEnumerable<Component> parentNodes,
         IEnumerable<Component> parentExtraData)
     {
-        var fields = node.NodeType.GetMembers().OfType<IFieldSymbol>().Where(f => f.IsReadOnly);
+        var fields = node.NodeType.GetMembers()
+            .OfType<IFieldSymbol>()
+            .Where(f => f.CanBeReferencedByName && f.IsDefinition && !f.IsImplicitlyDeclared && !f.IsStatic && !f.IsConst && f.IsReadOnly);
 
         // Starting order for this node
         var order = 1;
