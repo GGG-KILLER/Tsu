@@ -39,6 +39,7 @@
     <EmbeddedResource Include="Templates/Internal/GreenWalker.sbn-cs" Visible="true" LogicalName="Internal/GreenWalker.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenList.sbn-cs" Visible="true" LogicalName="Internal/GreenList.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenListBuilder.sbn-cs" Visible="true" LogicalName="Internal/GreenListBuilder.sbn-cs" />
+    <EmbeddedResource Include="Templates/Internal/GreenListBuilder`1.sbn-cs" Visible="true" LogicalName="Internal/GreenListBuilder`1.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenList.WithTwoChildren.sbn-cs" Visible="true" LogicalName="Internal/GreenList.WithTwoChildren.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenList.WithThreeChildren.sbn-cs" Visible="true" LogicalName="Internal/GreenList.WithThreeChildren.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/GreenList.WithManyChildren.sbn-cs" Visible="true" LogicalName="Internal/GreenList.WithManyChildren.sbn-cs" />
