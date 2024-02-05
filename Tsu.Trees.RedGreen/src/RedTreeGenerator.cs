@@ -49,20 +49,20 @@ internal static class RedTreeGenerator
             {
                 if (tree.CreateVisitors)
                 {
-                    writer.WriteVisitors(tree, tree.RedBase);
+                        writer.WriteVisitors(tree, false);
                     writer.WriteLineNoTabs("");
                 }
 
                 if (tree.CreateWalker)
                 {
-                    writer.WriteWalker(tree, tree.RedBase);
+                        writer.WriteWalker(tree, false);
                     writer.WriteLineNoTabs("");
                 }
 
                 if (tree.CreateRewriter)
                 {
                     writer.WriteLineNoTabs("");
-                    writer.WriteRewriter(tree, tree.RedBase);
+                        writer.WriteRewriter(tree, false);
                 }
 
                 writer.WriteRedFactory(tree);

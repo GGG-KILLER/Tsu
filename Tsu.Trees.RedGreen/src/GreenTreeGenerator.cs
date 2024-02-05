@@ -59,19 +59,19 @@ internal static class GreenTreeGenerator
             if (tree.CreateVisitors)
             {
                 writer.WriteLineNoTabs("");
-                writer.WriteVisitors(tree, tree.GreenBase);
+                    writer.WriteVisitors(tree, true);
             }
 
             if (tree.CreateWalker)
             {
                 writer.WriteLineNoTabs("");
-                writer.WriteWalker(tree, tree.GreenBase);
+                    writer.WriteWalker(tree, true);
             }
 
             if (tree.CreateRewriter)
             {
                 writer.WriteLineNoTabs("");
-                writer.WriteRewriter(tree, tree.RedBase);
+                    writer.WriteRewriter(tree, true);
             }
 
             writer.Indent--;

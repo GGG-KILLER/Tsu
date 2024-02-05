@@ -89,17 +89,18 @@ internal static class VisitorGenerator
         }
     }
 
-    public static void WriteVisitors(this IndentedTextWriter writer, Tree tree, INamedTypeSymbol baseType)
+    public static void WriteVisitors(this IndentedTextWriter writer, Tree tree, bool isGreen)
     {
         for (var arity = 0; arity < 5; arity++)
         {
             writer.WriteLineNoTabs("");
-            writer.WriteVisitor(tree, baseType, arity);
+            writer.WriteVisitor(tree, isGreen, arity);
         }
     }
 
-    public static void WriteVisitor(this IndentedTextWriter writer, Tree tree, INamedTypeSymbol baseType, int arity)
+    public static void WriteVisitor(this IndentedTextWriter writer, Tree tree, bool isGreen, int arity)
     {
+        var baseType = isGreen ? tree.GreenBase : tree.RedBase;
         writer.Write("{0} partial class {1}Visitor", baseType.DeclaredAccessibility.ToCSharpString(), tree.Suffix);
         writer.Write(arity switch
         {
@@ -165,11 +166,10 @@ internal static class VisitorGenerator
                 }
                 else
                 {
-                    writer.Write("public virtual {0} Visit{1}({2}.{3} node",
+                    writer.Write("public virtual {0} Visit{1}({2} node",
                         arity > 0 ? "TResult?" : "void",
                         node.TypeSymbol.Name.WithoutSuffix(tree.Suffix),
-                        baseType.ContainingNamespace.ToCSharpString(false),
-                        node.TypeSymbol.Name);
+                        isGreen ? node.TypeSymbol.ToCSharpString(false) : tree.ToRedCSharp(node.TypeSymbol));
                     if (arity > 1) writer.Write(", T1 arg1");
                     if (arity > 2) writer.Write(", T2 arg2");
                     if (arity > 3) writer.Write(", T3 arg3");
@@ -194,22 +194,23 @@ internal static class VisitorGenerator
         writer.WriteLine('}');
     }
 
-    public static void WriteWalker(this IndentedTextWriter writer, Tree tree, INamedTypeSymbol baseType)
+    public static void WriteWalker(this IndentedTextWriter writer, Tree tree, bool isGreen)
     {
         if (!tree.CreateVisitors)
         {
-            writer.WriteVisitor(tree, baseType, 0);
+            writer.WriteVisitor(tree, isGreen, 0);
         }
     }
 
-    public static void WriteRewriter(this IndentedTextWriter writer, Tree tree, INamedTypeSymbol baseType)
+    public static void WriteRewriter(this IndentedTextWriter writer, Tree tree, bool isGreen)
     {
         if (!tree.CreateVisitors)
         {
-            writer.WriteVisitor(tree, baseType, 1);
+            writer.WriteVisitor(tree, isGreen, 1);
             writer.WriteLineNoTabs("");
         }
 
+        var baseType = isGreen ? tree.GreenBase : tree.RedBase;
         writer.WriteLine("{0} partial class {1}Rewriter : {2}.{1}Visitor<{3}>",
             baseType.DeclaredAccessibility.ToCSharpString(),
             tree.Suffix,
@@ -220,7 +221,7 @@ internal static class VisitorGenerator
         {
             var baseTypeNs = baseType.ContainingNamespace.ToCSharpString(false);
             writer.WriteLines($$"""
-            public {{baseTypeNs}}.{{tree.Suffix}}List<TNode> VisitList<TNode>({{baseTypeNs}}.{{tree.Suffix}}List<TNode> list) where TNode : {{tree.RedBase.ToCSharpString(false)}}
+            public {{baseTypeNs}}.{{tree.Suffix}}List<TNode> VisitList<TNode>({{baseTypeNs}}.{{tree.Suffix}}List<TNode> list) where TNode : {{baseType.ToCSharpString(false)}}
             {
                 {{baseTypeNs}}.{{tree.Suffix}}ListBuilder? alternate = null;
                 for (int i = 0, n = list.Count; i < n; i++)
@@ -262,11 +263,10 @@ internal static class VisitorGenerator
                 }
                 else
                 {
-                    writer.WriteLine("public override {0} Visit{1}({2}.{3} node) =>",
+                    writer.WriteLine("public override {0} Visit{1}({2} node) =>",
                         baseType.ToCSharpString(),
                         node.TypeSymbol.Name.WithoutSuffix(tree.Suffix),
-                        baseType.ContainingNamespace.ToCSharpString(false),
-                        node.TypeSymbol.Name);
+                        isGreen ? node.TypeSymbol.ToCSharpString(false) : tree.ToRedCSharp(node.TypeSymbol));
                     writer.Indent++;
                     {
                         if (!node.RequiredComponents.Any())
@@ -290,9 +290,8 @@ internal static class VisitorGenerator
                                     }
                                     else
                                     {
-                                        writer.Write("({0}.{1}?)Visit(node.{2})",
-                                        baseType.ContainingNamespace.ToCSharpString(false),
-                                        component.Type.Name,
+                                        writer.Write("({0}?)Visit(node.{1})",
+                                        isGreen ? component.Type.ToCSharpString(false) : tree.ToRedCSharp(component.Type),
                                         component.PropertyName);
                                         if (!component.IsOptional)
                                         {
