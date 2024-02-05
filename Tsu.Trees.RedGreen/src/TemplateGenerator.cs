@@ -43,10 +43,18 @@ internal static class TemplateGenerator
             var elapsed = new List<(string Path, TimeSpan Elapsed)>();
             foreach (var template in templates)
             {
-                renderSw.Restart();
-                var rendered = template.Template.Render(context);
-                renderSw.Stop();
-                elapsed.Add((template.Path, renderSw.Elapsed));
+                string rendered;
+                try
+                {
+                    renderSw.Restart();
+                    rendered = template.Template.Render(context);
+                    renderSw.Stop();
+                    elapsed.Add((template.Path, renderSw.Elapsed));
+                }
+                catch (Exception ex)
+                {
+                    rendered = ex.ToString();
+                }
 
                 ctx.AddSource($"{tree.Suffix}/{template.Path.WithoutSuffix(".sbn-cs")}.g.cs", rendered);
             }
@@ -55,7 +63,7 @@ internal static class TemplateGenerator
             var builder = new StringBuilder();
             builder.AppendLine($"// Templates Load: {initSw.Elapsed.TotalMilliseconds}ms")
                    .AppendLine($"// Tree Init: {treeInitSw.Elapsed.TotalMilliseconds}ms");
-            foreach (var s in elapsed.OrderByDescending(x => x.Elapsed))
+            foreach (var s in elapsed.OrderByDescending<(string Path, TimeSpan Elapsed), TimeSpan>(x => x.Elapsed))
                 builder.AppendLine($"// {s.Path}: {s.Elapsed.TotalMilliseconds}ms");
             builder.AppendLine($"// Total: {TimeSpan.FromTicks(initSw.Elapsed.Ticks + treeInitSw.Elapsed.Ticks + elapsed.Sum(x => x.Elapsed.Ticks)).TotalMilliseconds}ms");
             ctx.AddSource($"{tree.Suffix}/TemplateTimings.g.cs", builder.ToSourceText());
