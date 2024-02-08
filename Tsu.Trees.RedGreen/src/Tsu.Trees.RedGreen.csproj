@@ -20,7 +20,7 @@
 
     <Copyright>GGG KILLER © 2024</Copyright>
     <PackageId>Tsu.Trees.RedGreen</PackageId>
-    <Version>0.2.3</Version>
+    <Version>0.2.4</Version>
     <Description>A source generator generates all the boilerplate for your red/green trees.</Description>
 
     <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
@@ -49,6 +49,9 @@
     <EmbeddedResource Include="Templates/Internal/ChildGreenList.Enumerator.sbn-cs" Visible="true" LogicalName="Internal/ChildGreenList.Enumerator.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/ChildGreenList.Reversed.sbn-cs" Visible="true" LogicalName="Internal/ChildGreenList.Reversed.sbn-cs" />
     <EmbeddedResource Include="Templates/Internal/ChildGreenList.Reversed.Enumerator.sbn-cs" Visible="true" LogicalName="Internal/ChildGreenList.Reversed.Enumerator.sbn-cs" />
+    <EmbeddedResource Include="Templates/ChildRedList.Enumerator.sbn-cs" LogicalName="ChildRedList.Enumerator.sbn-cs" />
+    <EmbeddedResource Include="Templates/ChildRedList.Reversed.sbn-cs" LogicalName="ChildRedList.Reversed.sbn-cs" />
+    <EmbeddedResource Include="Templates/ChildRedList.sbn-cs" LogicalName="ChildRedList.sbn-cs" />
     <EmbeddedResource Include="Templates/RedList.sbn-cs" LogicalName="RedList.sbn-cs" />
     <EmbeddedResource Include="Templates/RedList.WithTwoChildren.sbn-cs" LogicalName="RedList.WithTwoChildren.sbn-cs" />
     <EmbeddedResource Include="Templates/RedList.WithThreeChildren.sbn-cs" LogicalName="RedList.WithThreeChildren.sbn-cs" />

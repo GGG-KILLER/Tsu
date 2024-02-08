@@ -96,12 +96,10 @@ namespace Tsu.Trees.RedGreen.Sample
         public abstract TResult? Accept<T1, T2, TResult>(global::Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, T2, TResult> visitor, T1 arg1, T2 arg2);
         public abstract TResult? Accept<T1, T2, T3, TResult>(global::Tsu.Trees.RedGreen.Sample.SampleVisitor<T1, T2, T3, TResult> visitor, T1 arg1, T2 arg2, T3 arg3);
 
-        public global::System.Collections.Generic.IEnumerable<global::Tsu.Trees.RedGreen.Sample.SampleNode> ChildNodes()
-        {
-            var count = this.SlotCount;
-            for (var index = 0; index < count; index++)
-                yield return this.GetRequiredNodeSlot(index);
-        }
+        /// <summary>
+        /// The list of child nodes and tokens of this node, where each element is a SyntaxNodeOrToken instance.
+        /// </summary>
+        public global::Tsu.Trees.RedGreen.Sample.ChildSampleList ChildNodes() => new(this);
 
         public global::System.Collections.Generic.IEnumerable<global::Tsu.Trees.RedGreen.Sample.SampleNode> Ancestors() =>
             this.Parent?.AncestorsAndSelf() ?? global::System.Linq.Enumerable.Empty<global::Tsu.Trees.RedGreen.Sample.SampleNode>();
