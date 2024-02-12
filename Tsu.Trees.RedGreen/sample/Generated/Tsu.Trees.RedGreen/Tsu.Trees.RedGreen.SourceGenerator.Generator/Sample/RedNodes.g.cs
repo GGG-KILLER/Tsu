@@ -289,7 +289,7 @@ namespace Tsu.Trees.RedGreen.Sample
         {
         }
 
-        public abstract global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample Semicolon { get; }
+        public abstract global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample? Semicolon { get; }
 
 
 
@@ -308,13 +308,13 @@ namespace Tsu.Trees.RedGreen.Sample
         }
 
         public global::Tsu.Trees.RedGreen.Sample.ExpressionSample Expression => GetRed(ref this._expression, 0)!;
-        public override global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample Semicolon => GetRed(ref this._semicolon, 1)!;
+        public override global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample? Semicolon => GetRed(ref this._semicolon, 1);
 
         internal override global::Tsu.Trees.RedGreen.Sample.SampleNode? GetNodeSlot(int index) =>
                 index switch
                 {
                     0 => GetRed(ref this._expression, 0)!,
-                    1 => GetRed(ref this._semicolon, 1)!,
+                    1 => GetRed(ref this._semicolon, 1),
                     _ => null
                 };
 
@@ -340,7 +340,7 @@ namespace Tsu.Trees.RedGreen.Sample
 
         public global::Tsu.Trees.RedGreen.Sample.ExpressionStatementSample Update(
             global::Tsu.Trees.RedGreen.Sample.ExpressionSample expression,
-            global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample semicolon
+            global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample? semicolon
         )
         {
             if (
@@ -362,7 +362,7 @@ namespace Tsu.Trees.RedGreen.Sample
                 expression,
                 this.Semicolon
             );
-        public global::Tsu.Trees.RedGreen.Sample.ExpressionStatementSample WithSemicolon(global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample semicolon) =>
+        public global::Tsu.Trees.RedGreen.Sample.ExpressionStatementSample WithSemicolon(global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample? semicolon) =>
             this.Update(
                 this.Expression,
                 semicolon
@@ -381,14 +381,14 @@ namespace Tsu.Trees.RedGreen.Sample
 
         public global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample Identifier => GetRed(ref this._identifier, 0)!;
         public global::Tsu.Trees.RedGreen.Sample.ExpressionSample Value => GetRed(ref this._value, 1)!;
-        public override global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample Semicolon => GetRed(ref this._semicolon, 2)!;
+        public override global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample? Semicolon => GetRed(ref this._semicolon, 2);
 
         internal override global::Tsu.Trees.RedGreen.Sample.SampleNode? GetNodeSlot(int index) =>
                 index switch
                 {
                     0 => GetRed(ref this._identifier, 0)!,
                     1 => GetRed(ref this._value, 1)!,
-                    2 => GetRed(ref this._semicolon, 2)!,
+                    2 => GetRed(ref this._semicolon, 2),
                     _ => null
                 };
 
@@ -415,7 +415,7 @@ namespace Tsu.Trees.RedGreen.Sample
         public global::Tsu.Trees.RedGreen.Sample.AssignmentStatement Update(
             global::Tsu.Trees.RedGreen.Sample.IdentifierExpressionSample identifier,
             global::Tsu.Trees.RedGreen.Sample.ExpressionSample value,
-            global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample semicolon
+            global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample? semicolon
         )
         {
             if (
@@ -446,7 +446,7 @@ namespace Tsu.Trees.RedGreen.Sample
                 value,
                 this.Semicolon
             );
-        public global::Tsu.Trees.RedGreen.Sample.AssignmentStatement WithSemicolon(global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample semicolon) =>
+        public global::Tsu.Trees.RedGreen.Sample.AssignmentStatement WithSemicolon(global::Tsu.Trees.RedGreen.Sample.SemicolonTokenSample? semicolon) =>
             this.Update(
                 this.Identifier,
                 this.Value,

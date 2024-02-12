@@ -115,7 +115,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
     internal abstract partial class StatementSample : GreenNode
     {
         [NodeComponent(Order = -1)]
-        protected readonly SemicolonTokenSample _semicolon;
+        protected readonly SemicolonTokenSample? _semicolon;
 
         // Stub to be filled in by codegen
     }

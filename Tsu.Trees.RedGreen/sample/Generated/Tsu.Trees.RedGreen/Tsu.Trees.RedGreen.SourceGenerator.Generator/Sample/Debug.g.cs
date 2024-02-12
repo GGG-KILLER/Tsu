@@ -57,7 +57,7 @@
 //         global::Tsu.Trees.RedGreen.Sample.Internal.StatementSample
 //             Kinds:
 //             Children:
-//                 global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample (IsList = False, Name = _semicolon, IsOptional = False, PassToBase = False, Order = -1)
+//                 global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample? (IsList = False, Name = _semicolon, IsOptional = True, PassToBase = False, Order = -1)
 //             ExtraData:
 //                 global::Tsu.Trees.RedGreen.Sample.SampleKind (IsList = False, Name = _kind, IsOptional = False, PassToBase = True, Order = 0)
 //             Descendants:
@@ -66,7 +66,7 @@
 //                         Tsu.Trees.RedGreen.Sample.SampleKind.ExpressionStatement (IsNull = False, Type = global::Tsu.Trees.RedGreen.Sample.SampleKind, Value = 11)
 //                     Children:
 //                         global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample (IsList = False, Name = _expression, IsOptional = False, PassToBase = False, Order = 1)
-//                         global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample (IsList = False, Name = _semicolon, IsOptional = False, PassToBase = True, Order = -1)
+//                         global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample? (IsList = False, Name = _semicolon, IsOptional = True, PassToBase = True, Order = -1)
 //                     ExtraData:
 //                         global::Tsu.Trees.RedGreen.Sample.SampleKind (IsList = False, Name = _kind, IsOptional = False, PassToBase = True, Order = 0)
 //                     Descendants:
@@ -76,7 +76,7 @@
 //                     Children:
 //                         global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample (IsList = False, Name = _identifier, IsOptional = False, PassToBase = False, Order = 1)
 //                         global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample (IsList = False, Name = _value, IsOptional = False, PassToBase = False, Order = 2)
-//                         global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample (IsList = False, Name = _semicolon, IsOptional = False, PassToBase = True, Order = -1)
+//                         global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample? (IsList = False, Name = _semicolon, IsOptional = True, PassToBase = True, Order = -1)
 //                     ExtraData:
 //                         global::Tsu.Trees.RedGreen.Sample.SampleKind (IsList = False, Name = _kind, IsOptional = False, PassToBase = True, Order = 0)
 //                     Descendants:

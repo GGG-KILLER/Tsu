@@ -19,22 +19,39 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             return new global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample(global::Tsu.Trees.RedGreen.Sample.SampleKind.SemicolonToken);
         }
 
-        public static global::Tsu.Trees.RedGreen.Sample.Internal.AssignmentStatement AssignmentStatement(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample value, global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample semicolon)
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.AssignmentStatement AssignmentStatement(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample value)
         {
 #if DEBUG
             if (identifier == null) throw new global::System.ArgumentNullException(nameof(identifier));
             if (value == null) throw new global::System.ArgumentNullException(nameof(value));
-            if (semicolon == null) throw new global::System.ArgumentNullException(nameof(semicolon));
+#endif // DEBUG
+
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.AssignmentStatement(global::Tsu.Trees.RedGreen.Sample.SampleKind.AssignmentStatement, identifier, value, default);
+        }
+
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.AssignmentStatement AssignmentStatement(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier, global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample value, global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample? semicolon)
+        {
+#if DEBUG
+            if (identifier == null) throw new global::System.ArgumentNullException(nameof(identifier));
+            if (value == null) throw new global::System.ArgumentNullException(nameof(value));
 #endif // DEBUG
 
             return new global::Tsu.Trees.RedGreen.Sample.Internal.AssignmentStatement(global::Tsu.Trees.RedGreen.Sample.SampleKind.AssignmentStatement, identifier, value, semicolon);
         }
 
-        public static global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionStatementSample ExpressionStatement(global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample expression, global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample semicolon)
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionStatementSample ExpressionStatement(global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample expression)
         {
 #if DEBUG
             if (expression == null) throw new global::System.ArgumentNullException(nameof(expression));
-            if (semicolon == null) throw new global::System.ArgumentNullException(nameof(semicolon));
+#endif // DEBUG
+
+            return new global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionStatementSample(global::Tsu.Trees.RedGreen.Sample.SampleKind.ExpressionStatement, expression, default);
+        }
+
+        public static global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionStatementSample ExpressionStatement(global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample expression, global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample? semicolon)
+        {
+#if DEBUG
+            if (expression == null) throw new global::System.ArgumentNullException(nameof(expression));
 #endif // DEBUG
 
             return new global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionStatementSample(global::Tsu.Trees.RedGreen.Sample.SampleKind.ExpressionStatement, expression, semicolon);
@@ -205,9 +222,9 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode VisitSemicolonToken(global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample node) =>
             node;
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode VisitAssignmentStatement(global::Tsu.Trees.RedGreen.Sample.Internal.AssignmentStatement node) =>
-            node.Update((global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample?)Visit(node.Identifier) ?? throw new global::System.InvalidOperationException("Identifier cannot be null."), (global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample?)Visit(node.Value) ?? throw new global::System.InvalidOperationException("Value cannot be null."), (global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample?)Visit(node.Semicolon) ?? throw new global::System.InvalidOperationException("Semicolon cannot be null."));
+            node.Update((global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample?)Visit(node.Identifier) ?? throw new global::System.InvalidOperationException("Identifier cannot be null."), (global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample?)Visit(node.Value) ?? throw new global::System.InvalidOperationException("Value cannot be null."), (global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample?)Visit(node.Semicolon));
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode VisitExpressionStatement(global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionStatementSample node) =>
-            node.Update((global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample?)Visit(node.Expression) ?? throw new global::System.InvalidOperationException("Expression cannot be null."), (global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample?)Visit(node.Semicolon) ?? throw new global::System.InvalidOperationException("Semicolon cannot be null."));
+            node.Update((global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample?)Visit(node.Expression) ?? throw new global::System.InvalidOperationException("Expression cannot be null."), (global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample?)Visit(node.Semicolon));
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode VisitIdentifierExpression(global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample node) =>
             node.Update(node.Name);
         public override global::Tsu.Trees.RedGreen.Sample.Internal.GreenNode VisitNumericalLiteralExpression(global::Tsu.Trees.RedGreen.Sample.Internal.NumericalLiteralExpressionSample node) =>

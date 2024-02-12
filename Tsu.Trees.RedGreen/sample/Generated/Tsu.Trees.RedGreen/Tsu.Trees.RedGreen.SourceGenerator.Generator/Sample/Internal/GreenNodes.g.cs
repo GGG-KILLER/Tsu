@@ -273,14 +273,14 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
     {
         protected StatementSample(
             global::Tsu.Trees.RedGreen.Sample.SampleKind kind,
-            global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample semicolon
+            global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample? semicolon
         )
             : base(kind)
         {
             this._semicolon = semicolon;
         }
 
-        public global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample Semicolon => this._semicolon;
+        public global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample? Semicolon => this._semicolon;
 
 
 
@@ -293,7 +293,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         internal ExpressionStatementSample(
             global::Tsu.Trees.RedGreen.Sample.SampleKind kind,
             global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample expression,
-            global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample semicolon
+            global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample? semicolon
         )
             : base(kind, semicolon)
         {
@@ -336,7 +336,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
 
         public global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionStatementSample Update(
             global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample expression,
-            global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample semicolon
+            global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample? semicolon
         )
         {
             if (
@@ -359,7 +359,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
             global::Tsu.Trees.RedGreen.Sample.SampleKind kind,
             global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier,
             global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample value,
-            global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample semicolon
+            global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample? semicolon
         )
             : base(kind, semicolon)
         {
@@ -406,7 +406,7 @@ namespace Tsu.Trees.RedGreen.Sample.Internal
         public global::Tsu.Trees.RedGreen.Sample.Internal.AssignmentStatement Update(
             global::Tsu.Trees.RedGreen.Sample.Internal.IdentifierExpressionSample identifier,
             global::Tsu.Trees.RedGreen.Sample.Internal.ExpressionSample value,
-            global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample semicolon
+            global::Tsu.Trees.RedGreen.Sample.Internal.SemicolonTokenSample? semicolon
         )
         {
             if (
