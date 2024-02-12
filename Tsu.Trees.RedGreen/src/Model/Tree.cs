@@ -32,9 +32,9 @@ internal sealed record Tree(
     bool DebugDump
 )
 {
-    public string ToRedCSharp(ITypeSymbol symbol) =>
+    public string ToRedCSharp(ITypeSymbol symbol, bool addNullable = false) =>
         symbol.DerivesFrom(GreenBase)
-        ? symbol.ToCSharpString()
+        ? symbol.ToCSharpString(addNullable)
                 .Replace(GreenBase.ContainingNamespace.ToCSharpString(false), RedBase.ContainingNamespace.ToCSharpString(false))
-        : symbol.ToCSharpString();
+        : symbol.ToCSharpString(addNullable);
 }

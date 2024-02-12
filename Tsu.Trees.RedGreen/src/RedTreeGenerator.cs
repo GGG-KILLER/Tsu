@@ -142,7 +142,7 @@ internal static class RedTreeGenerator
                 if (component.Type.DerivesFrom(tree.GreenBase))
                     ns = tree.RedBase.ContainingNamespace;
 
-                var type = tree.ToRedCSharp(component.Type);
+                var type = tree.ToRedCSharp(component.Type, true);
                 if (component.IsList && component.Type.DerivesFrom(tree.GreenBase))
                     type = $"{ns.ToCSharpString(false)}.{tree.Suffix}List<{type}>";
 
@@ -153,7 +153,7 @@ internal static class RedTreeGenerator
             writer.WriteLine(") =>");
             writer.Indent++;
             writer.Write("({0}) {1}.{2}Factory.{3}(",
-                tree.ToRedCSharp(node.TypeSymbol),
+                tree.ToRedCSharp(node.TypeSymbol, false),
                 tree.GreenBase.ContainingNamespace.ToCSharpString(false),
                 tree.Suffix,
                 node.TypeSymbol.Name.WithoutSuffix(tree.Suffix));

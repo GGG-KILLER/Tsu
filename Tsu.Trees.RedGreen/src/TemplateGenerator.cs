@@ -121,7 +121,7 @@ internal static class TemplateGenerator
         public string AsRed(ScriptTypeSymbol symbol)
         {
             return IsGreenNode(symbol)
-                ? symbol.CSharpNoNullable.Replace(symbol.Namespace, _tree.RedBase.Namespace)
+                ? symbol.CSharp.Replace(symbol.Namespace, _tree.RedBase.Namespace)
                 : symbol.CSharp;
         }
 
@@ -139,9 +139,9 @@ internal static class TemplateGenerator
                     ? _tree.RedBase
                     : component.Type;
                 if (!component.IsOptional && isGreen)
-                    return $"{(isGreen ? type.CSharpNoNullable : AsRed(type))}";
+                    return $"{(isGreen ? type.CSharpNoNullable : NotNull(AsRed(type)))}";
                 else
-                    return $"{(isGreen ? type.CSharpNoNullable : AsRed(type))}?";
+                    return $"{(isGreen ? type.CSharpNoNullable : NotNull(AsRed(type)))}?";
             }
             else
             {
@@ -156,7 +156,7 @@ internal static class TemplateGenerator
             if (IsGreenNode(component.Type))
             {
                 var ns = isGreen ? _tree.GreenBase.Namespace : _tree.RedBase.Namespace;
-                var type = isGreen ? component.Type.CSharpNoNullable : AsRed(component.Type);
+                var type = isGreen ? component.Type.CSharp : AsRed(component.Type);
                 if (component.IsList)
                 {
                     return $"{ns}.{_tree.Suffix}List<{type}>";

@@ -169,7 +169,7 @@ internal static class VisitorGenerator
                     writer.Write("public virtual {0} Visit{1}({2} node",
                         arity > 0 ? "TResult?" : "void",
                         node.TypeSymbol.Name.WithoutSuffix(tree.Suffix),
-                        isGreen ? node.TypeSymbol.ToCSharpString(false) : tree.ToRedCSharp(node.TypeSymbol));
+                        isGreen ? node.TypeSymbol.ToCSharpString(false) : tree.ToRedCSharp(node.TypeSymbol, false));
                     if (arity > 1) writer.Write(", T1 arg1");
                     if (arity > 2) writer.Write(", T2 arg2");
                     if (arity > 3) writer.Write(", T3 arg3");
@@ -266,7 +266,7 @@ internal static class VisitorGenerator
                     writer.WriteLine("public override {0} Visit{1}({2} node) =>",
                         baseType.ToCSharpString(),
                         node.TypeSymbol.Name.WithoutSuffix(tree.Suffix),
-                        isGreen ? node.TypeSymbol.ToCSharpString(false) : tree.ToRedCSharp(node.TypeSymbol));
+                        isGreen ? node.TypeSymbol.ToCSharpString(false) : tree.ToRedCSharp(node.TypeSymbol, false));
                     writer.Indent++;
                     {
                         if (!node.RequiredComponents.Any())
@@ -291,7 +291,7 @@ internal static class VisitorGenerator
                                     else
                                     {
                                         writer.Write("({0}?)Visit(node.{1})",
-                                        isGreen ? component.Type.ToCSharpString(false) : tree.ToRedCSharp(component.Type),
+                                        isGreen ? component.Type.ToCSharpString(false) : tree.ToRedCSharp(component.Type, false),
                                         component.PropertyName);
                                         if (!component.IsOptional)
                                         {
