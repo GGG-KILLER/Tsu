@@ -37,7 +37,7 @@ jobs:
 
   push:
     name: NuGet Push
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: [build]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
@@ -54,17 +54,17 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Generate NuGet packages
-      run: dotnet pack --configuration Release --no-build --output ./packages
+      run: dotnet pack --configuration Release --no-build --output packages
     - uses: actions/upload-artifact@v4
       with:
         name: Artifacts
-        path: ./packages/
+        path: packages/
     - name: Publish packages
       run: |
-        Get-ChildItem -Path ./packages/ -Filter *.nupkg -File -Name | ForEach-Object {
-          dotnet nuget push ./packages/$_ --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
-        }
-      shell: pwsh
+        for package in packages/*.nupkg; do
+          dotnet nuget push $package --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+        done
+      shell: bash
 
   # TODO: Fix when I can be bothered to.
   # train:
