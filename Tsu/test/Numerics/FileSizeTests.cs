@@ -23,7 +23,7 @@ namespace Tsu.Tests.Numerics
     [TestClass]
     public class FileSizeTests
     {
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(512L, 512L, "B")]
         [DataRow(1L * FileSize.KiB, 1L, "KiB")]
         [DataRow(500L * FileSize.KiB, 500L, "KiB")]
@@ -42,7 +42,7 @@ namespace Tsu.Tests.Numerics
             Assert.AreEqual(expectedSuffix, suffix);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(512.0, 512, "B")]
         [DataRow(1.0 * FileSize.KiB, 1, "KiB")]
         [DataRow(1.5 * FileSize.KiB, 1.5, "KiB")]

@@ -22,7 +22,7 @@ namespace Tsu.Numerics.Tests
     [TestClass]
     public class SITests
     {
-        [DataTestMethod]
+        [TestMethod]
         [DataRow(1, "")]
         [DataRow(SI.Yotta, "Y")]
         [DataRow(SI.Zetta, "Z")]

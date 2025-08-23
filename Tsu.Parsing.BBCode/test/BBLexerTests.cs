@@ -70,15 +70,15 @@ namespace Tsu.Parsing.BBCode.Tests
         public void ShouldLexSelfClosingTagWithoutValue() =>
             AssertTokenStream("[a/]", s_lbracket, new BBToken("a"), s_slash, s_rbracket);
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("[[a]")]
         [DataRow("[a[a]")]
         [DataRow("[a=[a]")]
         public void ShouldNotLex(string text) =>
-            Assert.ThrowsException<FormatException>(() =>
-          {
-              using var reader = new StringReader(text);
-              _ = BBLexer.Lex(reader).ToArray();
-          });
+            Assert.ThrowsExactly<FormatException>(() =>
+            {
+                using var reader = new StringReader(text);
+                _ = BBLexer.Lex(reader).ToArray();
+            });
     }
 }

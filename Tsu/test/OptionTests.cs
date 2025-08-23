@@ -45,7 +45,7 @@ namespace Tsu.Tests
         public void ValueThrowsOnNoneValueAccess()
         {
             var none = Option.None<string>();
-            Assert.ThrowsException<InvalidOperationException>(() => none.Value);
+            Assert.ThrowsExactly<InvalidOperationException>(() => none.Value);
         }
 
         [TestMethod]
