@@ -8,6 +8,9 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <IncludeBuildOutput>false</IncludeBuildOutput>
 
+    <!-- Enable package lockfiles -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+
     <IncludeSymbols>false</IncludeSymbols>
     <SymbolPackageFormat></SymbolPackageFormat>
   </PropertyGroup>

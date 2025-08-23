@@ -25,8 +25,11 @@ jobs:
           8.0
           9.0
           10.0
+        cache: True
+        cache-dependency-path: |
+          **/packages.lock.json
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore --locked-mode
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
@@ -47,7 +50,7 @@ jobs:
           7.0.x
           8.0.x
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore --locked-mode
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Generate NuGet packages
@@ -81,7 +84,7 @@ jobs:
   #         7.0.x
   #         8.0.x
   #   - name: Install dependencies
-  #     run: dotnet restore
+  #     run: dotnet restore --locked-mode
   #   - name: Build
   #     run: dotnet build --configuration Release --no-restore
   #   - name: Train Intellicode Model
