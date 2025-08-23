@@ -5,7 +5,7 @@
     <TargetFrameworks>$(LibraryTargetFrameworks)</TargetFrameworks>
 
     <PackageId>Tsu</PackageId>
-    <Version>2.2.2</Version>
+    <Version>3.0.0</Version>
     <Description>General utilities library. Containing Option&lt;T&gt;, Result&lt;TOk, TErr&gt;, Unit, BitVectorHelpers, FileSize, SI and others.</Description>
   </PropertyGroup>
 
