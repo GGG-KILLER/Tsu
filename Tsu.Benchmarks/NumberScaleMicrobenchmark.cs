@@ -21,9 +21,10 @@ using BenchmarkDotNet.Jobs;
 
 namespace Tsu.Benchmarks
 {
+#if !NET8_0_OR_GREATER
     [SimpleJob(RuntimeMoniker.Net48)]
-    [SimpleJob(RuntimeMoniker.NetCoreApp31, baseline: true)]
-    [SimpleJob(RuntimeMoniker.NetCoreApp50)]
+#endif
+    [SimpleJob(RuntimeMoniker.Net80, baseline: true)]
     [MemoryDiagnoser]
     [DisassemblyDiagnoser(exportHtml: true, exportCombinedDisassemblyReport: true, exportDiff: true)]
     public class NumberScaleMicrobenchmark

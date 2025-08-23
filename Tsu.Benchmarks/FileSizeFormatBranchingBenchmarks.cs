@@ -22,14 +22,15 @@ using Tsu.Numerics;
 
 namespace Tsu.Benchmarks
 {
+#if !NET8_0_OR_GREATER
     [SimpleJob(RuntimeMoniker.Net48)]
-    [SimpleJob(RuntimeMoniker.NetCoreApp31, baseline: true)]
-    [SimpleJob(RuntimeMoniker.NetCoreApp50)]
+#endif
+    [SimpleJob(RuntimeMoniker.Net80, baseline: true)]
     [MemoryDiagnoser]
     [DisassemblyDiagnoser(exportHtml: true, exportCombinedDisassemblyReport: true, exportDiff: true)]
     public class FileSizeFormatBranchingBenchmarks
     {
-        private static readonly string[] _suffixes = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
+        private static readonly string[] _suffixes = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"];
 
         [Params(512, FileSize.MiB, FileSize.MiB * 250.5)]
         public double Value { get; set; }
