@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Tsu.Testing;
 
 namespace Tsu.Tests
 {
@@ -184,13 +183,8 @@ namespace Tsu.Tests
         [TestMethod]
         public void MapReturnsInvocationResultForOk()
         {
-            var ok = Ok;
-            var mapFuncCounter =
-                DelegateHelpers.TrackInvocationCount<string, int>(str => str.Length);
+            var mappedOk = Ok.Map(str => str.Length);
 
-            var mappedOk = ok.Map(mapFuncCounter.WrappedDelegate);
-
-            Assert.AreEqual(1, mapFuncCounter.InvocationCount);
             Assert.IsTrue(mappedOk.IsOk);
             Assert.AreEqual(OkValue.Length, mappedOk.Ok.Value);
         }
@@ -198,13 +192,8 @@ namespace Tsu.Tests
         [TestMethod]
         public void MapReturnsErrResultForErr()
         {
-            var err = Err;
-            var mapFuncCounter =
-                DelegateHelpers.TrackInvocationCount<string, int>(str => str.Length);
+            var mappedErr = Err.Map<int>(s => throw new InvalidOperationException("Test failure."));
 
-            var mappedErr = err.Map(mapFuncCounter.WrappedDelegate);
-
-            Assert.AreEqual(0, mapFuncCounter.InvocationCount);
             Assert.IsTrue(mappedErr.IsErr);
             Assert.AreEqual(ErrValue, mappedErr.Err.Value);
         }
@@ -212,71 +201,40 @@ namespace Tsu.Tests
         [TestMethod]
         public void MapOrReturnsInvocationResultForOk()
         {
-            var ok = Ok;
-            var mapFuncCounter =
-                DelegateHelpers.TrackInvocationCount<string, int>(str => str.Length);
+            var mapped = Ok.MapOr(-1, str => str.Length);
 
-            var mapped = ok.MapOr(-1, mapFuncCounter.WrappedDelegate);
-
-            Assert.AreEqual(1, mapFuncCounter.InvocationCount);
             Assert.AreEqual(OkValue.Length, mapped);
         }
 
         [TestMethod]
         public void MapOrReturnsFallbackForErr()
         {
-            var err = Err;
-            var mapFuncCounter =
-                DelegateHelpers.TrackInvocationCount<string, int>(str => str.Length);
+            var mapped = Err.MapOr(-1, str => throw new InvalidOperationException("Test failure."));
 
-            var mapped = err.MapOr(-1, mapFuncCounter.WrappedDelegate);
-
-            Assert.AreEqual(0, mapFuncCounter.InvocationCount);
             Assert.AreEqual(-1, mapped);
         }
 
         [TestMethod]
         public void MapOrElseReturnsInvocationResultForOk()
         {
-            var ok = Ok;
-            var fallbackFuncCounter =
-                DelegateHelpers.TrackInvocationCount(() => -1);
-            var mapFuncCounter =
-                DelegateHelpers.TrackInvocationCount<string, int>(str => str.Length);
+            var mapped = Ok.MapOrElse(() => throw new InvalidCastException("Test failure."), str => str.Length);
 
-            var mapped = ok.MapOrElse(fallbackFuncCounter.WrappedDelegate, mapFuncCounter.WrappedDelegate);
-
-            Assert.AreEqual(0, fallbackFuncCounter.InvocationCount);
-            Assert.AreEqual(1, mapFuncCounter.InvocationCount);
             Assert.AreEqual(OkValue.Length, mapped);
         }
 
         [TestMethod]
         public void MapOrElseReturnsFallbackInvocationResultForErr()
         {
-            var err = Err;
-            var fallbackFuncCounter =
-                DelegateHelpers.TrackInvocationCount(() => -1);
-            var mapFuncCounter =
-                DelegateHelpers.TrackInvocationCount<string, int>(str => str.Length);
+            var mapped = Err.MapOrElse(() => -1, str => throw new InvalidOperationException("Test failure."));
 
-            var mapped = err.MapOrElse(fallbackFuncCounter.WrappedDelegate, mapFuncCounter.WrappedDelegate);
-
-            Assert.AreEqual(1, fallbackFuncCounter.InvocationCount);
-            Assert.AreEqual(0, mapFuncCounter.InvocationCount);
             Assert.AreEqual(-1, mapped);
         }
 
         [TestMethod]
         public void MapErrReturnsOkResultForOk()
         {
-            var ok = Ok;
-            var funcCounter =
-                DelegateHelpers.TrackInvocationCount<int, int>(n => n * n);
+            var mappedOk = Ok.MapErr<int>(n => throw new InvalidOperationException("Test failure."));
 
-            var mappedOk = ok.MapErr(funcCounter.WrappedDelegate);
-
-            Assert.AreEqual(0, funcCounter.InvocationCount);
             Assert.IsTrue(mappedOk.IsOk);
             Assert.AreEqual(OkValue, mappedOk.Ok.Value);
         }
@@ -284,13 +242,8 @@ namespace Tsu.Tests
         [TestMethod]
         public void MapErrReturnsInvocationResultForErr()
         {
-            var err = Err;
-            var funcCounter =
-                DelegateHelpers.TrackInvocationCount<int, int>(n => n * n);
+            var mappedErr = Err.MapErr(n => n * n);
 
-            var mappedErr = err.MapErr(funcCounter.WrappedDelegate);
-
-            Assert.AreEqual(1, funcCounter.InvocationCount);
             Assert.IsTrue(mappedErr.IsErr);
             Assert.AreEqual(ErrValue * ErrValue, mappedErr.Err.Value);
         }
@@ -318,26 +271,16 @@ namespace Tsu.Tests
         }
 
         [TestMethod]
-        public void AndThenReturnsInvocationResultForOk()
-        {
-            var ok = Ok;
-            var op =
-                DelegateHelpers.TrackInvocationCount((string s) => Result.Ok<int, int>(s.Length));
-
-            Assert.AreEqual(Result.Ok<int, int>(OkValue.Length), ok.AndThen(op.WrappedDelegate));
-            Assert.AreEqual(1, op.InvocationCount);
-        }
+        public void AndThenReturnsInvocationResultForOk() =>
+            Assert.AreEqual(
+                Result.Ok<int, int>(OkValue.Length),
+                Ok.AndThen(s => Result.Ok<int, int>(s.Length)));
 
         [TestMethod]
-        public void AndThenReturnsErrorResultWithErrorValueForErr()
-        {
-            var err = Err;
-            var op =
-                DelegateHelpers.TrackInvocationCount((string s) => Result.Ok<int, int>(s.Length));
-
-            Assert.AreEqual(Result.Err<int, int>(ErrValue), err.AndThen(op.WrappedDelegate));
-            Assert.AreEqual(0, op.InvocationCount);
-        }
+        public void AndThenReturnsErrorResultWithErrorValueForErr() =>
+            Assert.AreEqual(
+                Result.Err<int, int>(ErrValue),
+                Err.AndThen<int>(s => throw new InvalidOperationException("Test failure.")));
 
         [TestMethod]
         public void OrReturnsFirstResultForOk()
@@ -361,12 +304,9 @@ namespace Tsu.Tests
         [TestMethod]
         public void OrThenReturnsFirstResultForOk()
         {
-            var ok1 = Result.Ok<string, int>(OkValue + '1');
-            var ok2Func =
-                DelegateHelpers.TrackInvocationCount((int err) => Result.Err<string, int>(err * err));
+            var ok = Result.Ok<string, int>(OkValue + '1');
 
-            Assert.AreEqual(ok1, ok1.OrThen(ok2Func.WrappedDelegate));
-            Assert.AreEqual(0, ok2Func.InvocationCount);
+            Assert.AreEqual(ok, ok.OrThen<int>(err => throw new InvalidOperationException("Test failure.")));
         }
 
         [TestMethod]
@@ -384,25 +324,13 @@ namespace Tsu.Tests
         }
 
         [TestMethod]
-        public void UnwrapOrElseReturnsOkValueForOk()
-        {
-            var ok = Ok;
-            var fallbackFunc =
-                DelegateHelpers.TrackInvocationCount(() => "fallback");
-
-            Assert.AreEqual(OkValue, ok.UnwrapOrElse(fallbackFunc.WrappedDelegate));
-            Assert.AreEqual(0, fallbackFunc.InvocationCount);
-        }
+        public void UnwrapOrElseReturnsOkValueForOk() =>
+            Assert.AreEqual(
+                OkValue,
+                Ok.UnwrapOrElse(() => throw new InvalidOperationException("Test failure.")));
 
         [TestMethod]
-        public void UnwrapOrElseReturnsFallbackFunctionInvocationResultForErr()
-        {
-            var err = Err;
-            var fallbackFunc =
-                DelegateHelpers.TrackInvocationCount(() => "fallback");
-
-            Assert.AreEqual("fallback", err.UnwrapOrElse(fallbackFunc.WrappedDelegate));
-            Assert.AreEqual(1, fallbackFunc.InvocationCount);
-        }
+        public void UnwrapOrElseReturnsFallbackFunctionInvocationResultForErr() =>
+            Assert.AreEqual("fallback", Err.UnwrapOrElse(() => "fallback"));
     }
 }

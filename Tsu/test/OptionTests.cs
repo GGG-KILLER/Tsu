@@ -17,7 +17,6 @@
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Tsu.Testing;
 
 namespace Tsu.Tests
 {
@@ -66,92 +65,64 @@ namespace Tsu.Tests
         public void UnwrapOrElseReturnsValueForSome()
         {
             var some = Option.Some("some");
-            var counter = DelegateHelpers.TrackInvocationCount(() => "else");
 
-            Assert.AreEqual("some", some.UnwrapOrElse(counter.WrappedDelegate));
-            Assert.AreEqual(0, counter.InvocationCount);
+            Assert.AreEqual("some", some.UnwrapOrElse(() => throw new InvalidOperationException("Test failure.")));
         }
 
         [TestMethod]
         public void UnwrapOrElseReturnsFallbackForNone()
         {
             var none = Option.None<string>();
-            var counter = DelegateHelpers.TrackInvocationCount(() => "else");
 
-            Assert.AreEqual("else", none.UnwrapOrElse(counter.WrappedDelegate));
-            Assert.AreEqual(1, counter.InvocationCount);
+            Assert.AreEqual("else", none.UnwrapOrElse(() => "else"));
         }
 
         [TestMethod]
         public void MapReturnsInvocationResultForSome()
         {
             var some = Option.Some("some");
-            var counter =
-                DelegateHelpers.TrackInvocationCount((string s) => s.Length);
 
-            Assert.AreEqual(Option.Some(4), some.Map(counter.WrappedDelegate));
-            Assert.AreEqual(1, counter.InvocationCount);
+            Assert.AreEqual(Option.Some(4), some.Map(s => s.Length));
         }
 
         [TestMethod]
         public void MapReturnsNoneForNone()
         {
             var none = Option.None<string>();
-            var counter =
-                DelegateHelpers.TrackInvocationCount((string s) => s.Length);
 
-            Assert.AreEqual(Option.None<int>(), none.Map(counter.WrappedDelegate));
-            Assert.AreEqual(0, counter.InvocationCount);
+            Assert.AreEqual(Option.None<int>(), none.Map<int>(s => throw new InvalidOperationException("Test failure.")));
         }
 
         [TestMethod]
         public void MapOrReturnsInvocationResultForSome()
         {
             var some = Option.Some("some");
-            var counter =
-                DelegateHelpers.TrackInvocationCount((string s) => s.Length);
 
-            Assert.AreEqual(4, some.MapOr(8, counter.WrappedDelegate));
-            Assert.AreEqual(1, counter.InvocationCount);
+            Assert.AreEqual(4, some.MapOr(8, s => s.Length));
         }
 
         [TestMethod]
         public void MapOrReturnsFallbackForNone()
         {
             var none = Option.None<string>();
-            var counter =
-                DelegateHelpers.TrackInvocationCount((string s) => s.Length);
 
-            Assert.AreEqual(8, none.MapOr(8, counter.WrappedDelegate));
-            Assert.AreEqual(0, counter.InvocationCount);
+            Assert.AreEqual(8, none.MapOr(8, s => throw new InvalidOperationException("Test failure.")));
         }
 
         [TestMethod]
         public void MapOrElseReturnsInvocationResultForSome()
         {
             var some = Option.Some("some");
-            var fallbackCounter =
-                DelegateHelpers.TrackInvocationCount(() => 8);
-            var funcCounter =
-                DelegateHelpers.TrackInvocationCount((string s) => s.Length);
 
-            Assert.AreEqual(4, some.MapOrElse(fallbackCounter.WrappedDelegate, funcCounter.WrappedDelegate));
-            Assert.AreEqual(0, fallbackCounter.InvocationCount);
-            Assert.AreEqual(1, funcCounter.InvocationCount);
+            Assert.AreEqual(4, some.MapOrElse(() => throw new InvalidOperationException("Test failure."), s => s.Length));
         }
 
         [TestMethod]
         public void MapOrElseReturnsFallbackInvocationResultForNone()
         {
             var none = Option.None<string>();
-            var fallbackCounter =
-                DelegateHelpers.TrackInvocationCount(() => 8);
-            var funcCounter =
-                DelegateHelpers.TrackInvocationCount((string s) => s.Length);
 
-            Assert.AreEqual(8, none.MapOrElse(fallbackCounter.WrappedDelegate, funcCounter.WrappedDelegate));
-            Assert.AreEqual(1, fallbackCounter.InvocationCount);
-            Assert.AreEqual(0, funcCounter.InvocationCount);
+            Assert.AreEqual(8, none.MapOrElse(() => 8, s => throw new InvalidOperationException("Test failure.")));
         }
 
         [TestMethod]
@@ -179,55 +150,40 @@ namespace Tsu.Tests
         public void AndThenReturnsInvocationFunctionResultForSome()
         {
             var some = Option.Some("some");
-            var funcCounter =
-                DelegateHelpers.TrackInvocationCount((string s) => Option.Some(s.Length));
 
-            Assert.AreEqual(Option.Some(4), some.AndThen(funcCounter.WrappedDelegate));
-            Assert.AreEqual(1, funcCounter.InvocationCount);
+            Assert.AreEqual(Option.Some(4), some.AndThen(s => Option.Some(s.Length)));
         }
 
         [TestMethod]
         public void AndThenReturnsNoneForNone()
         {
             var none = Option.None<string>();
-            var funcCounter =
-                DelegateHelpers.TrackInvocationCount((string s) => Option.Some(s.Length));
 
-            Assert.AreEqual(Option.None<int>(), none.AndThen(funcCounter.WrappedDelegate));
-            Assert.AreEqual(0, funcCounter.InvocationCount);
+            Assert.AreEqual(Option.None<int>(), none.AndThen<int>(s => throw new InvalidOperationException("Test failure.")));
         }
 
         [TestMethod]
         public void FilterReturnsValueWhenPredicatePassesOnSome()
         {
             var some = Option.Some("some");
-            var filterCounter =
-                DelegateHelpers.TrackInvocationCount((string s) => s.Equals("some", StringComparison.Ordinal));
 
-            Assert.AreEqual(some, some.Filter(filterCounter.WrappedDelegate));
-            Assert.AreEqual(1, filterCounter.InvocationCount);
+            Assert.AreEqual(some, some.Filter(s => s.Equals("some", StringComparison.Ordinal)));
         }
 
         [TestMethod]
         public void FilterReturnsNoneWhenPredicateDoesNotPassesOnSome()
         {
             var some = Option.Some("some");
-            var filterCounter =
-                DelegateHelpers.TrackInvocationCount((string s) => s.Equals("a", StringComparison.Ordinal));
 
-            Assert.AreEqual(Option.None<string>(), some.Filter(filterCounter.WrappedDelegate));
-            Assert.AreEqual(1, filterCounter.InvocationCount);
+            Assert.AreEqual(Option.None<string>(), some.Filter(s => s.Equals("a", StringComparison.Ordinal)));
         }
 
         [TestMethod]
         public void FilterReturnsNoneForNone()
         {
             var none = Option.None<string>();
-            var filterCounter =
-                DelegateHelpers.TrackInvocationCount((string s) => s.Equals("a", StringComparison.Ordinal));
 
-            Assert.AreEqual(none, none.Filter(filterCounter.WrappedDelegate));
-            Assert.AreEqual(0, filterCounter.InvocationCount);
+            Assert.AreEqual(none, none.Filter(s => throw new InvalidOperationException("Test failure.")));
         }
 
         [TestMethod]
@@ -254,19 +210,9 @@ namespace Tsu.Tests
         [TestMethod]
         public void OrThenReturnsFirsOptionIfSome()
         {
-            var some1 = Option.Some("some1");
-            var some2 = Option.Some("some2");
-            var none = Option.None<string>();
+            var some = Option.Some("some1");
 
-            var funcSome2Counter =
-                DelegateHelpers.TrackInvocationCount(() => some2);
-            var funcNoneCounter =
-                DelegateHelpers.TrackInvocationCount(() => none);
-
-            Assert.AreEqual(some1, some1.OrElse(funcSome2Counter.WrappedDelegate));
-            Assert.AreEqual(0, funcSome2Counter.InvocationCount);
-            Assert.AreEqual(some1, some1.OrElse(funcNoneCounter.WrappedDelegate));
-            Assert.AreEqual(0, funcNoneCounter.InvocationCount);
+            Assert.AreEqual(some, some.OrElse(() => throw new InvalidOperationException()));
         }
 
         [TestMethod]
@@ -275,15 +221,7 @@ namespace Tsu.Tests
             var none = Option.None<string>();
             var some = Option.Some("some");
 
-            var funcSome =
-                DelegateHelpers.TrackInvocationCount(() => some);
-            var funcNone =
-                DelegateHelpers.TrackInvocationCount(() => none);
-
-            Assert.AreEqual(some, none.OrElse(funcSome.WrappedDelegate));
-            Assert.AreEqual(1, funcSome.InvocationCount);
-            Assert.AreEqual(none, none.OrElse(funcNone.WrappedDelegate));
-            Assert.AreEqual(1, funcNone.InvocationCount);
+            Assert.AreEqual(some, none.OrElse(() => some));
         }
 
         [TestMethod]

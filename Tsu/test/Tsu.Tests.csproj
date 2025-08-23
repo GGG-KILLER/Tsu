@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(RepositoryRootDirectory)abandoned/Tsu.Testing/src/Tsu.Testing.csproj" />
     <ProjectReference Include="$(RepositoryRootDirectory)Tsu/src/Tsu.csproj" />
   </ItemGroup>
 

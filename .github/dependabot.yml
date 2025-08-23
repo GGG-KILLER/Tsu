@@ -11,13 +11,9 @@ updates:
       interval: "weekly"
     assignees:
       - "GGG-KILLER"
-    reviewers:
-      - "GGG-KILLER"
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
       interval: "weekly"
     assignees:
-      - "GGG-KILLER"
-    reviewers:
       - "GGG-KILLER"
