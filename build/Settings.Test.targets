@@ -19,7 +19,7 @@
 
   <ItemGroup Condition="'$(TsuTestingLib)' == 'MSTest'">
     <PackageReference Include="MSTest.TestAdapter" Version="3.10.4" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.10.4" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.11.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TsuTestingLib)' == 'xUnit'">
