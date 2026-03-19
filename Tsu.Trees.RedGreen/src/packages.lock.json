@@ -59,11 +59,12 @@
       },
       "Scriban": {
         "type": "Direct",
-        "requested": "[6.5.2, )",
-        "resolved": "6.5.2",
-        "contentHash": "JXli/Sh1WVZs/pqnPPRJTlwEsZHPJtndzxiaPnrteXDpAqVqHxh4ifhx4puTaYKVMPJUMOp9bnCpEVBpYlt/eQ==",
+        "requested": "[6.6.0, )",
+        "resolved": "6.6.0",
+        "contentHash": "rDzWFaCLsnFMRifEs9F95mCQ1f9thva2ckXlHZ6xzCJ5SFqsB1u1Y/ZtQlc0iySg+H7HOR75J7ya2X4RmJvOFw==",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
+          "System.Text.Json": "8.0.5",
           "System.Threading.Tasks.Extensions": "4.6.3"
         }
       },
@@ -74,6 +75,14 @@
         "contentHash": "7sCiwilJLYbTZELaKnc7RecBBXWXA+xMLQWZKWawBxYjp6DBlSE3v9/UcvKBvr1vv2tTOhipiogM8rRmxlhrVA==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.1.2"
+        }
+      },
+      "Microsoft.Bcl.AsyncInterfaces": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "3WA9q9yVqJp222P3x1wYIGDAkpjAku0TMUaaQV22g6L67AI0LdOIrVS7Ht2vJfLHGSPVuqN94vIr15qn+HEkHw==",
+        "dependencies": {
+          "System.Threading.Tasks.Extensions": "4.5.4"
         }
       },
       "Microsoft.Build.Tasks.Git": {
@@ -157,6 +166,29 @@
         "dependencies": {
           "System.Memory": "4.5.5",
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
+        }
+      },
+      "System.Text.Encodings.Web": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "yev/k9GHAEGx2Rg3/tU6MQh4HGBXJs70y7j1LaM1i/ER9po+6nnQ6RRqTJn1E7Xu0fbIFK80Nh5EoODxrbxwBQ==",
+        "dependencies": {
+          "System.Buffers": "4.5.1",
+          "System.Memory": "4.5.5",
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
+        }
+      },
+      "System.Text.Json": {
+        "type": "Transitive",
+        "resolved": "8.0.5",
+        "contentHash": "0f1B50Ss7rqxXiaBJyzUu9bWFOO2/zSlifZ/UNMdiIpDYe4cY4LQQicP4nirK1OS31I43rn062UIJ1Q9bpmHpg==",
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "8.0.0",
+          "System.Buffers": "4.5.1",
+          "System.Memory": "4.5.5",
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0",
+          "System.Text.Encodings.Web": "8.0.0",
+          "System.Threading.Tasks.Extensions": "4.5.4"
         }
       }
     }
