@@ -136,109 +136,91 @@ namespace Tsu.Numerics
             {
                 scaledNumber = number;
                 suffix = "";
-                return;
             }
-            if (number >= Yotta)
+            else if (number >= Yotta)
             {
                 scaledNumber = number / Yotta;
                 suffix = "Y";
-                return;
             }
             else if (number >= Zetta)
             {
                 scaledNumber = number / Zetta;
                 suffix = "Z";
-                return;
             }
             else if (number >= Exa)
             {
                 scaledNumber = number / Exa;
                 suffix = "E";
-                return;
             }
             else if (number >= Peta)
             {
                 scaledNumber = number / Peta;
                 suffix = "P";
-                return;
             }
             else if (number >= Tera)
             {
                 scaledNumber = number / Tera;
                 suffix = "T";
-                return;
             }
             else if (number >= Giga)
             {
                 scaledNumber = number / Giga;
                 suffix = "G";
-                return;
             }
             else if (number >= Mega)
             {
                 scaledNumber = number / Mega;
                 suffix = "M";
-                return;
             }
             else if (number >= Kilo)
             {
                 scaledNumber = number / Kilo;
                 suffix = "k";
-                return;
             }
             else if (number >= Milli)
             {
                 scaledNumber = number / Milli;
                 suffix = "m";
-                return;
             }
             else if (number >= Micro)
             {
                 scaledNumber = number / Micro;
                 suffix = "μ";
-                return;
             }
             else if (number >= Nano)
             {
                 scaledNumber = number / Nano;
                 suffix = "n";
-                return;
             }
             else if (number >= Pico)
             {
                 scaledNumber = number / Pico;
                 suffix = "p";
-                return;
             }
             else if (number >= Femto)
             {
                 scaledNumber = number / Femto;
                 suffix = "f";
-                return;
             }
             else if (number >= Atto)
             {
                 scaledNumber = number / Atto;
                 suffix = "a";
-                return;
             }
             else if (number >= Zepto)
             {
                 scaledNumber = number / Zepto;
                 suffix = "z";
-                return;
             }
             else if (number >= Yocto)
             {
                 scaledNumber = number / Yocto;
                 suffix = "y";
-                return;
             }
             else
             {
                 scaledNumber = number;
                 suffix = "";
-                return;
             }
         }
 
@@ -296,13 +278,13 @@ namespace Tsu.Numerics
             var match = _floatParseRegex.Match(input);
             if (!match.Success)
             {
-                number = default;
+                number = 0;
                 return false;
             }
 
             if (!double.TryParse(match.Groups["number"].Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var parsed))
             {
-                number = default;
+                number = 0;
                 return false;
             }
 
@@ -378,7 +360,7 @@ namespace Tsu.Numerics
                     return true;
 
                 default:
-                    number = default;
+                    number = 0;
                     return false;
             }
         }

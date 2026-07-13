@@ -1,7 +1,7 @@
-// Copyright © 2021 GGG KILLER <gggkiller2@gmail.com>
+// Copyright Â© 2021 GGG KILLER <gggkiller2@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software
-// and associated documentation files (the “Software”), to deal in the Software without
+// and associated documentation files (the "Software"), to deal in the Software without
 // restriction, including without limitation the rights to use, copy, modify, merge, publish,
 // distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom
 // the Software is furnished to do so, subject to the following conditions:
@@ -9,7 +9,7 @@
 // The above copyright notice and this permission notice shall be included in all copies or
 // substantial portions of the Software.
 //
-// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
 // BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 // NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
@@ -85,50 +85,41 @@ namespace Tsu.Numerics
             {
                 scaledSize = size;
                 suffix = "B";
-                return;
             }
-
-            if (abs >= EiB)
+            else if (abs >= EiB)
             {
                 scaledSize = size / (double) EiB;
                 suffix = nameof(EiB);
-                return;
             }
             else if (abs >= PiB)
             {
                 scaledSize = size / (double) PiB;
                 suffix = nameof(PiB);
-                return;
             }
             else if (abs >= TiB)
             {
                 scaledSize = size / (double) TiB;
                 suffix = nameof(TiB);
-                return;
             }
             else if (abs >= GiB)
             {
                 scaledSize = size / (double) GiB;
                 suffix = nameof(GiB);
-                return;
             }
             else if (abs >= MiB)
             {
                 scaledSize = size / (double) MiB;
                 suffix = nameof(MiB);
-                return;
             }
             else if (abs >= KiB)
             {
                 scaledSize = size / (double) KiB;
                 suffix = nameof(KiB);
-                return;
             }
             else
             {
                 scaledSize = size;
                 suffix = "B";
-                return;
             }
         }
 
@@ -152,43 +143,36 @@ namespace Tsu.Numerics
             {
                 scaledSize = size / EiB;
                 suffix = nameof(EiB);
-                return;
             }
             else if (abs >= PiB)
             {
                 scaledSize = size / PiB;
                 suffix = nameof(PiB);
-                return;
             }
             else if (abs >= TiB)
             {
                 scaledSize = size / TiB;
                 suffix = nameof(TiB);
-                return;
             }
             else if (abs >= GiB)
             {
                 scaledSize = size / GiB;
                 suffix = nameof(GiB);
-                return;
             }
             else if (abs >= MiB)
             {
                 scaledSize = size / MiB;
                 suffix = nameof(MiB);
-                return;
             }
             else if (abs >= KiB)
             {
                 scaledSize = size / KiB;
                 suffix = nameof(KiB);
-                return;
             }
             else
             {
                 scaledSize = size;
                 suffix = "B";
-                return;
             }
         }
 
@@ -413,7 +397,7 @@ namespace Tsu.Numerics
                     return true;
 
                 default:
-                    bytes = default;
+                    bytes = 0;
                     return false;
             }
         }

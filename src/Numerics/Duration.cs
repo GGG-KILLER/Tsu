@@ -23,12 +23,7 @@ namespace Tsu.Numerics
     /// <summary>
     /// An utility class to help manipulate time as ticks
     /// </summary>
-#if IS_MICROPROFILER_PACKAGE
-    internal
-#else
-    public
-#endif
-        static class Duration
+    public static class Duration
     {
         /// <summary>
         /// The amount of tikcs in an hour
@@ -38,27 +33,27 @@ namespace Tsu.Numerics
         /// <summary>
         /// The amount of ticks in a minute
         /// </summary>
-        public const double TicksPerMinute = TicksPerHour / 60D;
+        public const double TicksPerMinute = TicksPerHour / 60.0;
 
         /// <summary>
         /// The amount of ticks in a second
         /// </summary>
-        public const double TicksPerSecond = TicksPerMinute / 60D;
+        public const double TicksPerSecond = TicksPerMinute / 60.0;
 
         /// <summary>
         /// The amount of ticks in a millisecond
         /// </summary>
-        public const double TicksPerMillisecond = TicksPerSecond / 1000D;
+        public const double TicksPerMillisecond = TicksPerSecond / 1000.0;
 
         /// <summary>
         /// The amount of ticks in a microsecond
         /// </summary>
-        public const double TicksPerMicrosecond = TicksPerMillisecond / 1000D;
+        public const double TicksPerMicrosecond = TicksPerMillisecond / 1000.0;
 
         /// <summary>
         /// The amount of ticks in a nanosecond
         /// </summary>
-        public const double TicksPerNanosecond = TicksPerMicrosecond / 1000D;
+        public const double TicksPerNanosecond = TicksPerMicrosecond / 1000.0;
 
         /// <summary>
         /// Scales the provided value down and gets the duration from the ticks.
@@ -71,38 +66,32 @@ namespace Tsu.Numerics
             if (ticks > TicksPerHour)
             {
                 scaledDuration = ticks / TicksPerHour;
-                suffix = "h";
-                return;
+                suffix         = "h";
             }
             else if (ticks > TicksPerMinute)
             {
                 scaledDuration = ticks / TicksPerMinute;
-                suffix = "m";
-                return;
+                suffix         = "m";
             }
             else if (ticks > TicksPerSecond)
             {
                 scaledDuration = ticks / TicksPerSecond;
-                suffix = "s";
-                return;
+                suffix         = "s";
             }
             else if (ticks > TicksPerMillisecond)
             {
                 scaledDuration = ticks / TicksPerMillisecond;
-                suffix = "ms";
-                return;
+                suffix         = "ms";
             }
             else if (ticks > TicksPerMicrosecond)
             {
                 scaledDuration = ticks / TicksPerMicrosecond;
-                suffix = "μs";
-                return;
+                suffix         = "μs";
             }
             else
             {
                 scaledDuration = ticks / TicksPerNanosecond;
-                suffix = "ns";
-                return;
+                suffix         = "ns";
             }
         }
 
@@ -131,6 +120,32 @@ namespace Tsu.Numerics
         public static string Format(long ticks, IFormatProvider formatProvider, string format = "{0:##00.00}{1}")
         {
             GetFormatPair(ticks, out var scaledDuration, out var suffix);
+            return string.Format(formatProvider, format, scaledDuration, suffix);
+        }
+
+        /// <summary>
+        /// Formats the amount of ticks in the provided <see cref="TimeSpan"/> into a human-readable format.
+        /// </summary>
+        /// <param name="span"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        [SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "There's another overload accepting it.")]
+        public static string Format(TimeSpan span, string format = "{0:##00.00}{1}")
+        {
+            GetFormatPair(span.Ticks, out var scaledDuration, out var suffix);
+            return string.Format(format, scaledDuration, suffix);
+        }
+
+        /// <summary>
+        /// Formats the amount of ticks in the provided <see cref="TimeSpan"/> into a human-readable format.
+        /// </summary>
+        /// <param name="span"></param>
+        /// <param name="formatProvider"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static string Format(TimeSpan span, IFormatProvider formatProvider, string format = "{0:##00.00}{1}")
+        {
+            GetFormatPair(span.Ticks, out var scaledDuration, out var suffix);
             return string.Format(formatProvider, format, scaledDuration, suffix);
         }
     }

@@ -1,8 +1,0 @@
-<Project>
-
-  <PropertyGroup>
-    <IsPackable>false</IsPackable>
-    <NoWarn>CA17107;CS1591</NoWarn>
-  </PropertyGroup>
-
-</Project>
